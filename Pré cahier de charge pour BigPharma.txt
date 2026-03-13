@@ -1,0 +1,916 @@
+Pré cahier de charge pour BigPharma
+
+# Cahier des charges fonctionnel BigPharma
+
+Ce document décrit précisément ce que le système doit faire, qui l’utilise, et comment valider chaque fonctionnalité. Il est organisé par domaines pour couvrir une pharmacie comme une véritable entreprise.
+
+---
+
+## Gestion des articles et du stock
+
+#### Référentiel produits
+- **Acteurs concernés:** Pharmacien, Gestionnaire, Admin
+- **Description:** Enregistrer tous les articles (médicaments, parapharmacie, dispositifs) avec nom, DCI, dosage, forme, conditionnement, code-barres, prix public, TVA, photos, notice.
+- **Critères de validation:** Création/modification/suppression contrôlées par rôles; recherche par nom/DCI/code-barres; unicité du code produit; historique des modifications consultable.
+
+#### Lots et péremption
+- **Acteurs concernés:** Pharmacien, Préparateur
+- **Description:** Gérer les numéros de lot, dates de péremption, statut (libre/quarantaine/retiré), quantités par lot.
+- **Critères de validation:** Impossibilité de vendre un lot en quarantaine/retiré; alertes automatiques pour péremption dans X jours; rapport des lots périmés.
+
+#### Mouvements de stock
+- **Acteurs concernés:** Préparateur, Gestionnaire
+- **Description:** Enregistrer entrées (réceptions), sorties (ventes, destructions), transferts entre emplacements, ajustements avec motif.
+- **Critères de validation:** Audit horodaté par utilisateur; solde cohérent après chaque mouvement; motifs obligatoires pour ajustements; export des mouvements.
+
+#### Inventaires
+- **Acteurs concernés:** Gestionnaire, Pharmacien
+- **Description:** Réaliser inventaires complets ou par zone, saisir écarts, valider et clôturer.
+- **Critères de validation:** Écarts calculés et justifiés; verrouillage des stocks pendant comptage; rapport d’inventaire signé (utilisateur, date).
+
+#### Alertes et seuils
+- **Acteurs concernés:** Gestionnaire
+- **Description:** Configurer seuils de réapprovisionnement par article et recevoir des alertes.
+- **Critères de validation:** Liste d’articles sous seuil générée; possibilité de créer une commande depuis l’alerte.
+
+---
+
+## Approvisionnement et fournisseurs
+
+#### Fiches fournisseurs
+- **Acteurs concernés:** Gestionnaire, Admin
+- **Description:** Enregistrer coordonnées, conditions de paiement, délais, contacts, statuts.
+- **Critères de validation:** Unicité fournisseur; association aux commandes et factures; inactivation empêchant nouvelles commandes.
+
+#### Commandes fournisseurs
+- **Acteurs concernés:** Gestionnaire
+- **Description:** Créer, valider, envoyer commandes (manuel ou via seuils), suivre statut (brouillon/validée/expédiée/réceptionnée/close).
+- **Critères de validation:** Quantités et prix cohérents; total calculé avec remises et taxes; journal des changements de statut.
+
+#### Réceptions et écarts
+- **Acteurs concernés:** Préparateur
+- **Description:** Réception partielle/complète, affectation aux lots, enregistrement des écarts (manquants, avariés).
+- **Critères de validation:** Mise à jour stock-lot immédiate; génération d’un rapport d’écarts; blocage des lots non conformes.
+
+#### Facturation achats
+- **Acteurs concernés:** Gestionnaire, Comptable
+- **Description:** Enregistrer factures, avoirs, frais; mettre à jour prix d’achat moyen pondéré.
+- **Critères de validation:** Concordance commande–réception–facture; calculs TVA corrects; export comptable.
+
+---
+
+## Ventes et clients
+
+#### Vente au comptoir
+- **Acteurs concernés:** Caissier, Pharmacien
+- **Description:** Panier avec scan code-barres, calcul prix/remises/TVA, multi-paiements (cash, carte, mobile), impression ticket.
+- **Critères de validation:** Temps de calcul < 300 ms par article; ticket avec lignes, lot, prix, TVA; annulation/avoir traçables.
+
+#### Ordonnances
+- **Acteurs concernés:** Pharmacien
+- **Description:** Saisir patient, prescripteur, ordonnance; contrôle règles (posologie, doublons, substituables).
+- **Critères de validation:** Champs obligatoires; validation pharmacien requise; journal des validations et refus avec motif.
+
+#### Retours et avoirs
+- **Acteurs concernés:** Caissier, Pharmacien
+- **Description:** Gérer retours clients par lot, raisons, remise en stock ou destruction.
+- **Critères de validation:** Lien au ticket initial; impact stock et finance correct; impossibilité de remettre un lot périmé en vente.
+
+#### Fiches clients et fidélité
+- **Acteurs concernés:** Caissier, Gestionnaire
+- **Description:** Enregistrer clients, historique achats, points et avantages.
+- **Critères de validation:** Attribution automatique de points selon règles; application des remises; respect confidentialité.
+
+---
+
+## Gestion des employés et sécurité
+
+#### Profils et rôles
+- **Acteurs concernés:** Admin
+- **Description:** Créer employés, définir rôles (pharmacien, préparateur, caissier, gestionnaire, admin) et permissions.
+- **Critères de validation:** Accès strict par rôle; journal des connexions; désactivation immédiate des accès.
+
+#### Audit trail
+- **Acteurs concernés:** Admin, Auditeur
+- **Description:** Journaliser toutes les actions sensibles (stock, prix, ventes, ordonnances).
+- **Critères de validation:** Traces immuables horodatées; recherche par utilisateur/ressource/date; export sécurisé.
+
+#### Présences et activités
+- **Acteurs concernés:** Gestionnaire, RH
+- **Description:** Suivre horaires, présences, activités clés (ventes, inventaires).
+- **Critères de validation:** Rapports par période; anomalies détectées (heures manquantes).
+
+---
+
+## Reporting, conformité et opérations
+
+#### Tableaux de bord
+- **Acteurs concernés:** Direction, Gestionnaire
+- **Description:** KPIs en temps réel (ventes, marges, rotation, ruptures, péremptions).
+- **Critères de validation:** Filtres par période/catégorie; actualisation fiable; export PDF/Excel.
+
+#### Rapports réglementaires et traçabilité
+- **Acteurs concernés:** Pharmacien, Auditeur
+- **Description:** Traçabilité des lots vendus, inventaires légaux, rapports de rappels produits.
+- **Critères de validation:** Liste de clients impactés par lot; preuve de blocage des lots rappelés; archivage légal des journaux.
+
+#### Finance et comptabilité
+- **Acteurs concernés:** Comptable, Direction
+- **Description:** Ventes, encaissements, TVA, marges; export vers logiciel comptable.
+- **Critères de validation:** Concordance journalière caisse–système; clôture de caisse avec écarts; export conforme aux formats requis.
+
+#### Rappels produits
+- **Acteurs concernés:** Pharmacien, Gestionnaire
+- **Description:** Identifier lots concernés, bloquer la vente, notifier clients/fournisseurs, inventorier et clôturer.
+- **Critères de validation:** Blocage instantané des lots; journal des notifications; rapport de clôture.
+
+---
+
+## Fonctions transverses et techniques utiles
+
+#### Mode offline et synchronisation
+- **Acteurs concernés:** Caissier, Pharmacien
+- **Description:** Continuer ventes sans internet; resynchroniser stocks et journaux ensuite.
+- **Critères de validation:** Cohérence post-sync; prévention des doublons; indication claire du mode offline.
+
+#### Intégrations matériel
+- **Acteurs concernés:** Technicien, Caissier
+- **Description:** Scanners code-barres, imprimantes tickets, terminaux de paiement, balances.
+- **Critères de validation:** Test de bout en bout par périphérique; reprise automatique si périphérique reconnecté.
+
+#### Paramétrage et règles
+- **Acteurs concernés:** Admin, Gestionnaire
+- **Description:** Configurer TVA, remises, seuils, catégories, politiques de substitution.
+- **Critères de validation:** Changement versionné; prise d’effet contrôlée; rollback possible.
+
+---
+
+
+
+MCD 
+Parfait Celeste 🌟, allons-y avec le **modèle conceptuel de données (MCD)** pour ton système **BigPharma**. C’est la suite logique après la capture des besoins fonctionnels : on structure les entités et leurs relations pour préparer la base de données.
+
+---
+
+## 📐 Principales entités et relations
+
+### 1. **Produit**
+- Attributs : ID_Produit, Nom, DCI, Dosage, Forme, Prix_Public, TVA, Catégorie, Code-barres.
+- Relations :
+  - 1 Produit → plusieurs **Lots**.
+  - 1 Produit → plusieurs **Lignes de Vente**.
+  - 1 Produit → plusieurs **Lignes de Commande Fournisseur**.
+
+---
+
+### 2. **Lot**
+- Attributs : ID_Lot, Numéro_Lot, Date_Péremption, Statut (libre/quarantaine/retiré), Quantité.
+- Relations :
+  - 1 Lot → appartient à 1 **Produit**.
+  - 1 Lot → peut apparaître dans plusieurs **Mouvements de Stock**.
+  - 1 Lot → peut être lié à plusieurs **Ventes**.
+
+---
+
+### 3. **Stock_Mouvement**
+- Attributs : ID_Mouvement, Type (entrée/sortie/ajustement), Date, Quantité, Motif.
+- Relations :
+  - 1 Mouvement → concerne 1 **Lot**.
+  - 1 Mouvement → effectué par 1 **Employé**.
+
+---
+
+### 4. **Fournisseur**
+- Attributs : ID_Fournisseur, Nom, Adresse, Contact, Conditions, Statut.
+- Relations :
+  - 1 Fournisseur → plusieurs **Commandes Fournisseur**.
+  - 1 Fournisseur → plusieurs **Produits** (optionnel si catalogue lié).
+
+---
+
+### 5. **Commande_Fournisseur**
+- Attributs : ID_Commande, Date, Statut, Montant_Total.
+- Relations :
+  - 1 Commande → liée à 1 **Fournisseur**.
+  - 1 Commande → plusieurs **Lignes de Commande**.
+  - 1 Commande → peut générer plusieurs **Réceptions**.
+
+---
+
+### 6. **Vente**
+- Attributs : ID_Vente, Date, Montant_Total, Mode_Paiement.
+- Relations :
+  - 1 Vente → plusieurs **Lignes de Vente**.
+  - 1 Vente → liée à 1 **Client** (optionnel si vente anonyme).
+  - 1 Vente → effectuée par 1 **Employé**.
+
+---
+
+### 7. **Ligne_Vente**
+- Attributs : ID_Ligne, Quantité, Prix_Unitaire, Remise.
+- Relations :
+  - 1 Ligne → liée à 1 **Produit** et 1 **Lot**.
+  - 1 Ligne → appartient à 1 **Vente**.
+
+---
+
+### 8. **Ordonnance**
+- Attributs : ID_Ordonnance, Date, Patient, Prescripteur.
+- Relations :
+  - 1 Ordonnance → plusieurs **Lignes Ordonnance**.
+  - 1 Ordonnance → validée par 1 **Pharmacien**.
+
+---
+
+### 9. **Client**
+- Attributs : ID_Client, Nom, Adresse, Téléphone, Historique_Achats, Points_Fidélité.
+- Relations :
+  - 1 Client → plusieurs **Ventes**.
+  - 1 Client → plusieurs **Ordonnances**.
+
+---
+
+### 10. **Employé**
+- Attributs : ID_Employé, Nom, Rôle (pharmacien, caissier, préparateur, admin), Login, Mot_de_passe.
+- Relations :
+  - 1 Employé → effectue des **Mouvements de Stock**.
+  - 1 Employé → réalise des **Ventes**.
+  - 1 Employé → valide des **Ordonnances**.
+
+---
+
+## 🔗 Schéma relationnel simplifié
+
+```
+Produit (1) ────< Lot (N)
+Lot (1) ────< Stock_Mouvement (N)
+Fournisseur (1) ────< Commande_Fournisseur (N) ────< Ligne_Commande (N)
+Vente (1) ────< Ligne_Vente (N) ────> Produit (1)
+Client (1) ────< Vente (N)
+Ordonnance (1) ────< Ligne_Ordonnance (N) ────> Produit (1)
+Employé (1) ────< Vente (N), Stock_Mouvement (N), Ordonnance (N)
+```
+
+---
+
+👉 Ce MCD te donne une **vision claire de la structure de la base de données**.  
+La prochaine étape serait de le transformer en **Modèle Logique de Données (MLD)**, c’est-à-dire en tables SQL avec clés primaires et étrangères.
+
+---
+
+Parfait Celeste 🌟, voici la **traduction du modèle conceptuel en tables SQL (MLD)** pour ton projet **BigPharma**. Cela te donne une base prête à être implémentée dans un SGBD (MySQL, PostgreSQL, SQL Server, etc.).
+
+---
+
+## 📋 Tables principales
+
+### 1. Produit
+```sql
+CREATE TABLE Produit (
+    ID_Produit INT PRIMARY KEY AUTO_INCREMENT,
+    Nom VARCHAR(100) NOT NULL,
+    DCI VARCHAR(100),
+    Dosage VARCHAR(50),
+    Forme VARCHAR(50),
+    Prix_Public DECIMAL(10,2) NOT NULL,
+    TVA DECIMAL(5,2),
+    Categorie VARCHAR(50),
+    Code_Barre VARCHAR(50) UNIQUE
+);
+```
+
+---
+
+### 2. Lot
+```sql
+CREATE TABLE Lot (
+    ID_Lot INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Produit INT NOT NULL,
+    Numero_Lot VARCHAR(50),
+    Date_Peremption DATE,
+    Statut ENUM('libre','quarantaine','retire') DEFAULT 'libre',
+    Quantite INT NOT NULL,
+    FOREIGN KEY (ID_Produit) REFERENCES Produit(ID_Produit)
+);
+```
+
+---
+
+### 3. Stock_Mouvement
+```sql
+CREATE TABLE Stock_Mouvement (
+    ID_Mouvement INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Lot INT NOT NULL,
+    ID_Employe INT NOT NULL,
+    Type ENUM('entree','sortie','ajustement') NOT NULL,
+    Date_Mvt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Quantite INT NOT NULL,
+    Motif VARCHAR(255),
+    FOREIGN KEY (ID_Lot) REFERENCES Lot(ID_Lot),
+    FOREIGN KEY (ID_Employe) REFERENCES Employe(ID_Employe)
+);
+```
+
+---
+
+### 4. Fournisseur
+```sql
+CREATE TABLE Fournisseur (
+    ID_Fournisseur INT PRIMARY KEY AUTO_INCREMENT,
+    Nom VARCHAR(100) NOT NULL,
+    Adresse VARCHAR(255),
+    Contact VARCHAR(100),
+    Conditions TEXT,
+    Statut ENUM('actif','inactif') DEFAULT 'actif'
+);
+```
+
+---
+
+### 5. Commande_Fournisseur
+```sql
+CREATE TABLE Commande_Fournisseur (
+    ID_Commande INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Fournisseur INT NOT NULL,
+    Date_Commande DATE,
+    Statut ENUM('brouillon','validee','expediee','receptionnee','close') DEFAULT 'brouillon',
+    Montant_Total DECIMAL(12,2),
+    FOREIGN KEY (ID_Fournisseur) REFERENCES Fournisseur(ID_Fournisseur)
+);
+```
+
+---
+
+### 6. Ligne_Commande
+```sql
+CREATE TABLE Ligne_Commande (
+    ID_Ligne INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Commande INT NOT NULL,
+    ID_Produit INT NOT NULL,
+    Quantite INT NOT NULL,
+    Prix_Unitaire DECIMAL(10,2),
+    FOREIGN KEY (ID_Commande) REFERENCES Commande_Fournisseur(ID_Commande),
+    FOREIGN KEY (ID_Produit) REFERENCES Produit(ID_Produit)
+);
+```
+
+---
+
+### 7. Vente
+```sql
+CREATE TABLE Vente (
+    ID_Vente INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Client INT,
+    ID_Employe INT NOT NULL,
+    Date_Vente DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Montant_Total DECIMAL(12,2),
+    Mode_Paiement ENUM('cash','carte','mobile') NOT NULL,
+    FOREIGN KEY (ID_Client) REFERENCES Client(ID_Client),
+    FOREIGN KEY (ID_Employe) REFERENCES Employe(ID_Employe)
+);
+```
+
+---
+
+### 8. Ligne_Vente
+```sql
+CREATE TABLE Ligne_Vente (
+    ID_Ligne INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Vente INT NOT NULL,
+    ID_Produit INT NOT NULL,
+    ID_Lot INT NOT NULL,
+    Quantite INT NOT NULL,
+    Prix_Unitaire DECIMAL(10,2),
+    Remise DECIMAL(5,2),
+    FOREIGN KEY (ID_Vente) REFERENCES Vente(ID_Vente),
+    FOREIGN KEY (ID_Produit) REFERENCES Produit(ID_Produit),
+    FOREIGN KEY (ID_Lot) REFERENCES Lot(ID_Lot)
+);
+```
+
+---
+
+### 9. Ordonnance
+```sql
+CREATE TABLE Ordonnance (
+    ID_Ordonnance INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Client INT NOT NULL,
+    ID_Employe INT NOT NULL,
+    Prescripteur VARCHAR(100),
+    Date_Ordonnance DATE,
+    FOREIGN KEY (ID_Client) REFERENCES Client(ID_Client),
+    FOREIGN KEY (ID_Employe) REFERENCES Employe(ID_Employe)
+);
+```
+
+---
+
+### 10. Ligne_Ordonnance
+```sql
+CREATE TABLE Ligne_Ordonnance (
+    ID_Ligne INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Ordonnance INT NOT NULL,
+    ID_Produit INT NOT NULL,
+    Quantite INT NOT NULL,
+    FOREIGN KEY (ID_Ordonnance) REFERENCES Ordonnance(ID_Ordonnance),
+    FOREIGN KEY (ID_Produit) REFERENCES Produit(ID_Produit)
+);
+```
+
+---
+
+### 11. Client
+```sql
+CREATE TABLE Client (
+    ID_Client INT PRIMARY KEY AUTO_INCREMENT,
+    Nom VARCHAR(100),
+    Adresse VARCHAR(255),
+    Telephone VARCHAR(50),
+    Points_Fidelite INT DEFAULT 0
+);
+```
+
+---
+
+### 12. Employe
+```sql
+CREATE TABLE Employe (
+    ID_Employe INT PRIMARY KEY AUTO_INCREMENT,
+    Nom VARCHAR(100),
+    Role ENUM('pharmacien','caissier','preparateur','gestionnaire','admin') NOT NULL,
+    Login VARCHAR(50) UNIQUE,
+    Mot_de_Passe VARCHAR(255) NOT NULL
+);
+```
+
+---
+
+## 🔗 Résumé des relations
+- **Produit ↔ Lot ↔ Stock_Mouvement ↔ Employé**  
+- **Fournisseur ↔ Commande_Fournisseur ↔ Ligne_Commande ↔ Produit**  
+- **Client ↔ Vente ↔ Ligne_Vente ↔ Produit/Lot**  
+- **Client ↔ Ordonnance ↔ Ligne_Ordonnance ↔ Produit**  
+- **Employé** intervient dans ventes, ordonnances et mouvements de stock.  
+
+---
+
+👉 Tu as maintenant un **MLD complet en SQL**. La prochaine étape serait de définir :  
+- Les **contraintes supplémentaires** (ex. pas de vente de lot périmé).  
+- Les **index** pour optimiser les recherches (par produit, lot, client).  
+- Les **procédures stockées** pour automatiser certaines règles (alertes stock, calcul fidélité).  
+
+
+Excellent choix Celeste 🎯 ! Tu as défini une **stack technique claire** pour ton projet BigPharma :
+
+---
+
+## ⚙️ Besoins techniques validés
+
+### 1. **Langage et environnement**
+- **Langage** : Dart → robuste, moderne, orienté objet, parfait pour une application desktop avec **Flutter**.  
+- **IDE** : Visual Studio Code → léger, extensible, avec plugins pour Dart/Flutter et SQLite.  
+
+---
+
+### 2. **Base de données**
+- **SQLite** :  
+  - Avantage : base embarquée, idéale pour le mode offline.  
+  - Fichier unique `.db` → facile à sauvegarder et synchroniser.  
+  - Supporte transactions, contraintes d’intégrité et index.  
+- **Connexion** : via package Dart `sqflite` ou `drift` (ORM pour simplifier les requêtes).  
+
+---
+
+### 3. **Architecture logicielle : MVC**
+- **Model** :  
+  - Classes Dart représentant les entités (Produit, Lot, Vente, Client, Employé…).  
+  - Gestion des requêtes SQL (DAO) pour CRUD.  
+- **View** :  
+  - Interfaces Flutter (fenêtres, formulaires, tableaux).  
+  - Navigation par menus et onglets.  
+- **Controller** :  
+  - Logique métier (validation ordonnances, calcul remises, gestion stock).  
+  - Communication entre View et Model.  
+
+---
+
+### 4. **Sécurité et fiabilité**
+- Authentification locale (login/mot de passe hashé).  
+- Gestion des rôles et permissions (admin, pharmacien, caissier, préparateur).  
+- Journalisation des actions sensibles (ventes, mouvements de stock).  
+- Sauvegarde automatique du fichier SQLite.  
+
+---
+
+### 5. **Performance et ergonomie**
+- Temps de réponse rapide grâce à SQLite (requêtes locales).  
+- Interface fluide avec Flutter (widgets réactifs).  
+- Mode offline natif → pas besoin de serveur externe.  
+
+---
+
+👉 Tu as donc une stack **Dart + Flutter + SQLite + MVC** parfaitement adaptée à un projet de fin d’étude : moderne, portable, et démontrant une vraie maîtrise technique.
+
+---
+
+Parfait Celeste 🌟 ! Voici une **maquette fonctionnelle des écrans principaux** de ton application **BigPharma Desktop** (Dart + Flutter + SQLite, architecture MVC). Cela te donne une vision claire de l’interface utilisateur que tu pourras coder ensuite.
+
+---
+
+## 🖥️ Écrans principaux
+
+### 1. **Tableau de bord (Accueil)**
+- **Composants :**
+  - Indicateurs clés (ventes du jour, stock critique, lots proches de péremption).
+  - Graphiques simples (barres ou camemberts) pour ventes et stocks.
+  - Notifications (alertes stock bas, rappels produits).
+- **Navigation :**
+  - Menu latéral vers Produits, Ventes, Fournisseurs, Clients, Employés, Rapports.
+
+---
+
+### 2. **Gestion des produits et lots**
+- **Composants :**
+  - Liste des produits avec recherche par nom/DCI/code-barres.
+  - Formulaire d’ajout/modification produit (nom, dosage, prix, TVA).
+  - Onglet “Lots” : numéro de lot, date de péremption, quantité, statut.
+- **Actions :**
+  - Ajouter/éditer/supprimer produit.
+  - Ajouter un lot et définir sa quantité.
+  - Alertes visuelles pour lots périmés ou en quarantaine.
+
+---
+
+### 3. **Ventes et ordonnances**
+- **Composants :**
+  - Interface de caisse avec champ de scan code-barres.
+  - Panier dynamique (produits, lots, quantités, prix, remises).
+  - Formulaire d’ordonnance (patient, prescripteur, médicaments).
+- **Actions :**
+  - Valider une vente (multi-paiement : cash, carte, mobile).
+  - Vérifier interactions médicamenteuses (contrôle métier).
+  - Générer ticket de caisse imprimable.
+
+---
+
+### 4. **Approvisionnement et fournisseurs**
+- **Composants :**
+  - Liste des fournisseurs (nom, contact, conditions).
+  - Formulaire de commande fournisseur (produits, quantités, prix).
+  - Suivi des livraisons et réceptions.
+- **Actions :**
+  - Créer/valider une commande.
+  - Enregistrer réception partielle/complète.
+  - Gérer écarts (produits manquants ou avariés).
+
+---
+
+### 5. **Clients et fidélité**
+- **Composants :**
+  - Liste des clients avec historique d’achats.
+  - Fiche client (coordonnées, points fidélité).
+- **Actions :**
+  - Ajouter un client.
+  - Appliquer remises ou avantages fidélité.
+  - Consulter ordonnances passées.
+
+---
+
+### 6. **Employés et rôles**
+- **Composants :**
+  - Liste des employés (nom, rôle, login).
+  - Formulaire d’ajout/modification employé.
+- **Actions :**
+  - Définir rôles et permissions.
+  - Activer/désactiver comptes.
+  - Consulter journal des actions (audit trail).
+
+---
+
+### 7. **Rapports et statistiques**
+- **Composants :**
+  - Rapports de ventes (par jour, produit, catégorie).
+  - Rapports de stock (rotation, anomalies, péremptions).
+  - Rapports financiers (marges, TVA, encaissements).
+- **Actions :**
+  - Export PDF/Excel.
+  - Filtrer par période ou catégorie.
+  - Générer graphiques interactifs.
+
+---
+
+## 🔗 Navigation globale
+- **Menu latéral fixe** (Dashboard, Produits, Ventes, Fournisseurs, Clients, Employés, Rapports).  
+- **Barre supérieure** pour actions rapides (Recherche produit, Alertes, Profil utilisateur).  
+- **Fenêtres modales** pour formulaires (ajout produit, commande fournisseur, nouvelle vente).  
+
+---
+
+👉 Tu as maintenant une **vision claire des écrans et de leurs composants**.  
+La prochaine étape serait de définir **les wireframes (schémas visuels)** pour chaque écran afin de guider le développement Flutter.  
+
+
+WIREFRAMES pour avoir une idée
+
++-------------------------------------------------------------+
+|                     BIGPHARMA - VENTE                       |
++-------------------------------------------------------------+
+| [Recherche produit / Scan code-barres]   [Ajouter au panier] |
++-------------------------------------------------------------+
+| PANIER                                                      |
+| ----------------------------------------------------------- |
+| | Produit | Lot | Qté | Prix U. | Remise | Total Ligne     | |
+| ----------------------------------------------------------- |
+| | Paracétamol | L123 |  2  | 500 FCFA | 0% | 1000 FCFA    | |
+| | Amoxicilline| L456 |  1  | 1500 FCFA| 10%| 1350 FCFA    | |
+| ----------------------------------------------------------- |
+| TOTAL PANIER : 2350 FCFA                                    |
++-------------------------------------------------------------+
+| [Mode Paiement: Cash | Carte | Mobile]   [Valider la vente] |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+|                  SECTION ORDONNANCE                         |
++-------------------------------------------------------------+
+| Patient : [Nom, Prénom]   Prescripteur : [Médecin]          |
+| Date : [JJ/MM/AAAA]                                         |
++-------------------------------------------------------------+
+| Médicaments prescrits :                                     |
+| ----------------------------------------------------------- |
+| | Produit | Dosage | Qté | Validation Pharmacien           | |
+| ----------------------------------------------------------- |
+| | Amoxicilline | 500mg | 1 | [✔ Validé]                   | |
+| | Ibuprofène   | 200mg | 2 | [✖ Refusé - Interaction]     | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+| [Sauvegarder ordonnance]   [Annuler]                        |
++-------------------------------------------------------------+
+
+
++-------------------------------------------------------------+
+|                  BIGPHARMA - TABLEAU DE BORD                |
++-------------------------------------------------------------+
+| [Menu latéral]                                              |
+|  - Accueil                                                  |
+|  - Produits & Lots                                          |
+|  - Ventes & Ordonnances                                     |
+|  - Fournisseurs                                             |
+|  - Clients                                                  |
+|  - Employés                                                 |
+|  - Rapports & Statistiques                                  |
++-------------------------------------------------------------+
+|                         CONTENU PRINCIPAL                   |
++-------------------------------------------------------------+
+| Indicateurs clés :                                          |
+| ----------------------------------------------------------- |
+| | Ventes du jour :  25 transactions   | Stock critique : 12 | |
+| | Lots proches péremption : 5         | Alertes : 3         | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+| Graphiques :                                                |
+| ----------------------------------------------------------- |
+| | [Bar chart] Ventes par catégorie                         | |
+| | [Pie chart] Répartition des stocks                       | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+| Notifications récentes :                                    |
+| - Produit "Amoxicilline" proche péremption (Lot L456).      |
+| - Stock bas : Paracétamol (reste 10 unités).                |
+| - Nouvelle commande fournisseur en attente de validation.   |
++-------------------------------------------------------------+
+
+
+
++-------------------------------------------------------------+
+|                BIGPHARMA - PRODUITS & LOTS                  |
++-------------------------------------------------------------+
+| [Bouton : Ajouter Produit]   [Recherche produit par nom/DCI] |
++-------------------------------------------------------------+
+| LISTE DES PRODUITS                                           |
+| ----------------------------------------------------------- |
+| | Nom Produit | DCI | Dosage | Forme | Prix | Code-barres | |
+| ----------------------------------------------------------- |
+| | Paracétamol | Acétaminophène | 500mg | Comprimé | 500 FCFA | 123456789 |
+| | Amoxicilline| Amoxicilline   | 250mg | Gélule   | 1500 FCFA| 987654321 |
+| ----------------------------------------------------------- |
+| [Modifier] [Supprimer]                                       |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| DETAILS DU PRODUIT SÉLECTIONNÉ                               |
++-------------------------------------------------------------+
+| Nom : Amoxicilline                                           |
+| DCI : Amoxicilline                                           |
+| Dosage : 250mg                                               |
+| Forme : Gélule                                               |
+| Prix : 1500 FCFA                                             |
+| Code-barres : 987654321                                      |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| LOTS ASSOCIÉS                                                |
+| ----------------------------------------------------------- |
+| | Numéro Lot | Date Péremption | Quantité | Statut         | |
+| ----------------------------------------------------------- |
+| | L456       | 12/2026         | 200      | Libre          | |
+| | L789       | 05/2025         | 50       | Quarantaine    | |
+| ----------------------------------------------------------- |
+| [Ajouter Lot] [Modifier Lot] [Supprimer Lot]                 |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| ALERTES AUTOMATIQUES                                         |
+| - Lot L789 en quarantaine                                    |
+| - Produit Paracétamol proche péremption (Lot L123)           |
++-------------------------------------------------------------+
+
+
++-------------------------------------------------------------+
+|             BIGPHARMA - APPROVISIONNEMENT & FOURNISSEURS    |
++-------------------------------------------------------------+
+| [Bouton : Ajouter Fournisseur]   [Recherche fournisseur]     |
++-------------------------------------------------------------+
+| LISTE DES FOURNISSEURS                                       |
+| ----------------------------------------------------------- |
+| | Nom Fournisseur | Contact | Conditions | Statut          | |
+| ----------------------------------------------------------- |
+| | PharmaCongo     | +242 06 123 4567 | Paiement 30j | Actif | |
+| | MedGlobal       | +242 06 987 6543 | Paiement 15j | Actif | |
+| ----------------------------------------------------------- |
+| [Modifier] [Supprimer]                                       |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| COMMANDES FOURNISSEURS                                       |
++-------------------------------------------------------------+
+| [Bouton : Nouvelle Commande]                                 |
+| ----------------------------------------------------------- |
+| | N° Commande | Fournisseur | Date | Statut | Montant      | |
+| ----------------------------------------------------------- |
+| | CMD001      | PharmaCongo | 01/12/2025 | Validée | 250 000 FCFA |
+| | CMD002      | MedGlobal   | 02/12/2025 | Brouillon | 120 000 FCFA |
+| ----------------------------------------------------------- |
+| [Valider] [Envoyer] [Réceptionner]                           |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| RÉCEPTION & ÉCARTS                                           |
++-------------------------------------------------------------+
+| Commande : CMD001                                            |
+| Fournisseur : PharmaCongo                                    |
+| ----------------------------------------------------------- |
+| | Produit | Qté Commandée | Qté Réceptionnée | Écart       | |
+| ----------------------------------------------------------- |
+| | Amoxicilline | 200 | 190 | -10 (Avariés)                 | |
+| | Paracétamol  | 500 | 500 | 0                             | |
+| ----------------------------------------------------------- |
+| [Valider Réception] [Enregistrer Écart]                      |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| ALERTES AUTOMATIQUES                                         |
+| - Commande CMD002 en attente de validation.                  |
+| - Écart détecté sur Amoxicilline (Lot L456).                 |
++-------------------------------------------------------------+
+
+
++-------------------------------------------------------------+
+|                BIGPHARMA - CLIENTS & FIDÉLITÉ               |
++-------------------------------------------------------------+
+| [Bouton : Ajouter Client]   [Recherche client par nom/téléphone] |
++-------------------------------------------------------------+
+| LISTE DES CLIENTS                                            |
+| ----------------------------------------------------------- |
+| | Nom Client | Téléphone | Points Fidélité | Historique    | |
+| ----------------------------------------------------------- |
+| | Jean M.    | +242 06 123 4567 | 120 pts | 15 achats     | |
+| | Marie K.   | +242 06 987 6543 |  80 pts | 8 achats      | |
+| ----------------------------------------------------------- |
+| [Modifier] [Supprimer]                                       |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| FICHE CLIENT SÉLECTIONNÉ                                     |
++-------------------------------------------------------------+
+| Nom : Jean M.                                                |
+| Adresse : Brazzaville                                        |
+| Téléphone : +242 06 123 4567                                 |
+| Points Fidélité : 120                                        |
+| Historique Achats :                                          |
+| ----------------------------------------------------------- |
+| | Date | Produit | Qté | Prix | Ordonnance |                |
+| ----------------------------------------------------------- |
+| | 01/12/2025 | Paracétamol | 2 | 1000 FCFA | Non           | |
+| | 02/12/2025 | Amoxicilline| 1 | 1500 FCFA | Oui           | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| PROGRAMME FIDÉLITÉ                                           |
++-------------------------------------------------------------+
+| Règles :                                                     |
+| - 1 point par 100 FCFA dépensés                              |
+| - 50 points = remise de 5%                                   |
+| - 100 points = remise de 10%                                 |
++-------------------------------------------------------------+
+| Actions :                                                    |
+| [Attribuer Points] [Appliquer Remise] [Exporter Historique]  |
++-------------------------------------------------------------+
+
+
++-------------------------------------------------------------+
+|                BIGPHARMA - EMPLOYÉS & RÔLES                 |
++-------------------------------------------------------------+
+| [Bouton : Ajouter Employé]   [Recherche employé par nom/login] |
++-------------------------------------------------------------+
+| LISTE DES EMPLOYÉS                                           |
+| ----------------------------------------------------------- |
+| | Nom Employé | Rôle        | Login       | Statut        | |
+| ----------------------------------------------------------- |
+| | Alice P.    | Pharmacien  | alice.pharma| Actif         | |
+| | Bruno K.    | Caissier    | bruno.cash  | Actif         | |
+| | Clara M.    | Admin       | clara.admin | Inactif       | |
+| ----------------------------------------------------------- |
+| [Modifier] [Supprimer]                                       |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| FICHE EMPLOYÉ SÉLECTIONNÉ                                    |
++-------------------------------------------------------------+
+| Nom : Alice P.                                               |
+| Rôle : Pharmacien                                            |
+| Login : alice.pharma                                         |
+| Statut : Actif                                               |
+| ----------------------------------------------------------- |
+| Permissions :                                                |
+| - Accès ventes ✔                                             |
+| - Accès ordonnances ✔                                        |
+| - Accès stock ✔                                              |
+| - Accès administration ✖                                     |
++-------------------------------------------------------------+
+| [Modifier Permissions] [Désactiver Compte]                   |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| JOURNAL DES ACTIVITÉS                                        |
+| ----------------------------------------------------------- |
+| | Date       | Action                | Ressource          | |
+| ----------------------------------------------------------- |
+| | 01/12/2025 | Vente validée         | Ticket #123        | |
+| | 02/12/2025 | Ajout lot             | Amoxicilline L456  | |
+| | 02/12/2025 | Refus ordonnance      | Ibuprofène Patient | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+
+
++-------------------------------------------------------------+
+|              BIGPHARMA - RAPPORTS & STATISTIQUES             |
++-------------------------------------------------------------+
+| [Sélectionner période : JJ/MM/AAAA - JJ/MM/AAAA]             |
+| [Filtrer par catégorie : Ventes | Stock | Finance | Réglementaire] |
+| [Bouton : Générer Rapport]   [Bouton : Exporter PDF/Excel]   |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| RAPPORTS DE VENTES                                           |
+| ----------------------------------------------------------- |
+| | Date       | Produit       | Qté Vendue | Montant Total  | |
+| ----------------------------------------------------------- |
+| | 01/12/2025 | Paracétamol   | 20         | 10 000 FCFA    | |
+| | 01/12/2025 | Amoxicilline  | 15         | 22 500 FCFA    | |
+| ----------------------------------------------------------- |
+| Total période : 32 500 FCFA                                  |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| RAPPORTS DE STOCK                                            |
+| ----------------------------------------------------------- |
+| | Produit       | Qté Actuelle | Lots Périmés | Alertes    | |
+| ----------------------------------------------------------- |
+| | Paracétamol   | 120          | 0            | Stock bas  | |
+| | Amoxicilline  | 190          | 10           | Péremption | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| RAPPORTS FINANCIERS                                          |
+| ----------------------------------------------------------- |
+| | Jour        | Ventes Totales | TVA Collectée | Marge Brute | |
+| ----------------------------------------------------------- |
+| | 01/12/2025  | 32 500 FCFA    | 5 000 FCFA    | 12 000 FCFA | |
+| ----------------------------------------------------------- |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+| RAPPORTS RÉGLEMENTAIRES                                      |
+| ----------------------------------------------------------- |
+| - Traçabilité des lots vendus (ex. Lot L456 → 15 ventes).    |
+| - Inventaire légal clôturé le 01/12/2025.                    |
+| - Rapport de rappel produit généré pour Ibuprofène (Lot L789).|
++-------------------------------------------------------------+
+
+
+
+
+
+

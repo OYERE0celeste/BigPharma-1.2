@@ -1,0 +1,333 @@
+import 'package:flutter/material.dart';
+import 'app_colors.dart';
+
+// =====================================================================
+// GLOBAL NAVBAR WIDGET
+// =====================================================================
+
+class GlobalNavbar extends StatefulWidget {
+  final VoidCallback onMenuToggle;
+  final bool isSidebarOpen;
+  final Function(String)? onProfileAction;
+
+  const GlobalNavbar({
+    required this.onMenuToggle,
+    required this.isSidebarOpen,
+    this.onProfileAction,
+    super.key,
+  });
+
+  @override
+  State<GlobalNavbar> createState() => _GlobalNavbarState();
+}
+
+class _GlobalNavbarState extends State<GlobalNavbar> {
+  late GlobalKey<PopupMenuButtonState<String>> _profileMenuKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileMenuKey = GlobalKey<PopupMenuButtonState<String>>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // ===== LEFT SECTION: HAMBURGER MENU =====
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Tooltip(
+              message: widget.isSidebarOpen ? 'Fermer menu' : 'Ouvrir menu',
+              child: IconButton(
+                icon: Icon(
+                  widget.isSidebarOpen ? Icons.menu_open : Icons.menu,
+                  color: kPrimaryGreen,
+                  size: 28,
+                ),
+                onPressed: widget.onMenuToggle,
+                splashRadius: 24,
+              ),
+            ),
+          ),
+
+          // ===== CENTER SECTION: LOGO / BRANDING =====
+          Expanded(
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: kPrimaryGreen,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.local_pharmacy,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'PharmaGest',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimaryGreen,
+                        ),
+                      ),
+                      Text(
+                        'Professional Pharmacy Manager',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // ===== RIGHT SECTION: PROFILE MENU & STATUS =====
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Row(
+              children: [
+                // Notification bell (optional)
+                Tooltip(
+                  message: 'Notifications',
+                  child: IconButton(
+                    icon: Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.grey[700],
+                          size: 24,
+                        ),
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: kDangerRed,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Pas de nouvelles notifications'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                // User profile menu
+                PopupMenuButton<String>(
+                  key: _profileMenuKey,
+                  position: PopupMenuPosition.under,
+                  onSelected: (value) {
+                    widget.onProfileAction?.call(value);
+                    _handleProfileAction(value);
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      value: 'profile',
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.account_circle,
+                            color: kPrimaryGreen,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('Mon Profil'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'settings',
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.settings,
+                            color: kAccentBlue,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('Paramètres'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'help',
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.help_outline,
+                            color: kWarningOrange,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('Aide & Support'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuDivider(),
+                    PopupMenuItem<String>(
+                      value: 'logout',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.logout, color: kDangerRed, size: 20),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Déconnexion',
+                            style: TextStyle(color: kDangerRed),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!, width: 1),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: kPrimaryGreen.withOpacity(0.2),
+                            child: const Icon(
+                              Icons.account_circle,
+                              color: kPrimaryGreen,
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Text(
+                                'Admin User',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Text(
+                                'Pharmacien',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.grey[600],
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleProfileAction(String action) {
+    switch (action) {
+      case 'profile':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Navigation vers Mon Profil')),
+        );
+        break;
+      case 'settings':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Navigation vers Paramètres')),
+        );
+        break;
+      case 'help':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ouverture Aide & Support')),
+        );
+        break;
+      case 'logout':
+        _showLogoutDialog();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Déconnexion'),
+        content: const Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Déconnexion en cours...')),
+              );
+              // Future: Add actual logout logic
+            },
+            child: const Text(
+              'Déconnecter',
+              style: TextStyle(color: kDangerRed),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

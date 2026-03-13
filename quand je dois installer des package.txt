@@ -1,0 +1,12 @@
+quand je dois installer des packages ou réinstaller des packages
+flutter pub get
+flutter pub run build_runner build
+
+#pour nettoyer le projet en cas d'erreur
+flutter clean
+
+#pour actualiser les changements sur GitHub
+
+git add .
+git commit -m "Message clair"
+git push
