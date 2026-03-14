@@ -4,12 +4,12 @@ import 'pharmacy_dashboard_page.dart';
 import 'ventes/pharmacy_sales_page.dart';
 import 'products/pharmacy_products_page.dart';
 import 'clients/pharmacy_clients_page.dart';
-import 'activites/pharmacy_activity_register_page.dart';
+import 'activites/activity_register_page.dart';
 import 'finances/pharmacy_finance_page.dart';
 import 'providers/product_provider.dart';
 import 'providers/sales_provider.dart';
 import 'providers/activity_provider.dart';
-import 'providers/finance_provider.dart';
+import 'finances/finance_provider.dart';
 
 void main() {
   runApp(const MyApp());

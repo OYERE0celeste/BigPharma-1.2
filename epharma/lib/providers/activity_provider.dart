@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/activity_model.dart';
-import '../services/activity_service.dart';
+import '../activites/services/activity_service.dart';
 
 class ActivityProvider with ChangeNotifier {
 

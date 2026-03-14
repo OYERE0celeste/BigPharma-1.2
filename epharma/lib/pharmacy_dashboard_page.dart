@@ -4,7 +4,7 @@ import 'main_layout.dart';
 import 'widgets/app_colors.dart';
 import 'providers/product_provider.dart';
 import 'providers/sales_provider.dart';
-import 'providers/finance_provider.dart';
+import 'finances/finance_provider.dart';
 
 class PharmacyDashboardPage extends StatelessWidget {
   const PharmacyDashboardPage({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../services/product_service.dart';
-import '../services/activity_service.dart';
+import '../activites/services/activity_service.dart';
 import '../models/activity_model.dart';
 
 class ProductProvider with ChangeNotifier {
@@ -97,6 +97,15 @@ class ProductProvider with ChangeNotifier {
     int quantityChange,
   ) async {
     await _productService.updateStock(productId, lotNumber, quantityChange);
+    await loadProducts();
+  }
+
+  Future<void> adjustStockQuantity(
+    String productId,
+    int quantity,
+    String operation,
+  ) async {
+    await _productService.updateStockQuantity(productId, quantity, operation);
     await loadProducts();
   }
 }

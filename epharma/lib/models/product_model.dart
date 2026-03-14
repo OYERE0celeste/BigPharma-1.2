@@ -81,6 +81,47 @@ class Product {
       lots: lots ?? this.lots,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'category': category,
+      'description': description,
+      'supplier': supplier,
+      'barcode': barcode,
+      'prescriptionRequired': prescriptionRequired,
+      'purchasePrice': purchasePrice,
+      'sellingPrice': sellingPrice,
+      'lowStockThreshold': lowStockThreshold,
+      'lots': lots.map((lot) => lot.toJson()).toList(),
+    };
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id']?.toString() ?? json['_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      category: json['category']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      supplier: json['supplier']?.toString() ?? '',
+      barcode: json['barcode']?.toString() ?? '',
+      prescriptionRequired: json['prescriptionRequired'] == true,
+      purchasePrice: (json['purchasePrice'] is num)
+          ? (json['purchasePrice'] as num).toDouble()
+          : double.tryParse(json['purchasePrice']?.toString() ?? '0') ?? 0.0,
+      sellingPrice: (json['sellingPrice'] is num)
+          ? (json['sellingPrice'] as num).toDouble()
+          : double.tryParse(json['sellingPrice']?.toString() ?? '0') ?? 0.0,
+      lowStockThreshold:
+          int.tryParse(json['lowStockThreshold']?.toString() ?? '0') ?? 0,
+      lots:
+          (json['lots'] as List<dynamic>?)
+              ?.map((e) => Lot.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
 }
 
 class Lot {
@@ -99,6 +140,35 @@ class Lot {
     required this.quantityAvailable,
     required this.costPrice,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'lotNumber': lotNumber,
+      'manufacturingDate': manufacturingDate.toIso8601String(),
+      'expirationDate': expirationDate.toIso8601String(),
+      'quantity': quantity,
+      'quantityAvailable': quantityAvailable,
+      'costPrice': costPrice,
+    };
+  }
+
+  factory Lot.fromJson(Map<String, dynamic> json) {
+    return Lot(
+      lotNumber: json['lotNumber']?.toString() ?? '',
+      manufacturingDate:
+          DateTime.tryParse(json['manufacturingDate']?.toString() ?? '') ??
+          DateTime.now(),
+      expirationDate:
+          DateTime.tryParse(json['expirationDate']?.toString() ?? '') ??
+          DateTime.now().add(const Duration(days: 365)),
+      quantity: int.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
+      quantityAvailable:
+          int.tryParse(json['quantityAvailable']?.toString() ?? '0') ?? 0,
+      costPrice: (json['costPrice'] is num)
+          ? (json['costPrice'] as num).toDouble()
+          : double.tryParse(json['costPrice']?.toString() ?? '0') ?? 0.0,
+    );
+  }
 
   DateTime get expiration => expirationDate;
 

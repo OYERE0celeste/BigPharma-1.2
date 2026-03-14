@@ -1,33 +1,26 @@
 import '../models/product_model.dart';
+import '../products/services/product_api_service.dart';
 
 class ProductService {
-  final List<Product> _products = [];
-
   Future<List<Product>> getProducts() async {
-    // simulate network
-    await Future.delayed(const Duration(milliseconds: 120));
-    return List<Product>.from(_products);
+    return await ProductApiService.getAllProducts();
   }
 
-  Future<void> addProduct(Product product) async {
-    _products.insert(0, product);
-    await Future.delayed(const Duration(milliseconds: 50));
+  Future<Product> addProduct(Product product) async {
+    return await ProductApiService.createProduct(product);
   }
 
-  Future<void> updateProduct(Product product) async {
-    final idx = _products.indexWhere((x) => x.id == product.id);
-    if (idx >= 0) _products[idx] = product;
-    await Future.delayed(const Duration(milliseconds: 50));
+  Future<Product> updateProduct(Product product) async {
+    return await ProductApiService.updateProduct(product);
   }
 
   Future<void> deleteProduct(String id) async {
-    _products.removeWhere((x) => x.id == id);
-    await Future.delayed(const Duration(milliseconds: 50));
+    await ProductApiService.deleteProduct(id);
   }
 
-  Product? getById(String id) {
+  Future<Product?> getById(String id) async {
     try {
-      return _products.firstWhere((p) => p.id == id);
+      return await ProductApiService.getProductById(id);
     } catch (e) {
       return null;
     }
@@ -38,7 +31,7 @@ class ProductService {
     String lotNumber,
     int quantityChange,
   ) async {
-    final product = getById(productId);
+    final product = await getById(productId);
     if (product != null) {
       final updatedLots = product.lots.map((lot) {
         if (lot.lotNumber == lotNumber) {
@@ -51,5 +44,13 @@ class ProductService {
       final updatedProduct = product.copyWith(lots: updatedLots);
       await updateProduct(updatedProduct);
     }
+  }
+
+  Future<Product> updateStockQuantity(
+    String productId,
+    int quantity,
+    String operation,
+  ) async {
+    return await ProductApiService.updateStock(productId, quantity, operation);
   }
 }

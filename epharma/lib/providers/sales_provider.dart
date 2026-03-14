@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/sale_model.dart';
 import '../models/product_model.dart';
 import '../services/sales_service.dart';
-import '../services/activity_service.dart';
+import '../activites/services/activity_service.dart';
 import '../services/finance_service.dart';
 import '../models/activity_model.dart';
 import '../models/finance_model.dart';
