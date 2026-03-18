@@ -14,7 +14,6 @@ class SalesService {
   int _saleCounter = 1000;
 
   List<Product> getMockProducts() {
-    // This should be replaced with actual product data from ProductProvider
     return [];
   }
 
@@ -32,9 +31,11 @@ class SalesService {
     final changeAmount = amountReceived - total;
 
     final sale = Sale(
+      id: '${_saleCounter++}',
       invoiceNumber: invoiceNumber,
       dateTime: DateTime.now(),
-      items: items,
+      client: 'Client Name',
+      items: [],
       subtotal: subtotal,
       discountAmount: discountAmount,
       taxAmount: taxAmount,
@@ -42,7 +43,7 @@ class SalesService {
       paymentMethod: paymentMethod,
       amountReceived: amountReceived,
       changeAmount: changeAmount,
-      pharmacistName: 'Pharmacist John Doe',
+      pharmacist: 'Pharmacist Name',
       prescriptionVerified: prescriptionVerified,
     );
 

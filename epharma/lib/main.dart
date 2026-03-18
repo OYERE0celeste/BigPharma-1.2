@@ -1,3 +1,4 @@
+import 'package:epharma/fournisseurs/fournisseurs_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pharmacy_dashboard_page.dart';
@@ -9,7 +10,8 @@ import 'finances/pharmacy_finance_page.dart';
 import 'providers/product_provider.dart';
 import 'providers/sales_provider.dart';
 import 'providers/activity_provider.dart';
-import 'finances/finance_provider.dart';
+import 'providers/finance_provider.dart';
+import 'providers/supplier_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SalesProvider()),
         ChangeNotifierProvider(create: (_) => ActivityProvider()),
         ChangeNotifierProvider(create: (_) => FinanceProvider()),
+        ChangeNotifierProvider(create: (_) => SupplierProvider()),
       ],
       child: MaterialApp(
         title: 'E-Pharma',
@@ -40,6 +43,7 @@ class MyApp extends StatelessWidget {
           '/sales': (context) => const PharmacySalesPage(),
           '/clients': (context) => const PharmacyClientsPage(),
           '/activity': (context) => const PharmacyActivityRegisterPage(),
+          '/suppliers': (context) => const PharmacySuppliersPage(),
           '/finance': (context) => const PharmacyFinancePage(),
         },
         debugShowCheckedModeBanner: false,

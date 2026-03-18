@@ -31,7 +31,7 @@ class PrescriptionBanner extends StatelessWidget {
               const SizedBox(width: 8),
               const Expanded(
                 child: Text(
-                  'This cart contains prescription-required items',
+                  'Ce panier contient des articles nécessitant une ordonnance médicale.',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -48,7 +48,7 @@ class PrescriptionBanner extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: onAttach,
                   icon: const Icon(Icons.attach_file, size: 16),
-                  label: const Text('Attach Prescription'),
+                  label: const Text('Attacher une Ordonnance'),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: kDangerRed),
                   ),
@@ -58,7 +58,7 @@ class PrescriptionBanner extends StatelessWidget {
               Expanded(
                 child: CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Verified', style: TextStyle(fontSize: 11)),
+                  title: const Text('Vérifié', style: TextStyle(fontSize: 11)),
                   value: isVerified,
                   onChanged: (value) => onVerificationToggle(value ?? false),
                   activeColor: kPrimaryGreen,

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../widgets/app_sidebar.dart';
 import '../widgets/app_colors.dart';
 import '../ventes/pharmacy_sales_page.dart';
 import '../clients/pharmacy_clients_page.dart';
 import '../activites/activity_register_page.dart';
 import '../models/product_model.dart';
-import '../providers/product_provider.dart';
+import 'services/product_api_service.dart';
 import 'widgets/product_table.dart';
 import 'widgets/product_detail.dart';
 import 'widgets/product_form.dart';
@@ -29,24 +28,28 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   int _currentPage = 0;
   String _sortColumn = 'name';
   bool _sortAscending = true;
+  List<Product> _products = [];
 
   final _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final productProvider = Provider.of<ProductProvider>(
-        context,
-        listen: false,
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      _products = await ProductApiService.getAllProducts();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur de chargement des produits : $e')),
       );
-      productProvider.loadProducts();
-    });
+    }
   }
 
   List<Product> get _filtered {
-    final products = Provider.of<ProductProvider>(context).products;
-    var list = products.where((p) {
+    var list = _products.where((p) {
       final q = _search.toLowerCase();
       if (q.isNotEmpty &&
           !(p.name.toLowerCase().contains(q) ||
@@ -96,18 +99,20 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
     });
   }
 
-  void _openAddDialog() async {
+  Future<void> _openAddDialog() async {
     final created = await showDialog<Product>(
       context: context,
       builder: (_) => ProductFormDialog(),
     );
     if (created != null) {
-      final productProvider = Provider.of<ProductProvider>(
-        // ignore: use_build_context_synchronously
-        context,
-        listen: false,
-      );
-      await productProvider.addProduct(created);
+      try {
+        await ProductApiService.createProduct(created);
+        await _loadProducts();
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erreur ajout produit : $e')));
+      }
     }
   }
 
@@ -170,12 +175,18 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                           builder: (_) => ProductFormDialog(product: p),
                         );
                         if (updated != null) {
-                          final productProvider = Provider.of<ProductProvider>(
-                            // ignore: use_build_context_synchronously
-                            context,
-                            listen: false,
-                          );
-                          await productProvider.updateProduct(updated);
+                          try {
+                            await ProductApiService.updateProduct(updated);
+                            await _loadProducts();
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Erreur mise à jour produit : $e',
+                                ),
+                              ),
+                            );
+                          }
                         }
                       },
                       onDelete: (p) async {
@@ -197,12 +208,18 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                           ),
                         );
                         if (ok == true) {
-                          final productProvider = Provider.of<ProductProvider>(
-                            // ignore: use_build_context_synchronously
-                            context,
-                            listen: false,
-                          );
-                          await productProvider.deleteProduct(p.id);
+                          try {
+                            await ProductApiService.deleteProduct(p.id);
+                            await _loadProducts();
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Erreur suppression produit : $e',
+                                ),
+                              ),
+                            );
+                          }
                         }
                       },
                     ),

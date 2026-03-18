@@ -2,16 +2,15 @@ import 'package:epharma/ventes/widgets/prescription_banner.dart';
 
 import '../models/activity_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../widgets/app_sidebar.dart';
+import '../products/services/product_api_service.dart';
+import 'services/sales_api_service.dart';
 import '../widgets/app_colors.dart';
 //import 'package:intl/intl.dart';
 import '../pharmacy_dashboard_page.dart';
 import '../products/pharmacy_products_page.dart';
 import '../clients/pharmacy_clients_page.dart';
 import '../activites/activity_register_page.dart';
-import '../providers/sales_provider.dart';
-import '../providers/product_provider.dart';
 import '../models/product_model.dart';
 import '../models/sale_model.dart';
 import 'widgets/product_card.dart';
@@ -19,7 +18,6 @@ import 'widgets/cart_item_tile.dart';
 import 'widgets/transaction_summary.dart';
 import 'widgets/payment_section.dart';
 import 'widgets/sale_history.dart';
-
 
 // ============================================================================
 // MAIN PAGE
@@ -33,8 +31,9 @@ class PharmacySalesPage extends StatefulWidget {
 }
 
 class _PharmacySalesPageState extends State<PharmacySalesPage> {
-  late List<Product> _allProducts;
-  late List<Product> _filteredProducts;
+  List<Product> _allProducts = [];
+  List<Product> _filteredProducts = [];
+  List<Sale> _sales = [];
   final List<CartItem> _cart = [];
   late TextEditingController _searchController;
   late TextEditingController _filterController;
@@ -55,19 +54,32 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   void initState() {
     super.initState();
     _allProducts = [];
-    _filteredProducts = _allProducts;
+    _filteredProducts = [];
     _searchController = TextEditingController();
     _filterController = TextEditingController();
+    _loadProducts();
+    _loadSales();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final productProvider = Provider.of<ProductProvider>(context);
-    final salesProvider = Provider.of<SalesProvider>(context);
-    _allProducts = productProvider.products;
-    _filteredProducts = _allProducts;
-    salesProvider.setProducts(_allProducts);
+  Future<void> _loadProducts() async {
+    try {
+      _allProducts = await ProductApiService.getAllProducts();
+      _filteredProducts = List.from(_allProducts);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur chargement produits : $error')),
+      );
+    }
+  }
+
+  Future<void> _loadSales() async {
+    try {
+      _sales = await SalesApiService.getSales();
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur chargement ventes : $error')),
+      );
+    }
   }
 
   @override
@@ -98,16 +110,16 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
   void _addProductToCart(Product product) {
     if (product.availableStock == 0) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Product is out of stock')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Produit est en rupture de stock')),
+      );
       return;
     }
 
     if (product.prescriptionRequired) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('⚠️ This product requires a prescription'),
+          content: Text('⚠️ Ce produit require une ordonnance'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -137,7 +149,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${product.name} added to cart'),
+        content: Text('${product.name} ajouté au panier'),
         duration: const Duration(milliseconds: 800),
       ),
     );
@@ -149,25 +161,21 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     });
   }
 
-  void _confirmSale() {
-    final salesProvider = Provider.of<SalesProvider>(context, listen: false);
-    final productProvider = Provider.of<ProductProvider>(
-      context,
-      listen: false,
-    );
-
+  Future<void> _confirmSale() async {
     // Validations
     if (_cart.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Cart is empty')));
+      ).showSnackBar(const SnackBar(content: Text('Le panier est vide')));
       return;
     }
 
     if (_hasPrescriptionRequiredItems && !_prescriptionVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please verify prescription before confirming sale'),
+          content: Text(
+            'Veuillez vérifier l\'ordonnance avant de confirmer la vente',
+          ),
         ),
       );
       return;
@@ -175,49 +183,55 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
     if (_amountReceived < _cartSubtotal - _customDiscount + _customTax) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Insufficient payment amount')),
+        const SnackBar(content: Text('Montant de paiement insuffisant')),
       );
       return;
     }
 
-    // Create sale via provider
-    final sale = salesProvider.createSale(
-      items: List.from(_cart),
-      discountAmount: _customDiscount,
-      taxAmount: _customTax,
-      paymentMethod: _selectedPaymentMethod.toString().split('.').last,
-      amountReceived: _amountReceived,
-      prescriptionVerified: _prescriptionVerified,
-    );
+    try {
+      final sale = await SalesApiService.createSale(
+        invoiceNumber: 'INV-${DateTime.now().millisecondsSinceEpoch}',
+        clientId: '000000000000000000000000',
+        pharmacistId: '000000000000000000000000',
+        cartItems: List.from(_cart),
+        discount: _customDiscount,
+        tax: _customTax,
+        paymentMethod: _selectedPaymentMethod.toString().split('.').last,
+        amountReceived: _amountReceived,
+        prescriptionVerified: _prescriptionVerified,
+      );
 
-    // Deduct stock
-    for (final item in _cart) {
-      productProvider.updateStock(
-        item.product.id,
-        item.selectedLot.lotNumber,
-        -item.quantity,
+      if (sale == null) {
+        throw Exception('Vente invalide');
+      }
+
+      await _loadProducts();
+      await _loadSales();
+
+      setState(() {
+        _cart.clear();
+        _customDiscount = 0;
+        _customTax = 0;
+        _amountReceived = 0;
+        _prescriptionVerified = false;
+        _selectedPaymentMethod = PaymentMethod.cash;
+      });
+
+      _showSuccessDialog(sale);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur lors de la création de la vente: $error'),
+        ),
       );
     }
-
-    // Clear cart and reset
-    setState(() {
-      _cart.clear();
-      _customDiscount = 0;
-      _customTax = 0;
-      _amountReceived = 0;
-      _prescriptionVerified = false;
-      _selectedPaymentMethod = PaymentMethod.cash;
-    });
-
-    // Show success dialog
-    _showSuccessDialog(sale);
   }
 
   void _showSuccessDialog(Sale sale) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('✓ Sale Confirmed'),
+        title: const Text('✓ Vente Confirmée'),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +249,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: const Text('Fermer'),
           ),
           ElevatedButton.icon(
             onPressed: () {
@@ -243,7 +257,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
               // TODO: Prepare invoice for printing/download
             },
             icon: const Icon(Icons.print),
-            label: const Text('Print Invoice'),
+            label: const Text('Imprimer la Facture'),
           ),
         ],
       ),
@@ -256,7 +270,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       body: Row(
         children: [
           AppSidebar(
-            selectedLabel: 'Sales',
+            selectedLabel: 'Ventes',
             callbacks: {
               'Dashboard': () => Navigator.of(context).push(
                 MaterialPageRoute(
@@ -323,7 +337,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               setState(() => _showSalesHistory = false);
                             },
                             icon: const Icon(Icons.shopping_bag, size: 16),
-                            label: const Text('New Sale'),
+                            label: const Text('Nouvelle Vente'),
                             style: OutlinedButton.styleFrom(
                               backgroundColor: _showSalesHistory
                                   ? Colors.transparent
@@ -335,7 +349,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               setState(() => _showSalesHistory = true);
                             },
                             icon: const Icon(Icons.history, size: 16),
-                            label: const Text('History'),
+                            label: const Text('Historique des Ventes'),
                             style: OutlinedButton.styleFrom(
                               backgroundColor: _showSalesHistory
                                   ? kSoftBlue
@@ -356,7 +370,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                     onChanged: _filterProducts,
                     decoration: InputDecoration(
                       hintText:
-                          'Search by product name, barcode, or category...',
+                          'Rechercher par nom de produit, code-barres ou catégorie...',
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -444,7 +458,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                         OutlinedButton.icon(
                           onPressed: () => setState(() => _cart.clear()),
                           icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Clear'),
+                          label: const Text('Vider le Panier'),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: kDangerRed,
                           ),
@@ -466,7 +480,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'Cart is empty',
+                                'Le panier est vide',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey[600],
@@ -491,7 +505,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                       ).showSnackBar(
                                         const SnackBar(
                                           content: Text(
-                                            'Prescription attachment feature coming soon',
+                                            'Fonctionnalité de pièce jointe d\'ordonnance à venir',
                                           ),
                                         ),
                                       );
@@ -560,7 +574,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                       child: ElevatedButton.icon(
                         onPressed: _confirmSale,
                         icon: const Icon(Icons.check_circle),
-                        label: const Text('CONFIRM SALE'),
+                        label: const Text('CONFIRMER LA VENTE'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kPrimaryGreen,
                           foregroundColor: Colors.white,
@@ -588,7 +602,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'SALES HISTORY',
+                'HISTORIQUE DES VENTES',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               OutlinedButton.icon(
@@ -596,16 +610,12 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                   setState(() => _showSalesHistory = false);
                 },
                 icon: const Icon(Icons.close, size: 16),
-                label: const Text('Back to POS'),
+                label: const Text('Retour au POS'),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          Expanded(
-            child: SaleHistoryTable(
-              sales: Provider.of<SalesProvider>(context).sales,
-            ),
-          ),
+          Expanded(child: SaleHistoryTable(sales: _sales)),
         ],
       ),
     );

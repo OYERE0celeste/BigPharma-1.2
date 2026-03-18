@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/client_model.dart';
-import '../widgets/app_sidebar.dart';
+import 'services/client_api_service.dart';
 import '../widgets/app_colors.dart';
-import '../activites/activity_register_page.dart';
 import 'widgets/header_client.dart';
-import 'widgets/search_filter_client.dart';
-import 'widgets/client_table.dart';
 import 'widgets/client_detail.dart';
 import 'widgets/add_edit_client.dart';
+import 'widgets/search_filter_client.dart';
+import 'widgets/client_table.dart';
+import '../main_layout.dart';
 
 class Purchase {
   final String invoiceNumber;
@@ -99,107 +99,270 @@ class PharmacyClientsPage extends StatefulWidget {
 }
 
 class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
-  late List<Client> _displayedClients;
   List<Client> _allClients = [];
+  List<Client> _filteredClients = [];
   String _searchQuery = '';
   String _filterType = 'all';
+  bool _isLoading = true;
+  String? _error;
   int _currentPage = 0;
   static const int _pageSize = 10;
 
   @override
   void initState() {
     super.initState();
-    _allClients = ClientService.getAllClients();
-    _displayedClients = _allClients;
+    _loadClients();
   }
 
-  void _updateFilters() {
-    List<Client> filtered = ClientService.getFilteredClients(_filterType);
-    if (_searchQuery.isNotEmpty) {
-      filtered = ClientService.searchClients(_searchQuery);
+  Future<void> _loadClients() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+    try {
+      _allClients = await ClientApiService.getAllClients();
+      _applyFilters();
+    } catch (error) {
+      setState(() {
+        _error = 'Erreur de chargement des clients : $error';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _applyFilters() {
+    final q = _searchQuery.trim().toLowerCase();
+    var clients = List<Client>.from(_allClients);
+    if (_filterType != 'all') {
+      clients = clients.where((client) {
+        switch (_filterType) {
+          case 'frequent':
+            return client.totalPurchases > 50;
+          case 'medical':
+            return client.hasMedicalProfile;
+          case 'inactive':
+            final cutoffDate = DateTime.now().subtract(
+              const Duration(days: 30),
+            );
+            return client.lastVisitDate.isBefore(cutoffDate);
+          default:
+            return true;
+        }
+      }).toList();
+    }
+    if (q.isNotEmpty) {
+      clients = clients.where((client) {
+        return client.fullName.toLowerCase().contains(q) ||
+            client.phone.toLowerCase().contains(q) ||
+            client.email.toLowerCase().contains(q);
+      }).toList();
     }
     setState(() {
-      _displayedClients = filtered;
+      _filteredClients = clients;
       _currentPage = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var displayedClients = _displayedClients;
-    return Scaffold(
-      body: Row(
-        children: [
-          AppSidebar(
-            selectedLabel: 'Clients',
-            callbacks: {
-              'Dashboard': () =>
-                  Navigator.of(context).pushReplacementNamed('/'),
-              'Stock': () =>
-                  Navigator.of(context).pushReplacementNamed('/products'),
-              'Sales': () =>
-                  Navigator.of(context).pushReplacementNamed('/sales'),
-              'Clients': () {},
-              'Activity': () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const PharmacyActivityRegisterPage(),
-                ),
-              ),
-            },
-          ),
-          Expanded(
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+    return MainLayout(
+      pageTitle: 'Clients',
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile = constraints.maxWidth < 768;
+
+          if (isMobile) {
+            return _buildMobileView();
+          } else {
+            return _buildDesktopView();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildMobileView() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const HeaderClient(),
+            const SizedBox(height: 16),
+            SearchAndFilterClient(
+              onSearchChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+                _applyFilters();
+              },
+              onFilterChanged: (filter) {
+                setState(() {
+                  _filterType = filter;
+                });
+                _applyFilters();
+              },
+              onAddClient: () => _showClientFormDialog(null),
+            ),
+            const SizedBox(height: 16),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (_error != null)
+              Center(
+                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+              )
+            else if (_filteredClients.isEmpty)
+              const Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const HeaderClient(),
-                    const SizedBox(height: 20),
-                    SearchAndFilterClient(
-                      onSearchChanged: (query) {
-                        setState(() {
-                          _searchQuery = query;
-                        });
-                        _updateFilters();
-                      },
-                      onFilterChanged: (filter) {
-                        setState(() {
-                          _filterType = filter;
-                        });
-                        _updateFilters();
-                      },
-                      onAddClient: () => _showClientFormDialog(null),
-                    ),
-                    const SizedBox(height: 20),
-                    ClientsTable(
-                      clients: _displayedClients,
-                      currentPage: _currentPage,
-                      pageSize: _pageSize,
-                      onViewDetails: (client) {
-                        setState(() {});
-                        _showClientDetailsPanel(client );
-                      },
-                      onEditClient: (client) {
-                        _showClientFormDialog(client as Client?);
-                      },
-                      onDeleteClient: (client) {
-                        _showDeleteConfirmation(client);
-                      },
-                      onPageChanged: (page) {
-                        setState(() {
-                          _currentPage = page;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    //const QuickActionsSection(),
+                    Icon(Icons.people_outline, size: 64, color: Colors.grey),
+                    SizedBox(height: 16),
+                    Text('Aucun client trouvé'),
                   ],
                 ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _filteredClients.length,
+                itemBuilder: (context, index) {
+                  final client = _filteredClients[index];
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: kPrimaryGreen,
+                        child: Text(
+                          client.fullName.isNotEmpty
+                              ? client.fullName[0].toUpperCase()
+                              : 'C',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      title: Text(client.fullName),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(client.phone),
+                          if (client.hasMedicalHistory)
+                            const Chip(
+                              label: Text('Antécédents'),
+                              backgroundColor: kAccentBlue,
+                              labelStyle: TextStyle(color: Colors.white),
+                            ),
+                        ],
+                      ),
+                      trailing: PopupMenuButton<String>(
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'view':
+                              _showClientDetailsPanel(client);
+                              break;
+                            case 'edit':
+                              _showClientFormDialog(client);
+                              break;
+                            case 'delete':
+                              _showDeleteConfirmation(client);
+                              break;
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'view',
+                            child: Text('Voir'),
+                          ),
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Text('Modifier'),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Supprimer'),
+                          ),
+                        ],
+                      ),
+                      onTap: () => _showClientDetailsPanel(client),
+                    ),
+                  );
+                },
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopView() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const HeaderClient(),
+            const SizedBox(height: 20),
+            SearchAndFilterClient(
+              onSearchChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+                _applyFilters();
+              },
+              onFilterChanged: (filter) {
+                setState(() {
+                  _filterType = filter;
+                });
+                _applyFilters();
+              },
+              onAddClient: () => _showClientFormDialog(null),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (_error != null)
+              Center(
+                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+              )
+            else if (_filteredClients.isEmpty)
+              const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.people_outline, size: 64, color: Colors.grey),
+                    SizedBox(height: 16),
+                    Text('Aucun client trouvé'),
+                  ],
+                ),
+              )
+            else
+              ClientsTable(
+                clients: _filteredClients,
+                currentPage: _currentPage,
+                pageSize: _pageSize,
+                onViewDetails: (client) {
+                  _showClientDetailsPanel(client);
+                },
+                onEditClient: (client) {
+                  _showClientFormDialog(client);
+                },
+                onDeleteClient: (client) {
+                  _showDeleteConfirmation(client);
+                },
+                onPageChanged: (page) {
+                  setState(() {
+                    _currentPage = page;
+                  });
+                },
+              ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -218,10 +381,57 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
         client: client,
         onSubmit: (updatedClient) {
           Navigator.pop(context);
-          _updateFilters();
+          if (client == null || updatedClient.id.isEmpty) {
+            _addClient(updatedClient);
+          } else {
+            _updateClient(updatedClient);
+          }
         },
       ),
     );
+  }
+
+  Future<void> _addClient(Client client) async {
+    setState(() {});
+    try {
+      final created = await ClientApiService.createClient(client);
+      setState(() {
+        _allClients.insert(0, created);
+        _applyFilters();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Client ajouté avec succès.')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur ajout client: $error')));
+    } finally {
+      setState(() {});
+    }
+  }
+
+  Future<void> _updateClient(Client client) async {
+    setState(() {});
+    try {
+      final updated = await ClientApiService.updateClient(client.id, client);
+      final idx = _allClients.indexWhere((c) => c.id == updated.id);
+      if (idx != -1) {
+        setState(() {
+          _allClients[idx] = updated;
+          _applyFilters();
+        });
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Client mis à jour.')));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur mise à jour client: $error')),
+      );
+    } finally {
+      setState(() {});
+    }
   }
 
   void _showDeleteConfirmation(Client client) {
@@ -236,11 +446,25 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
             child: const Text('Annuler'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${client.fullName} a été supprimé.')),
-              );
+              setState(() {});
+              try {
+                await ClientApiService.deleteClient(client.id);
+                setState(() {
+                  _allClients.removeWhere((c) => c.id == client.id);
+                  _applyFilters();
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('${client.fullName} a été supprimé.')),
+                );
+              } catch (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Erreur suppression client: $error')),
+                );
+              } finally {
+                setState(() {});
+              }
             },
             child: const Text('Supprimer', style: TextStyle(color: kDangerRed)),
           ),

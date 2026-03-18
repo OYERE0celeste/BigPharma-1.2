@@ -17,10 +17,7 @@ class Client {
   final DateTime lastVisitDate;
   final LoyaltyStatus loyaltyStatus;
   final bool hasMedicalProfile;
-  final String allergies;
-  final String chronicConditions;
-  final String currentTreatments;
-  final String pharmacistNotes;
+  final String description;
 
   Client({
     required this.id,
@@ -37,10 +34,7 @@ class Client {
     DateTime? lastVisitDate,
     this.loyaltyStatus = LoyaltyStatus.standard,
     this.hasMedicalProfile = false,
-    this.allergies = '',
-    this.chronicConditions = '',
-    this.currentTreatments = '',
-    this.pharmacistNotes = '',
+    this.description = '',
   }) : registrationDate = registrationDate ?? DateTime.now(),
        lastVisitDate = lastVisitDate ?? DateTime.now();
 
@@ -93,10 +87,7 @@ class Client {
     DateTime? lastVisitDate,
     LoyaltyStatus? loyaltyStatus,
     bool? hasMedicalProfile,
-    String? pharmacistNotes,
-    String? allergies,
-    String? chronicConditions,
-    String? currentTreatments,
+    String? description,
     DateTime? registrationDate,
   }) {
     return Client(
@@ -114,10 +105,7 @@ class Client {
       lastVisitDate: lastVisitDate ?? this.lastVisitDate,
       loyaltyStatus: loyaltyStatus ?? this.loyaltyStatus,
       hasMedicalProfile: hasMedicalProfile ?? this.hasMedicalProfile,
-      allergies: allergies ?? this.allergies,
-      chronicConditions: chronicConditions ?? this.chronicConditions,
-      currentTreatments: currentTreatments ?? this.currentTreatments,
-      pharmacistNotes: pharmacistNotes ?? this.pharmacistNotes,
+      description: description ?? this.description,
     );
   }
 
@@ -141,22 +129,32 @@ class Client {
       'lastVisitDate': lastVisitDate.toIso8601String(),
       'loyaltyStatus': loyaltyStatus.name,
       'hasMedicalProfile': hasMedicalProfile,
-      'allergies': allergies,
-      'chronicConditions': chronicConditions,
-      'currentTreatments': currentTreatments,
-      'pharmacistNotes': pharmacistNotes,
+      'description': description,
     };
   }
 
   // Création depuis JSON
   factory Client.fromJson(Map<String, dynamic> json) {
     return Client(
-      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
-      fullName: json['fullName']?.toString() ?? '',
-      phone: json['phone']?.toString() ?? '',
-      email: json['email']?.toString() ?? '',
-      address: json['address']?.toString() ?? '',
-      dateOfBirth: DateTime.parse(json['dateOfBirth'].toString()),
+      id:
+          json['_id']?.toString() ??
+          json['id']?.toString() ??
+          (json['_doc']?['_id']?.toString() ?? ''),
+      fullName:
+          json['fullName']?.toString() ??
+          json['_doc']?['fullName']?.toString() ??
+          '',
+      phone:
+          json['phone']?.toString() ?? json['_doc']?['phone']?.toString() ?? '',
+      email:
+          json['email']?.toString() ?? json['_doc']?['email']?.toString() ?? '',
+      address:
+          json['address']?.toString() ??
+          json['_doc']?['address']?.toString() ??
+          '',
+      dateOfBirth: DateTime.parse(
+        (json['dateOfBirth'] ?? json['_doc']?['dateOfBirth']).toString(),
+      ),
       registrationDate: json['registrationDate'] != null
           ? DateTime.parse(json['registrationDate'].toString())
           : DateTime.now(),
@@ -172,6 +170,8 @@ class Client {
       totalSpent: double.tryParse(json['totalSpent']?.toString() ?? '0') ?? 0,
       lastVisitDate: json['lastVisitDate'] != null
           ? DateTime.parse(json['lastVisitDate'].toString())
+          : json['lastVisit'] != null
+          ? DateTime.parse(json['lastVisit'].toString())
           : DateTime.now(),
       loyaltyStatus: json['loyaltyStatus'] != null
           ? LoyaltyStatus.values.firstWhere(
@@ -182,10 +182,7 @@ class Client {
       hasMedicalProfile:
           json['hasMedicalProfile'] == true ||
           json['hasMedicalProfile']?.toString() == 'true',
-      allergies: json['allergies']?.toString() ?? '',
-      chronicConditions: json['chronicConditions']?.toString() ?? '',
-      currentTreatments: json['currentTreatments']?.toString() ?? '',
-      pharmacistNotes: json['pharmacistNotes']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
     );
   }
 

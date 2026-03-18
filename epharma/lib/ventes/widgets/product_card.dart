@@ -45,7 +45,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   if (product.prescriptionRequired)
                     Tooltip(
-                      message: 'Prescription Required',
+                      message: 'Prescription Requise',
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 6,

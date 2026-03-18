@@ -128,7 +128,7 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
                         ),
                       ),
                       DataCell(Text(sale.paymentMethod)),
-                      DataCell(Text(sale.pharmacistName)),
+                      DataCell(Text(sale.pharmacist)),
                       DataCell(
                         Tooltip(
                           message: 'View Details',

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../models/finance_model.dart';
-import 'finance_provider.dart';
+import '../providers/finance_provider.dart';
 import '../services/finance_service.dart';
 import '../main_layout.dart';
 
@@ -13,7 +13,9 @@ class PharmacyFinancePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(pageTitle: 'Finances', child: const FinancePageContent());
+    return MainLayout(
+      pageTitle: 'Finances', 
+      child: const FinancePageContent());
   }
 }
 

@@ -50,7 +50,7 @@ class ClientDetailsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Personal Information Section
-                    _buildSection('Personal Information', [
+                    _buildSection('Information personnel', [
                       _buildDetailRow('Full Name', client.fullName),
                       _buildDetailRow(
                         'Date of Birth',
@@ -128,28 +128,10 @@ class ClientDetailsDialog extends StatelessWidget {
                             ),
                             const SizedBox(height: 12),
                             _buildDetailRow(
-                              'Allergies',
-                              client.allergies.isEmpty
-                                  ? 'None known'
-                                  : client.allergies,
-                            ),
-                            _buildDetailRow(
-                              'Chronic Conditions',
-                              client.chronicConditions.isEmpty
-                                  ? 'None'
-                                  : client.chronicConditions,
-                            ),
-                            _buildDetailRow(
-                              'Current Treatments',
-                              client.currentTreatments.isEmpty
-                                  ? 'None'
-                                  : client.currentTreatments,
-                            ),
-                            _buildDetailRow(
-                              'Pharmacist Notes',
-                              client.pharmacistNotes.isEmpty
-                                  ? 'No notes'
-                                  : client.pharmacistNotes,
+                              'Description',
+                              client.description.isEmpty
+                                  ? 'None available'
+                                  : client.description,
                             ),
                           ],
                         ),

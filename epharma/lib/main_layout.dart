@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'widgets/global_navbar.dart';
 import 'widgets/app_sidebar.dart';
@@ -17,7 +18,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
-  bool _isSidebarOpen = true;
+  bool _isSidebarOpen = false;
   late AnimationController _sidebarAnimationController;
 
   @override
@@ -27,9 +28,6 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    if (_isSidebarOpen) {
-      _sidebarAnimationController.forward();
-    }
   }
 
   @override
@@ -41,55 +39,39 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   void _toggleSidebar() {
     setState(() {
       _isSidebarOpen = !_isSidebarOpen;
+      if (_isSidebarOpen) {
+        _sidebarAnimationController.forward();
+      } else {
+        _sidebarAnimationController.reverse();
+      }
     });
-
-    if (_isSidebarOpen) {
-      _sidebarAnimationController.forward();
-    } else {
-      _sidebarAnimationController.reverse();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 768;
-
-    // Adapt sidebar visibility based on screen size
-    bool effectiveSidebarOpen = _isSidebarOpen;
-    if (isMobile) {
-      effectiveSidebarOpen = _isSidebarOpen; // On mobile, use toggle state
-    }
-
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          // ===== GLOBAL NAVBAR =====
-          GlobalNavbar(
-            onMenuToggle: _toggleSidebar,
-            isSidebarOpen: effectiveSidebarOpen,
-            onProfileAction: (action) {
-              // Handle profile actions globally if needed
-            },
-          ),
-
-          // ===== MAIN CONTENT AREA =====
-          Expanded(
-            child: Row(
-              children: [
-                // ===== ANIMATED SIDEBAR =====
-                if (!isMobile)
-                  _buildAnimatedSidebar()
-                else if (effectiveSidebarOpen)
-                  // Mobile sidebar as drawer
-                  _buildMobileSidebar(),
-
-                // ===== PAGE CONTENT =====
-                Expanded(
-                  child: Material(color: Colors.grey[50], child: widget.child),
+          // ===== MAIN COLUMN (NAVBAR + FULL-WIDTH CONTENT) =====
+          Column(
+            children: [
+              GlobalNavbar(
+                onMenuToggle: _toggleSidebar,
+                isSidebarOpen: _isSidebarOpen,
+                onProfileAction: (action) {},
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.grey[50],
+                  // Chaque page gère son propre scroll/padding
+                  child: widget.child,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+
+          // ===== OVERLAY SIDEBAR + BLUR (TOUTES LARGEURS) =====
+          _buildOverlaySidebarWithBlur(),
         ],
       ),
     );
@@ -100,56 +82,60 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     return {
       'Dashboard': () => Navigator.pushNamed(context, '/'),
       'Stock': () => Navigator.pushNamed(context, '/products'),
-      'Sales': () => Navigator.pushNamed(context, '/sales'),
+      'Ventes': () => Navigator.pushNamed(context, '/sales'),
       'Clients': () => Navigator.pushNamed(context, '/clients'),
-      'Activity': () => Navigator.pushNamed(context, '/activity'),
+      'Activités': () => Navigator.pushNamed(context, '/activity'),
+      'Fournisseurs': () => Navigator.pushNamed(context, '/suppliers'),
+      //'Consultations': () => Navigator.pushNamed(context, '/consultations'),
       'Finances': () => Navigator.pushNamed(context, '/finance'),
     };
   }
 
-  /// Animated sidebar for desktop view
-  Widget _buildAnimatedSidebar() {
-    return ScaleTransition(
-      scale: Tween<double>(begin: 0.95, end: 1.0).animate(
-        CurvedAnimation(
-          parent: _sidebarAnimationController,
-          curve: Curves.easeInOut,
-        ),
-      ),
-      alignment: Alignment.centerLeft,
-      child: FadeTransition(
-        opacity: _sidebarAnimationController,
-        child: AppSidebar(
-          selectedLabel: widget.pageTitle ?? '',
-          callbacks: _buildNavigationCallbacks(),
-        ),
-      ),
-    );
-  }
+  /// Overlay sidebar for tablet/mobile with blur + dark background
+  Widget _buildOverlaySidebarWithBlur() {
+    final size = MediaQuery.of(context).size;
+    const navbarHeight = 70.0;
 
-  /// Mobile drawer sidebar
-  Widget _buildMobileSidebar() {
-    return Container(
-      width: 220,
-      color: Colors.white,
-      child: Stack(
-        children: [
-          AppSidebar(
-            selectedLabel: widget.pageTitle ?? '',
-            callbacks: _buildNavigationCallbacks(),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: _toggleSidebar,
+    return IgnorePointer(
+      ignoring: !_isSidebarOpen,
+      child: AnimatedOpacity(
+        opacity: _isSidebarOpen ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 250),
+        child: Stack(
+          children: [
+            // Darkened, blurred background (seulement sous la barre du haut)
+            GestureDetector(
+              onTap: _toggleSidebar,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                child: Container(
+                  margin: const EdgeInsets.only(top: navbarHeight),
+                  width: size.width,
+                  height: size.height - navbarHeight,
+                  color: Colors.black.withOpacity(0.3),
+                ),
               ),
             ),
-          ),
-        ],
+            // Sliding sidebar
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              top: navbarHeight, // sous la navbar
+              bottom: 0,
+              left: _isSidebarOpen ? 0 : -260,
+              child: SizedBox(
+                width: 240,
+                child: Material(
+                  elevation: 8,
+                  child: AppSidebar(
+                    selectedLabel: widget.pageTitle ?? '',
+                    callbacks: _buildNavigationCallbacks(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

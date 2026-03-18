@@ -73,10 +73,22 @@ class AppSidebar extends StatelessWidget {
                   onTap: callbacks?['Activity'],
                 ),
                 AppSidebarItem(
+                  icon: Icons.medical_services,
+                  label: 'Consultations',
+                  selected: selectedLabel == 'Consultations',
+                  onTap: callbacks?['Consultations'],
+                ),
+                AppSidebarItem(
                   icon: Icons.report,
                   label: 'Finances',
                   selected: selectedLabel == 'Finances',
                   onTap: callbacks?['Finances'],
+                ),
+                AppSidebarItem(
+                  icon: Icons.business,
+                  label: 'Fournisseurs',
+                  selected: selectedLabel == 'Fournisseurs',
+                  onTap: callbacks?['Fournisseurs'],
                 ),
                 const SizedBox(height: 24),
               ],

@@ -40,13 +40,13 @@ class ClientsTable extends StatelessWidget {
           child: DataTable(
             columns: const [
               DataColumn(label: Text('Full Name')),
-              DataColumn(label: Text('Phone')),
+              DataColumn(label: Text('Téléphone')),
               DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Purchases')),
+              DataColumn(label: Text('Total Purchases')),
               DataColumn(label: Text('Total Spent')),
-              DataColumn(label: Text('Last Visit')),
+              DataColumn(label: Text('Dernière Visite')),
               DataColumn(label: Text('Status')),
-              DataColumn(label: Text('Medical Profile')),
+              DataColumn(label: Text('Profil Médical')),
               DataColumn(label: Text('Actions')),
             ],
             rows: paginatedClients.map((client) {
@@ -55,15 +55,15 @@ class ClientsTable extends StatelessWidget {
                 cells: [
                   DataCell(Text(client.fullName)),
                   DataCell(Text(client.phone)),
-                //  DataCell(Text(client.email, overflow: TextOverflow.ellipsis)),
-                 // DataCell(Text(client.totalPurchases.toString())),
-                 // DataCell(Text('€${client.totalSpent.toStringAsFixed(2)}')),
-                 // DataCell(Text(_formatDate(client.lastVisitDate))),
-                 // DataCell(_buildLoyaltyBadge(client.loyaltyStatus)),
-                /* DataCell(
+                  DataCell(Text(client.email.isNotEmpty ? client.email : '—')),
+                  DataCell(Text(client.totalPurchases.toString())),
+                  DataCell(Text('€${client.totalSpent.toStringAsFixed(2)}')),
+                  DataCell(Text(_formatDate(client.lastVisitDate))),
+                  DataCell(Text(client.loyaltyStatus.name.toUpperCase())),
+                  DataCell(
                     client.hasMedicalProfile
                         ? const Tooltip(
-                            message: 'Medical profile available',
+                            message: 'Profil médical disponible',
                             child: Icon(
                               Icons.check_circle,
                               color: kPrimaryGreen,
@@ -75,7 +75,7 @@ class ClientsTable extends StatelessWidget {
                             color: Colors.grey,
                             size: 20,
                           ),
-                  ),*/
+                  ),
                   DataCell(
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -83,17 +83,17 @@ class ClientsTable extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.visibility_outlined),
                           onPressed: () => onViewDetails(client),
-                          tooltip: 'View Details',
+                          tooltip: 'Voir les détails',
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit_outlined),
                           onPressed: () => onEditClient(client),
-                          tooltip: 'Edit',
+                          tooltip: 'Modifier',
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete_outline),
                           onPressed: () => onDeleteClient(client),
-                          tooltip: 'Delete',
+                          tooltip: 'Supprimer',
                         ),
                       ],
                     ),

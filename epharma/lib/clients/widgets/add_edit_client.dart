@@ -1,6 +1,7 @@
+import 'package:epharma/models/client_model.dart';
+import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../../models/client_model.dart';
-import '../../widgets/app_colors.dart';
+import 'package:flutter/services.dart';
 
 class ClientFormDialog extends StatefulWidget {
   final Client? client;
@@ -17,395 +18,292 @@ class ClientFormDialog extends StatefulWidget {
 }
 
 class _ClientFormDialogState extends State<ClientFormDialog> {
-  late TextEditingController _fullNameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _emailController;
-  late TextEditingController _addressController;
-  late TextEditingController _dobController;
-  late TextEditingController _allergiesController;
-  late TextEditingController _chronicConditionsController;
-  late TextEditingController _currentTreatmentsController;
-  late TextEditingController _pharmacistNotesController;
+  late final TextEditingController _fullNameController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _addressController;
 
-  Gender _selectedGender = Gender.female;
-  LoyaltyStatus _selectedLoyaltyStatus = LoyaltyStatus.standard;
-  bool _hasMedicalProfile = false;
-  final _formKey = GlobalKey<FormState>();
+  Gender? _selectedGender;
+  DateTime? _dateOfBirth;
+  bool _hasMedicalHistory = false;
 
   @override
   void initState() {
     super.initState();
+
     _fullNameController = TextEditingController(
       text: widget.client?.fullName ?? '',
     );
     _phoneController = TextEditingController(text: widget.client?.phone ?? '');
-    _emailController = TextEditingController(text: widget.client?.email ?? '');
     _addressController = TextEditingController(
       text: widget.client?.address ?? '',
     );
-    _dobController = TextEditingController(
-      text: widget.client != null
-          ? '${widget.client!.dateOfBirth.day}/${widget.client!.dateOfBirth.month}/${widget.client!.dateOfBirth.year}'
-          : '',
-    );
-    _allergiesController = TextEditingController(
-      text: widget.client?.allergies ?? '',
-    );
-    _chronicConditionsController = TextEditingController(
-      text: widget.client?.chronicConditions ?? '',
-    );
-    _currentTreatmentsController = TextEditingController(
-      text: widget.client?.currentTreatments ?? '',
-    );
-    _pharmacistNotesController = TextEditingController(
-      text: widget.client?.pharmacistNotes ?? '',
-    );
 
-    if (widget.client != null) {
-      _selectedGender = widget.client!.gender;
-      _selectedLoyaltyStatus = widget.client!.loyaltyStatus;
-      _hasMedicalProfile = widget.client!.hasMedicalProfile;
-    }
-  }
-
-  DateTime? _parseDate(String value) {
-    try {
-      final parts = value.split('/');
-      if (parts.length != 3) return null;
-      final day = int.parse(parts[0]);
-      final month = int.parse(parts[1]);
-      final year = int.parse(parts[2]);
-      return DateTime(year, month, day);
-    } catch (_) {
-      return null;
-    }
+    _selectedGender = widget.client?.gender;
+    _dateOfBirth = widget.client?.dateOfBirth;
+    _hasMedicalHistory = widget.client?.hasMedicalHistory ?? false;
   }
 
   @override
   void dispose() {
     _fullNameController.dispose();
     _phoneController.dispose();
-    _emailController.dispose();
     _addressController.dispose();
-    _dobController.dispose();
-    _allergiesController.dispose();
-    _chronicConditionsController.dispose();
-    _currentTreatmentsController.dispose();
-    _pharmacistNotesController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: SingleChildScrollView(
-        child: SizedBox(
-          width: 500,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: kPrimaryGreen,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
+      child: Container(
+        width: 600,
+        constraints: const BoxConstraints(maxHeight: 800),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _FormHeader(isEditing: widget.client != null),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionTitle('Information personnelle'),
+                    _buildTextField(_fullNameController, 'Nom complet'),
+                    const SizedBox(height: 12),
+                    _buildPhoneField(),
+                    const SizedBox(height: 12),
+                    _buildTextField(_addressController, 'Addresse'),
+                    const SizedBox(height: 12),
+                    _buildGenderSelector(),
+                    const SizedBox(height: 12),
+                    _buildDateOfBirthSelector(),
+
+                    const SizedBox(height: 20),
+                    CheckboxListTile(
+                      title: const Text('Antécédents médicaux'),
+                      value: _hasMedicalHistory,
+                      onChanged: (value) {
+                        setState(() {
+                          _hasMedicalHistory = value ?? false;
+                        });
+                      },
                     ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.client == null
-                            ? 'Add New Client'
-                            : 'Edit Client',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Personal Data',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryGreen,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _fullNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Full Name *',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Full name is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _phoneController,
-                        decoration: const InputDecoration(
-                          labelText: 'Phone *',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Phone is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      /*TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value != null && value.isNotEmpty) {
-                            if (!value.contains('@')) {
-                              return 'Enter a valid email';
-                            }
-                          }
-                          return null;
-                        },
-                      ),*/
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _addressController,
-                        decoration: const InputDecoration(
-                          labelText: 'Address',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _dobController,
-                              decoration: const InputDecoration(
-                                labelText: 'Date of Birth (DD/MM/YYYY)',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: DropdownButtonFormField<Gender>(
-                              value: _selectedGender,
-                              decoration: const InputDecoration(
-                                labelText: 'Gender',
-                                border: OutlineInputBorder(),
-                              ),
-                              items: const [
-                                DropdownMenuItem(
-                                  value: Gender.female,
-                                  child: Text('Femme'),
-                                ),
-                                DropdownMenuItem(
-                                  value: Gender.male,
-                                  child: Text('Homme'),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedGender = value ?? Gender.female;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Commercial Settings',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryGreen,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      DropdownButtonFormField<LoyaltyStatus>(
-                        value: _selectedLoyaltyStatus,
-                        decoration: const InputDecoration(
-                          labelText: 'Loyalty Status',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: LoyaltyStatus.values.map((status) {
-                          return DropdownMenuItem(
-                            value: status,
-                            child: Text(
-                              status.toString().split('.').last.toUpperCase(),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedLoyaltyStatus =
-                                value ?? LoyaltyStatus.standard;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      const Divider(),
-                      const SizedBox(height: 12),
-                      CheckboxListTile(
-                        title: const Text('Has Medical Profile'),
-                        value: _hasMedicalProfile,
-                        onChanged: (value) {
-                          setState(() {
-                            _hasMedicalProfile = value ?? false;
-                          });
-                        },
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      if (_hasMedicalProfile) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: kAccentBlue, width: 1),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Medical Information',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: kAccentBlue,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _allergiesController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Allergies',
-                                  border: OutlineInputBorder(),
-                                ),
-                                maxLines: 2,
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _chronicConditionsController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Chronic Conditions',
-                                  border: OutlineInputBorder(),
-                                ),
-                                maxLines: 2,
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _currentTreatmentsController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Current Treatments',
-                                  border: OutlineInputBorder(),
-                                ),
-                                maxLines: 2,
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _pharmacistNotesController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Pharmacist Notes',
-                                  border: OutlineInputBorder(),
-                                ),
-                                maxLines: 3,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancel'),
-                          ),
-                          const SizedBox(width: 12),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: kPrimaryGreen,
-                            ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                final newClient = Client(
-                                  id:
-                                      widget.client?.id ??
-                                      DateTime.now().toString(),
-                                  fullName: _fullNameController.text,
-                                  phone: _phoneController.text,
-                                  email: _emailController.text,
-                                  address: _addressController.text,
-                                  dateOfBirth:
-                                      _parseDate(_dobController.text) ??
-                                      DateTime.now(),
-                                  gender: _selectedGender,
-                                  registrationDate:
-                                      widget.client?.registrationDate ??
-                                      DateTime.now(),
-                                  totalPurchases:
-                                      widget.client?.totalPurchases ?? 0,
-                                  totalSpent: widget.client?.totalSpent ?? 0,
-                                  lastVisitDate:
-                                      widget.client?.lastVisitDate ??
-                                      DateTime.now(),
-                                  loyaltyStatus: _selectedLoyaltyStatus,
-                                  hasMedicalProfile: _hasMedicalProfile,
-                                  allergies: _allergiesController.text,
-                                  chronicConditions:
-                                      _chronicConditionsController.text,
-                                  currentTreatments:
-                                      _currentTreatmentsController.text,
-                                  pharmacistNotes:
-                                      _pharmacistNotesController.text,
-                                );
-                                widget.onSubmit(newClient);
-                              }
-                            },
-                            child: const Text(
-                              'Save',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
+            ),
+            _FormActions(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhoneField() {
+    return TextField(
+      controller: _phoneController,
+      keyboardType: TextInputType.phone,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(15),
+      ],
+      decoration: const InputDecoration(
+        labelText: 'Téléphone',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label, {
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildGenderSelector() {
+    return DropdownButtonFormField<Gender>(
+      value: _selectedGender,
+      decoration: const InputDecoration(
+        labelText: 'Genre',
+        border: OutlineInputBorder(),
+      ),
+      items: Gender.values.map((gender) {
+        return DropdownMenuItem(value: gender, child: Text(gender.name));
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedGender = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildDateOfBirthSelector() {
+    return InkWell(
+      onTap: () async {
+        final date = await showDatePicker(
+          context: context,
+          initialDate: _dateOfBirth ?? DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
+        if (date != null) {
+          setState(() {
+            _dateOfBirth = date;
+          });
+        }
+      },
+      child: InputDecorator(
+        decoration: const InputDecoration(
+          labelText: 'Date de naissance',
+          border: OutlineInputBorder(),
+        ),
+        child: Text(
+          _dateOfBirth != null
+              ? _dateOfBirth.toString().split(' ')[0]
+              : 'Selectionner la date',
+        ),
+      ),
+    );
+  }
+
+  void _submitForm() {
+    if (_fullNameController.text.trim().isEmpty ||
+        _phoneController.text.trim().isEmpty ||
+        _selectedGender == null ||
+        _dateOfBirth == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez remplir tous les champs requis'),
+          backgroundColor: kDangerRed,
+        ),
+      );
+      return;
+    }
+
+    final phone = _phoneController.text.trim();
+    if (!RegExp(r'^[0-9]{8,15}$').hasMatch(phone)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Téléphone invalide (8-15 chiffres, chiffres uniquement)',
+          ),
+          backgroundColor: kDangerRed,
+        ),
+      );
+      return;
+    }
+
+    final client = Client(
+      id: widget.client?.id ?? '',
+      fullName: _fullNameController.text.trim(),
+      phone: phone,
+      address: _addressController.text.trim(),
+      dateOfBirth: _dateOfBirth!,
+      gender: _selectedGender!,
+      hasMedicalHistory: _hasMedicalHistory,
+    );
+
+    widget.onSubmit(client);
+  }
+}
+
+class _FormHeader extends StatelessWidget {
+  final bool isEditing;
+
+  const _FormHeader({required this.isEditing});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: kPrimaryGreen.withOpacity(0.1),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(4),
+          topRight: Radius.circular(4),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(isEditing ? Icons.edit : Icons.person_add, color: kPrimaryGreen),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              isEditing ? 'Modifier le client' : 'Ajouter un nouveau client',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-        ),
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+
+  const _SectionTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class _FormActions extends StatelessWidget {
+  final BuildContext context;
+
+  const _FormActions(this.context);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          const SizedBox(width: 12),
+          ElevatedButton(
+            onPressed: () {
+              // Access the state to call _submitForm
+              final state = context
+                  .findAncestorStateOfType<_ClientFormDialogState>();
+              state?._submitForm();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kPrimaryGreen,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Enregistrer'),
+          ),
+        ],
       ),
     );
   }

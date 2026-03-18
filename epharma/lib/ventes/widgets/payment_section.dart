@@ -51,7 +51,7 @@ class _PaymentSectionState extends State<PaymentSection> {
         spacing: 12,
         children: [
           const Text(
-            'Payment Method',
+            ' Methode de Paiement',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
           SegmentedButton<PaymentMethod>(
@@ -63,7 +63,7 @@ class _PaymentSectionState extends State<PaymentSection> {
               ),
               ButtonSegment(
                 value: PaymentMethod.card,
-                label: Text('Card'),
+                label: Text('Carte'),
                 icon: Icon(Icons.credit_card),
               ),
               ButtonSegment(
@@ -89,7 +89,7 @@ class _PaymentSectionState extends State<PaymentSection> {
               setState(() {});
             },
             decoration: InputDecoration(
-              labelText: 'Amount Received (\$)',
+              labelText: 'Montant Reçu (\$)',
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 8,
