@@ -20,6 +20,11 @@ const ClientSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  email: {
+    type: String,
+    trim: true,
+    lowercase: true,
+  },
   address: {
     type: String,
     default: "",
@@ -35,6 +40,28 @@ const ClientSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  description: {
+    type: String,
+    trim: true,
+    maxlength: 500
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  totalPurchases: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  totalSpent: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  lastVisit: {
+    type: Date
   }
 },{
   timestamps: true,

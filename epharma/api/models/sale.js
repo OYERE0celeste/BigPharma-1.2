@@ -2,9 +2,18 @@ const mongoose = require("mongoose");
 
 const SaleItemSchema = new mongoose.Schema({
   product: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Product',
     required: true
+  },
+  lotNumber: {
+    type: String,
+    required: true, // indispensable en pharmacie pour la traçabilité
+    trim: true
+  },
+  expirationDate: {
+    type: Date,
+    required: true // vérifier que le produit vendu n’est pas périmé
   },
   quantity: {
     type: Number,
@@ -25,9 +34,21 @@ const SaleItemSchema = new mongoose.Schema({
 
 const SaleSchema = new mongoose.Schema({
   client: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Client',
     required: true
+  },
+  invoiceNumber: {
+    type: String,
+    trim: true,
+    default: function() {
+      return `INV-${Date.now()}`;
+    }
+  },
+  pharmacist: {
+    type: String,
+    required: true,
+    trim: true
   },
   items: [SaleItemSchema],
   subtotal: {
@@ -41,6 +62,11 @@ const SaleSchema = new mongoose.Schema({
     min: 0,
     default: 0
   },
+  discount: {
+    type: Number,
+    min: 0,
+    default: 0
+  },
   total: {
     type: Number,
     required: true,
@@ -48,23 +74,18 @@ const SaleSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ["cash", "card", "mobile_money", "transfer"],
+    enum: ["cash", "card", "mobile_money", "insurance"], // enum pour éviter incohérences
     required: true
   },
   paymentStatus: {
     type: String,
-    enum: ["pending", "paid", "refunded"],
+    enum: ["paid", "pending", "cancelled"],
     default: "paid"
   },
   status: {
     type: String,
-    enum: ["active", "cancelled", "refunded"],
+    enum: ["active", "cancelled"],
     default: "active"
-  },
-  discount: {
-    type: Number,
-    min: 0,
-    default: 0
   },
   notes: {
     type: String,
@@ -80,8 +101,9 @@ const SaleSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Index for efficient queries
+// Index pour requêtes fréquentes
 SaleSchema.index({ client: 1 });
+SaleSchema.index({ pharmacist: 1 });
 SaleSchema.index({ saleDate: -1 });
 SaleSchema.index({ status: 1 });
 SaleSchema.index({ paymentStatus: 1 });

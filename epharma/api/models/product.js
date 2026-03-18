@@ -1,8 +1,15 @@
 ﻿const mongoose = require("mongoose");
 
 const LotSchema = new mongoose.Schema({
-  lotNumber: { type: String, required: true, trim: true, maxlength: 100 },
-  quantity: { type: Number, required: true, min: 0 },
+  lotNumber: { 
+    type: String, 
+    required: true, 
+    trim: true, 
+    maxlength: 100 },
+  quantity: { 
+    type: Number, 
+    required: true, 
+    min: 0 },
   quantityAvailable: { type: Number, required: true, min: 0 },
   costPrice: { type: Number, required: true, min: 0 },
   expirationDate: { type: Date, required: true },

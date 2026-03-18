@@ -7,65 +7,89 @@ const { logActivity } = require("../utils/activityLogger");
 
 // Ajouter une vente
 router.post("/", async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
-    const { items, ...saleData } = req.body;
-    
-    // Validate and calculate totals
+    const { items, client, pharmacist, invoiceNumber, discount, tax, notes, paymentMethod } = req.body;
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ success: false, message: "Aucun article de vente fourni" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(client)) {
+      return res.status(400).json({ success: false, message: "ID client invalide" });
+    }
+
+
     let subtotal = 0;
     const processedItems = [];
-    
+
     for (const item of items) {
-      const product = await Product.findById(item.product).session(session);
+      if (!mongoose.Types.ObjectId.isValid(item.product)) {
+        return res.status(400).json({ success: false, message: `ID produit invalide pour l'article: ${item.product}` });
+      }
+
+      const product = await Product.findById(item.product);
       if (!product) {
-        throw new Error(`Product ${item.product} not found`);
+        return res.status(404).json({ success: false, message: `Produit ${item.product} non trouvé` });
       }
-      
-      if (product.stockQuantity < item.quantity) {
-        throw new Error(`Insufficient stock for ${product.name}. Available: ${product.stockQuantity}, Requested: ${item.quantity}`);
+
+      const lot = product.lots.find((lot) => lot.lotNumber === item.lotNumber);
+      if (!lot) {
+        return res.status(404).json({ success: false, message: `Lot ${item.lotNumber} introuvable pour ${product.name}` });
       }
-      
-      const itemTotal = item.quantity * product.price;
+
+      if (lot.quantityAvailable < item.quantity) {
+        return res.status(400).json({ success: false, message: `Stock insuffisant pour ${product.name} lot ${lot.lotNumber}. Disponible: ${lot.quantityAvailable}, demandé: ${item.quantity}` });
+      }
+
+      if (new Date(lot.expirationDate) < new Date()) {
+        return res.status(400).json({ success: false, message: `Le lot ${lot.lotNumber} de ${product.name} est expiré` });
+      }
+
+      const itemTotal = item.quantity * item.unitPrice;
       subtotal += itemTotal;
-      
+
       processedItems.push({
         product: product._id,
+        lotNumber: lot.lotNumber,
+        expirationDate: lot.expirationDate,
         quantity: item.quantity,
-        unitPrice: product.price,
+        unitPrice: item.unitPrice,
         total: itemTotal
       });
-      
-      // Update stock
-      await Product.findByIdAndUpdate(
-        product._id,
-        { $inc: { stockQuantity: -item.quantity } },
-        { session }
-      );
+
+      lot.quantityAvailable -= item.quantity;
+      product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
+      await product.save();
     }
-    
-    const total = subtotal - (saleData.discount || 0) + (saleData.tax || 0);
-    
+
+    const total = subtotal - (discount || 0) + (tax || 0);
+
     const sale = new Sale({
-      ...saleData,
+      client,
+      pharmacist,
+      invoiceNumber: invoiceNumber || `INV-${Date.now()}`,
       items: processedItems,
       subtotal,
-      total
+      discount: discount || 0,
+      tax: tax || 0,
+      total,
+      paymentMethod: paymentMethod || 'cash',
+      paymentStatus: 'paid',
+      status: 'active',
+      notes: notes || '',
+      saleDate: new Date(),
     });
-    
-    const savedSale = await sale.save({ session });
+
+    const savedSale = await sale.save();
     await savedSale.populate(['client', 'items.product']);
 
     await logActivity({
-      actionType: "create",
-      entityType: "sale",
+      actionType: "création",
+      entityType: "vente",
       entityId: savedSale._id.toString(),
-      entityName: `Sale #${savedSale._id.toString().slice(-6)}`,
-      description: `New sale created: ${items.length} items, total: ${total}`,
+      entityName: `Vente #${savedSale._id.toString().slice(-6)}`,
+      description: `Vente créée: ${items.length} articles, total: ${total}`,
     });
-
-    await session.commitTransaction();
 
     res.status(201).json({
       success: true,
@@ -73,22 +97,11 @@ router.post("/", async (req, res) => {
       data: savedSale
     });
   } catch (error) {
-    await session.abortTransaction();
-    
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
+      return res.status(400).json({ success: false, message: "Erreur de validation", errors });
     }
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  } finally {
-    session.endSession();
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 
@@ -175,46 +188,34 @@ router.get("/:id", async (req, res) => {
 
 // Annuler une vente
 router.patch("/:id/cancel", async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID vente invalide"
-      });
+      return res.status(400).json({ success: false, message: "ID vente invalide" });
     }
-    
-    const sale = await Sale.findById(req.params.id).session(session);
-    
+
+    const sale = await Sale.findById(req.params.id);
     if (!sale) {
-      return res.status(404).json({
-        success: false,
-        message: "Vente introuvable"
-      });
+      return res.status(404).json({ success: false, message: "Vente introuvable" });
     }
-    
+
     if (sale.status === 'cancelled') {
-      return res.status(400).json({
-        success: false,
-        message: "Vente déjà annulée"
-      });
+      return res.status(400).json({ success: false, message: "Vente déjà annulée" });
     }
-    
-    // Restore stock
+
     for (const item of sale.items) {
-      await Product.findByIdAndUpdate(
-        item.product,
-        { $inc: { stockQuantity: item.quantity } },
-        { session }
-      );
+      const product = await Product.findById(item.product);
+      if (!product) continue;
+
+      const lot = product.lots.find((lot) => lot.lotNumber === item.lotNumber);
+      if (lot) {
+        lot.quantityAvailable += item.quantity;
+      }
+      product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
+      await product.save();
     }
-    
-    // Update sale status
+
     sale.status = 'cancelled';
-    await sale.save({ session });
-    
+    await sale.save();
     await sale.populate(['client', 'items.product']);
 
     await logActivity({
@@ -225,22 +226,9 @@ router.patch("/:id/cancel", async (req, res) => {
       description: `Sale cancelled: ${sale.items.length} items`,
     });
 
-    await session.commitTransaction();
-
-    res.json({
-      success: true,
-      message: "Vente annulée avec succès",
-      data: sale
-    });
+    res.json({ success: true, message: "Vente annulée avec succès", data: sale });
   } catch (error) {
-    await session.abortTransaction();
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de l'annulation de la vente",
-      error: error.message
-    });
-  } finally {
-    session.endSession();
+    res.status(500).json({ success: false, message: "Erreur lors de l'annulation de la vente", error: error.message });
   }
 });
 
