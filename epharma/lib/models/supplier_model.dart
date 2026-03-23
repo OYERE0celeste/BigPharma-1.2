@@ -118,7 +118,10 @@ class Supplier {
   // Création depuis JSON
   factory Supplier.fromJson(Map<String, dynamic> json) {
     return Supplier(
-      id: json['_id']?.toString() ?? json['id']?.toString() ?? "",
+      id:
+          json['_id']?.toString() ??
+          json['id']?.toString() ??
+          (json['_doc']?['_id']?.toString() ?? ''),
       name: json['name']?.toString() ?? "",
       contactName: json['contactName']?.toString() ?? "",
       phone: json['phone']?.toString() ?? "",

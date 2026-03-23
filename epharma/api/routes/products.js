@@ -5,10 +5,10 @@ const Product = require("../models/product");
 const { logActivity } = require("../utils/activityLogger");
 
 // Ajouter un produit
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
-    console.log('POST /api/products body:', JSON.stringify(req.body));
-    const product = new Product(req.body);
+    const productData = { ...req.body, companyId: req.user.companyId };
+    const product = new Product(productData);
     const savedProduct = await product.save();
 
     await logActivity({
@@ -17,6 +17,8 @@ router.post("/", async (req, res) => {
       entityId: savedProduct._id.toString(),
       entityName: savedProduct.name,
       description: `New product added: ${savedProduct.name}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.status(201).json({
@@ -25,29 +27,16 @@ router.post("/", async (req, res) => {
       data: savedProduct
     });
   } catch (error) {
-    console.error('POST /api/products fatal error', error);
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
-    }
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Erreur interne',
-      stack: error.stack,
-    });
+    next(error);
   }
 });
 
 // Liste des produits
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const { page = 1, limit = 10, search, category, stockStatus } = req.query;
     
-    let query = { isActive: true };
+    let query = { isActive: true, companyId: req.user.companyId };
     
     // Filtrage
     if (category) query.category = category;
@@ -62,8 +51,7 @@ router.get("/", async (req, res) => {
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { manufacturer: { $regex: search, $options: 'i' } }
+        { description: { $regex: search, $options: 'i' } }
       ];
     }
     
@@ -76,7 +64,6 @@ router.get("/", async (req, res) => {
     
     res.json({
       success: true,
-      message: "Liste des produits récupérée",
       data: products,
       pagination: {
         page: parseInt(page),
@@ -86,59 +73,37 @@ router.get("/", async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération des produits",
-      error: error.message
-    });
+    next(error);
   }
 });
 
 // Un produit par ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID produit invalide"
-      });
-    }
-    
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({ _id: req.params.id, companyId: req.user.companyId });
     
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Produit introuvable"
+        message: "Produit introuvable",
+        code: "NOT_FOUND"
       });
     }
     
     res.json({
       success: true,
-      message: "Produit récupéré avec succès",
       data: product
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération du produit",
-      error: error.message
-    });
+    next(error);
   }
 });
 
 // Modifier un produit
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID produit invalide"
-      });
-    }
-    
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
+    const product = await Product.findOneAndUpdate(
+      { _id: req.params.id, companyId: req.user.companyId },
       req.body,
       { new: true, runValidators: true }
     );
@@ -146,7 +111,8 @@ router.put("/:id", async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Produit introuvable"
+        message: "Produit introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -156,6 +122,8 @@ router.put("/:id", async (req, res) => {
       entityId: product._id.toString(),
       entityName: product.name,
       description: `Product updated: ${product.name}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.json({
@@ -164,37 +132,20 @@ router.put("/:id", async (req, res) => {
       data: product
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 });
 
 // Mettre à jour le stock
-router.patch("/:id/stock", async (req, res) => {
+router.patch("/:id/stock", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID produit invalide"
-      });
-    }
-
     const { quantity, operation } = req.body;
     
     if (!quantity || !operation || !['add', 'subtract', 'set'].includes(operation)) {
       return res.status(400).json({
         success: false,
-        message: "Quantité et opération requises (add, subtract, set)"
+        message: "Quantité et opération requises (add, subtract, set)",
+        code: "INVALID_INPUT"
       });
     }
 
@@ -207,8 +158,8 @@ router.patch("/:id/stock", async (req, res) => {
       updateQuery.$inc = { stockQuantity: -quantity };
     }
     
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
+    const product = await Product.findOneAndUpdate(
+      { _id: req.params.id, companyId: req.user.companyId },
       updateQuery,
       { new: true, runValidators: true }
     );
@@ -216,7 +167,8 @@ router.patch("/:id/stock", async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Produit introuvable"
+        message: "Produit introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -226,6 +178,8 @@ router.patch("/:id/stock", async (req, res) => {
       entityId: product._id.toString(),
       entityName: product.name,
       description: `Stock updated for ${product.name}: ${product.stockQuantity} units`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.json({
@@ -234,25 +188,15 @@ router.patch("/:id/stock", async (req, res) => {
       data: product
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 });
 
 // Supprimer un produit
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID produit invalide"
-      });
-    }
-    
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
+    const product = await Product.findOneAndUpdate(
+      { _id: req.params.id, companyId: req.user.companyId },
       { isActive: false },
       { new: true }
     );
@@ -260,7 +204,8 @@ router.delete("/:id", async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Produit introuvable"
+        message: "Produit introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -270,19 +215,13 @@ router.delete("/:id", async (req, res) => {
       entityId: product._id.toString(),
       entityName: product.name,
       description: `Product deleted: ${product.name}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
-    res.json({
-      success: true,
-      message: "Produit supprimé avec succès",
-      data: product
-    });
+    res.json({ success: true, message: "Produit supprimé avec succès" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la suppression du produit",
-      error: error.message
-    });
+    next(error);
   }
 });
 

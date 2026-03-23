@@ -73,10 +73,17 @@ const ConsultationSchema = new mongoose.Schema({
     type: String,
     enum: ["scheduled", "in_progress", "completed", "cancelled"],
     default: "completed"
-  }
+  },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: [true, "La société est requise"],
+  },
 }, {
   timestamps: true,
 });
+
+ConsultationSchema.index({ companyId: 1 });
 
 // Index for efficient queries
 ConsultationSchema.index({ client: 1 });

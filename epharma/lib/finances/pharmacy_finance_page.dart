@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import '../models/finance_model.dart';
 import '../providers/finance_provider.dart';
-import '../services/finance_service.dart';
-import '../main_layout.dart';
+import '../widgets/app_colors.dart';
+import 'widgets/finance_summary_cards.dart';
+import 'widgets/finance_filter_section.dart';
+import 'widgets/finance_transaction_table.dart';
+import 'widgets/finance_charts.dart';
+import 'widgets/finance_add_transaction_dialog.dart';
 
 /// Page principale de Finance & Comptabilité
 class PharmacyFinancePage extends StatelessWidget {
@@ -13,9 +15,7 @@ class PharmacyFinancePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      pageTitle: 'Finances', 
-      child: const FinancePageContent());
+    return const FinancePageContent();
   }
 }
 
@@ -50,12 +50,25 @@ class _FinancePageContentState extends State<FinancePageContent> {
   @override
   void initState() {
     super.initState();
-    final financeProvider = Provider.of<FinanceProvider>(
-      context,
-      listen: false,
+    // Don't initialize mock data - we want to use real transactions added by other pages
+    // The FinanceProvider will automatically read from FinanceService
+    _filteredTransactions = [];
+  }
+
+  void _showAddTransactionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => FinanceAddTransactionDialog(
+        onTransactionAdded: (transaction) {
+          final financeProvider = Provider.of<FinanceProvider>(
+            context,
+            listen: false,
+          );
+          financeProvider.addTransaction(transaction);
+          _applyFilters();
+        },
+      ),
     );
-    financeProvider.initialize();
-    _filteredTransactions = financeProvider.transactions;
   }
 
   void _applyFilters() {
@@ -139,550 +152,355 @@ class _FinancePageContentState extends State<FinancePageContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildFinancialSummary(),
-            const SizedBox(height: 24),
-            _buildAdvancedFilters(),
-            const SizedBox(height: 24),
-            _buildFinancialFlowsTable(),
-            const SizedBox(height: 24),
-            _buildChartsSection(),
-          ],
-        ),
+    return Consumer<FinanceProvider>(
+      builder: (context, financeProvider, _) {
+        // Met à jour les transactions filtrées à partir du provider
+        _filteredTransactions = financeProvider.getFilteredTransactions(
+          startDate: _startDate,
+          endDate: _endDate,
+          type: _selectedType,
+          paymentMethod: _selectedPaymentMethod,
+          employeeName: _selectedEmployee,
+          minAmount: _minAmount,
+          maxAmount: _maxAmount,
+          searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+        );
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = constraints.maxWidth < 768;
+
+            if (isMobile) {
+              return _buildMobileView(financeProvider);
+            } else {
+              return _buildDesktopView(financeProvider);
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildMobileView(FinanceProvider financeProvider) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // En-tête mobile
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Finance & Comptabilité',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showAddTransactionDialog(),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Ajouter'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPrimaryGreen,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      setState(() {
+                        _filteredTransactions = financeProvider.transactions;
+                        _applyFilters();
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Cartes résumé mobile
+          FinanceSummaryCards(startDate: _startDate, endDate: _endDate),
+          const SizedBox(height: 16),
+
+          // Filtres mobile
+          FinanceFilterSection(
+            selectedType: _selectedType,
+            selectedPaymentMethod: _selectedPaymentMethod,
+            searchQuery: _searchQuery,
+            onSearchChanged: (value) {
+              _searchQuery = value;
+              _applyFilters();
+            },
+            onTypeChanged: (value) {
+              setState(() {
+                _selectedType = value;
+                _applyFilters();
+              });
+            },
+            onPaymentMethodChanged: (value) {
+              setState(() {
+                _selectedPaymentMethod = value;
+                _applyFilters();
+              });
+            },
+            onResetFilters: _resetFilters,
+          ),
+          const SizedBox(height: 16),
+
+          // Transactions mobile (ListView)
+          _buildMobileTransactionsList(),
+          const SizedBox(height: 16),
+
+          // Graphiques mobile
+          FinanceCharts(startDate: _startDate, endDate: _endDate),
+        ],
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      title: const Text('Finance & Comptabilité'),
-      backgroundColor: Theme.of(context).primaryColor,
-      foregroundColor: Colors.white,
-      actions: [
-        // Sélecteur de période
-        DropdownButton<String>(
-          value: 'Aujourd\'hui',
-          dropdownColor: Theme.of(context).primaryColor,
-          style: const TextStyle(color: Colors.white),
-          items: ['Aujourd\'hui', 'Semaine', 'Mois', 'Personnalisé']
-              .map(
-                (period) =>
-                    DropdownMenuItem(value: period, child: Text(period)),
-              )
-              .toList(),
-          onChanged: (value) {
-            // TODO: Implémenter la logique de changement de période
-          },
-        ),
-        const SizedBox(width: 16),
-        // Bouton Export PDF
-        IconButton(
-          icon: const Icon(Icons.picture_as_pdf),
-          tooltip: 'Export PDF',
-          onPressed: () {
-            // TODO: Implémenter export PDF
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Export PDF - Fonctionnalité à implémenter'),
-              ),
-            );
-          },
-        ),
-        // Bouton Export Excel
-        IconButton(
-          icon: const Icon(Icons.table_chart),
-          tooltip: 'Export Excel',
-          onPressed: () {
-            // TODO: Implémenter export Excel
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Export Excel - Fonctionnalité à implémenter'),
-              ),
-            );
-          },
-        ),
-        // Bouton Rafraîchir
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          tooltip: 'Rafraîchir',
-          onPressed: () {
-            final financeProvider = Provider.of<FinanceProvider>(
-              context,
-              listen: false,
-            );
-            setState(() {
-              _filteredTransactions = financeProvider.transactions;
-              _applyFilters();
-            });
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFinancialSummary() {
-    final financeProvider = Provider.of<FinanceProvider>(
-      context,
-      listen: false,
-    );
-    final totalRevenue = financeProvider.getTotalRevenue(
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-    final totalExpenses = financeProvider.getTotalExpenses(
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-    final netProfit = financeProvider.getNetProfit(
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-    final paymentBreakdown = financeProvider.getPaymentMethodBreakdown(
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Résumé Financier',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            _buildSummaryCard(
-              '💰 Chiffre d\'affaires total',
-              FinanceService.formatAmount(totalRevenue),
-              Colors.green,
-              Icons.trending_up,
-            ),
-            const SizedBox(width: 16),
-            _buildSummaryCard(
-              '📉 Total des dépenses',
-              FinanceService.formatAmount(totalExpenses),
-              Colors.red,
-              Icons.trending_down,
-            ),
-            const SizedBox(width: 16),
-            _buildSummaryCard(
-              '📈 Profit net',
-              FinanceService.formatAmount(netProfit),
-              netProfit >= 0 ? Colors.green : Colors.red,
-              netProfit >= 0 ? Icons.trending_up : Icons.trending_down,
-            ),
-            const SizedBox(width: 16),
-            _buildSummaryCard(
-              '💳 Répartition paiements',
-              '${paymentBreakdown.length} méthodes',
-              Colors.blue,
-              Icons.payment,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSummaryCard(
-    String title,
-    String value,
-    Color color,
-    IconData icon,
-  ) {
-    return Expanded(
-      child: Card(
-        elevation: 4,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildDesktopView(FinanceProvider financeProvider) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // En-tête desktop
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Text(
+                'Finance & Comptabilité',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
               Row(
                 children: [
-                  Icon(icon, color: color, size: 24),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  IconButton(
+                    icon: const Icon(Icons.picture_as_pdf),
+                    tooltip: 'Export PDF',
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Export PDF - Fonctionnalité à implémenter',
+                        ),
+                      ),
                     ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton.icon(
+                    onPressed: () => _showAddTransactionDialog(),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Ajouter une transaction'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryGreen,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.table_chart),
+                    tooltip: 'Export Excel',
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Export Excel - Fonctionnalité à implémenter',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    tooltip: 'Rafraîchir',
+                    onPressed: () {
+                      setState(() {
+                        _filteredTransactions = financeProvider.transactions;
+                        _applyFilters();
+                      });
+                    },
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: color,
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          FinanceSummaryCards(startDate: _startDate, endDate: _endDate),
+          const SizedBox(height: 24),
+          FinanceFilterSection(
+            selectedType: _selectedType,
+            selectedPaymentMethod: _selectedPaymentMethod,
+            searchQuery: _searchQuery,
+            onSearchChanged: (value) {
+              _searchQuery = value;
+              _applyFilters();
+            },
+            onTypeChanged: (value) {
+              setState(() {
+                _selectedType = value;
+                _applyFilters();
+              });
+            },
+            onPaymentMethodChanged: (value) {
+              setState(() {
+                _selectedPaymentMethod = value;
+                _applyFilters();
+              });
+            },
+            onResetFilters: _resetFilters,
+          ),
+          const SizedBox(height: 24),
+          FinanceTransactionTable(
+            transactions: _filteredTransactions,
+            currentPage: _currentPage,
+            rowsPerPage: _rowsPerPage,
+            sortColumnIndex: _sortColumnIndex,
+            sortAscending: _sortAscending,
+            onSort: _sortTransactions,
+            onPreviousPage: _currentPage > 0
+                ? () => setState(() => _currentPage--)
+                : null,
+            onNextPage:
+                (_currentPage + 1) * _rowsPerPage < _filteredTransactions.length
+                ? () => setState(() => _currentPage++)
+                : null,
+            onViewDetails: _showTransactionDetails,
+          ),
+          const SizedBox(height: 24),
+          FinanceCharts(startDate: _startDate, endDate: _endDate),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileTransactionsList() {
+    if (_filteredTransactions.isEmpty) {
+      return const Center(
+        child: Column(
+          children: [
+            Icon(Icons.receipt_long, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text('Aucune transaction trouvée'),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _filteredTransactions.length,
+      itemBuilder: (context, index) {
+        final transaction = _filteredTransactions[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: transaction.isIncome
+                  ? kPrimaryGreen
+                  : kDangerRed,
+              child: Icon(
+                transaction.isIncome
+                    ? Icons.arrow_downward
+                    : Icons.arrow_upward,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            title: Text(transaction.description),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${transaction.type} • ${transaction.sourceModule}'),
+                Text(
+                  '${transaction.dateTime.day}/${transaction.dateTime.month}/${transaction.dateTime.year}',
+                  style: TextStyle(color: Colors.grey[600]),
                 ),
+              ],
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${transaction.amount} fcfa',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: transaction.isIncome ? kPrimaryGreen : kDangerRed,
+                  ),
+                ),
+                Text(
+                  transaction.paymentMethod,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+            onTap: () => _showTransactionDetails(transaction),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showTransactionDetails(FinanceTransactionModel transaction) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Détails de la transaction'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDetailRow('Type', transaction.type),
+              _buildDetailRow('Référence', transaction.reference),
+              _buildDetailRow('Source', transaction.sourceModule),
+              _buildDetailRow('Description', transaction.description),
+              _buildDetailRow('Montant', '${transaction.amount} fcfa'),
+              _buildDetailRow(
+                'Type',
+                transaction.isIncome ? 'Revenu' : 'Dépense',
+              ),
+              _buildDetailRow('Mode de paiement', transaction.paymentMethod),
+              _buildDetailRow('Employé', transaction.employeeName),
+              _buildDetailRow(
+                'Date',
+                '${transaction.dateTime.day}/${transaction.dateTime.month}/${transaction.dateTime.year} ${transaction.dateTime.hour}:${transaction.dateTime.minute}',
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildAdvancedFilters() {
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Filtres Avancés',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Recherche globale',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      _searchQuery = value;
-                      _applyFilters();
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                DropdownButton<String>(
-                  hint: const Text('Type de transaction'),
-                  value: _selectedType,
-                  items:
-                      [
-                            'Vente',
-                            'Paiement fournisseur',
-                            'Dépense',
-                            'Retour',
-                            'Approvisionnement',
-                          ]
-                          .map(
-                            (type) => DropdownMenuItem(
-                              value: type,
-                              child: Text(type),
-                            ),
-                          )
-                          .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedType = value;
-                      _applyFilters();
-                    });
-                  },
-                ),
-                const SizedBox(width: 16),
-                DropdownButton<String>(
-                  hint: const Text('Mode de paiement'),
-                  value: _selectedPaymentMethod,
-                  items: ['Espèces', 'Carte', 'Virement']
-                      .map(
-                        (method) => DropdownMenuItem(
-                          value: method,
-                          child: Text(method),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedPaymentMethod = value;
-                      _applyFilters();
-                    });
-                  },
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: _resetFilters,
-                  child: const Text('Réinitialiser'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFinancialFlowsTable() {
-    final startIndex = _currentPage * _rowsPerPage;
-    final endIndex = (_currentPage + 1) * _rowsPerPage;
-    final displayedTransactions = _filteredTransactions.sublist(
-      startIndex,
-      endIndex > _filteredTransactions.length
-          ? _filteredTransactions.length
-          : endIndex,
-    );
-
-    return Card(
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Flux Financiers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              sortColumnIndex: _sortColumnIndex,
-              sortAscending: _sortAscending,
-              columns: [
-                DataColumn(
-                  label: const Text('Date'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Type'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Référence'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Source'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Description'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Montant'),
-                  numeric: true,
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Entrée/Sortie'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Mode paiement'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                DataColumn(
-                  label: const Text('Employé'),
-                  onSort: (columnIndex, ascending) =>
-                      _sortTransactions(columnIndex, ascending),
-                ),
-                const DataColumn(label: Text('Action')),
-              ],
-              rows: displayedTransactions.map((transaction) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Text(FinanceService.formatDate(transaction.dateTime)),
-                    ),
-                    DataCell(Text(transaction.type)),
-                    DataCell(Text(transaction.reference)),
-                    DataCell(Text(transaction.sourceModule)),
-                    DataCell(Text(transaction.description)),
-                    DataCell(
-                      Text(FinanceService.formatAmount(transaction.amount)),
-                    ),
-                    DataCell(
-                      Text(
-                        transaction.isIncome ? 'Entrée' : 'Sortie',
-                        style: TextStyle(
-                          color: transaction.isIncome
-                              ? Colors.green
-                              : Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    DataCell(Text(transaction.paymentMethod)),
-                    DataCell(Text(transaction.employeeName)),
-                    DataCell(
-                      IconButton(
-                        icon: const Icon(Icons.visibility),
-                        onPressed: () {
-                          // TODO: Afficher détails de la transaction
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Détails de ${transaction.reference}',
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('${_filteredTransactions.length} transactions'),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.chevron_left),
-                      onPressed: _currentPage > 0
-                          ? () => setState(() => _currentPage--)
-                          : null,
-                    ),
-                    Text('${_currentPage + 1}'),
-                    IconButton(
-                      icon: const Icon(Icons.chevron_right),
-                      onPressed: endIndex < _filteredTransactions.length
-                          ? () => setState(() => _currentPage++)
-                          : null,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Fermer'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChartsSection() {
-    final financeProvider = Provider.of<FinanceProvider>(
-      context,
-      listen: false,
-    );
-    final chartData = financeProvider.getRevenueVsExpensesData(
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Analyse Graphique',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 300,
-              child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(show: true),
-                  titlesData: FlTitlesData(
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= 0 &&
-                              value.toInt() < chartData.length) {
-                            final date =
-                                chartData[value.toInt()]['date'] as DateTime;
-                            return Text(DateFormat('dd/MM').format(date));
-                          }
-                          return const Text('');
-                        },
-                      ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          return Text(FinanceService.formatAmount(value));
-                        },
-                      ),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: true),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: chartData.asMap().entries.map((entry) {
-                        return FlSpot(
-                          entry.key.toDouble(),
-                          entry.value['revenue'],
-                        );
-                      }).toList(),
-                      isCurved: true,
-                      color: Colors.green,
-                      barWidth: 3,
-                      belowBarData: BarAreaData(show: false),
-                    ),
-                    LineChartBarData(
-                      spots: chartData.asMap().entries.map((entry) {
-                        return FlSpot(
-                          entry.key.toDouble(),
-                          entry.value['expenses'],
-                        );
-                      }).toList(),
-                      isCurved: true,
-                      color: Colors.red,
-                      barWidth: 3,
-                      belowBarData: BarAreaData(show: false),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 3,
-                      child: ColoredBox(color: Colors.green),
-                    ),
-                    SizedBox(width: 8),
-                    Text('Revenus'),
-                  ],
-                ),
-                SizedBox(width: 32),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 3,
-                      child: ColoredBox(color: Colors.red),
-                    ),
-                    SizedBox(width: 8),
-                    Text('Dépenses'),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+          Expanded(child: Text(value)),
+        ],
       ),
     );
   }

@@ -45,9 +45,16 @@ const SupplierSchema = new mongoose.Schema({
   totalAmount: {
     type: Number,
     default: 0
-  }
+  },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: [true, "La société est requise"],
+  },
 },{
   timestamps: true
 });
+
+SupplierSchema.index({ companyId: 1 });
 
 module.exports = mongoose.model("Supplier", SupplierSchema);

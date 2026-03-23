@@ -1,5 +1,9 @@
+//import 'package:epharma/activites/activity_register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'app_colors.dart';
+import '../settings/settings_dialog.dart';
+import '../providers/auth_provider.dart';
 
 // =====================================================================
 // GLOBAL NAVBAR WIDGET
@@ -87,9 +91,10 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'PharmaGest',
-                        style: TextStyle(
+                      Text(
+                        context.watch<AuthProvider>().company?.name ??
+                            'PharmaGest',
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: kPrimaryGreen,
@@ -174,6 +179,20 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                       ),
                     ),
                     PopupMenuItem<String>(
+                      value: 'activity',
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.history_rounded,
+                            color: kPrimaryGreen,
+                            size: 20,
+                          ),
+                          SizedBox(width: 12),
+                          Text("Journal d'activité"),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
                       value: 'settings',
                       child: Row(
                         children: [
@@ -218,53 +237,71 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                   ],
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!, width: 1),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircleAvatar(
-                            radius: 18,
-                            backgroundColor: kPrimaryGreen.withOpacity(0.2),
-                            child: const Icon(
-                              Icons.account_circle,
-                              color: kPrimaryGreen,
-                              size: 28,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () {
+                        _profileMenuKey.currentState?.showButtonMenu();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey[300]!,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircleAvatar(
+                              radius: 18,
+                              backgroundColor: kPrimaryGreen.withOpacity(0.2),
+                              child: const Icon(
+                                Icons.account_circle,
+                                color: kPrimaryGreen,
+                                size: 28,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const Text(
-                                'Admin User',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                            const SizedBox(width: 8),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  context
+                                          .watch<AuthProvider>()
+                                          .user
+                                          ?.fullName ??
+                                      'Utilisateur',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Pharmacien',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[600],
+                                Text(
+                                  context
+                                          .watch<AuthProvider>()
+                                          .user
+                                          ?.role
+                                          .toUpperCase() ??
+                                      'PHARMACIEN',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey[600],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.grey[600],
-                            size: 20,
-                          ),
-                        ],
+                              ],
+                            ),
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -284,9 +321,15 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
           const SnackBar(content: Text('Navigation vers Mon Profil')),
         );
         break;
-      case 'settings':
+      case 'activity':
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigation vers Paramètres')),
+          const SnackBar(content: Text("Ouverture du journal d'activité")),
+        );
+        break;
+      case 'settings':
+        showDialog(
+          context: context,
+          builder: (context) => const SettingsDialog(),
         );
         break;
       case 'help':
@@ -316,10 +359,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Déconnexion en cours...')),
-              );
-              // Future: Add actual logout logic
+              context.read<AuthProvider>().logout();
             },
             child: const Text(
               'Déconnecter',

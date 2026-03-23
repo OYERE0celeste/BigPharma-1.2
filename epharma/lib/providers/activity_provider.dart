@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 import '../models/activity_model.dart';
-import '../activites/services/activity_service.dart';
+import '../services/activity_service.dart';
 
 class ActivityProvider with ChangeNotifier {
+  List<ActivityModel> _activities = [];
+  bool _isLoading = false;
 
-  List<ActivityModel> get activities => ActivityService.getAllTransactions();
-  List<ActivityModel> get transactions => ActivityService.getAllTransactions();
+  List<ActivityModel> get activities => _activities;
+  List<ActivityModel> get transactions => _activities;
+  bool get isLoading => _isLoading;
 
-  void addActivity(ActivityModel activity) {
-    ActivityService.addActivity(activity);
+  Future<void> loadActivities() async {
+    _isLoading = true;
     notifyListeners();
+    try {
+      _activities = await ActivityService.getAllTransactions();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  List<ActivityModel> getTransactionsByDateRange(
+  Future<void> addActivity(ActivityModel activity) async {
+    await ActivityService.addActivity(activity);
+    await loadActivities();
+  }
+
+  Future<List<ActivityModel>> getTransactionsByDateRange(
     DateTime startDate,
     DateTime endDate,
-  ) {
-    return ActivityService.getTransactionsByDateRange(startDate, endDate);
+  ) async {
+    return await ActivityService.getTransactionsByDateRange(startDate, endDate);
   }
 
   List<ActivityModel> filterTransactions({

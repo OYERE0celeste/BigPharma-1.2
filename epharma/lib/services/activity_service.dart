@@ -1,21 +1,16 @@
-import '../../models/activity_model.dart';
+import '../models/activity_model.dart';
+import 'activity_api_service.dart';
 
 class ActivityService {
-  static final List<ActivityModel> _allTransactions = [];
-
-  static List<ActivityModel> getAllTransactions() {
-    return List.from(_allTransactions);
+  static Future<List<ActivityModel>> getAllTransactions() async {
+    return await ActivityApiService.getAllActivities();
   }
 
-  static List<ActivityModel> getTransactionsByDateRange(
+  static Future<List<ActivityModel>> getTransactionsByDateRange(
     DateTime startDate,
     DateTime endDate,
-  ) {
-    return _allTransactions
-        .where(
-          (t) => t.dateTime.isAfter(startDate) && t.dateTime.isBefore(endDate),
-        )
-        .toList();
+  ) async {
+    return await ActivityApiService.getActivitiesByRange(startDate, endDate);
   }
 
   static List<ActivityModel> filterTransactions({
@@ -75,8 +70,8 @@ class ActivityService {
         .toList();
   }
 
-  static void addActivity(ActivityModel activity) {
-    _allTransactions.insert(0, activity);
+  static Future<void> addActivity(ActivityModel activity) async {
+    await ActivityApiService.createActivity(activity);
   }
 
   static List<SalesByDay> getSalesByDay(List<ActivityModel> transactions) {

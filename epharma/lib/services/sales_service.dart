@@ -68,7 +68,7 @@ class SalesService {
   }
 
   double getTotalRevenue() {
-    return _salesHistory.fold(0.0, (sum, sale) => sum + sale.totalAmount);
+    return _salesHistory.fold(0, (sum, sale) => sum + sale.totalAmount);
   }
 
   int getTotalSalesCount() {

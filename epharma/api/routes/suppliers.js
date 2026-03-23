@@ -9,9 +9,11 @@ const { logActivity } = require("../utils/activityLogger");
 router.use(transformSupplierResponse);
 
 // Ajouter un fournisseur
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const normalizedData = normalizeSupplierData(req.body);
+    normalizedData.companyId = req.user.companyId;
+
     const supplier = new Supplier(normalizedData);
     const savedSupplier = await supplier.save();
 
@@ -21,57 +23,67 @@ router.post("/", async (req, res) => {
       entityId: savedSupplier._id.toString(),
       entityName: savedSupplier.name,
       description: `New supplier added: ${savedSupplier.name}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
-    res.status(201).json(savedSupplier);
+    res.status(201).json({ success: true, data: savedSupplier });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({ message: "Erreur de validation", errors });
-    }
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 });
 
 // Liste des fournisseurs
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const suppliers = await Supplier.find();
-    res.json(suppliers);
+    const { page = 1, limit = 50 } = req.query;
+    const query = { companyId: req.user.companyId };
+
+    const suppliers = await Supplier.find(query)
+      .sort({ name: 1 })
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit));
+
+    const total = await Supplier.countDocuments(query);
+
+    res.json({ 
+      success: true, 
+      data: suppliers, 
+      pagination: { 
+        page: Number(page), 
+        limit: Number(limit), 
+        total, 
+        pages: Math.ceil(total / Number(limit)) 
+      } 
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 
 // Un fournisseur par ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "ID fournisseur invalide" });
-    }
-    const supplier = await Supplier.findById(req.params.id);
+    const supplier = await Supplier.findOne({ _id: req.params.id, companyId: req.user.companyId });
     if (!supplier) {
-      return res.status(404).json({ message: "Fournisseur introuvable" });
+      return res.status(404).json({ success: false, message: "Fournisseur introuvable", code: "NOT_FOUND" });
     }
-    res.json(supplier);
+    res.json({ success: true, data: supplier });
   } catch (error) {
-    res.status(404).json({ message: "Fournisseur introuvable" });
+    next(error);
   }
 });
 
 // Modifier un fournisseur
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "ID fournisseur invalide" });
-    }
-    const supplier = await Supplier.findByIdAndUpdate(
-      req.params.id,
+    const supplier = await Supplier.findOneAndUpdate(
+      { _id: req.params.id, companyId: req.user.companyId },
       normalizeSupplierData(req.body),
       { new: true, runValidators: true }
     );
     if (!supplier) {
-      return res.status(404).json({ message: "Fournisseur introuvable" });
+      return res.status(404).json({ success: false, message: "Fournisseur introuvable", code: "NOT_FOUND" });
     }
 
     await logActivity({
@@ -80,27 +92,22 @@ router.put("/:id", async (req, res) => {
       entityId: supplier._id.toString(),
       entityName: supplier.name,
       description: `Supplier updated: ${supplier.name}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
-    res.json(supplier);
+    res.json({ success: true, data: supplier });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({ message: "Erreur de validation", errors });
-    }
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 });
 
 // Supprimer un fournisseur
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "ID fournisseur invalide" });
-    }
-    const deleted = await Supplier.findByIdAndDelete(req.params.id);
+    const deleted = await Supplier.findOneAndDelete({ _id: req.params.id, companyId: req.user.companyId });
     if (!deleted) {
-      return res.status(404).json({ message: "Fournisseur introuvable" });
+      return res.status(404).json({ success: false, message: "Fournisseur introuvable", code: "NOT_FOUND" });
     }
 
     await logActivity({
@@ -109,11 +116,13 @@ router.delete("/:id", async (req, res) => {
       entityId: deleted._id.toString(),
       entityName: deleted.name,
       description: `Supplier deleted: ${deleted.name}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
-    res.json({ message: "Fournisseur supprimé" });
+    res.json({ success: true, message: "Fournisseur supprimé" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 

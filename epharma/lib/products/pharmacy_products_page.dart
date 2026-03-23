@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/app_sidebar.dart';
+import 'package:provider/provider.dart';
 import '../widgets/app_colors.dart';
-import '../ventes/pharmacy_sales_page.dart';
-import '../clients/pharmacy_clients_page.dart';
-import '../activites/activity_register_page.dart';
 import '../models/product_model.dart';
-import 'services/product_api_service.dart';
+import '../providers/product_provider.dart';
 import 'widgets/product_table.dart';
 import 'widgets/product_detail.dart';
 import 'widgets/product_form.dart';
@@ -35,16 +32,42 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+    Future.microtask(() {
+      final provider = context.read<ProductProvider>();
+      provider
+          .loadProducts()
+          .then((_) {
+            if (!mounted) return;
+            setState(() {
+              _products = provider.products;
+            });
+          })
+          .catchError((error) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Erreur de chargement des produits : $error'),
+                ),
+              );
+            }
+          });
+    });
   }
 
   Future<void> _loadProducts() async {
     try {
-      _products = await ProductApiService.getAllProducts();
+      final provider = context.read<ProductProvider>();
+      await provider.loadProducts();
+      if (!mounted) return;
+      setState(() {
+        _products = provider.products;
+      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur de chargement des produits : $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur de chargement des produits : $e')),
+        );
+      }
     }
   }
 
@@ -106,12 +129,14 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
     );
     if (created != null) {
       try {
-        await ProductApiService.createProduct(created);
+        await context.read<ProductProvider>().addProduct(created);
         await _loadProducts();
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erreur ajout produit : $e')));
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Erreur ajout produit : $e')));
+        }
       }
     }
   }
@@ -125,110 +150,86 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
         foregroundColor: Colors.black87,
         elevation: 1,
       ),
-      body: Row(
-        children: [
-          // Use the shared application sidebar
-          AppSidebar(
-            selectedLabel: 'Stock',
-            callbacks: {
-              'Dashboard': () =>
-                  Navigator.of(context).popUntil((r) => r.isFirst),
-              'Sales': () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const PharmacySalesPage()),
-              ),
-              'Clients': () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const PharmacyClientsPage()),
-              ),
-              'Activity': () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const PharmacyActivityRegisterPage(),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ProductTable(
+                products: _filtered,
+                rowsPerPage: _rowsPerPage,
+                currentPage: _currentPage,
+                onPageChanged: (p) => setState(() => _currentPage = p),
+                onRowsPerPageChanged: (r) => setState(() => _rowsPerPage = r),
+                onSort: _changeSort,
+                sortColumn: _sortColumn,
+                sortAscending: _sortAscending,
+                onView: (p) => showDialog(
+                  context: context,
+                  builder: (_) => ProductDetailsPanel(product: p),
                 ),
-              ),
-            },
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildHeader(context),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: ProductTable(
-                      products: _filtered,
-                      rowsPerPage: _rowsPerPage,
-                      currentPage: _currentPage,
-                      onPageChanged: (p) => setState(() => _currentPage = p),
-                      onRowsPerPageChanged: (r) =>
-                          setState(() => _rowsPerPage = r),
-                      onSort: _changeSort,
-                      sortColumn: _sortColumn,
-                      sortAscending: _sortAscending,
-                      onView: (p) => showDialog(
-                        context: context,
-                        builder: (_) => ProductDetailsPanel(product: p),
-                      ),
-                      onEdit: (p) async {
-                        final updated = await showDialog<Product>(
-                          context: context,
-                          builder: (_) => ProductFormDialog(product: p),
-                        );
-                        if (updated != null) {
-                          try {
-                            await ProductApiService.updateProduct(updated);
-                            await _loadProducts();
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Erreur mise à jour produit : $e',
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      onDelete: (p) async {
-                        final ok = await showDialog<bool>(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text('Confirm delete'),
-                            content: Text('Delete ${p.name}?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: const Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context, true),
-                                child: const Text('Delete'),
-                              ),
-                            ],
+                onEdit: (p) async {
+                  final updated = await showDialog<Product>(
+                    context: context,
+                    builder: (_) => ProductFormDialog(product: p),
+                  );
+                  if (updated != null) {
+                    try {
+                      await context.read<ProductProvider>().updateProduct(
+                        updated,
+                      );
+                      await _loadProducts();
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Erreur mise à jour produit : $e'),
                           ),
                         );
-                        if (ok == true) {
-                          try {
-                            await ProductApiService.deleteProduct(p.id);
-                            await _loadProducts();
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Erreur suppression produit : $e',
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      },
+                      }
+                    }
+                  }
+                },
+                onDelete: (p) async {
+                  final ok = await showDialog<bool>(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Confirm delete'),
+                      content: Text('Delete ${p.name}?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('Delete'),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                  if (ok == true) {
+                    try {
+                      await context.read<ProductProvider>().deleteProduct(p.id);
+                      await _loadProducts();
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Erreur suppression produit : $e'),
+                          ),
+                        );
+                      }
+                    }
+                  }
+                },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

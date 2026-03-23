@@ -43,30 +43,57 @@ class SupplierTable extends StatelessWidget {
           DataColumn(label: Text('Contact')),
           DataColumn(label: Text('Téléphone')),
           DataColumn(label: Text('Email')),
+          DataColumn(label: Text('Adresse')),
           DataColumn(label: Text('Ville')),
           DataColumn(label: Text('Date ajout')),
           DataColumn(label: Text('Statut')),
           DataColumn(label: Text('Actions')),
         ],
         rows: suppliers
-            .map((supplier) => DataRow(cells: [
+            .map(
+              (supplier) => DataRow(
+                cells: [
                   DataCell(Text(supplier.name)),
                   DataCell(Text(supplier.contactName)),
                   DataCell(Text(supplier.phone)),
                   DataCell(Text(supplier.email)),
+                  DataCell(Text(supplier.address)),
                   DataCell(Text(supplier.city)),
-                  DataCell(Text('${supplier.createdAt.day}/${supplier.createdAt.month}/${supplier.createdAt.year}')),
+                  DataCell(
+                    Text(
+                      '${supplier.createdAt.day}/${supplier.createdAt.month}/${supplier.createdAt.year}',
+                    ),
+                  ),
                   DataCell(Chip(label: Text(supplier.statusDisplay))),
-                  DataCell(Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(icon: const Icon(Icons.add_shopping_cart, color: Colors.green), onPressed: () => onOrder(supplier)),
-                      IconButton(icon: const Icon(Icons.info, color: Colors.blue), onPressed: () => onInfo(supplier)),
-                      IconButton(icon: const Icon(Icons.edit, color: Colors.orange), onPressed: () => onEdit(supplier)),
-                      IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () => onDelete(supplier)),
-                    ],
-                  )),
-                ]))
+                  DataCell(
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.add_shopping_cart,
+                            color: Colors.green,
+                          ),
+                          onPressed: () => onOrder(supplier),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.info, color: Colors.blue),
+                          onPressed: () => onInfo(supplier),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.orange),
+                          onPressed: () => onEdit(supplier),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => onDelete(supplier),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
             .toList(),
       ),
     );

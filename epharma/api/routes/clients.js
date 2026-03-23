@@ -10,10 +10,11 @@ const { logActivity } = require("../utils/activityLogger");
 router.use(transformClientResponse);
 
 // Ajouter un client
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const normalizedData = normalizeClientData(req.body);
-    // Mongoose attend Date; normalizeClientData renvoie une ISO string: OK (cast automatique)
+    normalizedData.companyId = req.user.companyId; // Force companyId
+    
     const client = new Client(normalizedData);
     const savedClient = await client.save();
 
@@ -23,6 +24,8 @@ router.post("/", async (req, res) => {
       entityId: savedClient._id.toString(),
       entityName: savedClient.fullName,
       description: `New client added: ${savedClient.fullName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.status(201).json({
@@ -31,27 +34,16 @@ router.post("/", async (req, res) => {
       data: savedClient
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 });
 
 // Liste des clients
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const { page = 1, limit = 10, search, gender, hasMedicalHistory } = req.query;
     
-    let query = {};
+    let query = { companyId: req.user.companyId };
     
     // Filtrage
     if (gender) query.gender = gender;
@@ -74,7 +66,6 @@ router.get("/", async (req, res) => {
     
     res.json({
       success: true,
-      message: "Liste des clients récupérée",
       data: clients,
       pagination: {
         page: parseInt(page),
@@ -84,61 +75,39 @@ router.get("/", async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération des clients",
-      error: error.message
-    });
+    next(error);
   }
 });
 
 // Un client par ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID client invalide"
-      });
-    }
-    
-    const client = await Client.findById(req.params.id);
+    const client = await Client.findOne({ _id: req.params.id, companyId: req.user.companyId });
     
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: "Client introuvable"
+        message: "Client introuvable",
+        code: "NOT_FOUND"
       });
     }
     
     res.json({
       success: true,
-      message: "Client récupéré avec succès",
       data: client
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération du client",
-      error: error.message
-    });
+    next(error);
   }
 });
 
 // Modifier un client
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID client invalide"
-      });
-    }
-    
     const normalizedData = normalizeClientData(req.body);
     
-    const client = await Client.findByIdAndUpdate(
-      req.params.id,
+    const client = await Client.findOneAndUpdate(
+      { _id: req.params.id, companyId: req.user.companyId },
       normalizedData,
       { new: true, runValidators: true }
     );
@@ -146,7 +115,8 @@ router.put("/:id", async (req, res) => {
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: "Client introuvable"
+        message: "Client introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -156,6 +126,8 @@ router.put("/:id", async (req, res) => {
       entityId: client._id.toString(),
       entityName: client.fullName,
       description: `Client information updated: ${client.fullName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.json({
@@ -164,37 +136,20 @@ router.put("/:id", async (req, res) => {
       data: client
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 });
 
 // Supprimer un client
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID client invalide"
-      });
-    }
-    
-    const client = await Client.findByIdAndDelete(req.params.id);
+    const client = await Client.findOneAndDelete({ _id: req.params.id, companyId: req.user.companyId });
     
     if (!client) {
       return res.status(404).json({
         success: false,
-        message: "Client introuvable"
+        message: "Client introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -204,19 +159,13 @@ router.delete("/:id", async (req, res) => {
       entityId: client._id.toString(),
       entityName: client.fullName,
       description: `Client deleted: ${client.fullName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
-    res.json({
-      success: true,
-      message: "Client supprimé avec succès",
-      data: client
-    });
+    res.json({ success: true, message: "Client supprimé avec succès" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la suppression du client",
-      error: error.message
-    });
+    next(error);
   }
 });
 

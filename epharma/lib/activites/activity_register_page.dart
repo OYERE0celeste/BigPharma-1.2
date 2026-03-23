@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/app_sidebar.dart';
 import '../widgets/app_colors.dart';
 import '../models/activity_model.dart';
 import '../providers/activity_provider.dart';
-import 'services/activity_service.dart';
+import '../services/activity_service.dart';
 
 // =====================================================================
 // MAIN PAGE
@@ -35,14 +34,22 @@ class _PharmacyActivityRegisterPageState
   @override
   void initState() {
     super.initState();
-    _applyFilters();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _applyFilters();
+    });
   }
 
-  void _applyFilters() {
+  Future<void> _applyFilters() async {
     final activityProvider = Provider.of<ActivityProvider>(
       context,
       listen: false,
     );
+    
+    // Charger les activités depuis le backend si nécessaire
+    if (activityProvider.activities.isEmpty) {
+      await activityProvider.loadActivities();
+    }
+
     // Apply date range filter
     DateTime startDate;
     DateTime endDate = DateTime.now().add(const Duration(days: 1));
@@ -63,7 +70,7 @@ class _PharmacyActivityRegisterPageState
         startDate = DateTime(2020, 1, 1);
     }
 
-    var rangeFiltered = activityProvider.getTransactionsByDateRange(
+    var rangeFiltered = await activityProvider.getTransactionsByDateRange(
       startDate,
       endDate,
     );
@@ -76,118 +83,98 @@ class _PharmacyActivityRegisterPageState
       searchQuery: _searchQuery,
     );
 
-    setState(() {
-      _currentPage = 0;
-    });
+    if (mounted) {
+      setState(() {
+        _currentPage = 0;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppSidebar(
-            selectedLabel: 'Activity',
-            callbacks: {
-              'Dashboard': () =>
-                  Navigator.of(context).pushReplacementNamed('/'),
-              'Stock': () =>
-                  Navigator.of(context).pushReplacementNamed('/products'),
-              'Sales': () =>
-                  Navigator.of(context).pushReplacementNamed('/sales'),
-              'Clients': () =>
-                  Navigator.of(context).pushReplacementNamed('/clients'),
+          // Header
+          const HeaderSection(),
+          const SizedBox(height: 20),
+
+          // Statistics Cards
+          StatisticsSection(transactions: _filteredTransactions),
+          const SizedBox(height: 20),
+
+          // Filters
+          FiltersSection(
+            onPeriodChanged: (period) {
+              setState(() {
+                _periodFilter = period;
+              });
+              _applyFilters();
+            },
+            onActivityTypeChanged: (type) {
+              setState(() {
+                _selectedActivityType =
+                    ((type?.isEmpty ?? true) ? null : type) as ActivityType?;
+              });
+              _applyFilters();
+            },
+            onEmployeeChanged: (employee) {
+              setState(() {
+                _selectedEmployee = (employee?.isEmpty ?? true)
+                    ? null
+                    : employee;
+              });
+              _applyFilters();
+            },
+            onPaymentMethodChanged: (method) {
+              setState(() {
+                _selectedPaymentMethod = method;
+              });
+              _applyFilters();
+            },
+            onSearchChanged: (query) {
+              setState(() {
+                _searchQuery = query;
+              });
+              _applyFilters();
+            },
+            onReset: () {
+              setState(() {
+                _selectedActivityType = null;
+                _selectedEmployee = null;
+                _selectedPaymentMethod = null;
+                _searchQuery = '';
+                _periodFilter = 'today';
+              });
+              _applyFilters();
+            },
+            transactions: Provider.of<ActivityProvider>(
+              context,
+              listen: false,
+            ).transactions,
+          ),
+          const SizedBox(height: 20),
+
+          // Main Table
+          TransactionsTable(
+            transactions: _filteredTransactions,
+            currentPage: _currentPage,
+            pageSize: _pageSize,
+            onPageChanged: (page) {
+              setState(() {
+                _currentPage = page;
+              });
+            },
+            onViewDetails: (transaction) {
+              _showTransactionDetails(transaction);
             },
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Header
-                  const HeaderSection(),
-                  const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-                  // Statistics Cards
-                  StatisticsSection(transactions: _filteredTransactions),
-                  const SizedBox(height: 20),
-
-                  // Filters
-                  FiltersSection(
-                    onPeriodChanged: (period) {
-                      setState(() {
-                        _periodFilter = period;
-                      });
-                      _applyFilters();
-                    },
-                    onActivityTypeChanged: (type) {
-                      setState(() {
-                        _selectedActivityType =
-                            ((type?.isEmpty ?? true) ? null : type)
-                                as ActivityType?;
-                      });
-                      _applyFilters();
-                    },
-                    onEmployeeChanged: (employee) {
-                      setState(() {
-                        _selectedEmployee = (employee?.isEmpty ?? true)
-                            ? null
-                            : employee;
-                      });
-                      _applyFilters();
-                    },
-                    onPaymentMethodChanged: (method) {
-                      setState(() {
-                        _selectedPaymentMethod = method;
-                      });
-                      _applyFilters();
-                    },
-                    onSearchChanged: (query) {
-                      setState(() {
-                        _searchQuery = query;
-                      });
-                      _applyFilters();
-                    },
-                    onReset: () {
-                      setState(() {
-                        _selectedActivityType = null;
-                        _selectedEmployee = null;
-                        _selectedPaymentMethod = null;
-                        _searchQuery = '';
-                        _periodFilter = 'today';
-                      });
-                      _applyFilters();
-                    },
-                    transactions: Provider.of<ActivityProvider>(
-                      context,
-                      listen: false,
-                    ).transactions,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Main Table
-                  TransactionsTable(
-                    transactions: _filteredTransactions,
-                    currentPage: _currentPage,
-                    pageSize: _pageSize,
-                    onPageChanged: (page) {
-                      setState(() {
-                        _currentPage = page;
-                      });
-                    },
-                    onViewDetails: (transaction) {
-                      _showTransactionDetails(transaction);
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Analytics Section
-                  const AnalyticsSection(),
-                ],
-              ),
-            ),
-          ),
+          // Analytics Section
+          const AnalyticsSection(),
         ],
       ),
     );
@@ -683,8 +670,6 @@ class _FiltersSectionState extends State<FiltersSection> {
         return 'Autre';
       case PaymentMethod.mobileMoney:
         return 'Mobile Money';
-      // TODO: Handle this case.
-      // throw UnimplementedError();
     }
   }
 }

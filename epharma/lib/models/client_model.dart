@@ -36,7 +36,7 @@ class Client {
     this.hasMedicalProfile = false,
     this.description = '',
   }) : registrationDate = registrationDate ?? DateTime.now(),
-       lastVisitDate = lastVisitDate ?? DateTime.now();
+      lastVisitDate = lastVisitDate ?? DateTime.now();
 
   int get age {
     final now = DateTime.now();

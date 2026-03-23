@@ -118,28 +118,35 @@ const _transformEnvelope = (data, normalizer) => {
   return data;
 };
 
-// Middleware Express pour transformer les réponses
+// Middleware Express pour transformer les réponses fournisseurs
 const transformSupplierResponse = (req, res, next) => {
   const originalJson = res.json;
-
   res.json = function(data) {
-    data = _transformEnvelope(data, normalizeSupplierData);
-
+    if (data && data.success && data.data) {
+      if (Array.isArray(data.data)) {
+        data.data = data.data.map(normalizeSupplierData);
+      } else {
+        data.data = normalizeSupplierData(data.data);
+      }
+    }
     return originalJson.call(this, data);
   };
-
   next();
 };
 
 // Middleware Express pour transformer les réponses clients
 const transformClientResponse = (req, res, next) => {
   const originalJson = res.json;
-
   res.json = function(data) {
-    data = _transformEnvelope(data, normalizeClientData);
+    if (data && data.success && data.data) {
+      if (Array.isArray(data.data)) {
+        data.data = data.data.map(normalizeClientData);
+      } else {
+        data.data = normalizeClientData(data.data);
+      }
+    }
     return originalJson.call(this, data);
   };
-
   next();
 };
 

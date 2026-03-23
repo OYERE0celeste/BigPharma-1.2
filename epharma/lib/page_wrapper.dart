@@ -13,7 +13,7 @@ class PageWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(pageTitle: pageTitle, child: page);
+    return MainLayout(pageTitle: pageTitle ?? 'Dashboard', child: page);
   }
 }
 

@@ -31,11 +31,18 @@ const ActivityLogSchema = new mongoose.Schema(
       type: String,
       default: "system",
     },
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: [true, "La société est requise"],
+    },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
   }
 );
+
+ActivityLogSchema.index({ companyId: 1 });
 
 // Index for efficient queries
 ActivityLogSchema.index({ createdAt: -1 });

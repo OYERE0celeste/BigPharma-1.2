@@ -138,10 +138,56 @@ class SupplierProvider extends ChangeNotifier {
     _setLoading(true);
     _clearError();
 
+    // Validation stricte de l'ID avec messages détaillés
+    if (supplierId.isEmpty) {
+      _setError('ID du fournisseur vide - impossible de supprimer');
+      _setLoading(false);
+      return;
+    }
+
+    if (supplierId.trim().isEmpty) {
+      _setError(
+        'ID du fournisseur contient uniquement des espaces - impossible de supprimer',
+      );
+      _setLoading(false);
+      return;
+    }
+
+    if (supplierId.startsWith('temp_') || supplierId.startsWith('error_')) {
+      _setError(
+        'ID temporaire détecté ($supplierId) - ce fournisseur ne peut être supprimé',
+      );
+      _setLoading(false);
+      return;
+    }
+
+    // Debug pour vérifier l'ID avant suppression
+    if (kDebugMode) {
+      print('🗑️ ID du fournisseur à supprimer: "$supplierId"');
+      print('📏 Longueur de l\'ID: ${supplierId.length}');
+      print('🔍 Est vide: ${supplierId.isEmpty}');
+      print('🔍 Est trim vide: ${supplierId.trim().isEmpty}');
+      print('🔍 Commence par temp_: ${supplierId.startsWith('temp_')}');
+      print('🔍 Commence par error_: ${supplierId.startsWith('error_')}');
+      final supplier = getSupplierById(supplierId);
+      if (supplier != null) {
+        print('✅ Fournisseur trouvé: ${supplier.name} (ID: "${supplier.id}")');
+      } else {
+        print('❌ Fournisseur non trouvé avec l\'ID: "$supplierId"');
+        print(
+          '📋 Liste des IDs disponibles: ${_suppliers.map((s) => '"${s.id}" (${s.name})').toList()}',
+        );
+      }
+    }
+
     try {
       await SupplierApiService.deleteSupplier(supplierId);
       _suppliers.removeWhere((s) => s.id == supplierId);
       notifyListeners();
+
+      if (kDebugMode) {
+        print('✅ Fournisseur supprimé avec succès');
+      }
     } catch (e) {
       _setError(
         'Erreur lors de la suppression du fournisseur: ${e.toString()}',

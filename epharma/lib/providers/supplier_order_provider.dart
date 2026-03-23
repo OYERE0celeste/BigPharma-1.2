@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/supplier_model.dart';
+import '../fournisseurs/services/supplier_order_api_service.dart';
 
 class SupplierOrderProvider extends ChangeNotifier {
   List<SupplierOrder> _orders = [];
@@ -59,10 +60,7 @@ class SupplierOrderProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      _orders = [];
-
+      _orders = await SupplierOrderApiService.getAllOrders();
       notifyListeners();
     } catch (e) {
       _setError('Erreur lors du chargement des commandes: ${e.toString()}');
@@ -81,12 +79,10 @@ class SupplierOrderProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-
       final totalAmount = items.fold(0, (sum, item) => sum + item.totalPrice);
 
       final order = SupplierOrder(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: '', // Le backend générera l'ID
         supplierId: supplierId,
         supplierName: supplierName,
         orderDate: DateTime.now(),
@@ -95,8 +91,13 @@ class SupplierOrderProvider extends ChangeNotifier {
         notes: notes,
       );
 
-      _orders.insert(0, order);
-      notifyListeners();
+      final created = await SupplierOrderApiService.createOrder(order);
+      if (created != null) {
+        _orders.insert(0, created);
+        notifyListeners();
+      } else {
+        throw Exception('Erreur lors de la création de la commande');
+      }
     } catch (e) {
       _setError('Erreur lors de la création de la commande: ${e.toString()}');
       rethrow;

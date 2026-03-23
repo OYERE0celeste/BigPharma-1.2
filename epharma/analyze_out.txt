@@ -1,0 +1,9 @@
+Analyzing epharma...                                            
+
+   info - Statements in an if should be enclosed in a block - lib\finances\services\finance_api_service.dart:35:9 - curly_braces_in_flow_control_structures
+   info - Don't invoke 'print' in production code - lib\finances\services\finance_api_service.dart:60:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\finances\services\finance_api_service.dart:82:7 - avoid_print
+   info - The local variable '_idValue' starts with an underscore - lib\fournisseurs\services\supplier_api_service.dart:71:23 - no_leading_underscores_for_local_identifiers
+   info - Don't invoke 'print' in production code - lib\providers\finance_provider.dart:33:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\providers\finance_provider.dart:50:7 - avoid_print
+

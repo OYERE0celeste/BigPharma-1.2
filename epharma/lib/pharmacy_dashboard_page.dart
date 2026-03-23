@@ -1,25 +1,42 @@
+import 'package:epharma/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'main_layout.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'widgets/app_colors.dart';
 import 'providers/product_provider.dart';
-import 'providers/sales_provider.dart';
 import 'providers/finance_provider.dart';
+import 'providers/client_provider.dart';
+import 'providers/sales_provider.dart';
+import 'providers/activity_provider.dart';
 
 class PharmacyDashboardPage extends StatelessWidget {
   const PharmacyDashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      pageTitle: 'Dashboard',
-      child: const DashboardPageContent(),
-    );
+    return const DashboardPageContent();
   }
 }
 
-class DashboardPageContent extends StatelessWidget {
+class DashboardPageContent extends StatefulWidget {
   const DashboardPageContent({super.key});
+
+  @override
+  State<DashboardPageContent> createState() => _DashboardPageContentState();
+}
+
+class _DashboardPageContentState extends State<DashboardPageContent> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().loadProducts();
+      context.read<SalesProvider>().loadSales();
+      context.read<FinanceProvider>().initialize();
+      context.read<ClientProvider>().loadClients();
+      context.read<ActivityProvider>().loadActivities();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +76,7 @@ class TopKPISection extends StatelessWidget {
             final kpis = [
               KPIData(
                 title: "Today's revenue",
-                value: '€${financeProvider.totalRevenue.toStringAsFixed(2)}',
+                value: '${financeProvider.totalRevenue.toStringAsFixed(0)} FCFA',
                 icon: Icons.attach_money,
                 color: kPrimaryGreen,
               ),
@@ -89,7 +106,7 @@ class TopKPISection extends StatelessWidget {
               ),
               KPIData(
                 title: 'Net profit',
-                value: '€${financeProvider.netProfit.toStringAsFixed(2)}',
+                value: '${financeProvider.netProfit.toStringAsFixed(0)} FCFA',
                 icon: Icons.trending_up,
                 color: Colors.teal,
               ),
@@ -379,7 +396,7 @@ class RecentActivityPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activities = [];
+    final activities = context.watch<ActivityProvider>().activities.take(10).toList();
 
     return Card(
       elevation: 2,
@@ -400,14 +417,23 @@ class RecentActivityPanel extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            SizedBox(
-              height: 220,
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 300, minHeight: 150),
               child: ListView.separated(
+                shrinkWrap: true,
                 itemCount: activities.length,
                 separatorBuilder: (_, _) => const Divider(height: 12),
                 itemBuilder: (context, index) {
                   final a = activities[index];
-                  return ActivityTile(data: a);
+                  return ActivityTile(
+                    data: ActivityData(
+                      title: a.typeLabel,
+                      subtitle: '${a.clientOrSupplierName} - ${a.productName}',
+                      time: _formatTime(a.dateTime),
+                      icon: a.typeIcon,
+                      color: a.typeColor,
+                    ),
+                  );
                 },
               ),
             ),
@@ -416,17 +442,29 @@ class RecentActivityPanel extends StatelessWidget {
       ),
     );
   }
+
+  String _formatTime(DateTime dt) {
+    final now = DateTime.now();
+    final diff = now.difference(dt);
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    return '${dt.day}/${dt.month}';
+  }
 }
 
 class ActivityData {
   final String title;
   final String subtitle;
   final String time;
+  final IconData icon;
+  final Color color;
 
   ActivityData({
     required this.title,
     required this.subtitle,
     required this.time,
+    required this.icon,
+    required this.color,
   });
 }
 
@@ -441,8 +479,8 @@ class ActivityTile extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 18,
-          backgroundColor: kSoftBlue,
-          child: Icon(Icons.event_note, color: kAccentBlue, size: 18),
+          backgroundColor: data.color.withOpacity(0.12),
+          child: Icon(data.icon, color: data.color, size: 18),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -534,6 +572,7 @@ class QuickActionsSection extends StatelessWidget {
                 if (constraints.maxWidth < 420) cross = 1;
                 return GridView.count(
                   crossAxisCount: cross,
+                  childAspectRatio: cross == 1 ? 4 : 2.5,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: 12,
@@ -634,9 +673,26 @@ class StockSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bestSelling = [];
+    final products = context.watch<ProductProvider>().products;
+    final bestSelling = products.take(5).map((p) => p.name).toList();
+    final lowStock = products
+        .where((p) => p.availableStock <= p.lowStockThreshold)
+        .take(5)
+        .map((p) => p.name)
+        .toList();
 
-    final lowStock = [];
+    final Map<String, int> categories = {};
+    for (var p in products) {
+      categories[p.category] = (categories[p.category] ?? 0) + 1;
+    }
+    final List<Color> categoryColors = [
+      kPrimaryGreen,
+      kAccentBlue,
+      Colors.orange,
+      Colors.purple,
+      Colors.teal,
+      Colors.red,
+    ];
 
     return Card(
       elevation: 2,
@@ -662,37 +718,67 @@ class StockSummary extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            ...bestSelling.map(
-              (s) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Text('• $s'),
+            if (bestSelling.isEmpty)
+              const Text('Aucun produit disponible')
+            else
+              ...bestSelling.map(
+                (s) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text('• $s'),
+                ),
               ),
-            ),
             const SizedBox(height: 12),
             const Text(
               'Low stock products',
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            ...lowStock.map(
-              (s) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Text('• $s'),
+            if (lowStock.isEmpty)
+              const Text('Aucun produit en rupture')
+            else
+              ...lowStock.map(
+                (s) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text('• $s'),
+                ),
               ),
-            ),
             const SizedBox(height: 12),
             const Text(
               'Category distribution',
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 8),
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[100],
-              ),
-              child: const Center(child: Text('Chart placeholder')),
+            const SizedBox(height: 16),
+            AspectRatio(
+              aspectRatio: 1.5,
+              child: categories.isEmpty
+                  ? const Center(child: Text('Aucune donnée'))
+                  : PieChart(
+                      PieChartData(
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 25,
+                        sections: categories.entries
+                            .toList()
+                            .asMap()
+                            .entries
+                            .map((entry) {
+                              final idx = entry.key;
+                              final mapEntry = entry.value;
+                              return PieChartSectionData(
+                                color:
+                                    categoryColors[idx % categoryColors.length],
+                                value: mapEntry.value.toDouble(),
+                                title: '${mapEntry.key}\n(${mapEntry.value})',
+                                radius: 50,
+                                titleStyle: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              );
+                            })
+                            .toList(),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -706,6 +792,46 @@ class PerformanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sales = context.watch<SalesProvider>().sales;
+    final now = DateTime.now();
+    final todaySales = sales
+        .where(
+          (s) =>
+              s.dateTime.day == now.day &&
+              s.dateTime.month == now.month &&
+              s.dateTime.year == now.year,
+        )
+        .fold(0.0, (sum, s) => sum + s.totalAmount);
+    final weekSales = sales
+        .where((s) => now.difference(s.dateTime).inDays <= 7)
+        .fold(0.0, (sum, s) => sum + s.totalAmount);
+
+    final List<BarChartGroupData> barGroups = [];
+    for (int i = 6; i >= 0; i--) {
+      final date = now.subtract(Duration(days: i));
+      final dailyTotal = sales
+          .where(
+            (s) =>
+                s.dateTime.day == date.day &&
+                s.dateTime.month == date.month &&
+                s.dateTime.year == date.year,
+          )
+          .fold(0.0, (sum, s) => sum + s.totalAmount);
+      barGroups.add(
+        BarChartGroupData(
+          x: 6 - i,
+          barRods: [
+            BarChartRodData(
+              toY: dailyTotal,
+              color: kPrimaryGreen,
+              width: 14,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -726,29 +852,60 @@ class PerformanceSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Sales overview',
+              'Sales overview (Derniers 7 jours)',
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 8),
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[100],
-              ),
-              child: const Center(
-                child: Text('Chart placeholder: Today / Week / Prev Week'),
-              ),
+            const SizedBox(height: 16),
+            AspectRatio(
+              aspectRatio: 1.5,
+              child: sales.isEmpty
+                  ? const Center(child: Text('Aucune donnée de vente'))
+                  : BarChart(
+                      BarChartData(
+                        titlesData: FlTitlesData(
+                          show: true,
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                final date = now.subtract(
+                                  Duration(days: 6 - value.toInt()),
+                                );
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    '${date.day}/${date.month}',
+                                    style: const TextStyle(fontSize: 10),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        gridData: const FlGridData(show: false),
+                        barGroups: barGroups,
+                      ),
+                    ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
-                  'Today: €0',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                Text('Week: €0', style: TextStyle(fontWeight: FontWeight.w600)),
+                Text(
+                  'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ],
             ),
           ],
@@ -768,21 +925,23 @@ class SystemInfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
     final now = DateTime.now();
+
     return Row(
       children: [
         Expanded(
           child: Text(
-            'Pharmacy: Pharmacie Centrale • User: Alice Dupont (Pharmacist) • Role: Manager',
-            style: TextStyle(color: Colors.grey[700]),
+            'Pharmacy: ${authProvider.company?.name ?? "..."} • User: ${authProvider.user?.fullName ?? "..."} • Role: ${authProvider.user?.role.toUpperCase() ?? "..."}',
+            style: TextStyle(color: Colors.grey[700], fontSize: 12),
           ),
         ),
-        Text(_formatDateTime(now), style: TextStyle(color: Colors.grey[600])),
+        Text(_formatDateTime(now), style: TextStyle(color: Colors.grey[600], fontSize: 12)),
         const SizedBox(width: 12),
         Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
+          width: 8,
+          height: 8,
+          decoration: const BoxDecoration(
             color: Colors.green,
             shape: BoxShape.circle,
           ),

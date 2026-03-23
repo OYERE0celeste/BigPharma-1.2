@@ -5,9 +5,18 @@ const Consultation = require("../models/consultation");
 const { logActivity } = require("../utils/activityLogger");
 
 // Ajouter une consultation
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
-    const consultation = new Consultation(req.body);
+    const consultationData = { ...req.body, companyId: req.user.companyId };
+    
+    // Vérifier que le client appartient à la même compagnie
+    const Client = require("../models/client");
+    const client = await Client.findOne({ _id: consultationData.client, companyId: req.user.companyId });
+    if (!client) {
+      return res.status(404).json({ success: false, message: "Client introuvable ou non autorisé", code: "NOT_FOUND" });
+    }
+
+    const consultation = new Consultation(consultationData);
     const savedConsultation = await consultation.save();
     await savedConsultation.populate('client', 'fullName phone');
 
@@ -17,6 +26,8 @@ router.post("/", async (req, res) => {
       entityId: savedConsultation._id.toString(),
       entityName: `Consultation for ${savedConsultation.client.fullName}`,
       description: `New consultation registered for ${savedConsultation.client.fullName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.status(201).json({
@@ -25,27 +36,16 @@ router.post("/", async (req, res) => {
       data: savedConsultation
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 });
 
 // Liste des consultations
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, search, clientId, status, startDate, endDate } = req.query;
+    const { page = 1, limit = 10, clientId, status, startDate, endDate } = req.query;
     
-    let query = {};
+    let query = { companyId: req.user.companyId };
     
     // Filtrage
     if (clientId) query.client = clientId;
@@ -66,7 +66,6 @@ router.get("/", async (req, res) => {
     
     res.json({
       success: true,
-      message: "Liste des consultations récupérée",
       data: consultations,
       pagination: {
         page: parseInt(page),
@@ -76,60 +75,38 @@ router.get("/", async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération des consultations",
-      error: error.message
-    });
+    next(error);
   }
 });
 
 // Une consultation par ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID consultation invalide"
-      });
-    }
-    
-    const consultation = await Consultation.findById(req.params.id)
+    const consultation = await Consultation.findOne({ _id: req.params.id, companyId: req.user.companyId })
       .populate('client', 'fullName phone dateOfBirth address gender');
     
     if (!consultation) {
       return res.status(404).json({
         success: false,
-        message: "Consultation introuvable"
+        message: "Consultation introuvable",
+        code: "NOT_FOUND"
       });
     }
     
     res.json({
       success: true,
-      message: "Consultation récupérée avec succès",
       data: consultation
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la récupération de la consultation",
-      error: error.message
-    });
+    next(error);
   }
 });
 
 // Modifier une consultation
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID consultation invalide"
-      });
-    }
-    
-    const consultation = await Consultation.findByIdAndUpdate(
-      req.params.id,
+    const consultation = await Consultation.findOneAndUpdate(
+      { _id: req.params.id, companyId: req.user.companyId },
       req.body,
       { new: true, runValidators: true }
     ).populate('client', 'fullName phone');
@@ -137,7 +114,8 @@ router.put("/:id", async (req, res) => {
     if (!consultation) {
       return res.status(404).json({
         success: false,
-        message: "Consultation introuvable"
+        message: "Consultation introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -147,6 +125,8 @@ router.put("/:id", async (req, res) => {
       entityId: consultation._id.toString(),
       entityName: `Consultation for ${consultation.client.fullName}`,
       description: `Consultation updated for ${consultation.client.fullName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
     res.json({
@@ -155,38 +135,21 @@ router.put("/:id", async (req, res) => {
       data: consultation
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Erreur de validation",
-        errors: errors
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 });
 
 // Supprimer une consultation
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "ID consultation invalide"
-      });
-    }
-    
-    const consultation = await Consultation.findByIdAndDelete(req.params.id)
+    const consultation = await Consultation.findOneAndDelete({ _id: req.params.id, companyId: req.user.companyId })
       .populate('client', 'fullName phone');
     
     if (!consultation) {
       return res.status(404).json({
         success: false,
-        message: "Consultation introuvable"
+        message: "Consultation introuvable",
+        code: "NOT_FOUND"
       });
     }
 
@@ -196,19 +159,13 @@ router.delete("/:id", async (req, res) => {
       entityId: consultation._id.toString(),
       entityName: `Consultation for ${consultation.client.fullName}`,
       description: `Consultation deleted for ${consultation.client.fullName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
     });
 
-    res.json({
-      success: true,
-      message: "Consultation supprimée avec succès",
-      data: consultation
-    });
+    res.json({ success: true, message: "Consultation supprimée avec succès" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la suppression de la consultation",
-      error: error.message
-    });
+    next(error);
   }
 });
 

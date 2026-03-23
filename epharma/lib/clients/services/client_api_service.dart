@@ -1,9 +1,31 @@
 import 'dart:convert';
 import 'package:epharma/models/client_model.dart';
 import 'package:http/http.dart' as http;
+import '../../services/auth_service.dart';
+import '../../services/api_constants.dart';
 
 class ClientApiService {
-  static const String baseUrl = 'http://localhost:5000/api/clients';
+  static String get baseUrl => '${ApiConstants.baseUrl}/clients';
+  static final AuthService _authService = AuthService();
+
+  static dynamic _safeDecode(String body) {
+    try {
+      return json.decode(body);
+    } catch (_) {
+      return {'message': body};
+    }
+  }
+
+  static String _makeErrorMessage(
+    http.Response response,
+    String defaultMessage,
+  ) {
+    final decoded = _safeDecode(response.body);
+    if (decoded is Map<String, dynamic> && decoded['message'] != null) {
+      return decoded['message'].toString();
+    }
+    return '$defaultMessage (${response.statusCode}): ${response.body}';
+  }
 
   static List<Client> _parseClientsList(dynamic body) {
     if (body is Map<String, dynamic>) {
@@ -41,6 +63,7 @@ class ClientApiService {
     int page = 1,
     int limit = 50,
   }) async {
+    final headers = await _authService.getHeaders();
     final query = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
@@ -56,70 +79,59 @@ class ClientApiService {
     }
 
     final uri = Uri.parse(baseUrl).replace(queryParameters: query);
-    final response = await http.get(uri);
+    final response = await http.get(uri, headers: headers);
 
     if (response.statusCode == 200) {
-      final decoded = json.decode(response.body);
+      final decoded = _safeDecode(response.body);
       return _parseClientsList(decoded);
     }
-    throw Exception('Erreur chargement clients: ${response.statusCode}');
+    throw Exception(_makeErrorMessage(response, 'Erreur chargement clients'));
   }
 
   static Future<Client> getClientById(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/$id'));
+    final headers = await _authService.getHeaders();
+    final response = await http.get(Uri.parse('$baseUrl/$id'), headers: headers);
     if (response.statusCode == 200) {
-      final decoded = json.decode(response.body);
+      final decoded = _safeDecode(response.body);
       return _parseClientObject(decoded);
     }
-    throw Exception('Client non trouvé: ${response.statusCode}');
+    throw Exception(_makeErrorMessage(response, 'Client non trouvé'));
   }
 
   static Future<Client> createClient(Client client) async {
+    final headers = await _authService.getHeaders();
     final response = await http.post(
       Uri.parse(baseUrl),
-      headers: {'Content-Type': 'application/json'},
+      headers: headers,
       body: json.encode(client.toJson()..remove('id')),
     );
 
     if (response.statusCode == 201) {
-      final decoded = json.decode(response.body);
+      final decoded = _safeDecode(response.body);
       return _parseClientObject(decoded);
     }
-
-    final decoded = json.decode(response.body);
-    if (decoded is Map<String, dynamic> && decoded['message'] != null) {
-      throw Exception(decoded['message'].toString());
-    }
-    throw Exception('Erreur création client: ${response.statusCode}');
+    throw Exception(_makeErrorMessage(response, 'Erreur création client'));
   }
 
   static Future<Client> updateClient(String id, Client client) async {
+    final headers = await _authService.getHeaders();
     final response = await http.put(
       Uri.parse('$baseUrl/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: headers,
       body: json.encode(client.toJson()..remove('id')),
     );
 
     if (response.statusCode == 200) {
-      final decoded = json.decode(response.body);
+      final decoded = _safeDecode(response.body);
       return _parseClientObject(decoded);
     }
-
-    final decoded = json.decode(response.body);
-    if (decoded is Map<String, dynamic> && decoded['message'] != null) {
-      throw Exception(decoded['message'].toString());
-    }
-    throw Exception('Erreur mise à jour client: ${response.statusCode}');
+    throw Exception(_makeErrorMessage(response, 'Erreur mise à jour client'));
   }
 
   static Future<void> deleteClient(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/$id'));
+    final headers = await _authService.getHeaders();
+    final response = await http.delete(Uri.parse('$baseUrl/$id'), headers: headers);
     if (response.statusCode == 200) return;
-
-    final decoded = json.decode(response.body);
-    if (decoded is Map<String, dynamic> && decoded['message'] != null) {
-      throw Exception(decoded['message'].toString());
-    }
-    throw Exception('Erreur suppression client: ${response.statusCode}');
+    throw Exception(_makeErrorMessage(response, 'Erreur suppression client'));
   }
 }

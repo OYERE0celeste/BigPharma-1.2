@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/client_provider.dart';
 import '../models/client_model.dart';
-import 'services/client_api_service.dart';
 import '../widgets/app_colors.dart';
 import 'widgets/header_client.dart';
 import 'widgets/client_detail.dart';
 import 'widgets/add_edit_client.dart';
 import 'widgets/search_filter_client.dart';
 import 'widgets/client_table.dart';
-import '../main_layout.dart';
 
 class Purchase {
   final String invoiceNumber;
@@ -99,43 +99,14 @@ class PharmacyClientsPage extends StatefulWidget {
 }
 
 class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
-  List<Client> _allClients = [];
-  List<Client> _filteredClients = [];
   String _searchQuery = '';
   String _filterType = 'all';
-  bool _isLoading = true;
-  String? _error;
   int _currentPage = 0;
   static const int _pageSize = 10;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadClients();
-  }
-
-  Future<void> _loadClients() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-    try {
-      _allClients = await ClientApiService.getAllClients();
-      _applyFilters();
-    } catch (error) {
-      setState(() {
-        _error = 'Erreur de chargement des clients : $error';
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _applyFilters() {
+  List<Client> _getFilteredClients(List<Client> allClients) {
     final q = _searchQuery.trim().toLowerCase();
-    var clients = List<Client>.from(_allClients);
+    var clients = List<Client>.from(allClients);
     if (_filterType != 'all') {
       clients = clients.where((client) {
         switch (_filterType) {
@@ -160,31 +131,30 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
             client.email.toLowerCase().contains(q);
       }).toList();
     }
-    setState(() {
-      _filteredClients = clients;
-      _currentPage = 0;
-    });
+    return clients;
   }
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      pageTitle: 'Clients',
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isMobile = constraints.maxWidth < 768;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 768;
 
-          if (isMobile) {
-            return _buildMobileView();
-          } else {
-            return _buildDesktopView();
-          }
-        },
-      ),
+        if (isMobile) {
+          return _buildMobileView();
+        } else {
+          return _buildDesktopView();
+        }
+      },
     );
   }
 
   Widget _buildMobileView() {
+    final provider = context.watch<ClientProvider>();
+    final isLoading = provider.isLoading;
+    final error = provider.error;
+    final filteredClients = _getFilteredClients(provider.clients);
+
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -197,25 +167,25 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               onSearchChanged: (query) {
                 setState(() {
                   _searchQuery = query;
+                  _currentPage = 0;
                 });
-                _applyFilters();
               },
               onFilterChanged: (filter) {
                 setState(() {
                   _filterType = filter;
+                  _currentPage = 0;
                 });
-                _applyFilters();
               },
               onAddClient: () => _showClientFormDialog(null),
             ),
             const SizedBox(height: 16),
-            if (_isLoading)
+            if (isLoading)
               const Center(child: CircularProgressIndicator())
-            else if (_error != null)
+            else if (error != null)
               Center(
-                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                child: Text(error, style: const TextStyle(color: Colors.red)),
               )
-            else if (_filteredClients.isEmpty)
+            else if (filteredClients.isEmpty)
               const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -230,9 +200,9 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _filteredClients.length,
+                itemCount: filteredClients.length,
                 itemBuilder: (context, index) {
-                  final client = _filteredClients[index];
+                  final client = filteredClients[index];
                   return Card(
                     margin: const EdgeInsets.only(bottom: 8),
                     child: ListTile(
@@ -299,6 +269,11 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
   }
 
   Widget _buildDesktopView() {
+    final provider = context.watch<ClientProvider>();
+    final isLoading = provider.isLoading;
+    final error = provider.error;
+    final filteredClients = _getFilteredClients(provider.clients);
+
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -311,25 +286,25 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               onSearchChanged: (query) {
                 setState(() {
                   _searchQuery = query;
+                  _currentPage = 0;
                 });
-                _applyFilters();
               },
               onFilterChanged: (filter) {
                 setState(() {
                   _filterType = filter;
+                  _currentPage = 0;
                 });
-                _applyFilters();
               },
               onAddClient: () => _showClientFormDialog(null),
             ),
             const SizedBox(height: 20),
-            if (_isLoading)
+            if (isLoading)
               const Center(child: CircularProgressIndicator())
-            else if (_error != null)
+            else if (error != null)
               Center(
-                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                child: Text(error, style: const TextStyle(color: Colors.red)),
               )
-            else if (_filteredClients.isEmpty)
+            else if (filteredClients.isEmpty)
               const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -342,7 +317,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               )
             else
               ClientsTable(
-                clients: _filteredClients,
+                clients: filteredClients,
                 currentPage: _currentPage,
                 pageSize: _pageSize,
                 onViewDetails: (client) {
@@ -392,45 +367,36 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
   }
 
   Future<void> _addClient(Client client) async {
-    setState(() {});
     try {
-      final created = await ClientApiService.createClient(client);
-      setState(() {
-        _allClients.insert(0, created);
-        _applyFilters();
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Client ajouté avec succès.')),
-      );
+      await context.read<ClientProvider>().addClient(client);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Client ajouté avec succès.')),
+        );
+      }
     } catch (error) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erreur ajout client: $error')));
-    } finally {
-      setState(() {});
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erreur ajout client: $error')));
+      }
     }
   }
 
   Future<void> _updateClient(Client client) async {
-    setState(() {});
     try {
-      final updated = await ClientApiService.updateClient(client.id, client);
-      final idx = _allClients.indexWhere((c) => c.id == updated.id);
-      if (idx != -1) {
-        setState(() {
-          _allClients[idx] = updated;
-          _applyFilters();
-        });
+      await context.read<ClientProvider>().updateClient(client.id, client);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Client mis à jour.')));
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Client mis à jour.')));
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur mise à jour client: $error')),
-      );
-    } finally {
-      setState(() {});
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur mise à jour client: $error')),
+        );
+      }
     }
   }
 
@@ -448,22 +414,23 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              setState(() {});
               try {
-                await ClientApiService.deleteClient(client.id);
-                setState(() {
-                  _allClients.removeWhere((c) => c.id == client.id);
-                  _applyFilters();
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${client.fullName} a été supprimé.')),
-                );
+                await context.read<ClientProvider>().deleteClient(client.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${client.fullName} a été supprimé.'),
+                    ),
+                  );
+                }
               } catch (error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Erreur suppression client: $error')),
-                );
-              } finally {
-                setState(() {});
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Erreur suppression client: $error'),
+                    ),
+                  );
+                }
               }
             },
             child: const Text('Supprimer', style: TextStyle(color: kDangerRed)),

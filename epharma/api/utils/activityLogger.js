@@ -12,6 +12,7 @@ async function logActivity({
   entityName,
   description,
   user = "system",
+  companyId,
 }) {
   try {
     await ActivityLog.create({
@@ -21,6 +22,7 @@ async function logActivity({
       entityName,
       description,
       user,
+      companyId,
     });
   } catch (err) {
     // On log uniquement l'erreur sans casser la requête principale

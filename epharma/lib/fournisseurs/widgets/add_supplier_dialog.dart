@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../models/supplier_model.dart';
 import '../../widgets/app_colors.dart';
 import '../../providers/supplier_provider.dart';
 
 class AddSupplierDialog extends StatefulWidget {
-  const AddSupplierDialog({super.key});
+  final Supplier? supplier;
+
+  const AddSupplierDialog({super.key, this.supplier});
 
   @override
   State<AddSupplierDialog> createState() => _AddSupplierDialogState();
@@ -20,6 +23,24 @@ class _AddSupplierDialogState extends State<AddSupplierDialog> {
   final _cityController = TextEditingController();
   final _countryController = TextEditingController();
   final _notesController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final supplier = widget.supplier;
+    if (supplier != null) {
+      _nameController.text = supplier.name;
+      _contactNameController.text = supplier.contactName;
+      _phoneController.text = supplier.phone;
+      _emailController.text = supplier.email;
+      _addressController.text = supplier.address;
+      _cityController.text = supplier.city;
+      _countryController.text = supplier.country;
+      _notesController.text = supplier.notes;
+    }
+  }
+
+  bool get _isEditing => widget.supplier != null;
 
   @override
   void dispose() {
@@ -46,9 +67,14 @@ class _AddSupplierDialogState extends State<AddSupplierDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Ajouter un nouveau fournisseur',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                _isEditing
+                    ? 'Modifier le fournisseur'
+                    : 'Ajouter un nouveau fournisseur',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -96,9 +122,9 @@ class _AddSupplierDialogState extends State<AddSupplierDialog> {
                               return 'Ce champ est obligatoire';
                             }
                             if (!RegExp(
-                              r'^[+]?[\d\s\-\(\)]{9,}$',
+                              r'^[+]?[\d\s\-\(\)]{8,}$',
                             ).hasMatch(value)) {
-                              return 'Téléphone invalide (min 9 chiffres)';
+                              return 'Téléphone invalide (min 8 chiffres)';
                             }
                             return null;
                           },
@@ -193,7 +219,7 @@ class _AddSupplierDialogState extends State<AddSupplierDialog> {
                       backgroundColor: kPrimaryGreen,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Enregistrer'),
+                    child: Text(_isEditing ? 'Mettre à jour' : 'Enregistrer'),
                   ),
                 ],
               ),
@@ -206,23 +232,42 @@ class _AddSupplierDialogState extends State<AddSupplierDialog> {
 
   void _saveSupplier() async {
     if (_formKey.currentState!.validate()) {
+      final provider = context.read<SupplierProvider>();
       try {
-        await context.read<SupplierProvider>().addSupplier(
-          name: _nameController.text,
-          contactName: _contactNameController.text,
-          phone: _phoneController.text,
-          email: _emailController.text,
-          address: _addressController.text,
-          city: _cityController.text,
-          country: _countryController.text,
-          notes: _notesController.text,
-        );
+        if (_isEditing && widget.supplier != null) {
+          final updatedSupplier = widget.supplier!.copyWith(
+            name: _nameController.text,
+            contactName: _contactNameController.text,
+            phone: _phoneController.text,
+            email: _emailController.text,
+            address: _addressController.text,
+            city: _cityController.text,
+            country: _countryController.text,
+            notes: _notesController.text,
+          );
+          await provider.updateSupplier(updatedSupplier);
+        } else {
+          await provider.addSupplier(
+            name: _nameController.text,
+            contactName: _contactNameController.text,
+            phone: _phoneController.text,
+            email: _emailController.text,
+            address: _addressController.text,
+            city: _cityController.text,
+            country: _countryController.text,
+            notes: _notesController.text,
+          );
+        }
 
         if (mounted) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Fournisseur ajouté avec succès'),
+            SnackBar(
+              content: Text(
+                _isEditing
+                    ? 'Fournisseur mis à jour avec succès'
+                    : 'Fournisseur ajouté avec succès',
+              ),
               backgroundColor: Colors.green,
             ),
           );

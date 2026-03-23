@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import '../models/sale_model.dart';
 import '../models/product_model.dart';
 import '../ventes/services/sales_api_service.dart';
-import '../activites/services/activity_service.dart';
-import '../services/finance_service.dart';
+import '../services/activity_service.dart';
+//import '../services/finance_service.dart';
 import '../models/activity_model.dart';
-import '../models/finance_model.dart';
+//import '../models/finance_model.dart';
 
 class SalesProvider with ChangeNotifier {
-  final FinanceService _financeService = FinanceService();
 
   List<Sale> _sales = [];
   bool _isLoading = false;
@@ -87,21 +86,6 @@ class SalesProvider with ChangeNotifier {
         notes: 'Sale completed',
       );
       ActivityService.addActivity(activity);
-
-      // Add finance transaction
-      final financeTransaction = FinanceTransactionModel(
-        id: 'FIN-${DateTime.now().millisecondsSinceEpoch}',
-        dateTime: DateTime.now(),
-        type: 'Vente',
-        sourceModule: 'Ventes',
-        reference: sale.invoiceNumber,
-        description: 'Sale of ${items.length} items',
-        amount: sale.totalAmount,
-        isIncome: true,
-        paymentMethod: paymentMethod,
-        employeeName: sale.pharmacist,
-      );
-      _financeService.addTransaction(financeTransaction);
 
       notifyListeners();
     }

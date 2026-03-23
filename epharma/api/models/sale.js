@@ -96,10 +96,17 @@ const SaleSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: Date.now
-  }
+  },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: [true, "La société est requise"],
+  },
 }, {
   timestamps: true,
 });
+
+SaleSchema.index({ companyId: 1 });
 
 // Index pour requêtes fréquentes
 SaleSchema.index({ client: 1 });

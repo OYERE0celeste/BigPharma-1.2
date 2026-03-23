@@ -1,4 +1,4 @@
-﻿const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const LotSchema = new mongoose.Schema({
   lotNumber: { 
@@ -29,11 +29,18 @@ const ProductSchema = new mongoose.Schema({
   stockQuantity: { type: Number, required: true, min: 0, default: 0 },
   lots: { type: [LotSchema], default: [] },
   isActive: { type: Boolean, default: true },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: [true, "La société est requise"],
+  },
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 });
+
+ProductSchema.index({ companyId: 1 });
 
 ProductSchema.virtual('totalStock').get(function () {
   return this.lots.reduce((sum, lot) => sum + (lot.quantityAvailable || 0), 0);

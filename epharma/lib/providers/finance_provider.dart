@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/finance_model.dart';
 import '../services/finance_service.dart';
+import '../finances/services/finance_api_service.dart';
 
 class FinanceProvider with ChangeNotifier {
   final FinanceService _financeService = FinanceService();
@@ -19,14 +20,36 @@ class FinanceProvider with ChangeNotifier {
   double getNetProfit({DateTime? startDate, DateTime? endDate}) =>
       _financeService.getNetProfit(startDate: startDate, endDate: endDate);
 
-  void initialize() {
-    _financeService.initializeMockData();
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  Future<void> loadTransactions() async {
+    _isLoading = true;
     notifyListeners();
+    try {
+      final fetched = await FinanceApiService.getAllTransactions();
+      _financeService.setTransactions(fetched);
+    } catch (e) {
+      debugPrint('FinanceProvider Error: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  void addTransaction(FinanceTransactionModel transaction) {
-    _financeService.addTransaction(transaction);
-    notifyListeners();
+  void initialize() {
+    loadTransactions();
+  }
+
+  Future<void> addTransaction(FinanceTransactionModel transaction) async {
+    try {
+      final saved = await FinanceApiService.createTransaction(transaction);
+      _financeService.addTransaction(saved);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error adding transaction: $e');
+      rethrow;
+    }
   }
 
   List<FinanceTransactionModel> getFilteredTransactions({

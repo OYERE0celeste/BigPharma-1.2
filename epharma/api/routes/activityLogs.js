@@ -3,23 +3,33 @@ const router = express.Router();
 const ActivityLog = require("../models/activityLog");
 
 // GET /api/activity-logs?entityType=&actionType=&limit=
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const { entityType, actionType, limit = 50 } = req.query;
-    const query = {};
+    const { entityType, actionType, page = 1, limit = 50 } = req.query;
+    const query = { companyId: req.user.companyId };
+    
     if (entityType) query.entityType = entityType;
     if (actionType) query.actionType = actionType;
 
     const logs = await ActivityLog.find(query)
       .sort({ createdAt: -1 })
+      .skip((parseInt(page) - 1) * parseInt(limit))
       .limit(parseInt(limit, 10));
+
+    const total = await ActivityLog.countDocuments(query);
 
     res.json({
       success: true,
       data: logs,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit),
+      }
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    next(err);
   }
 });
 

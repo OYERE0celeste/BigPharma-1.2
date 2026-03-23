@@ -2,16 +2,18 @@
 class FinanceTransactionModel {
   final String id;
   final DateTime dateTime;
-  final String
-  type; // 'Vente', 'Paiement fournisseur', 'Dépense', 'Retour', etc.
-  final String sourceModule; // 'Ventes', 'Stocks', 'Commandes', 'Registre'
-  final String reference; // Numéro de facture, commande, etc.
+  final String type;
+  final String sourceModule;
+  final String reference;
   final String description;
   final double amount;
-  final bool isIncome; // true pour revenus, false pour dépenses
-  final String paymentMethod; // 'Espèces', 'Carte', 'Virement', etc.
+  final bool isIncome;
+  final String paymentMethod;
   final String employeeName;
-  final String? relatedTransactionId; // ID de transaction liée si applicable
+  final String? saleId;
+  final String? supplierOrderId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   FinanceTransactionModel({
     required this.id,
@@ -24,30 +26,55 @@ class FinanceTransactionModel {
     required this.isIncome,
     required this.paymentMethod,
     required this.employeeName,
-    this.relatedTransactionId,
+    this.saleId,
+    this.supplierOrderId,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  // Factory pour créer depuis JSON (pour intégration backend future)
   factory FinanceTransactionModel.fromJson(Map<String, dynamic> json) {
+    final amountValue = json['amount'];
+    double parsedAmount = 0.0;
+    if (amountValue is int) {
+      parsedAmount = amountValue.toDouble();
+    } else if (amountValue is double)
+      // ignore: curly_braces_in_flow_control_structures
+      parsedAmount = amountValue;
+    else if (amountValue is String)
+      // ignore: curly_braces_in_flow_control_structures
+      parsedAmount = double.tryParse(amountValue) ?? 0.0;
+
+    final dateValue =
+        json['dateTime'] ??
+        json['createdAt'] ??
+        DateTime.now().toIso8601String();
+
     return FinanceTransactionModel(
-      id: json['id'],
-      dateTime: DateTime.parse(json['dateTime']),
-      type: json['type'],
-      sourceModule: json['sourceModule'],
-      reference: json['reference'],
-      description: json['description'],
-      amount: json['amount'].toDouble(),
-      isIncome: json['isIncome'],
-      paymentMethod: json['paymentMethod'],
-      employeeName: json['employeeName'],
-      relatedTransactionId: json['relatedTransactionId'],
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+      dateTime: DateTime.tryParse(dateValue.toString()) ?? DateTime.now(),
+      type: json['type']?.toString() ?? 'other',
+      sourceModule: json['sourceModule']?.toString() ?? 'Manual',
+      reference: json['reference']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      amount: parsedAmount,
+      isIncome:
+          json['isIncome'] == true ||
+          json['isIncome']?.toString().toLowerCase() == 'true',
+      paymentMethod: json['paymentMethod']?.toString() ?? 'other',
+      employeeName: json['employeeName']?.toString() ?? '',
+      saleId: json['saleId']?.toString(),
+      supplierOrderId: json['supplierOrderId']?.toString(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString())
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt'].toString())
+          : null,
     );
   }
 
-  // Méthode pour convertir en JSON
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+    final map = {
       'dateTime': dateTime.toIso8601String(),
       'type': type,
       'sourceModule': sourceModule,
@@ -57,11 +84,12 @@ class FinanceTransactionModel {
       'isIncome': isIncome,
       'paymentMethod': paymentMethod,
       'employeeName': employeeName,
-      'relatedTransactionId': relatedTransactionId,
     };
+    if (saleId != null) map['saleId'] = saleId as Object;
+    if (supplierOrderId != null) map['supplierOrderId'] = supplierOrderId as Object;
+    return map;
   }
 
-  // Copie avec modifications
   FinanceTransactionModel copyWith({
     String? id,
     DateTime? dateTime,
@@ -73,7 +101,10 @@ class FinanceTransactionModel {
     bool? isIncome,
     String? paymentMethod,
     String? employeeName,
-    String? relatedTransactionId,
+    String? saleId,
+    String? supplierOrderId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return FinanceTransactionModel(
       id: id ?? this.id,
@@ -86,7 +117,10 @@ class FinanceTransactionModel {
       isIncome: isIncome ?? this.isIncome,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       employeeName: employeeName ?? this.employeeName,
-      relatedTransactionId: relatedTransactionId ?? this.relatedTransactionId,
+      saleId: saleId ?? this.saleId,
+      supplierOrderId: supplierOrderId ?? this.supplierOrderId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

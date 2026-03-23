@@ -16,6 +16,10 @@ class FinanceService {
     _transactions = [];
   }
 
+  void setTransactions(List<FinanceTransactionModel> transactions) {
+    _transactions = transactions;
+  }
+
   // Récupérer toutes les transactions
   List<FinanceTransactionModel> getAllTransactions() {
     return List.from(_transactions);
@@ -99,7 +103,7 @@ class FinanceService {
     final breakdown = <String, double>{};
     for (final transaction in filtered) {
       breakdown[transaction.paymentMethod] =
-          (breakdown[transaction.paymentMethod] ?? 0) + transaction.amount;
+          (breakdown[transaction.paymentMethod] ?? 0.0) + transaction.amount;
     }
     return breakdown;
   }
@@ -147,7 +151,7 @@ class FinanceService {
 
   // Formatage des montants
   static String formatAmount(double amount) {
-    final formatter = NumberFormat.currency(locale: 'fr_FR', symbol: '€');
+    final formatter = NumberFormat.currency(locale: 'fr_FR', symbol: 'FCFA');
     return formatter.format(amount);
   }
 

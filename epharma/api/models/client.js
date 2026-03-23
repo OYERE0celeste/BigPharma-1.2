@@ -62,10 +62,17 @@ const ClientSchema = new mongoose.Schema({
   },
   lastVisit: {
     type: Date
-  }
+  },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: [true, "La société est requise"],
+  },
 },{
   timestamps: true,
 });
+
+ClientSchema.index({ companyId: 1 });
 
 
 module.exports = mongoose.model("Client", ClientSchema);

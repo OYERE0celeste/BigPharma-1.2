@@ -2,15 +2,11 @@ import 'package:epharma/ventes/widgets/prescription_banner.dart';
 
 import '../models/activity_model.dart';
 import 'package:flutter/material.dart';
-import '../widgets/app_sidebar.dart';
-import '../products/services/product_api_service.dart';
-import 'services/sales_api_service.dart';
+import 'package:provider/provider.dart';
+import '../providers/sales_provider.dart';
+import '../providers/product_provider.dart';
+import '../providers/finance_provider.dart';
 import '../widgets/app_colors.dart';
-//import 'package:intl/intl.dart';
-import '../pharmacy_dashboard_page.dart';
-import '../products/pharmacy_products_page.dart';
-import '../clients/pharmacy_clients_page.dart';
-import '../activites/activity_register_page.dart';
 import '../models/product_model.dart';
 import '../models/sale_model.dart';
 import 'widgets/product_card.dart';
@@ -31,9 +27,6 @@ class PharmacySalesPage extends StatefulWidget {
 }
 
 class _PharmacySalesPageState extends State<PharmacySalesPage> {
-  List<Product> _allProducts = [];
-  List<Product> _filteredProducts = [];
-  List<Sale> _sales = [];
   final List<CartItem> _cart = [];
   late TextEditingController _searchController;
   late TextEditingController _filterController;
@@ -53,33 +46,8 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   @override
   void initState() {
     super.initState();
-    _allProducts = [];
-    _filteredProducts = [];
     _searchController = TextEditingController();
     _filterController = TextEditingController();
-    _loadProducts();
-    _loadSales();
-  }
-
-  Future<void> _loadProducts() async {
-    try {
-      _allProducts = await ProductApiService.getAllProducts();
-      _filteredProducts = List.from(_allProducts);
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur chargement produits : $error')),
-      );
-    }
-  }
-
-  Future<void> _loadSales() async {
-    try {
-      _sales = await SalesApiService.getSales();
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur chargement ventes : $error')),
-      );
-    }
   }
 
   @override
@@ -90,22 +58,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   }
 
   void _filterProducts(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredProducts = _allProducts;
-      } else {
-        _filteredProducts = _allProducts
-            .where(
-              (product) =>
-                  product.name.toLowerCase().contains(query.toLowerCase()) ||
-                  product.category.toLowerCase().contains(
-                    query.toLowerCase(),
-                  ) ||
-                  product.id.toLowerCase().contains(query.toLowerCase()),
-            )
-            .toList();
-      }
-    });
+    setState(() {}); // Trigger rebuild to apply filter in build method
   }
 
   void _addProductToCart(Product product) {
@@ -189,13 +142,10 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     }
 
     try {
-      final sale = await SalesApiService.createSale(
-        invoiceNumber: 'INV-${DateTime.now().millisecondsSinceEpoch}',
-        clientId: '000000000000000000000000',
-        pharmacistId: '000000000000000000000000',
-        cartItems: List.from(_cart),
-        discount: _customDiscount,
-        tax: _customTax,
+      final sale = await context.read<SalesProvider>().createSale(
+        items: List.from(_cart),
+        discountAmount: _customDiscount,
+        taxAmount: _customTax,
         paymentMethod: _selectedPaymentMethod.toString().split('.').last,
         amountReceived: _amountReceived,
         prescriptionVerified: _prescriptionVerified,
@@ -205,8 +155,8 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         throw Exception('Vente invalide');
       }
 
-      await _loadProducts();
-      await _loadSales();
+      await context.read<ProductProvider>().loadProducts();
+      await context.read<FinanceProvider>().loadTransactions();
 
       setState(() {
         _cart.clear();
@@ -254,7 +204,11 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
           ElevatedButton.icon(
             onPressed: () {
               Navigator.of(context).pop();
-              // TODO: Prepare invoice for printing/download
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Simulation d\'impression de la facture...'),
+                ),
+              );
             },
             icon: const Icon(Icons.print),
             label: const Text('Imprimer la Facture'),
@@ -266,41 +220,26 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          AppSidebar(
-            selectedLabel: 'Ventes',
-            callbacks: {
-              'Dashboard': () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const PharmacyDashboardPage(),
-                ),
-              ),
-              'Stock': () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const PharmacyProductsPage()),
-              ),
-              'Clients': () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const PharmacyClientsPage()),
-              ),
-              'Activity': () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const PharmacyActivityRegisterPage(),
-                ),
-              ),
-            },
-          ),
-          Expanded(
-            child: _showSalesHistory
-                ? _buildSalesHistoryView()
-                : _buildPOSView(),
-          ),
-        ],
-      ),
-    );
+    return _showSalesHistory ? _buildSalesHistoryView() : _buildPOSView();
   }
 
   Widget _buildPOSView() {
+    final productProvider = context.watch<ProductProvider>();
+    final allProducts = productProvider.products;
+
+    final query = _searchController.text.toLowerCase();
+    List<Product> filteredProducts = allProducts;
+    if (query.isNotEmpty) {
+      filteredProducts = allProducts
+          .where(
+            (product) =>
+                product.name.toLowerCase().contains(query) ||
+                product.category.toLowerCase().contains(query) ||
+                product.id.toLowerCase().contains(query),
+          )
+          .toList();
+    }
+
     return Row(
       children: [
         // LEFT SIDE: Product Search & Selection
@@ -396,9 +335,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                             mainAxisSpacing: 12,
                             childAspectRatio: 0.75,
                           ),
-                      itemCount: _filteredProducts.length,
+                      itemCount: filteredProducts.length,
                       itemBuilder: (context, index) {
-                        final product = _filteredProducts[index];
+                        final product = filteredProducts[index];
                         final isInCart = _cart.any(
                           (item) => item.product.id == product.id,
                         );
@@ -615,7 +554,11 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             ],
           ),
           const SizedBox(height: 20),
-          Expanded(child: SaleHistoryTable(sales: _sales)),
+          Expanded(
+            child: SaleHistoryTable(
+              sales: context.watch<SalesProvider>().sales,
+            ),
+          ),
         ],
       ),
     );

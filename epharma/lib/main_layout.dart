@@ -2,16 +2,29 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'widgets/global_navbar.dart';
 import 'widgets/app_sidebar.dart';
+import 'pharmacy_dashboard_page.dart';
+import 'ventes/pharmacy_sales_page.dart';
+import 'products/pharmacy_products_page.dart';
+import 'clients/pharmacy_clients_page.dart';
+import 'activites/activity_register_page.dart';
+import 'fournisseurs/fournisseurs_page.dart';
+import 'finances/pharmacy_finance_page.dart';
+import 'settings/settings_dialog.dart';
+import 'settings/user_management_page.dart';
 
 // =====================================================================
 // MAIN LAYOUT WIDGET - Enveloppe toutes les pages
 // =====================================================================
 
 class MainLayout extends StatefulWidget {
+  final String pageTitle;
   final Widget child;
-  final String? pageTitle;
 
-  const MainLayout({required this.child, this.pageTitle, super.key});
+  const MainLayout({
+    super.key,
+    this.pageTitle = 'Dashboard',
+    this.child = const SizedBox.shrink(),
+  });
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
@@ -21,9 +34,17 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   bool _isSidebarOpen = false;
   late AnimationController _sidebarAnimationController;
 
+  late String _pageTitle;
+  late Widget _currentPage;
+
   @override
   void initState() {
     super.initState();
+    _pageTitle = widget.pageTitle;
+    _currentPage = widget.child is SizedBox
+        ? const PharmacyDashboardPage()
+        : widget.child;
+
     _sidebarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -58,14 +79,17 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
               GlobalNavbar(
                 onMenuToggle: _toggleSidebar,
                 isSidebarOpen: _isSidebarOpen,
-                onProfileAction: (action) {},
+                onProfileAction: (action) {
+                  if (action == 'activity') {
+                    _navigateTo('Activity', const PharmacyActivityRegisterPage());
+                  } else if (action == 'profile') {
+                    // Profile is currently handled by showDialog in Navbar, 
+                    // but we could also navigate if needed.
+                  }
+                },
               ),
               Expanded(
-                child: Container(
-                  color: Colors.grey[50],
-                  // Chaque page gère son propre scroll/padding
-                  child: widget.child,
-                ),
+                child: Container(color: Colors.grey[50], child: _currentPage),
               ),
             ],
           ),
@@ -77,17 +101,37 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     );
   }
 
-  /// Build navigation callbacks for sidebar
+  void _navigateTo(String title, Widget page) {
+    setState(() {
+      _pageTitle = title;
+      _currentPage = page;
+      if (_isSidebarOpen) {
+        _toggleSidebar();
+      }
+    });
+  }
+
   Map<String, VoidCallback> _buildNavigationCallbacks() {
     return {
-      'Dashboard': () => Navigator.pushNamed(context, '/'),
-      'Stock': () => Navigator.pushNamed(context, '/products'),
-      'Ventes': () => Navigator.pushNamed(context, '/sales'),
-      'Clients': () => Navigator.pushNamed(context, '/clients'),
-      'Activités': () => Navigator.pushNamed(context, '/activity'),
-      'Fournisseurs': () => Navigator.pushNamed(context, '/suppliers'),
-      //'Consultations': () => Navigator.pushNamed(context, '/consultations'),
-      'Finances': () => Navigator.pushNamed(context, '/finance'),
+      'Dashboard': () =>
+          _navigateTo('Dashboard', const PharmacyDashboardPage()),
+      'Stock': () => _navigateTo('Stock', const PharmacyProductsPage()),
+      'Sales': () => _navigateTo('Sales', const PharmacySalesPage()),
+      'Clients': () => _navigateTo('Clients', const PharmacyClientsPage()),
+      'Activity': () =>
+          _navigateTo('Activity', const PharmacyActivityRegisterPage()),
+      'Consultations': () => _navigateTo(
+        'Consultations',
+        const FeatureNotAvailablePage(title: 'Consultations'),
+      ),
+      'Fournisseurs': () =>
+          _navigateTo('Fournisseurs', const PharmacySuppliersPage()),
+      'Finances': () => _navigateTo('Finances', const PharmacyFinancePage()),
+      'Users': () => _navigateTo('Users', const UserManagementDialog()),
+      'Paramètres': () {
+        if (_isSidebarOpen) _toggleSidebar();
+        SettingsDialog.show(context);
+      },
     };
   }
 
@@ -128,7 +172,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                 child: Material(
                   elevation: 8,
                   child: AppSidebar(
-                    selectedLabel: widget.pageTitle ?? '',
+                    selectedLabel: _pageTitle,
                     callbacks: _buildNavigationCallbacks(),
                   ),
                 ),
@@ -169,6 +213,41 @@ class ResponsiveLayout extends StatelessWidget {
           return desktopBody;
         }
       },
+    );
+  }
+}
+
+// =====================================================================
+// FALLBACK PAGE FOR MISSING FEATURES
+// =====================================================================
+
+class FeatureNotAvailablePage extends StatelessWidget {
+  final String title;
+  const FeatureNotAvailablePage({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.construction, size: 80, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          Text(
+            '$title en construction...',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Nous travaillons sur cette fonctionnalité.',
+            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+          ),
+        ],
+      ),
     );
   }
 }

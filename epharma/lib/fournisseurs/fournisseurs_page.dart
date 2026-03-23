@@ -1,10 +1,8 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../main_layout.dart';
 import '../models/supplier_model.dart';
 import '../providers/supplier_provider.dart';
 import 'widgets/add_supplier_dialog.dart';
-import 'widgets/edit_supplier_dialog.dart';
 import 'widgets/header_supplier.dart';
 import 'widgets/list_mobile_supplier.dart';
 import 'widgets/search_supplier.dart';
@@ -18,10 +16,7 @@ class PharmacySuppliersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      pageTitle: 'Fournisseurs',
-      child: const SuppliersPageContent(),
-    );
+    return const SuppliersPageContent();
   }
 }
 
@@ -76,7 +71,7 @@ class _SuppliersPageContentState extends State<SuppliersPageContent> {
   void _showEditSupplier(Supplier supplier) {
     showDialog(
       context: context,
-      builder: (context) => EditSupplierDialog(supplier: supplier),
+      builder: (context) => AddSupplierDialog(supplier: supplier),
     );
   }
 
@@ -85,7 +80,7 @@ class _SuppliersPageContentState extends State<SuppliersPageContent> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmer la suppression'),
-        content: Text('Voulez-vous supprimer "${supplier.name}" ?'),
+        content: Text('Voulez-vous supprimer ce fournisseur ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
