@@ -1,233 +1,217 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const router = express.Router();
 const Sale = require("../models/sale");
 const Product = require("../models/product");
 const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
+const { runInTransaction } = require("../utils/dbUtils");
+const MouvementStock = require("../models/mouvementStock");
 
-// Ajouter une vente
-router.post("/", async (req, res, next) => {
+// Enregistrer une vente (Atomicité & FIFO)
+router.post("/", async (req, res) => {
   try {
-    const { items, client: clientId, pharmacist, invoiceNumber, discount, tax, notes, paymentMethod } = req.body;
-
-    if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ success: false, message: "Aucun article de vente fourni", code: "INVALID_INPUT" });
-    }
-
-    // Vérifier que le client appartient à la même compagnie
-    const client = await require("../models/client").findOne({ _id: clientId, companyId: req.user.companyId });
-    if (!client) {
-      return res.status(404).json({ success: false, message: "Client introuvable ou non autorisé", code: "NOT_FOUND" });
-    }
-
-    let subtotal = 0;
-    const processedItems = [];
-
-    for (const item of items) {
-      // Rechercher le produit dans la même compagnie
-      const product = await Product.findOne({ _id: item.product, companyId: req.user.companyId });
-      if (!product) {
-        return res.status(404).json({ success: false, message: `Produit ${item.product} non trouvé ou non autorisé`, code: "NOT_FOUND" });
-      }
-
-      const lot = product.lots.find((lot) => lot.lotNumber === item.lotNumber);
-      if (!lot) {
-        return res.status(404).json({ success: false, message: `Lot ${item.lotNumber} introuvable pour ${product.name}`, code: "NOT_FOUND" });
-      }
-
-      if (lot.quantityAvailable < item.quantity) {
-        return res.status(400).json({ 
-          success: false, 
-          message: `Stock insuffisant pour ${product.name} lot ${lot.lotNumber}. Disponible: ${lot.quantityAvailable}, demandé: ${item.quantity}`,
-          code: "INSUFFICIENT_STOCK"
-        });
-      }
-
-      if (new Date(lot.expirationDate) < new Date()) {
-        return res.status(400).json({ success: false, message: `Le lot ${lot.lotNumber} de ${product.name} est expiré`, code: "EXPIRED_PRODUCT" });
-      }
-
-      const itemTotal = item.quantity * item.unitPrice;
-      subtotal += itemTotal;
-
-      processedItems.push({
-        product: product._id,
-        lotNumber: lot.lotNumber,
-        expirationDate: lot.expirationDate,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        total: itemTotal
-      });
-
-      lot.quantityAvailable -= item.quantity;
-      product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
-      await product.save();
-    }
-
-    const total = subtotal - (discount || 0) + (tax || 0);
-
-    const sale = new Sale({
-      client: clientId,
+    const { 
+      client, 
+      items, 
+      totalAmount, 
+      paymentMethod, 
+      discount = 0, 
+      tax = 0,
+      invoiceNumber,
       pharmacist,
-      invoiceNumber: invoiceNumber || `INV-${Date.now()}`,
-      items: processedItems,
-      subtotal,
-      discount: discount || 0,
-      tax: tax || 0,
-      total,
-      paymentMethod: paymentMethod || 'cash',
-      paymentStatus: 'paid',
-      status: 'active',
-      notes: notes || '',
-      saleDate: new Date(),
-      companyId: req.user.companyId,
-    });
+      amountReceived,
+      notes
+    } = req.body;
 
-    const savedSale = await sale.save();
-    await savedSale.populate(['client', 'items.product']);
+    const activeClientId = client || req.body.clientId;
+    const activeProducts = items || req.body.products;
 
-    await logActivity({
-      actionType: "create",
-      entityType: "sale",
-      entityId: savedSale._id.toString(),
-      entityName: `Vente #${savedSale.invoiceNumber}`,
-      description: `Vente créée: ${items.length} articles, total: ${total}`,
-      companyId: req.user.companyId,
-      user: req.user.fullName,
-    });
-
-    // Create linked finance transaction
-    const financeTransaction = new Finance({
-      dateTime: new Date(),
-      type: "sale",
-      sourceModule: "Ventes",
-      reference: savedSale.invoiceNumber,
-      description: `Revenu de vente ${savedSale.invoiceNumber}`,
-      amount: savedSale.total,
-      isIncome: true,
-      paymentMethod: savedSale.paymentMethod,
-      employeeName: savedSale.pharmacist,
-      saleId: savedSale._id,
-      companyId: req.user.companyId,
-    });
-    await financeTransaction.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Vente créée avec succès",
-      data: savedSale
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Liste des ventes
-router.get("/", async (req, res, next) => {
-  try {
-    const { page = 1, limit = 10, clientId, status, paymentStatus, startDate, endDate } = req.query;
-    
-    let query = { companyId: req.user.companyId };
-    
-    // Filtrage
-    if (clientId) query.client = clientId;
-    if (status) query.status = status;
-    if (paymentStatus) query.paymentStatus = paymentStatus;
-    if (startDate || endDate) {
-      query.saleDate = {};
-      if (startDate) query.saleDate.$gte = new Date(startDate);
-      if (endDate) query.saleDate.$lte = new Date(endDate);
+    if (!activeProducts || !Array.isArray(activeProducts) || activeProducts.length === 0) {
+      return res.status(400).json({ success: false, message: "Le panier est vide ou invalide" });
     }
-    
-    const sales = await Sale.find(query)
-      .populate('client', 'fullName phone')
-      .populate('items.product', 'name price')
-      .sort({ saleDate: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
-      
-    const total = await Sale.countDocuments(query);
-    
-    res.json({
-      success: true,
-      data: sales,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-});
 
-// Une vente par ID
-router.get("/:id", async (req, res, next) => {
-  try {
-    const sale = await Sale.findOne({ _id: req.params.id, companyId: req.user.companyId })
-      .populate('client', 'fullName phone address')
-      .populate('items.product', 'name price description');
-    
-    if (!sale) {
-      return res.status(404).json({
-        success: false,
-        message: "Vente introuvable",
-        code: "NOT_FOUND"
+    const savedSale = await runInTransaction(async (session) => {
+      // 1. Vérifier la disponibilité
+      for (const item of activeProducts) {
+        const prodId = item.product || item.productId;
+        const product = await Product.findOne({
+          _id: prodId,
+          companyId: req.user.companyId,
+          isActive: true
+        }).session(session);
+
+        if (!product) {
+          throw new Error(`Produit ${prodId} introuvable`);
+        }
+
+        if (product.stockQuantity < item.quantity) {
+          throw new Error(`Stock insuffisant pour ${product.name}`);
+        }
+      }
+
+      const calculatedSubtotal = activeProducts.reduce((sum, item) => sum + (item.total || item.subtotal || (item.unitPrice * item.quantity)), 0);
+      const calculatedTotal = calculatedSubtotal - discount + tax;
+
+      // 2. Créer la vente
+      const sale = new Sale({
+        invoiceNumber: invoiceNumber || `INV-${Date.now()}`,
+        client: activeClientId,
+        pharmacist: pharmacist || req.user.fullName,
+        items: activeProducts.map(item => ({
+          product: item.product || item.productId,
+          lotNumber: item.lotNumber,
+          expirationDate: item.expirationDate,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          total: item.total || item.subtotal || (item.unitPrice * item.quantity)
+        })),
+        subtotal: calculatedSubtotal,
+        tax: tax,
+        discount: discount,
+        total: totalAmount || calculatedTotal,
+        paymentMethod: paymentMethod || "cash",
+        amountReceived: amountReceived || (totalAmount || calculatedTotal),
+        notes: notes || "Vente POS",
+        companyId: req.user.companyId,
       });
-    }
-    
-    res.json({
-      success: true,
-      data: sale
+
+      const confirmedSale = await sale.save({ session });
+
+      // 3. Stock FIFO
+      for (const item of activeProducts) {
+        const prodId = item.product || item.productId;
+        const product = await Product.findOne({ _id: prodId, companyId: req.user.companyId }).session(session);
+
+        let remaining = item.quantity;
+        const sortedLots = product.lots
+          .filter(l => l.quantityAvailable > 0)
+          .sort((a, b) => new Date(a.expirationDate) - new Date(b.expirationDate));
+
+        for (const lot of sortedLots) {
+          if (remaining <= 0) break;
+          const subtract = Math.min(lot.quantityAvailable, remaining);
+          
+          const before = lot.quantityAvailable;
+          lot.quantityAvailable -= subtract;
+          remaining -= subtract;
+
+          await new MouvementStock({
+            produitId: product._id,
+            lotNumber: lot.lotNumber,
+            type: "sortie",
+            quantite: subtract,
+            beforeQuantity: before,
+            afterQuantity: lot.quantityAvailable,
+            reason: "vente",
+            referenceId: confirmedSale._id,
+            utilisateur: req.user.fullName,
+            companyId: req.user.companyId,
+          }).save({ session });
+        }
+
+        product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
+        await product.save({ session });
+      }
+
+      // 4. Finance
+      const finance = new Finance({
+        dateTime: new Date(),
+        type: "sale",
+        sourceModule: "Sales",
+        reference: confirmedSale.invoiceNumber,
+        description: `Vente #${confirmedSale.invoiceNumber}`,
+        amount: confirmedSale.total,
+        isIncome: true,
+        paymentMethod: confirmedSale.paymentMethod,
+        employeeName: req.user.fullName,
+        saleId: confirmedSale._id,
+        companyId: req.user.companyId,
+      });
+      await finance.save({ session });
+
+      // 5. Activity
+      await logActivity({
+        actionType: "create",
+        entityType: "sale",
+        entityId: confirmedSale._id.toString(),
+        entityName: `Vente ${confirmedSale.invoiceNumber}`,
+        description: `Vente de ${confirmedSale.total} FCFA`,
+        companyId: req.user.companyId,
+        user: req.user.fullName,
+      });
+
+      return confirmedSale;
     });
+
+    res.status(201).json({ success: true, message: "Vente réussie", data: savedSale });
   } catch (error) {
-    next(error);
+    console.error("SALE_ERROR:", error.stack);
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 
-// Annuler une vente
-router.patch("/:id/cancel", async (req, res, next) => {
+router.patch("/:id/cancel", async (req, res) => {
   try {
-    const sale = await Sale.findOne({ _id: req.params.id, companyId: req.user.companyId });
-    if (!sale) {
-      return res.status(404).json({ success: false, message: "Vente introuvable", code: "NOT_FOUND" });
-    }
+    const result = await runInTransaction(async (session) => {
+      const sale = await Sale.findOne({ _id: req.params.id, companyId: req.user.companyId }).session(session);
+      if (!sale || sale.status === "cancelled") throw new Error("Vente introuvable ou déjà annulée");
 
-    if (sale.status === 'cancelled') {
-      return res.status(400).json({ success: false, message: "Vente déjà annulée", code: "ALREADY_CANCELLED" });
-    }
+      sale.status = "cancelled";
+      await sale.save({ session });
 
-    for (const item of sale.items) {
-      const product = await Product.findOne({ _id: item.product, companyId: req.user.companyId });
-      if (!product) continue;
+      for (const item of sale.items) {
+        const product = await Product.findOne({ _id: item.product, companyId: req.user.companyId }).session(session);
+        if (product && product.lots.length > 0) {
+          const lot = product.lots[0];
+          const before = lot.quantityAvailable;
+          lot.quantityAvailable += item.quantity;
+          
+          await new MouvementStock({
+            produitId: product._id,
+            lotNumber: lot.lotNumber,
+            type: "entrée",
+            quantite: item.quantity,
+            beforeQuantity: before,
+            afterQuantity: lot.quantityAvailable,
+            reason: "annulation_vente",
+            referenceId: sale._id,
+            utilisateur: req.user.fullName,
+            companyId: req.user.companyId,
+          }).save({ session });
 
-      const lot = product.lots.find((lot) => lot.lotNumber === item.lotNumber);
-      if (lot) {
-        lot.quantityAvailable += item.quantity;
+          product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
+          await product.save({ session });
+        }
       }
-      product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
-      await product.save();
-    }
 
-    sale.status = 'cancelled';
-    await sale.save();
-    
-    await logActivity({
-      actionType: "update",
-      entityType: "sale",
-      entityId: sale._id.toString(),
-      entityName: `Sale #${sale.invoiceNumber}`,
-      description: `Sale cancelled: ${sale.items.length} items`,
-      companyId: req.user.companyId,
-      user: req.user.fullName,
+      await new Finance({
+        dateTime: new Date(),
+        type: "refund",
+        sourceModule: "Sales",
+        reference: sale.invoiceNumber,
+        description: `Annulation Vente #${sale.invoiceNumber}`,
+        amount: sale.total,
+        isIncome: false,
+        paymentMethod: sale.paymentMethod,
+        employeeName: req.user.fullName,
+        saleId: sale._id,
+        companyId: req.user.companyId,
+      }).save({ session });
+
+      return sale;
     });
-
-    res.json({ success: true, message: "Vente annulée avec succès" });
+    res.json({ success: true, data: result });
   } catch (error) {
-    next(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const sales = await Sale.find({ companyId: req.user.companyId }).sort({ createdAt: -1 });
+    res.json({ success: true, data: sales });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 

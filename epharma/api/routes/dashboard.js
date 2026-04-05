@@ -14,6 +14,9 @@ router.get("/summary", async (req, res, next) => {
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const companyQuery = { companyId: req.user.companyId };
 
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(now.getDate() + 30);
+
     const [
       totalClients,
       totalSuppliers,
@@ -22,6 +25,8 @@ router.get("/summary", async (req, res, next) => {
       totalSales,
       productsLowStock,
       productsOutOfStock,
+      productsExpired,
+      productsNearExpiration,
       activitiesToday,
       newClientsToday,
       newConsultationsToday,
@@ -39,6 +44,16 @@ router.get("/summary", async (req, res, next) => {
         stockQuantity: { $gt: 0 }
       }),
       Product.countDocuments({ ...companyQuery, isActive: true, stockQuantity: 0 }),
+      Product.countDocuments({
+        ...companyQuery,
+        isActive: true,
+        "lots.expirationDate": { $lt: now }
+      }),
+      Product.countDocuments({
+        ...companyQuery,
+        isActive: true,
+        "lots.expirationDate": { $gte: now, $lte: thirtyDaysFromNow }
+      }),
       ActivityLog.countDocuments({ ...companyQuery, createdAt: { $gte: startOfToday } }),
       ActivityLog.countDocuments({
         ...companyQuery,
@@ -68,6 +83,8 @@ router.get("/summary", async (req, res, next) => {
         totalSales,
         productsLowStock,
         productsOutOfStock,
+        productsExpired,
+        productsNearExpiration,
         activitiesToday,
         newClientsToday,
         newConsultationsToday,

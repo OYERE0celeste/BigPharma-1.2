@@ -11,6 +11,7 @@ class AuthService {
   AuthService._internal();
 
   String? _token;
+  String? get token => _token;
 
   Future<String?> getToken() async {
     if (_token != null) return _token;

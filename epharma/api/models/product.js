@@ -17,6 +17,7 @@ const LotSchema = new mongoose.Schema({
 
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 200 },
+  sku: { type: String, trim: true, unique: true, sparse: true },
   category: { type: String, required: true, trim: true },
   description: { type: String, trim: true, maxlength: 500 },
   supplier: { type: String, trim: true, maxlength: 200 },
@@ -53,7 +54,38 @@ ProductSchema.virtual('stockStatus').get(function () {
   return 'in_stock';
 });
 
-ProductSchema.pre('save', function () {
+// Virtual pour le statut d'expiration global
+ProductSchema.virtual('expirationStatus').get(function () {
+  if (!this.lots || this.lots.length === 0) return 'OK';
+  
+  const now = new Date();
+  const thirtyDaysFromNow = new Date();
+  thirtyDaysFromNow.setDate(now.getDate() + 30);
+
+  let hasExpired = false;
+  let hasNearExpiration = false;
+
+  for (const lot of this.lots) {
+    if (new Date(lot.expirationDate) < now) {
+      hasExpired = true;
+      break;
+    }
+    if (new Date(lot.expirationDate) <= thirtyDaysFromNow) {
+      hasNearExpiration = true;
+    }
+  }
+
+  if (hasExpired) return 'EXPIRÉ';
+  if (hasNearExpiration) return 'BIENTÔT EXPIRÉ';
+  return 'OK';
+});
+
+ProductSchema.pre('save', async function () {
+  // Normalisation
+  if (this.name) this.name = this.name.trim();
+  if (this.supplier) this.supplier = this.supplier.trim();
+  if (this.category) this.category = this.category.trim();
+
   if (this.lots?.length) {
     this.stockQuantity = this.lots.reduce((sum, lot) => sum + (lot.quantityAvailable || 0), 0);
   }

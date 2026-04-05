@@ -105,6 +105,7 @@ class _ProductTableState extends State<ProductTable> {
       sortAscending: widget.sortAscending,
       columns: [
         DataColumn(label: _colHeader('Product Name', 'name')),
+        const DataColumn(label: Text('SKU')),
         DataColumn(label: _colHeader('Category', 'category')),
         DataColumn(label: _colHeader('Purchase Price', 'purchase')),
         DataColumn(label: _colHeader('Selling Price', 'selling')),
@@ -118,10 +119,21 @@ class _ProductTableState extends State<ProductTable> {
       rows: items.map((p) {
         final nearest = _nearestExpiration(p);
         final status = _productStatus(p);
+        
+        // Coloration des lignes en fonction du statut d'expiration
+        Color? rowColor;
+        if (p.expirationStatus == 'EXPIRÉ') {
+          rowColor = Colors.red.withOpacity(0.08);
+        } else if (p.expirationStatus == 'BIENTÔT EXPIRÉ') {
+          rowColor = Colors.orange.withOpacity(0.08);
+        }
+
         return DataRow(
           onSelectChanged: (_) => widget.onView(p),
+          color: WidgetStateProperty.resolveWith<Color?>((states) => rowColor),
           cells: [
-            DataCell(Text(p.name)),
+            DataCell(Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold))),
+            DataCell(Text(p.sku)),
             DataCell(Text(p.category)),
             DataCell(Text('€${p.purchasePrice.toStringAsFixed(2)}')),
             DataCell(Text('€${p.sellingPrice.toStringAsFixed(2)}')),
@@ -130,8 +142,8 @@ class _ProductTableState extends State<ProductTable> {
             DataCell(Text('${p.lots.length}')),
             DataCell(
               p.prescriptionRequired
-                  ? const Chip(label: Text('Yes'))
-                  : const Chip(label: Text('No')),
+                  ? const Icon(Icons.check_circle, color: Colors.blue, size: 18)
+                  : const Icon(Icons.cancel, color: Colors.grey, size: 18),
             ),
             DataCell(StatusBadge(status: status)),
             DataCell(
@@ -139,15 +151,23 @@ class _ProductTableState extends State<ProductTable> {
                 children: [
                   IconButton(
                     onPressed: () => widget.onView(p),
-                    icon: const Icon(Icons.visibility),
+                    icon: const Icon(Icons.visibility, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
+                  const SizedBox(width: 8),
                   IconButton(
                     onPressed: () => widget.onEdit(p),
-                    icon: const Icon(Icons.edit),
+                    icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
+                  const SizedBox(width: 8),
                   IconButton(
                     onPressed: () => widget.onDelete(p),
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
                 ],
               ),

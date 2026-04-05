@@ -7,6 +7,7 @@ import 'ventes/pharmacy_sales_page.dart';
 import 'products/pharmacy_products_page.dart';
 import 'clients/pharmacy_clients_page.dart';
 import 'activites/activity_register_page.dart';
+import 'commandes/orders_page.dart';
 import 'fournisseurs/fournisseurs_page.dart';
 import 'finances/pharmacy_finance_page.dart';
 import 'settings/settings_dialog.dart';
@@ -117,6 +118,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
           _navigateTo('Dashboard', const PharmacyDashboardPage()),
       'Stock': () => _navigateTo('Stock', const PharmacyProductsPage()),
       'Sales': () => _navigateTo('Sales', const PharmacySalesPage()),
+      'Commandes': () => _navigateTo('Commandes', const PharmacyOrdersPage()),
       'Clients': () => _navigateTo('Clients', const PharmacyClientsPage()),
       'Activity': () =>
           _navigateTo('Activity', const PharmacyActivityRegisterPage()),

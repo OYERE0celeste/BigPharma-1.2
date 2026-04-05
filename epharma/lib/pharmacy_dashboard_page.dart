@@ -93,6 +93,18 @@ class TopKPISection extends StatelessWidget {
                 color: kDangerRed,
               ),
               KPIData(
+                title: 'Expired',
+                value: '${productProvider.expiredCount}',
+                icon: Icons.event_busy,
+                color: Colors.redAccent,
+              ),
+              KPIData(
+                title: 'Near Exp.',
+                value: '${productProvider.nearExpirationCount}',
+                icon: Icons.event_note,
+                color: Colors.orangeAccent,
+              ),
+              KPIData(
                 title: 'Low stock',
                 value: '${productProvider.lowStockCount}',
                 icon: Icons.warning_amber,
@@ -271,30 +283,27 @@ class AlertsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = context.watch<ProductProvider>();
+    
     final alerts = [
       AlertData(
         title: 'Expired medicines',
-        count: 0,
+        count: productProvider.expiredCount,
         severity: AlertSeverity.critical,
       ),
       AlertData(
         title: 'Critical stock',
-        count: 0,
+        count: productProvider.outOfStockCount,
         severity: AlertSeverity.critical,
       ),
       AlertData(
-        title: 'Rejected prescriptions',
-        count: 0,
+        title: 'Low stock alerts',
+        count: productProvider.lowStockCount,
         severity: AlertSeverity.warning,
       ),
       AlertData(
-        title: 'Failed payments',
-        count: 0,
-        severity: AlertSeverity.warning,
-      ),
-      AlertData(
-        title: 'Recalled batches',
-        count: 0,
+        title: 'Near expiration',
+        count: productProvider.nearExpirationCount,
         severity: AlertSeverity.warning,
       ),
     ];

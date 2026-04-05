@@ -85,6 +85,15 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
       if (_filter == 'Out of stock' && p.availableStock > 0) {
         return false;
       }
+      if (_filter == 'Expired' && p.expirationStatus != 'EXPIRÉ') {
+        return false;
+      }
+      if (_filter == 'Near expiration' && p.expirationStatus != 'BIENTÔT EXPIRÉ') {
+        return false;
+      }
+      if (_filter == 'Prescription required' && !p.prescriptionRequired) {
+        return false;
+      }
       return true;
     }).toList();
 

@@ -9,6 +9,7 @@ import 'providers/supplier_provider.dart';
 import 'providers/client_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/order_provider.dart';
 import 'screens/auth/login_page.dart';
 
 void main() async {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SupplierProvider()),
         ChangeNotifierProvider(create: (_) => ClientProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: MaterialApp(
         title: 'BigPharma SaaS',

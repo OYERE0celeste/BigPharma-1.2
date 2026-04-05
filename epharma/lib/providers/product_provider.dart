@@ -17,6 +17,10 @@ class ProductProvider with ChangeNotifier {
       _products.where((p) => p.stockStatus == StockStatus.outOfStock).length;
   int get lowStockCount =>
       _products.where((p) => p.stockStatus == StockStatus.lowStock).length;
+  int get expiredCount =>
+      _products.where((p) => p.expirationStatus == 'EXPIRÉ').length;
+  int get nearExpirationCount =>
+      _products.where((p) => p.expirationStatus == 'BIENTÔT EXPIRÉ').length;
   int get totalProducts => _products.length;
 
   Future<void> loadProducts() async {

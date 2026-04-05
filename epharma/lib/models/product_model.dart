@@ -7,6 +7,7 @@ enum ProductStatus { active, discontinued }
 class Product {
   final String id;
   final String name;
+  final String sku;
   final String category;
   final String description;
   final String supplier;
@@ -16,10 +17,12 @@ class Product {
   final double sellingPrice;
   final int lowStockThreshold;
   final List<Lot> lots;
+  final String expirationStatus;
 
   Product({
     required this.id,
     required this.name,
+    this.sku = '',
     required this.category,
     required this.description,
     required this.supplier,
@@ -29,6 +32,7 @@ class Product {
     required this.sellingPrice,
     required this.lowStockThreshold,
     required this.lots,
+    this.expirationStatus = 'OK',
   });
 
   int get totalStock => lots.fold<int>(0, (sum, lot) => sum + lot.quantity);
@@ -57,6 +61,7 @@ class Product {
   Product copyWith({
     String? id,
     String? name,
+    String? sku,
     String? category,
     String? description,
     String? supplier,
@@ -66,10 +71,12 @@ class Product {
     double? sellingPrice,
     int? lowStockThreshold,
     List<Lot>? lots,
+    String? expirationStatus,
   }) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
+      sku: sku ?? this.sku,
       category: category ?? this.category,
       description: description ?? this.description,
       supplier: supplier ?? this.supplier,
@@ -79,6 +86,7 @@ class Product {
       sellingPrice: sellingPrice ?? this.sellingPrice,
       lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
       lots: lots ?? this.lots,
+      expirationStatus: expirationStatus ?? this.expirationStatus,
     );
   }
 
@@ -86,6 +94,7 @@ class Product {
     return {
       'id': id,
       'name': name,
+      'sku': sku,
       'category': category,
       'description': description,
       'supplier': supplier,
@@ -95,6 +104,7 @@ class Product {
       'sellingPrice': sellingPrice,
       'lowStockThreshold': lowStockThreshold,
       'lots': lots.map((lot) => lot.toJson()).toList(),
+      'expirationStatus': expirationStatus,
     };
   }
 
@@ -102,6 +112,7 @@ class Product {
     return Product(
       id: json['id']?.toString() ?? json['_id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
+      sku: json['sku']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       supplier: json['supplier']?.toString() ?? '',
@@ -120,6 +131,7 @@ class Product {
               ?.map((e) => Lot.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      expirationStatus: json['expirationStatus']?.toString() ?? 'OK',
     );
   }
 }

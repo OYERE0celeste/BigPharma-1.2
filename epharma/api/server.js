@@ -41,8 +41,13 @@ app.use("/api/products", authMiddleware, require("./routes/products"));
 app.use("/api/sales", authMiddleware, require("./routes/sales"));
 app.use("/api/finance", authMiddleware, require("./routes/finance"));
 app.use("/api/dashboard", authMiddleware, require("./routes/dashboard"));
+app.use("/api/mouvements", authMiddleware, require("./routes/mouvements"));
 app.use("/api/activityLogs", authMiddleware, require("./routes/activityLogs"));
 app.use("/api/consultations", authMiddleware, require("./routes/consultations"));
+app.use("/api/orders", authMiddleware, require("./routes/orders"));
+
+const { initCronJobs } = require("./utils/cronJobs");
+initCronJobs();
 
 app.get('/api/test-route', (req, res) => res.json({ success: true, message: 'API test route works' }));
 

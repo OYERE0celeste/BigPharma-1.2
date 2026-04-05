@@ -10,14 +10,14 @@ const FinanceSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    enum: ["sale", "purchase", "manual", "refund", "other"],
+    enum: ["sale", "purchase", "manual", "refund", "other", "vente", "achat", "remboursement"],
     default: "other",
   },
   sourceModule: {
     type: String,
     required: true,
     trim: true,
-    enum: ["Ventes", "Commandes", "Manual", "Sales", "Orders", "Manual Entry"],
+    enum: ["Ventes", "Commandes", "Manual", "Sales", "Orders", "Manual Entry", "ventes", "commandes"],
     default: "Manual",
   },
   reference: {
