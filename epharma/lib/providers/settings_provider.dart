@@ -1,4 +1,7 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
+
+import '../services/auth_service.dart';
+import '../services/settings_service.dart';
 
 class UserSettings {
   final String fullName;
@@ -18,6 +21,23 @@ class UserSettings {
     required this.permissions,
     required this.loginHistory,
   });
+
+  factory UserSettings.empty() {
+    return UserSettings(
+      fullName: '',
+      email: '',
+      role: 'assistant',
+      profileImageUrl: '',
+      twoFactorEnabled: false,
+      permissions: {
+        'gerer produits': false,
+        'gerer clients': false,
+        'gerer ventes': false,
+        'acces finances': false,
+      },
+      loginHistory: const [],
+    );
+  }
 
   UserSettings copyWith({
     String? fullName,
@@ -45,49 +65,34 @@ class LoginHistory {
   final String device;
   final bool success;
 
-  LoginHistory({
+  const LoginHistory({
     required this.date,
     required this.device,
     required this.success,
   });
+
+  factory LoginHistory.fromJson(Map<String, dynamic> json) {
+    return LoginHistory(
+      date: DateTime.tryParse(json['date']?.toString() ?? '') ?? DateTime.now(),
+      device: json['device']?.toString() ?? 'Unknown',
+      success: json['success'] == true,
+    );
+  }
 }
 
 class SettingsProvider extends ChangeNotifier {
-  UserSettings _settings = UserSettings(
-    fullName: 'Dr. Jean Dupont',
-    email: 'jean.dupont@pharmacie.fr',
-    role: 'admin',
-    profileImageUrl: '',
-    twoFactorEnabled: false,
-    permissions: {
-      'gérer produits': true,
-      'gérer clients': true,
-      'gérer ventes': true,
-      'gérer fournisseurs': true,
-      'accès finances': true,
-    },
-    loginHistory: [
-      LoginHistory(
-        date: DateTime.now().subtract(const Duration(hours: 2)),
-        device: 'Web - Chrome',
-        success: true,
-      ),
-      LoginHistory(
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        device: 'Mobile - Android',
-        success: true,
-      ),
-      LoginHistory(
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        device: 'Web - Firefox',
-        success: false,
-      ),
-    ],
-  );
+  final SettingsService _settingsService = SettingsService();
+  final AuthService _authService = AuthService();
 
+  UserSettings _settings = UserSettings.empty();
   UserSettings get settings => _settings;
 
-  final List<String> _availableRoles = ['admin', 'pharmacien', 'assistant'];
+  final List<String> _availableRoles = [
+    'admin',
+    'pharmacien',
+    'assistant',
+    'caissier',
+  ];
   List<String> get availableRoles => _availableRoles;
 
   bool _isLoading = false;
@@ -95,6 +100,9 @@ class SettingsProvider extends ChangeNotifier {
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  bool _isMockData = false;
+  bool get isMockData => _isMockData;
 
   void setLoading(bool loading) {
     _isLoading = loading;
@@ -114,12 +122,42 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> loadSettings() async {
     setLoading(true);
     clearError();
+
     try {
-      // Dans une version future, ceci appellera api/users/profile
-      // Pour l'instant on garde les données par défaut mais via une structure prête
-      await Future.delayed(const Duration(milliseconds: 500));
+      final payload = await _settingsService.loadSettings();
+
+      final permissions = <String, bool>{};
+      final rawPermissions = payload['permissions'];
+      if (rawPermissions is Map) {
+        for (final entry in rawPermissions.entries) {
+          permissions[entry.key.toString()] = entry.value == true;
+        }
+      }
+
+      final history = <LoginHistory>[];
+      final rawHistory = payload['loginHistory'];
+      if (rawHistory is List) {
+        history.addAll(
+          rawHistory.whereType<Map>().map(
+            (e) => LoginHistory.fromJson(Map<String, dynamic>.from(e)),
+          ),
+        );
+      }
+
+      _settings = _settings.copyWith(
+        fullName: payload['fullName']?.toString() ?? '',
+        email: payload['email']?.toString() ?? '',
+        role: payload['role']?.toString() ?? 'assistant',
+        profileImageUrl: payload['profileImageUrl']?.toString() ?? '',
+        twoFactorEnabled: payload['twoFactorEnabled'] == true,
+        permissions: permissions.isEmpty ? _settings.permissions : permissions,
+        loginHistory: history,
+      );
+
+      _isMockData = false;
       notifyListeners();
     } catch (e) {
+      _isMockData = true;
       setError('Erreur lors du chargement des paramètres');
     } finally {
       setLoading(false);
@@ -135,28 +173,24 @@ class SettingsProvider extends ChangeNotifier {
     clearError();
 
     try {
-      // Simuler appel API vers api/users/profile
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (!_isValidEmail(email)) {
-        setError('Email invalide');
-        setLoading(false);
-        return false;
-      }
-
-      _settings = _settings.copyWith(
+      final updated = await _authService.updateProfile(
         fullName: fullName,
         email: email,
-        role: role,
+        phoneNumber: '',
       );
 
+      _settings = _settings.copyWith(
+        fullName: updated['fullName']?.toString() ?? fullName,
+        email: updated['email']?.toString() ?? email,
+        role: role,
+      );
       notifyListeners();
-      setLoading(false);
       return true;
     } catch (e) {
       setError('Erreur lors de la mise à jour du profil');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -169,54 +203,24 @@ class SettingsProvider extends ChangeNotifier {
     clearError();
 
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Validation
-      if (currentPassword.length < 6) {
-        setError('Le mot de passe actuel est incorrect');
-        setLoading(false);
-        return false;
-      }
-
-      if (newPassword.length < 8) {
-        setError('Le nouveau mot de passe doit contenir au moins 8 caractères');
-        setLoading(false);
-        return false;
-      }
-
-      if (newPassword != confirmPassword) {
-        setError('Les mots de passe ne correspondent pas');
-        setLoading(false);
-        return false;
-      }
-
-      setLoading(false);
+      await _authService.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
       return true;
     } catch (e) {
       setError('Erreur lors du changement de mot de passe');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
   Future<bool> updateProfileImage(String imageUrl) async {
-    setLoading(true);
-    clearError();
-
-    try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 1));
-
-      _settings = _settings.copyWith(profileImageUrl: imageUrl);
-
-      setLoading(false);
-      return true;
-    } catch (e) {
-      setError('Erreur lors de la mise à jour de la photo de profil');
-      setLoading(false);
-      return false;
-    }
+    _settings = _settings.copyWith(profileImageUrl: imageUrl);
+    notifyListeners();
+    return true;
   }
 
   Future<bool> toggleTwoFactor(bool enabled) async {
@@ -224,24 +228,22 @@ class SettingsProvider extends ChangeNotifier {
     clearError();
 
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 1));
-
-      _settings = _settings.copyWith(twoFactorEnabled: enabled);
-
-      setLoading(false);
+      final actualEnabled = await _settingsService.updateTwoFactor(enabled);
+      _settings = _settings.copyWith(twoFactorEnabled: actualEnabled);
+      notifyListeners();
       return true;
     } catch (e) {
-      setError('Erreur lors de la mise à jour de l\'authentification à deux facteurs');
-      setLoading(false);
+      setError('Erreur lors de la mise à jour de la 2FA');
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
   Future<bool> updatePermission(String key, bool value) async {
-    final Map<String, bool> newPermissions = Map.from(_settings.permissions);
+    final newPermissions = Map<String, bool>.from(_settings.permissions);
     newPermissions[key] = value;
-    return await updatePermissions(newPermissions);
+    return updatePermissions(newPermissions);
   }
 
   Future<bool> updatePermissions(Map<String, bool> permissions) async {
@@ -249,89 +251,71 @@ class SettingsProvider extends ChangeNotifier {
     clearError();
 
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 1));
-
+      await _settingsService.updatePermissions(permissions);
       _settings = _settings.copyWith(permissions: permissions);
-
-      setLoading(false);
+      notifyListeners();
       return true;
     } catch (e) {
       setError('Erreur lors de la mise à jour des permissions');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
   Future<bool> backupData() async {
     setLoading(true);
     clearError();
-
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 2));
-
-      setLoading(false);
+      await _settingsService.backupData();
       return true;
     } catch (e) {
       setError('Erreur lors de la sauvegarde des données');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
-  Future<bool> restoreData(String filePath) async {
+  Future<bool> restoreData(String jsonContent) async {
     setLoading(true);
     clearError();
-
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 2));
-
-      setLoading(false);
+      await _settingsService.restoreData(jsonContent);
       return true;
     } catch (e) {
       setError('Erreur lors de la restauration des données');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
   Future<bool> exportData(String format) async {
     setLoading(true);
     clearError();
-
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 1));
-
-      setLoading(false);
+      await _settingsService.exportData(format);
       return true;
     } catch (e) {
       setError('Erreur lors de l\'exportation des données');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
-  Future<bool> importData(String filePath) async {
+  Future<bool> importData(String jsonContent) async {
     setLoading(true);
     clearError();
-
     try {
-      // Simuler un appel API
-      await Future.delayed(const Duration(seconds: 2));
-
-      setLoading(false);
+      await _settingsService.importData(jsonContent);
       return true;
     } catch (e) {
       setError('Erreur lors de l\'importation des données');
-      setLoading(false);
       return false;
+    } finally {
+      setLoading(false);
     }
-  }
-
-  bool _isValidEmail(String email) {
-    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
+
 import '../models/company_model.dart';
+import '../models/user_model.dart';
 import '../services/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -18,23 +19,31 @@ class AuthProvider with ChangeNotifier {
 
   final AuthService _authService = AuthService();
 
-  // Initialize: check if user is already logged in
+  String _readableError(Object error) {
+    final message = error.toString();
+    if (message.startsWith('Exception: ')) {
+      return message.substring('Exception: '.length);
+    }
+    return message;
+  }
+
   Future<void> checkAuthStatus() async {
     _isLoading = true;
     notifyListeners();
 
     try {
+      final local = await _authService.getStoredSession();
+      if (local != null) {
+        _user = UserModel.fromJson(local['user']);
+        _company = CompanyModel.fromJson(local['company']);
+      }
+
       final data = await _authService.getCurrentUser();
-      debugPrint('[Auth] checkAuthStatus data: $data');
       if (data != null) {
         _user = UserModel.fromJson(data);
-        if (data['companyId'] is Map) {
-          _company = CompanyModel.fromJson(data['companyId']);
-        }
-        debugPrint('[Auth] User authenticated: ${_user?.fullName}');
       }
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _readableError(e);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -48,21 +57,18 @@ class AuthProvider with ChangeNotifier {
 
     try {
       final responseData = await _authService.login(email, password);
-      debugPrint('[Auth] Login response: ${responseData['success']}');
       if (responseData['success'] == true) {
         _user = UserModel.fromJson(responseData['data']['user']);
         _company = CompanyModel.fromJson(responseData['data']['company']);
-        _isLoading = false;
-        debugPrint('[Auth] Login state set. User: ${_user?.fullName}');
-        notifyListeners();
         return true;
       }
       return false;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _readableError(e);
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      return false;
     }
   }
 
@@ -73,7 +79,9 @@ class AuthProvider with ChangeNotifier {
     required String address,
     required String fullName,
     required String adminEmail,
-    required String password, required String city, required country,
+    required String password,
+    required String city,
+    required String country,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -86,7 +94,7 @@ class AuthProvider with ChangeNotifier {
         companyPhone: companyPhone,
         address: address,
         city: city,
-        country: country,
+        country: country.toString(),
         fullName: fullName,
         adminEmail: adminEmail,
         password: password,
@@ -95,16 +103,74 @@ class AuthProvider with ChangeNotifier {
       if (responseData['success'] == true) {
         _user = UserModel.fromJson(responseData['data']['user']);
         _company = CompanyModel.fromJson(responseData['data']['company']);
-        _isLoading = false;
-        notifyListeners();
         return true;
       }
       return false;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = _readableError(e);
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<bool> updateProfile({
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final responseData = await _authService.updateProfile(
+        fullName: fullName,
+        email: email,
+        phoneNumber: phoneNumber,
+      );
+
+      _user = UserModel.fromJson(responseData);
+      return true;
+    } catch (e) {
+      _errorMessage = _readableError(e);
       return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> requestPasswordReset(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _authService.requestPasswordReset(email);
+    } catch (e) {
+      _errorMessage = _readableError(e);
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> resetPassword(String token, String newPassword) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _authService.resetPassword(token, newPassword);
+    } catch (e) {
+      _errorMessage = _readableError(e);
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 

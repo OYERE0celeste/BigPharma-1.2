@@ -4,7 +4,6 @@ enum ActivityType {
   sale,
   return_,
   restocking,
-  supplierPayment,
   stockAdjustment,
   cancellation,
 }
@@ -86,8 +85,6 @@ class ActivityModel {
         return 'Retour';
       case ActivityType.restocking:
         return 'Approvisionnement';
-      case ActivityType.supplierPayment:
-        return 'Paiement Fournisseur';
       case ActivityType.stockAdjustment:
         return 'Ajustement Stock';
       case ActivityType.cancellation:
@@ -120,8 +117,6 @@ class ActivityModel {
         return Icons.assignment_return;
       case ActivityType.restocking:
         return Icons.add_business;
-      case ActivityType.supplierPayment:
-        return Icons.payments;
       case ActivityType.stockAdjustment:
         return Icons.settings_backup_restore;
       case ActivityType.cancellation:
@@ -137,8 +132,6 @@ class ActivityModel {
         return Colors.orange;
       case ActivityType.restocking:
         return Colors.blue;
-      case ActivityType.supplierPayment:
-        return Colors.purple;
       case ActivityType.stockAdjustment:
         return Colors.teal;
       case ActivityType.cancellation:

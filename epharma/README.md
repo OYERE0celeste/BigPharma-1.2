@@ -1,16 +1,166 @@
-# epharma
+﻿# ePharma
 
-A new Flutter project.
+Application full-stack de gestion pharmaceutique unifiée.
 
-## Getting Started
+Cette application Flutter combine les fonctionnalités pour les clients et les pharmacies en une seule app, avec un routage basé sur les rôles utilisateur.
 
-This project is a starting point for a Flutter application.
+- **Pour les clients** : Recherche de médicaments, commandes, historique des achats.
+- **Pour les pharmacies** : Gestion des stocks, validation des prescriptions, dashboard financier.
 
-A few resources to get you started if this is your first Flutter project:
+- Frontend: Flutter (`lib/`)
+- Backend: Node.js/Express + MongoDB (`api/`)
+- Base API: `/api`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Prérequis
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter SDK (stable)
+- Dart SDK (via Flutter)
+- Node.js 18+
+- npm 9+
+- MongoDB (local ou distant)
+
+## Installation
+
+### 1) Backend
+
+```bash
+cd api
+npm install
+```
+
+Copier les variables d'environnement:
+
+```bash
+cp .env.example .env
+```
+
+### 2) Frontend
+
+```bash
+flutter pub get
+```
+
+## Variables d'environnement backend
+
+Fichier: `api/.env`
+
+Variables requises:
+
+- `MONGODB_URI` (obligatoire)
+- `JWT_SECRET` (obligatoire)
+
+Variables optionnelles:
+
+- `PORT` (défaut: `5000`)
+- `CORS_ORIGIN` (défaut: `*`)
+
+## Structure de l'application
+
+- `lib/` : Code Flutter principal
+  - `models/` : Modèles de données pour pharmacies
+  - `client_models/` : Modèles de données pour clients
+  - `services/` : Services API pour pharmacies
+  - `client_services/` : Services API pour clients
+  - `providers/` : Providers pour gestion d'état pharmacies
+  - `client_services/` : Providers pour clients (CartProvider, etc.)
+  - `pages/client/` : Pages spécifiques aux clients
+  - `screens/` : Pages communes et pour pharmacies
+
+## Authentification et Rôles
+
+L'application utilise l'API backend pour l'authentification. Les rôles supportés :
+- `client` : Accès aux fonctionnalités client
+- `pharmacien`, `admin`, etc. : Accès aux fonctionnalités pharmacie
+
+Après connexion, l'app redirige automatiquement vers l'interface appropriée selon le rôle.
+- `FEATURE_2FA_ENABLED` (`true`/`false`, défaut `false`)
+- `NODE_ENV` (`development`, `test`, `production`)
+
+Exemple minimal:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/epharma
+JWT_SECRET=change-me-strong-secret
+PORT=5000
+CORS_ORIGIN=http://localhost:3000,http://localhost:5000,http://127.0.0.1:5000
+FEATURE_2FA_ENABLED=false
+NODE_ENV=development
+```
+
+En developpement, l'API autorise aussi automatiquement les origines locales `localhost`, `127.0.0.1` et `::1` sur n'importe quel port pour faciliter `flutter run -d chrome`.
+
+## Lancement local
+
+### Backend
+
+```bash
+cd api
+npm run dev
+```
+
+### Frontend
+
+```bash
+flutter run
+```
+
+Pour forcer l'URL API côté Flutter:
+
+```bash
+flutter run --dart-define=API_BASE_URL=http://localhost:5000/api
+```
+
+## Jeux de données
+
+Vous pouvez créer un tenant + admin via:
+
+- `POST /api/auth/register`
+
+Puis créer des utilisateurs internes via:
+
+- `POST /api/users` (admin uniquement)
+
+## Tests
+
+### Commande stable unique (projet)
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/test-all.ps1
+```
+
+### Détail
+
+- Backend: `cd api && npm run test:api`
+- Frontend: `flutter test`
+
+## Déploiement
+
+1. Définir les variables de production (`MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGIN`).
+2. Activer HTTPS et reverse-proxy (Nginx/Traefik).
+3. Déployer API (`npm run start`) avec process manager (PM2/systemd).
+4. Build Flutter web/mobile selon la cible.
+
+## Troubleshooting
+
+- `Missing required environment variables`:
+  - Vérifier `api/.env` et les clés obligatoires.
+- `Unauthorized: invalid or expired token`:
+  - Vérifier expiration JWT et secret partagé.
+- Erreurs CORS:
+  - Ajuster `CORS_ORIGIN` et verifier que l'API est bien demarree sur `http://localhost:5000`.
+- `MongoDB connection error`:
+  - Vérifier `MONGODB_URI` et l'accessibilité réseau.
+
+## Sécurité et rotation des secrets
+
+- Ne jamais versionner les fichiers `.env`.
+- Utiliser un gestionnaire de secrets (Vault, AWS Secrets Manager, etc.).
+- Rotation recommandée:
+  1. Générer un nouveau `JWT_SECRET`.
+  2. Déployer en fenêtre contrôlée.
+  3. Forcer la reconnexion des sessions actives.
+  4. Révoquer l'ancien secret.
+
+## Changelog
+
+Consulter `CHANGELOG.md` pour le détail des correctifs implémentés.

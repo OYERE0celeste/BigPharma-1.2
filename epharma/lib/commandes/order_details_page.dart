@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/order_provider.dart';
-import '../providers/auth_provider.dart';
 import '../models/order_model.dart';
+import '../providers/auth_provider.dart';
+import '../providers/order_provider.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final String orderId;
+
   const OrderDetailsPage({super.key, required this.orderId});
 
   @override
@@ -16,40 +18,69 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   OrderModel? _order;
   List<OrderTimelineEntry> _timeline = [];
   bool _isLoading = true;
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _loadDetails();
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (mounted) {
+        _loadDetails();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadDetails() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final data = await Provider.of<OrderProvider>(context, listen: false).fetchOrderDetails(widget.orderId, authProvider.token!);
-    if (data != null) {
-      if (mounted) {
-        setState(() {
-          _order = data['order'];
-          _timeline = data['timeline'];
-          _isLoading = false;
-        });
-      }
+    final authProvider = context.read<AuthProvider>();
+    final data = await context.read<OrderProvider>().fetchOrderDetails(
+      widget.orderId,
+      authProvider.token!,
+    );
+
+    if (!mounted) {
+      return;
     }
+
+    setState(() {
+      _order = data?['order'] as OrderModel?;
+      _timeline = (data?['timeline'] as List<OrderTimelineEntry>?) ?? [];
+      _isLoading = false;
+    });
+  }
+
+  String _formatMoney(double amount) => '${amount.toStringAsFixed(0)} FCFA';
+
+  String _formatTimestamp(DateTime dt) {
+    final hour = dt.hour.toString().padLeft(2, '0');
+    final minute = dt.minute.toString().padLeft(2, '0');
+    return '${dt.day}/${dt.month}/${dt.year} à $hour:$minute';
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    if (_order == null) return const Scaffold(body: Center(child: Text("Commande non trouvée.")));
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (_order == null) {
+      return const Scaffold(body: Center(child: Text('Commande non trouvée.')));
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Détails Commande : ${_order!.orderNumber}'),
+        title: Text('Commande ${_order!.orderNumber}'),
         actions: [
-          if (_order!.status != OrderStatus.cancelled && _order!.status != OrderStatus.delivered)
+          if (_order!.availableNextStatuses.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.edit_note),
-              onPressed: () => _showStatusUpdateDialog(),
+              onPressed: _showStatusUpdateDialog,
               tooltip: 'Mettre à jour le statut',
             ),
         ],
@@ -80,14 +111,35 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       children: [
         _buildInfoCard('Client', _order!.clientName, Icons.person_outline),
         const SizedBox(width: 16),
-        _buildInfoCard('Statut Actuel', _order!.status.label, Icons.info_outline, color: _getStatusColor(_order!.status)),
+        _buildInfoCard(
+          'Statut',
+          _order!.status.label,
+          Icons.info_outline,
+          color: _order!.status.color,
+        ),
         const SizedBox(width: 16),
-        _buildInfoCard('Total', '${_order!.total.toStringAsFixed(2)} €', Icons.account_balance_wallet_outlined),
+        _buildInfoCard(
+          'Total',
+          _formatMoney(_order!.totalPrice),
+          Icons.account_balance_wallet_outlined,
+        ),
+        const SizedBox(width: 16),
+        _buildInfoCard(
+          'Ordonnance',
+          _order!.prescriptionRequired ? 'Requise' : 'Non requise',
+          Icons.description_outlined,
+          color: _order!.prescriptionRequired ? Colors.orange : Colors.grey,
+        ),
       ],
     );
   }
 
-  Widget _buildInfoCard(String title, String value, IconData icon, {Color? color}) {
+  Widget _buildInfoCard(
+    String title,
+    String value,
+    IconData icon, {
+    Color? color,
+  }) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -100,12 +152,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           children: [
             Icon(icon, color: color ?? Colors.grey[600]),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: TextStyle(color: Colors.grey[500], fontSize: 12)),
-                Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                  ),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -116,11 +179,18 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Widget _buildItemsList() {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey[200]!)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Articles commandés', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            'Produits commandés',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const Divider(),
           ListView.builder(
             shrinkWrap: true,
@@ -130,15 +200,27 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               final item = _order!.items[index];
               return ListTile(
                 title: Text(item.name),
-                subtitle: Text('${item.quantity} x ${item.price.toStringAsFixed(2)} €'),
-                trailing: Text('${item.subtotal.toStringAsFixed(2)} €', style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                  '${item.quantity} x ${_formatMoney(item.price)}',
+                ),
+                trailing: Text(
+                  _formatMoney(item.subtotal),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               );
             },
           ),
           const Divider(),
           Align(
             alignment: Alignment.centerRight,
-            child: Text('TOTAL : ${_order!.total.toStringAsFixed(2)} €', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF6366F1))),
+            child: Text(
+              'TOTAL : ${_formatMoney(_order!.totalPrice)}',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2563EB),
+              ),
+            ),
           ),
         ],
       ),
@@ -148,13 +230,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Widget _buildTimeline() {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey[200]!)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Timeline / Historique', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            'Historique',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
-          ..._timeline.map((entry) => _buildTimelineItem(entry)),
+          ..._timeline.map(_buildTimelineItem),
         ],
       ),
     );
@@ -169,7 +258,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             Container(
               width: 12,
               height: 12,
-              decoration: BoxDecoration(color: _getStatusColor(entry.status), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: entry.status.color,
+                shape: BoxShape.circle,
+              ),
             ),
             Container(width: 2, height: 40, color: Colors.grey[200]),
           ],
@@ -179,10 +271,25 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(entry.status.label, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text('${entry.userName} - ${_formatTimestamp(entry.timestamp)}', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+              Text(
+                entry.status.label,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${entry.userName} - ${_formatTimestamp(entry.timestamp)}',
+                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              ),
               if (entry.note != null && entry.note!.isNotEmpty)
-                Text(entry.note!, style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    entry.note!,
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
               const SizedBox(height: 16),
             ],
           ),
@@ -191,58 +298,86 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
-  Color _getStatusColor(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending: return Colors.orange;
-      case OrderStatus.validated: return Colors.blue;
-      case OrderStatus.preparing: return Colors.purple;
-      case OrderStatus.delivered: return Colors.green;
-      case OrderStatus.cancelled: return Colors.red;
-    }
-  }
-
-  String _formatTimestamp(DateTime dt) {
-    return "${dt.day}/${dt.month} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}";
-  }
-
   void _showStatusUpdateDialog() {
-    String? selectedStatus;
     final noteController = TextEditingController();
+    OrderStatus? selectedStatus = _order!.availableNextStatuses.isNotEmpty
+        ? _order!.availableNextStatuses.first
+        : null;
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Mettre à jour le statut"),
+          title: const Text('Mettre à jour le statut'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: "Nouveau Statut"),
-                items: OrderStatus.values.map((s) => DropdownMenuItem(value: s.name, child: Text(s.label))).toList(),
-                onChanged: (val) => selectedStatus = val,
+              DropdownButtonFormField<OrderStatus>(
+                value: selectedStatus,
+                decoration: const InputDecoration(labelText: 'Nouveau statut'),
+                items: _order!.availableNextStatuses
+                    .map(
+                      (status) => DropdownMenuItem<OrderStatus>(
+                        value: status,
+                        child: Text(status.label),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) => selectedStatus = value,
               ),
+              const SizedBox(height: 12),
               TextField(
                 controller: noteController,
-                decoration: const InputDecoration(labelText: "Note (optionnel)"),
+                decoration: const InputDecoration(
+                  labelText: 'Note (optionnel)',
+                ),
+                maxLines: 3,
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text("Annuler")),
-            ElevatedButton(
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Annuler'),
+            ),
+            FilledButton(
               onPressed: () async {
-                if (selectedStatus != null) {
-                  final auth = Provider.of<AuthProvider>(context, listen: false);
-                  final success = await Provider.of<OrderProvider>(context, listen: false)
-                    .updateOrderStatus(_order!.id, selectedStatus!, noteController.text, auth.token!);
-                  if (success) {
-                    Navigator.pop(context);
-                    _loadDetails();
-                  }
+                if (selectedStatus == null) {
+                  return;
+                }
+
+                final auth = context.read<AuthProvider>();
+                final provider = context.read<OrderProvider>();
+                final success = await provider.updateOrderStatus(
+                  _order!.id,
+                  selectedStatus!.apiValue,
+                  noteController.text.trim().isEmpty
+                      ? null
+                      : noteController.text.trim(),
+                  auth.token!,
+                );
+
+                if (!mounted) {
+                  return;
+                }
+
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      success
+                          ? 'Statut mis à jour.'
+                          : (provider.errorMessage ??
+                                'Échec de la mise à jour.'),
+                    ),
+                  ),
+                );
+
+                if (success) {
+                  _loadDetails();
                 }
               },
-              child: const Text("Valider"),
+              child: const Text('Valider'),
             ),
           ],
         );

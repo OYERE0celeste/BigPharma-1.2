@@ -1,14 +1,13 @@
 import 'package:epharma/settings/profil_dialog.dart';
 import 'package:epharma/settings/user_management_page.dart';
-//import 'package:epharma/settings/securite_dialog.dart';
-//import 'package:epharma/settings/gestion_donnees_dialog.dart';
+import 'package:epharma/settings/securite_dialog.dart';
+import 'package:epharma/settings/gestion_donnees_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/app_colors.dart';
 import 'settings_theme.dart';
-
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
@@ -89,16 +88,22 @@ class _SettingsDialogState extends State<SettingsDialog> {
       child: Actions(
         actions: <Type, Action<Intent>>{
           DismissIntent: CallbackAction<DismissIntent>(
-            onInvoke: (Intent intent) => Navigator.of(context, rootNavigator: true).pop(),
+            onInvoke: (Intent intent) =>
+                Navigator.of(context, rootNavigator: true).pop(),
           ),
         },
         child: Focus(
           autofocus: true,
           child: Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             elevation: 24,
             clipBehavior: Clip.antiAlias,
-            insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 40,
+            ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(
                 maxWidth: SettingsTheme.dialogMaxWidth,
@@ -121,6 +126,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               break;
                             case 'users':
                               page = const UserManagementDialog();
+                              break;
+                            case 'security':
+                              page = const SecuriteDialog();
+                              break;
+                            case 'data':
+                              page = const GestionDonneesDialog();
                               break;
                             case 'main':
                             default:
@@ -156,20 +167,24 @@ class _SettingsDialogState extends State<SettingsDialog> {
             IconButton(
               onPressed: () {
                 _settingsNavKey.currentState?.pop();
-                setState(() => _canGoBack = _settingsNavKey.currentState?.canPop() ?? false);
+                setState(
+                  () => _canGoBack =
+                      _settingsNavKey.currentState?.canPop() ?? false,
+                );
               },
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: SettingsTheme.primary, size: 20),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: SettingsTheme.primary,
+                size: 20,
+              ),
               splashRadius: 24,
             )
           else
             const SizedBox(width: 8),
-          
+
           const Icon(Icons.settings, color: SettingsTheme.primary, size: 28),
           const SizedBox(width: 16),
-          const Text(
-            'Paramètres Système',
-            style: SettingsTheme.headerTitle,
-          ),
+          const Text('Paramètres Système', style: SettingsTheme.headerTitle),
           const Spacer(),
           IconButton(
             onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
@@ -189,12 +204,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
         var begin = const Offset(1.0, 0.0);
         var end = Offset.zero;
         var curve = SettingsTheme.animationCurve;
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
 
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
+        return SlideTransition(position: animation.drive(tween), child: child);
       },
       transitionDuration: SettingsTheme.animationDuration,
     );
@@ -213,7 +228,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
         onTap: () {
           _settingsNavKey.currentState?.pushNamed(routeName).then((_) {
             if (mounted) {
-              setState(() => _canGoBack = _settingsNavKey.currentState?.canPop() ?? false);
+              setState(
+                () => _canGoBack =
+                    _settingsNavKey.currentState?.canPop() ?? false,
+              );
             }
           });
           setState(() => _canGoBack = true);
@@ -245,7 +263,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: SettingsTheme.textSecondary),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: SettingsTheme.textSecondary,
+              ),
             ],
           ),
         ),
@@ -266,8 +287,15 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 children: [
                   _buildProfileSummary(provider),
                   const SizedBox(height: 32),
-                  const Text("PRÉFÉRENCES ET SÉCURITÉ", 
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: SettingsTheme.textSecondary, letterSpacing: 1.2)),
+                  const Text(
+                    "PRÉFÉRENCES ET SÉCURITÉ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: SettingsTheme.textSecondary,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   _buildNavigationTile(
                     icon: Icons.person_outline_rounded,
@@ -285,13 +313,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     icon: Icons.security_outlined,
                     title: "Sécurité",
                     subtitle: "Mot de passe et authentification",
-                    routeName: 'profile',
+                    routeName: 'security',
                   ),
                   _buildNavigationTile(
                     icon: Icons.data_usage_rounded,
                     title: "Gestion des données",
                     subtitle: "Sauvegarde, export et nettoyage",
-                    routeName: 'profile',
+                    routeName: 'data',
                   ),
                 ],
               ),
@@ -300,7 +328,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
               Container(
                 color: Colors.white.withOpacity(0.7),
                 child: const Center(
-                  child: CircularProgressIndicator(color: SettingsTheme.primary),
+                  child: CircularProgressIndicator(
+                    color: SettingsTheme.primary,
+                  ),
                 ),
               ),
           ],
@@ -326,7 +356,11 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ? NetworkImage(provider.settings.profileImageUrl)
                 : null,
             child: provider.settings.profileImageUrl.isEmpty
-                ? const Icon(Icons.person, size: 30, color: SettingsTheme.primary)
+                ? const Icon(
+                    Icons.person,
+                    size: 30,
+                    color: SettingsTheme.primary,
+                  )
                 : null,
           ),
           const SizedBox(width: 20),
@@ -334,19 +368,39 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(provider.settings.fullName, 
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: SettingsTheme.textPrimary)),
-                Text(provider.settings.email, 
-                  style: const TextStyle(fontSize: 14, color: SettingsTheme.textSecondary)),
+                Text(
+                  provider.settings.fullName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: SettingsTheme.textPrimary,
+                  ),
+                ),
+                Text(
+                  provider.settings.email,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: SettingsTheme.textSecondary,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: SettingsTheme.primary,
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text(provider.settings.role.toUpperCase(), 
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                  child: Text(
+                    provider.settings.role.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -601,7 +655,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Photo de profil'),
-        content: const Text('Fonctionnalité de téléchargement simulée.'),
+        content: const Text(
+          'La gestion des photos de profil n\'est pas disponible actuellement.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -609,6 +665,46 @@ class _SettingsDialogState extends State<SettingsDialog> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<String?> _showJsonInputDialog(String title, String hint) async {
+    final controller = TextEditingController();
+    return await showDialog<String>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(title),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(hint, style: const TextStyle(fontSize: 13)),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controller,
+                  maxLines: 12,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Collez ici le contenu JSON...',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+              child: const Text('Valider'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -651,9 +747,23 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: const Text('Annuler'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              final provider = context.read<SettingsProvider>();
+              final success = await provider.changePassword(
+                currentPassword: oldCtrl.text,
+                newPassword: newCtrl.text,
+                confirmPassword: confirmCtrl.text,
+              );
+              if (!mounted) return;
               Navigator.pop(ctx);
-              _showSnackBar('Mot de passe mis à jour !');
+              if (success) {
+                _showSnackBar('Mot de passe mis à jour');
+              } else {
+                _showSnackBar(
+                  provider.errorMessage ?? 'Échec de mise à jour',
+                  isError: true,
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: kPrimaryGreen,
@@ -708,8 +818,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   void _restoreData(SettingsProvider provider) async {
-    // Dans un vrai cas, on ouvrirait un sélecteur de fichier
-    final success = await provider.restoreData('mock_path.bak');
+    final jsonContent = await _showJsonInputDialog(
+      'Restaurer des données',
+      'Collez un fichier de sauvegarde JSON valide pour restaurer les données de la société.',
+    );
+
+    if (jsonContent == null || jsonContent.isEmpty) return;
+
+    final success = await provider.restoreData(jsonContent);
     if (success) {
       _showSnackBar('Données restaurées avec succès');
     } else {
@@ -727,7 +843,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   void _importData(SettingsProvider provider) async {
-    final success = await provider.importData('mock_path.json');
+    final jsonContent = await _showJsonInputDialog(
+      'Importer des données',
+      'Collez le contenu JSON à importer dans le système.',
+    );
+
+    if (jsonContent == null || jsonContent.isEmpty) return;
+
+    final success = await provider.importData(jsonContent);
     if (success) {
       _showSnackBar('Données importées avec succès');
     } else {

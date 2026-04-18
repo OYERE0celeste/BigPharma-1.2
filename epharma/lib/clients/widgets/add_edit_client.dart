@@ -20,6 +20,7 @@ class ClientFormDialog extends StatefulWidget {
 class _ClientFormDialogState extends State<ClientFormDialog> {
   late final TextEditingController _fullNameController;
   late final TextEditingController _phoneController;
+  late final TextEditingController _emailController;
   late final TextEditingController _addressController;
 
   Gender? _selectedGender;
@@ -34,6 +35,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
       text: widget.client?.fullName ?? '',
     );
     _phoneController = TextEditingController(text: widget.client?.phone ?? '');
+    _emailController = TextEditingController(text: widget.client?.email ?? '');
     _addressController = TextEditingController(
       text: widget.client?.address ?? '',
     );
@@ -47,6 +49,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
   void dispose() {
     _fullNameController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     _addressController.dispose();
     super.dispose();
   }
@@ -71,6 +74,8 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
                     _buildTextField(_fullNameController, 'Nom complet'),
                     const SizedBox(height: 12),
                     _buildPhoneField(),
+                    const SizedBox(height: 12),
+                    _buildTextField(_emailController, 'Email'),
                     const SizedBox(height: 12),
                     _buildTextField(_addressController, 'Addresse'),
                     const SizedBox(height: 12),
@@ -207,6 +212,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
       id: widget.client?.id ?? '',
       fullName: _fullNameController.text.trim(),
       phone: phone,
+      email: _emailController.text.trim(),
       address: _addressController.text.trim(),
       dateOfBirth: _dateOfBirth!,
       gender: _selectedGender!,

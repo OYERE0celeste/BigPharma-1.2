@@ -61,7 +61,7 @@ class ClientsTable extends StatelessWidget {
                   DataCell(Text(_formatDate(client.lastVisitDate))),
                   DataCell(Text(client.loyaltyStatus.name.toUpperCase())),
                   DataCell(
-                    client.hasMedicalProfile
+                    client.hasMedicalHistory
                         ? const Tooltip(
                             message: 'Profil médical disponible',
                             child: Icon(

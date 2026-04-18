@@ -8,7 +8,6 @@ import 'products/pharmacy_products_page.dart';
 import 'clients/pharmacy_clients_page.dart';
 import 'activites/activity_register_page.dart';
 import 'commandes/orders_page.dart';
-import 'fournisseurs/fournisseurs_page.dart';
 import 'finances/pharmacy_finance_page.dart';
 import 'settings/settings_dialog.dart';
 import 'settings/user_management_page.dart';
@@ -126,8 +125,6 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         'Consultations',
         const FeatureNotAvailablePage(title: 'Consultations'),
       ),
-      'Fournisseurs': () =>
-          _navigateTo('Fournisseurs', const PharmacySuppliersPage()),
       'Finances': () => _navigateTo('Finances', const PharmacyFinancePage()),
       'Users': () => _navigateTo('Users', const UserManagementDialog()),
       'Paramètres': () {

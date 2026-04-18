@@ -97,7 +97,7 @@ class ClientDetailsDialog extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // Medical Information Section (if available)
-                    if (client.hasMedicalProfile) ...[
+                    if (client.hasMedicalHistory) ...[
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -146,7 +146,7 @@ class ClientDetailsDialog extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // Prescription History Section
-                    if (client.hasMedicalProfile) ...[
+                    if (client.hasMedicalHistory) ...[
                       _buildSection('Prescription History', []),
                       const SizedBox(height: 12),
                       _buildPrescriptionHistory(client),

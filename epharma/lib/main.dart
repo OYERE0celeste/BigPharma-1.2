@@ -5,12 +5,15 @@ import 'providers/product_provider.dart';
 import 'providers/sales_provider.dart';
 import 'providers/activity_provider.dart';
 import 'providers/finance_provider.dart';
-import 'providers/supplier_provider.dart';
 import 'providers/client_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/order_provider.dart';
 import 'screens/auth/login_page.dart';
+import 'client_services/cart_provider.dart';
+import 'client_services/order_provider_client.dart';
+import 'client_services/profile_provider.dart';
+import 'pages/client/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +34,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SalesProvider()),
         ChangeNotifierProvider(create: (_) => ActivityProvider()),
         ChangeNotifierProvider(create: (_) => FinanceProvider()),
-        ChangeNotifierProvider(create: (_) => SupplierProvider()),
         ChangeNotifierProvider(create: (_) => ClientProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        // Client providers
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProviderClient()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
         title: 'BigPharma SaaS',
@@ -66,7 +72,11 @@ class AuthWrapper extends StatelessWidget {
     }
 
     if (authProvider.isAuthenticated) {
-      return const MainLayout();
+      if (authProvider.user?.role == 'client') {
+        return const HomePage();
+      } else {
+        return const MainLayout();
+      }
     } else {
       return const LoginPage();
     }

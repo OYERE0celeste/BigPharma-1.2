@@ -1,31 +1,69 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 enum OrderStatus {
-  pending,
-  validated,
-  preparing,
-  delivered,
-  cancelled;
+  enAttente,
+  validee,
+  enPreparation,
+  enLivraison,
+  livree,
+  annulee;
+
+  String get apiValue {
+    switch (this) {
+      case OrderStatus.enAttente:
+        return 'en_attente';
+      case OrderStatus.validee:
+        return 'validee';
+      case OrderStatus.enPreparation:
+        return 'en_preparation';
+      case OrderStatus.enLivraison:
+        return 'en_livraison';
+      case OrderStatus.livree:
+        return 'livree';
+      case OrderStatus.annulee:
+        return 'annulee';
+    }
+  }
 
   String get label {
     switch (this) {
-      case OrderStatus.pending:
+      case OrderStatus.enAttente:
         return 'En attente';
-      case OrderStatus.validated:
+      case OrderStatus.validee:
         return 'Validée';
-      case OrderStatus.preparing:
+      case OrderStatus.enPreparation:
         return 'En préparation';
-      case OrderStatus.delivered:
+      case OrderStatus.enLivraison:
+        return 'En livraison';
+      case OrderStatus.livree:
         return 'Livrée';
-      case OrderStatus.cancelled:
+      case OrderStatus.annulee:
         return 'Annulée';
     }
   }
 
-  static OrderStatus fromString(String value) {
+  Color get color {
+    switch (this) {
+      case OrderStatus.enAttente:
+        return Colors.orange;
+      case OrderStatus.validee:
+        return Colors.blue;
+      case OrderStatus.enPreparation:
+        return Colors.deepPurple;
+      case OrderStatus.enLivraison:
+        return Colors.teal;
+      case OrderStatus.livree:
+        return Colors.green;
+      case OrderStatus.annulee:
+        return Colors.red;
+    }
+  }
+
+  static OrderStatus fromString(String? value) {
     return OrderStatus.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () => OrderStatus.pending,
+      (status) => status.apiValue == value,
+      orElse: () => OrderStatus.enAttente,
     );
   }
 }
@@ -35,41 +73,29 @@ class OrderItem {
   final String name;
   final double price;
   final int quantity;
-  final double subtotal;
 
-  OrderItem({
+  const OrderItem({
     required this.productId,
     required this.name,
     required this.price,
     required this.quantity,
-    required this.subtotal,
   });
 
+  double get subtotal => price * quantity;
+
   factory OrderItem.fromJson(Map<String, dynamic> json) {
-    final product = json['product'];
-    String pId = "";
-    if (product is Map) {
-      pId = product['_id'] ?? "";
-    } else {
-      pId = product?.toString() ?? "";
-    }
+    final product = json['productId'] ?? json['product'];
+    final resolvedProductId = product is Map<String, dynamic>
+        ? (product['_id'] ?? '').toString()
+        : (product ?? '').toString();
 
     return OrderItem(
-      productId: pId,
-      name: json['name'] ?? '',
-      price: (json['price'] as num).toDouble(),
-      quantity: json['quantity'] as int,
-      subtotal: (json['subtotal'] as num).toDouble(),
+      productId: resolvedProductId,
+      name: (json['name'] ?? '').toString(),
+      price: (json['price'] ?? 0).toDouble(),
+      quantity: ((json['quantity'] ?? 0) as num).toInt(),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        'product': productId,
-        'name': name,
-        'price': price,
-        'quantity': quantity,
-        'subtotal': subtotal,
-      };
 }
 
 class OrderTimelineEntry {
@@ -79,7 +105,7 @@ class OrderTimelineEntry {
   final String userName;
   final String? note;
 
-  OrderTimelineEntry({
+  const OrderTimelineEntry({
     required this.id,
     required this.status,
     required this.timestamp,
@@ -88,12 +114,17 @@ class OrderTimelineEntry {
   });
 
   factory OrderTimelineEntry.fromJson(Map<String, dynamic> json) {
+    final user = json['userId'];
     return OrderTimelineEntry(
-      id: json['_id'] ?? '',
-      status: OrderStatus.fromString(json['status']),
-      timestamp: DateTime.parse(json['timestamp']),
-      userName: json['userId'] is Map ? (json['userId']['fullName'] ?? 'N/A') : 'N/A',
-      note: json['note'],
+      id: (json['_id'] ?? '').toString(),
+      status: OrderStatus.fromString(json['status']?.toString()),
+      timestamp:
+          DateTime.tryParse((json['timestamp'] ?? '').toString()) ??
+          DateTime.now(),
+      userName: user is Map<String, dynamic>
+          ? (user['fullName'] ?? 'N/A').toString()
+          : 'N/A',
+      note: json['note']?.toString(),
     );
   }
 }
@@ -101,58 +132,91 @@ class OrderTimelineEntry {
 class OrderModel {
   final String id;
   final String orderNumber;
+  final String userId;
+  final String userName;
   final String clientId;
   final String clientName;
   final List<OrderItem> items;
-  final double total;
+  final double totalPrice;
   final OrderStatus status;
-  final String createdByName;
+  final bool prescriptionRequired;
+  final String? prescriptionId;
   final String? notes;
   final DateTime createdAt;
+  final DateTime updatedAt;
 
-  OrderModel({
+  const OrderModel({
     required this.id,
     required this.orderNumber,
+    required this.userId,
+    required this.userName,
     required this.clientId,
     required this.clientName,
     required this.items,
-    required this.total,
+    required this.totalPrice,
     required this.status,
-    required this.createdByName,
+    required this.prescriptionRequired,
+    this.prescriptionId,
     this.notes,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    final client = json['client'];
-    String cId = "";
-    String cName = "Inconnu";
-    if (client is Map) {
-      cId = client['_id'] ?? "";
-      cName = client['fullName'] ?? "Inconnu";
-    } else {
-      cId = client?.toString() ?? "";
-    }
-
-    final creator = json['createdBy'];
-    String creatorName = "Inconnu";
-    if (creator is Map) {
-      creatorName = creator['fullName'] ?? "Inconnu";
-    }
+    final client = json['clientId'];
+    final user = json['userId'];
+    final products =
+        (json['products'] as List<dynamic>?) ??
+        (json['items'] as List<dynamic>?) ??
+        [];
 
     return OrderModel(
-      id: json['_id'] ?? '',
-      orderNumber: json['orderNumber'] ?? '',
-      clientId: cId,
-      clientName: cName,
-      items: (json['items'] as List?)?.map((i) => OrderItem.fromJson(i)).toList() ?? [],
-      total: (json['total'] as num).toDouble(),
-      status: OrderStatus.fromString(json['status']),
-      createdByName: creatorName,
-      notes: json['notes'],
-      createdAt: DateTime.parse(json['createdAt']),
+      id: (json['_id'] ?? '').toString(),
+      orderNumber: (json['orderNumber'] ?? '').toString(),
+      userId: user is Map<String, dynamic>
+          ? (user['_id'] ?? '').toString()
+          : (user ?? '').toString(),
+      userName: user is Map<String, dynamic>
+          ? (user['fullName'] ?? 'Inconnu').toString()
+          : 'Inconnu',
+      clientId: client is Map<String, dynamic>
+          ? (client['_id'] ?? '').toString()
+          : (client ?? '').toString(),
+      clientName: client is Map<String, dynamic>
+          ? (client['fullName'] ?? 'Inconnu').toString()
+          : 'Inconnu',
+      items: products
+          .map((item) => OrderItem.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      totalPrice: (json['totalPrice'] ?? json['total'] ?? 0).toDouble(),
+      status: OrderStatus.fromString(json['status']?.toString()),
+      prescriptionRequired: json['prescriptionRequired'] == true,
+      prescriptionId: json['prescriptionId']?.toString(),
+      notes: json['notes']?.toString(),
+      createdAt:
+          DateTime.tryParse((json['createdAt'] ?? '').toString()) ??
+          DateTime.now(),
+      updatedAt:
+          DateTime.tryParse((json['updatedAt'] ?? '').toString()) ??
+          DateTime.now(),
     );
   }
 
   String get formattedDate => DateFormat('dd/MM/yyyy HH:mm').format(createdAt);
+
+  List<OrderStatus> get availableNextStatuses {
+    switch (status) {
+      case OrderStatus.enAttente:
+        return [OrderStatus.validee, OrderStatus.annulee];
+      case OrderStatus.validee:
+        return [OrderStatus.enPreparation, OrderStatus.annulee];
+      case OrderStatus.enPreparation:
+        return [OrderStatus.enLivraison, OrderStatus.annulee];
+      case OrderStatus.enLivraison:
+        return [OrderStatus.livree, OrderStatus.annulee];
+      case OrderStatus.livree:
+      case OrderStatus.annulee:
+        return [];
+    }
+  }
 }

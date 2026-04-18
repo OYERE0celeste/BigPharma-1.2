@@ -1,0 +1,12 @@
+﻿# Ignore local environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+server_log.txt
+server_log_live.txt
+final_server_log.txt
+
+# Dependencies
+node_modules/

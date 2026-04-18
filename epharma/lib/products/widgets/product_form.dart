@@ -17,7 +17,6 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _categoryController;
   late final TextEditingController _descController;
-  late final TextEditingController _supplierController;
   late final TextEditingController _barcodeController;
   bool _prescription = false;
   late final TextEditingController _purchaseController;
@@ -36,7 +35,6 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     _nameController = TextEditingController(text: p?.name ?? '');
     _categoryController = TextEditingController(text: p?.category ?? '');
     _descController = TextEditingController(text: p?.description ?? '');
-    _supplierController = TextEditingController(text: p?.supplier ?? '');
     _barcodeController = TextEditingController(text: p?.barcode ?? '');
     _prescription = p?.prescriptionRequired ?? false;
     _purchaseController = TextEditingController(
@@ -58,7 +56,6 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     _nameController.dispose();
     _categoryController.dispose();
     _descController.dispose();
-    _supplierController.dispose();
     _barcodeController.dispose();
     _purchaseController.dispose();
     _sellingController.dispose();
@@ -76,7 +73,6 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
       name: _nameController.text.trim(),
       category: _selectedCategory?.value ?? _categoryController.text.trim(),
       description: _descController.text.trim(),
-      supplier: _supplierController.text.trim(),
       barcode: _barcodeController.text.trim(),
       prescriptionRequired: _prescription,
       purchasePrice: double.tryParse(_purchaseController.text) ?? 0,
@@ -167,28 +163,6 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     controller: _descController,
                     decoration: const InputDecoration(labelText: 'Description'),
                     maxLines: 2,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _supplierController,
-                          decoration: const InputDecoration(
-                            labelText: 'Fournisseur',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      /*Expanded(
-                        child: TextFormField(
-                          controller: _barcodeController,
-                          decoration: const InputDecoration(
-                            labelText: 'Barcode',
-                          ),
-                        ),
-                      ),*/
-                    ],
                   ),
                   const SizedBox(height: 8),
                   SwitchListTile(

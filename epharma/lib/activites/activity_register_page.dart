@@ -647,8 +647,6 @@ class _FiltersSectionState extends State<FiltersSection> {
         return 'Retour';
       case ActivityType.restocking:
         return 'Approvisionnement';
-      case ActivityType.supplierPayment:
-        return 'Paiement Fournisseur';
       case ActivityType.stockAdjustment:
         return 'Ajustement Stock';
       case ActivityType.cancellation:
@@ -714,7 +712,7 @@ class TransactionsTable extends StatelessWidget {
               DataColumn(label: Text('Date & Heure')),
               DataColumn(label: Text('Type')),
               DataColumn(label: Text('Référence')),
-              DataColumn(label: Text('Client/Fournisseur')),
+              DataColumn(label: Text('Client')),
               DataColumn(label: Text('Produit')),
               DataColumn(label: Text('Quantité')),
               DataColumn(label: Text('Montant')),
@@ -864,8 +862,6 @@ class TransactionsTable extends StatelessWidget {
         return kAccentBlue;
       case ActivityType.restocking:
         return const Color(0xFF7B1FA2);
-      case ActivityType.supplierPayment:
-        return kDangerRed;
       case ActivityType.stockAdjustment:
         return const Color(0xFF0097A7);
       case ActivityType.cancellation:
@@ -894,8 +890,6 @@ class TransactionsTable extends StatelessWidget {
         return 'Retour';
       case ActivityType.restocking:
         return 'Approv.';
-      case ActivityType.supplierPayment:
-        return 'Paiement';
       case ActivityType.stockAdjustment:
         return 'Ajust.';
       case ActivityType.cancellation:

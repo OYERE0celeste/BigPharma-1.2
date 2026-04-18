@@ -71,8 +71,6 @@ class _FinanceFilterSectionState extends State<FinanceFilterSection> {
                   value: widget.selectedType,
                   items: [
                         'Vente',
-                        'Paiement fournisseur',
-                        'Dépense',
                         'Retour',
                         'Approvisionnement',
                       ]

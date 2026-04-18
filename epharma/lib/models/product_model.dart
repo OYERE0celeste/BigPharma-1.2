@@ -7,10 +7,8 @@ enum ProductStatus { active, discontinued }
 class Product {
   final String id;
   final String name;
-  final String sku;
   final String category;
   final String description;
-  final String supplier;
   final String barcode;
   final bool prescriptionRequired;
   final double purchasePrice;
@@ -22,10 +20,8 @@ class Product {
   Product({
     required this.id,
     required this.name,
-    this.sku = '',
     required this.category,
     required this.description,
-    required this.supplier,
     required this.barcode,
     required this.prescriptionRequired,
     required this.purchasePrice,
@@ -61,10 +57,8 @@ class Product {
   Product copyWith({
     String? id,
     String? name,
-    String? sku,
     String? category,
     String? description,
-    String? supplier,
     String? barcode,
     bool? prescriptionRequired,
     double? purchasePrice,
@@ -76,10 +70,8 @@ class Product {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
-      sku: sku ?? this.sku,
       category: category ?? this.category,
       description: description ?? this.description,
-      supplier: supplier ?? this.supplier,
       barcode: barcode ?? this.barcode,
       prescriptionRequired: prescriptionRequired ?? this.prescriptionRequired,
       purchasePrice: purchasePrice ?? this.purchasePrice,
@@ -94,10 +86,8 @@ class Product {
     return {
       'id': id,
       'name': name,
-      'sku': sku,
       'category': category,
       'description': description,
-      'supplier': supplier,
       'barcode': barcode,
       'prescriptionRequired': prescriptionRequired,
       'purchasePrice': purchasePrice,
@@ -112,10 +102,8 @@ class Product {
     return Product(
       id: json['id']?.toString() ?? json['_id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      sku: json['sku']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
-      supplier: json['supplier']?.toString() ?? '',
       barcode: json['barcode']?.toString() ?? '',
       prescriptionRequired: json['prescriptionRequired'] == true,
       purchasePrice: (json['purchasePrice'] is num)

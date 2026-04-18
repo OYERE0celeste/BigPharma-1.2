@@ -16,7 +16,6 @@ class Client {
   final double totalSpent;
   final DateTime lastVisitDate;
   final LoyaltyStatus loyaltyStatus;
-  final bool hasMedicalProfile;
   final String description;
 
   Client({
@@ -33,7 +32,6 @@ class Client {
     this.totalSpent = 0,
     DateTime? lastVisitDate,
     this.loyaltyStatus = LoyaltyStatus.standard,
-    this.hasMedicalProfile = false,
     this.description = '',
   }) : registrationDate = registrationDate ?? DateTime.now(),
       lastVisitDate = lastVisitDate ?? DateTime.now();
@@ -104,7 +102,7 @@ class Client {
       totalSpent: totalSpent ?? this.totalSpent,
       lastVisitDate: lastVisitDate ?? this.lastVisitDate,
       loyaltyStatus: loyaltyStatus ?? this.loyaltyStatus,
-      hasMedicalProfile: hasMedicalProfile ?? this.hasMedicalProfile,
+      //hasMedicalProfile: hasMedicalProfile ?? this.hasMedicalProfile,
       description: description ?? this.description,
     );
   }
@@ -128,7 +126,6 @@ class Client {
       'totalSpent': totalSpent,
       'lastVisitDate': lastVisitDate.toIso8601String(),
       'loyaltyStatus': loyaltyStatus.name,
-      'hasMedicalProfile': hasMedicalProfile,
       'description': description,
     };
   }
@@ -179,9 +176,6 @@ class Client {
               orElse: () => LoyaltyStatus.standard,
             )
           : LoyaltyStatus.standard,
-      hasMedicalProfile:
-          json['hasMedicalProfile'] == true ||
-          json['hasMedicalProfile']?.toString() == 'true',
       description: json['description']?.toString() ?? '',
     );
   }

@@ -64,7 +64,6 @@ class ProductDetailsPanel extends StatelessWidget {
           _infoRow('Name', product.name),
           _infoRow('Description', product.description),
           _infoRow('Category', product.category),
-          _infoRow('Supplier', product.supplier),
           _infoRow('Barcode', product.barcode),
           _infoRow('Prescription', product.prescriptionRequired ? 'Yes' : 'No'),
           _infoRow(

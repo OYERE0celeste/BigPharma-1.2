@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/settings_provider.dart';
 import 'settings_theme.dart';
 
 class ProfilDialog extends StatelessWidget {
@@ -6,48 +9,86 @@ class ProfilDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          const CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage('assets/images/user_avatar.png'),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Jean Dupont',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: SettingsTheme.textPrimary),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Pharmacien Principal',
-            style: TextStyle(fontSize: 16, color: SettingsTheme.textSecondary),
-          ),
-          const SizedBox(height: 40),
-          _buildInfoRow(Icons.email_outlined, 'Email', 'jean.dupont@epharma.com'),
-          _buildInfoRow(Icons.phone_outlined, 'Téléphone', '+225 01 02 03 04 05'),
-          _buildInfoRow(Icons.business_outlined, 'Société', 'Pharmacie Lafayette'),
-          const SizedBox(height: 40),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                // TODO: Implement Edit Profile
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: SettingsTheme.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Consumer<SettingsProvider>(
+      builder: (context, provider, child) {
+        final settings = provider.settings;
+        final initials = settings.fullName.trim().isEmpty
+            ? '?'
+            : settings.fullName
+                .trim()
+                .split(RegExp(r'\s+'))
+                .where((part) => part.isNotEmpty)
+                .take(2)
+                .map((part) => part[0].toUpperCase())
+                .join();
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              CircleAvatar(
+                radius: 60,
+                backgroundColor: SettingsTheme.primary.withOpacity(0.12),
+                child: Text(
+                  initials,
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: SettingsTheme.primary,
+                  ),
+                ),
               ),
-              child: const Text("Modifier le profil"),
-            ),
+              const SizedBox(height: 24),
+              Text(
+                settings.fullName.isEmpty ? 'Utilisateur' : settings.fullName,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: SettingsTheme.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                settings.role.isEmpty ? 'Profil' : settings.role.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: SettingsTheme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 40),
+              _buildInfoRow(
+                Icons.email_outlined,
+                'Email',
+                settings.email.isEmpty ? 'Non renseigné' : settings.email,
+              ),
+              _buildInfoRow(Icons.phone_outlined, 'Téléphone', 'À renseigner'),
+              _buildInfoRow(
+                Icons.verified_user_outlined,
+                'Rôle',
+                settings.role.isEmpty ? 'Non renseigné' : settings.role,
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: SettingsTheme.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Fermer'),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -68,8 +109,21 @@ class ProfilDialog extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 12, color: SettingsTheme.textSecondary)),
-              Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: SettingsTheme.textPrimary)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: SettingsTheme.textSecondary,
+                ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: SettingsTheme.textPrimary,
+                ),
+              ),
             ],
           ),
         ],
@@ -77,43 +131,3 @@ class ProfilDialog extends StatelessWidget {
     );
   }
 }
-
-
-/*_buildTextField(
-              controller: _fullNameController,
-              label: 'Nom complet',
-              icon: Icons.person_outline,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre nom complet';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _emailController,
-              label: 'Email',
-              icon: Icons.email_outlined,
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre email';
-                }
-                if (!RegExp(
-                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                ).hasMatch(value)) {
-                  return 'Veuillez entrer un email valide';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildRoleDropdown(provider),*/
-            /*Row(
-              children: [
-                Expanded(child: _buildPasswordChangeButton()),
-                const SizedBox(width: 12),
-                Expanded(child: _buildSaveProfileButton(provider)),
-              ],
-            ),*/

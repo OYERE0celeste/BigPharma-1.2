@@ -73,7 +73,6 @@ class AppSidebar extends StatelessWidget {
                 _sidebarItem('Sales', Icons.receipt_long_outlined),
                 _sidebarItem('Clients', Icons.people_outline_rounded),
                 _sidebarItem('Commandes', Icons.shopping_cart_outlined),
-                _sidebarItem('Fournisseurs', Icons.business_outlined),
                 _sidebarItem('Finances', Icons.account_balance_wallet_outlined),
                 /*_sidebarItem(
                   'Activity',

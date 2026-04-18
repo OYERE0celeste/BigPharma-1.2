@@ -45,47 +45,7 @@ class Prescription {
 // MOCK SERVICE
 // =====================================================================
 
-class ClientService {
-  static final List<Client> _mockClients = [];
-
-  static List<Client> getAllClients() => _mockClients;
-
-  static List<Client> getFilteredClients(String filterType) {
-    switch (filterType) {
-      case 'frequent':
-        return _mockClients.where((c) => c.totalPurchases > 50).toList();
-      case 'medical':
-        return _mockClients.where((c) => c.hasMedicalProfile).toList();
-      case 'inactive':
-        final cutoffDate = DateTime.now().subtract(const Duration(days: 30));
-        return _mockClients
-            .where((c) => c.lastVisitDate.isBefore(cutoffDate))
-            .toList();
-      default:
-        return _mockClients;
-    }
-  }
-
-  static List<Client> searchClients(String query) {
-    final q = query.toLowerCase();
-    return _mockClients
-        .where(
-          (c) =>
-              c.fullName.toLowerCase().contains(q) ||
-              c.phone.contains(q) ||
-              c.email.toLowerCase().contains(q),
-        )
-        .toList();
-  }
-
-  static List<Purchase> getClientPurchases(String clientId) {
-    return [];
-  }
-
-  static List<Prescription> getClientPrescriptions(String clientId) {
-    return [];
-  }
-}
+// Mock service removed as we use ClientProvider with real API
 
 // =====================================================================
 // MAIN PAGE
@@ -104,6 +64,14 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
   int _currentPage = 0;
   static const int _pageSize = 10;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ClientProvider>().loadClients();
+    });
+  }
+
   List<Client> _getFilteredClients(List<Client> allClients) {
     final q = _searchQuery.trim().toLowerCase();
     var clients = List<Client>.from(allClients);
@@ -113,7 +81,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
           case 'frequent':
             return client.totalPurchases > 50;
           case 'medical':
-            return client.hasMedicalProfile;
+            return client.hasMedicalHistory;
           case 'inactive':
             final cutoffDate = DateTime.now().subtract(
               const Duration(days: 30),

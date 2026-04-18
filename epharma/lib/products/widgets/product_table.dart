@@ -105,7 +105,6 @@ class _ProductTableState extends State<ProductTable> {
       sortAscending: widget.sortAscending,
       columns: [
         DataColumn(label: _colHeader('Product Name', 'name')),
-        const DataColumn(label: Text('SKU')),
         DataColumn(label: _colHeader('Category', 'category')),
         DataColumn(label: _colHeader('Purchase Price', 'purchase')),
         DataColumn(label: _colHeader('Selling Price', 'selling')),
@@ -119,7 +118,7 @@ class _ProductTableState extends State<ProductTable> {
       rows: items.map((p) {
         final nearest = _nearestExpiration(p);
         final status = _productStatus(p);
-        
+
         // Coloration des lignes en fonction du statut d'expiration
         Color? rowColor;
         if (p.expirationStatus == 'EXPIRÉ') {
@@ -132,8 +131,9 @@ class _ProductTableState extends State<ProductTable> {
           onSelectChanged: (_) => widget.onView(p),
           color: WidgetStateProperty.resolveWith<Color?>((states) => rowColor),
           cells: [
-            DataCell(Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold))),
-            DataCell(Text(p.sku)),
+            DataCell(
+              Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
             DataCell(Text(p.category)),
             DataCell(Text('€${p.purchasePrice.toStringAsFixed(2)}')),
             DataCell(Text('€${p.sellingPrice.toStringAsFixed(2)}')),
