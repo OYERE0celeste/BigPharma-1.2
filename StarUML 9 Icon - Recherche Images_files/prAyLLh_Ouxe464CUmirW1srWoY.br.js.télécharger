@@ -1,0 +1,1 @@
+var MSANAdsUrlValidator;(function(n){var i=2,t="https://",r=function(n){if(!n||!n.toLowerCase().startsWith(t))return!1;try{var i=n.substring(t.length).split(/[/:?#]/)[0].toLowerCase();return i?i==="bing.com"||i.endsWith(".bing.com"):!1}catch(r){return!1}},u=function(n){return n?n.slice(0,i).filter(r):[]};n.gvfu=u})(MSANAdsUrlValidator||(MSANAdsUrlValidator={}))

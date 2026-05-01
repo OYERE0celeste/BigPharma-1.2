@@ -1,0 +1,1 @@
+var MSANApiMdmPing;(function(n){var t="/images/native/log",i=function(n,i){var u=new URL("".concat(_w.location.origin).concat(t)),f,r;if(u.searchParams.append("st",(n===null||n===void 0?void 0:n.toString())||"0"),i)for(f in i)u.searchParams.append(f,i[f]);r=sj_gx();r.open("POST",u.toString());r.timeout=2e3;r.send()};n.smdmp=i})(MSANApiMdmPing||(MSANApiMdmPing={}))
