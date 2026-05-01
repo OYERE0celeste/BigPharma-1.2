@@ -5,11 +5,17 @@ const ActivityLog = require("../models/activityLog");
 // GET /api/activity-logs?entityType=&actionType=&limit=
 router.get("/", async (req, res, next) => {
   try {
-    const { entityType, actionType, page = 1, limit = 50 } = req.query;
+    const { entityType, actionType, start, end, page = 1, limit = 50 } = req.query;
     const query = { companyId: req.user.companyId };
-    
+
     if (entityType) query.entityType = entityType;
     if (actionType) query.actionType = actionType;
+
+    if (start || end) {
+      query.createdAt = {};
+      if (start) query.createdAt.$gte = new Date(start);
+      if (end) query.createdAt.$lte = new Date(end);
+    }
 
     const logs = await ActivityLog.find(query)
       .sort({ createdAt: -1 })
@@ -26,7 +32,7 @@ router.get("/", async (req, res, next) => {
         page: parseInt(page),
         limit: parseInt(limit),
         pages: Math.ceil(total / limit),
-      }
+      },
     });
   } catch (err) {
     next(err);
@@ -34,4 +40,3 @@ router.get("/", async (req, res, next) => {
 });
 
 module.exports = router;
-

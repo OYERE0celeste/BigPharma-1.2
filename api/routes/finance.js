@@ -25,15 +25,15 @@ router.get("/", async (req, res, next) => {
 
     const total = await Finance.countDocuments(query);
 
-    res.json({ 
-      success: true, 
-      data: transactions, 
-      pagination: { 
-        page: Number(page), 
-        limit: Number(limit), 
-        total, 
-        pages: Math.ceil(total / Number(limit)) 
-      } 
+    res.json({
+      success: true,
+      data: transactions,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        pages: Math.ceil(total / Number(limit)),
+      },
     });
   } catch (error) {
     next(error);
@@ -43,9 +43,14 @@ router.get("/", async (req, res, next) => {
 // GET by ID
 router.get("/:id", async (req, res, next) => {
   try {
-    const transaction = await Finance.findOne({ _id: req.params.id, companyId: req.user.companyId });
+    const transaction = await Finance.findOne({
+      _id: req.params.id,
+      companyId: req.user.companyId,
+    });
     if (!transaction) {
-      return res.status(404).json({ success: false, message: "Transaction introuvable", code: "NOT_FOUND" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Transaction introuvable", code: "NOT_FOUND" });
     }
 
     res.json({ success: true, data: transaction });
@@ -58,7 +63,7 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const transactionData = { ...req.body, companyId: req.user.companyId };
-    
+
     // Convert dates if provided
     if (transactionData.dateTime) transactionData.dateTime = new Date(transactionData.dateTime);
 
@@ -89,9 +94,11 @@ router.put("/:id", async (req, res, next) => {
       req.body,
       { new: true, runValidators: true }
     );
-    
+
     if (!updated) {
-      return res.status(404).json({ success: false, message: "Transaction non trouvée", code: "NOT_FOUND" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Transaction non trouvée", code: "NOT_FOUND" });
     }
 
     await logActivity({
@@ -113,9 +120,14 @@ router.put("/:id", async (req, res, next) => {
 // DELETE
 router.delete("/:id", async (req, res, next) => {
   try {
-    const deleted = await Finance.findOneAndDelete({ _id: req.params.id, companyId: req.user.companyId });
+    const deleted = await Finance.findOneAndDelete({
+      _id: req.params.id,
+      companyId: req.user.companyId,
+    });
     if (!deleted) {
-      return res.status(404).json({ success: false, message: "Transaction non trouvée", code: "NOT_FOUND" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Transaction non trouvée", code: "NOT_FOUND" });
     }
 
     await logActivity({

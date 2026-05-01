@@ -20,8 +20,6 @@ class PharmacyActivityRegisterPage extends StatefulWidget {
 
 class _PharmacyActivityRegisterPageState
     extends State<PharmacyActivityRegisterPage> {
-  late List<ActivityModel> _filteredTransactions;
-
   // Filter states
   ActivityType? _selectedActivityType;
   String? _selectedEmployee;
@@ -35,148 +33,127 @@ class _PharmacyActivityRegisterPageState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _applyFilters();
+      Provider.of<ActivityProvider>(context, listen: false).loadActivities();
     });
-  }
-
-  Future<void> _applyFilters() async {
-    final activityProvider = Provider.of<ActivityProvider>(
-      context,
-      listen: false,
-    );
-    
-    // Charger les activités depuis le backend si nécessaire
-    if (activityProvider.activities.isEmpty) {
-      await activityProvider.loadActivities();
-    }
-
-    // Apply date range filter
-    DateTime startDate;
-    DateTime endDate = DateTime.now().add(const Duration(days: 1));
-
-    switch (_periodFilter) {
-      case 'today':
-        startDate = DateTime.now()
-            .subtract(const Duration(days: 1))
-            .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
-        break;
-      case 'week':
-        startDate = DateTime.now().subtract(const Duration(days: 7));
-        break;
-      case 'month':
-        startDate = DateTime.now().subtract(const Duration(days: 30));
-        break;
-      default:
-        startDate = DateTime(2020, 1, 1);
-    }
-
-    var rangeFiltered = await activityProvider.getTransactionsByDateRange(
-      startDate,
-      endDate,
-    );
-
-    _filteredTransactions = activityProvider.filterTransactions(
-      transactions: rangeFiltered,
-      type: _selectedActivityType,
-      employeeName: _selectedEmployee,
-      paymentMethod: _selectedPaymentMethod,
-      searchQuery: _searchQuery,
-    );
-
-    if (mounted) {
-      setState(() {
-        _currentPage = 0;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Header
-          const HeaderSection(),
-          const SizedBox(height: 20),
+    return Consumer<ActivityProvider>(
+      builder: (context, activityProvider, child) {
+        // 1. Determine date range
+        DateTime startDate;
+        DateTime endDate = DateTime.now().add(const Duration(days: 1));
 
-          // Statistics Cards
-          StatisticsSection(transactions: _filteredTransactions),
-          const SizedBox(height: 20),
+        switch (_periodFilter) {
+          case 'today':
+            startDate = DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
+            break;
+          case 'week':
+            startDate = DateTime.now().subtract(const Duration(days: 7));
+            break;
+          case 'month':
+            startDate = DateTime.now().subtract(const Duration(days: 30));
+            break;
+          default:
+            startDate = DateTime(2020, 1, 1);
+        }
 
-          // Filters
-          FiltersSection(
-            onPeriodChanged: (period) {
-              setState(() {
-                _periodFilter = period;
-              });
-              _applyFilters();
-            },
-            onActivityTypeChanged: (type) {
-              setState(() {
-                _selectedActivityType =
-                    ((type?.isEmpty ?? true) ? null : type) as ActivityType?;
-              });
-              _applyFilters();
-            },
-            onEmployeeChanged: (employee) {
-              setState(() {
-                _selectedEmployee = (employee?.isEmpty ?? true)
-                    ? null
-                    : employee;
-              });
-              _applyFilters();
-            },
-            onPaymentMethodChanged: (method) {
-              setState(() {
-                _selectedPaymentMethod = method;
-              });
-              _applyFilters();
-            },
-            onSearchChanged: (query) {
-              setState(() {
-                _searchQuery = query;
-              });
-              _applyFilters();
-            },
-            onReset: () {
-              setState(() {
-                _selectedActivityType = null;
-                _selectedEmployee = null;
-                _selectedPaymentMethod = null;
-                _searchQuery = '';
-                _periodFilter = 'today';
-              });
-              _applyFilters();
-            },
-            transactions: Provider.of<ActivityProvider>(
-              context,
-              listen: false,
-            ).transactions,
+        // 2. Filter by date (local filtering for better responsiveness after initial load)
+        final rangeFiltered = activityProvider.activities.where((t) {
+          return t.dateTime.isAfter(startDate) && t.dateTime.isBefore(endDate);
+        }).toList();
+
+        // 3. Apply other filters
+        final filteredTransactions = activityProvider.filterTransactions(
+          transactions: rangeFiltered,
+          type: _selectedActivityType,
+          employeeName: _selectedEmployee,
+          paymentMethod: _selectedPaymentMethod,
+          searchQuery: _searchQuery,
+        );
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header
+              const HeaderSection(),
+              const SizedBox(height: 20),
+
+              // Statistics Cards
+              StatisticsSection(transactions: filteredTransactions),
+              const SizedBox(height: 20),
+
+              // Filters
+              FiltersSection(
+                onPeriodChanged: (period) {
+                  setState(() {
+                    _periodFilter = period;
+                    _currentPage = 0;
+                  });
+                },
+                onActivityTypeChanged: (type) {
+                  setState(() {
+                    _selectedActivityType = (type?.isEmpty ?? true) ? null : type as ActivityType?;
+                    _currentPage = 0;
+                  });
+                },
+                onEmployeeChanged: (employee) {
+                  setState(() {
+                    _selectedEmployee = (employee?.isEmpty ?? true) ? null : employee;
+                    _currentPage = 0;
+                  });
+                },
+                onPaymentMethodChanged: (method) {
+                  setState(() {
+                    _selectedPaymentMethod = method;
+                    _currentPage = 0;
+                  });
+                },
+                onSearchChanged: (query) {
+                  setState(() {
+                    _searchQuery = query;
+                    _currentPage = 0;
+                  });
+                },
+                onReset: () {
+                  setState(() {
+                    _selectedActivityType = null;
+                    _selectedEmployee = null;
+                    _selectedPaymentMethod = null;
+                    _searchQuery = '';
+                    _periodFilter = 'today';
+                    _currentPage = 0;
+                  });
+                },
+                transactions: activityProvider.transactions,
+              ),
+              const SizedBox(height: 20),
+
+              // Main Table
+              TransactionsTable(
+                transactions: filteredTransactions,
+                currentPage: _currentPage,
+                pageSize: _pageSize,
+                onPageChanged: (page) {
+                  setState(() {
+                    _currentPage = page;
+                  });
+                },
+                onViewDetails: (transaction) {
+                  _showTransactionDetails(transaction);
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Analytics Section
+              const AnalyticsSection(),
+            ],
           ),
-          const SizedBox(height: 20),
-
-          // Main Table
-          TransactionsTable(
-            transactions: _filteredTransactions,
-            currentPage: _currentPage,
-            pageSize: _pageSize,
-            onPageChanged: (page) {
-              setState(() {
-                _currentPage = page;
-              });
-            },
-            onViewDetails: (transaction) {
-              _showTransactionDetails(transaction);
-            },
-          ),
-          const SizedBox(height: 20),
-
-          // Analytics Section
-          const AnalyticsSection(),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -226,7 +203,7 @@ class HeaderSection extends StatelessWidget {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Export PDF - Fonctionnalité future'),
+                      content: Text('Export PDF - FonctionnalitÃ© future'),
                     ),
                   );
                 },
@@ -245,7 +222,7 @@ class HeaderSection extends StatelessWidget {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Export Excel - Fonctionnalité future'),
+                      content: Text('Export Excel - FonctionnalitÃ© future'),
                     ),
                   );
                 },
@@ -264,7 +241,7 @@ class HeaderSection extends StatelessWidget {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Impression - Fonctionnalité future'),
+                      content: Text('Impression - FonctionnalitÃ© future'),
                     ),
                   );
                 },
@@ -281,8 +258,12 @@ class HeaderSection extends StatelessWidget {
               message: 'Rafraîchir',
               child: IconButton(
                 onPressed: () {
+                  Provider.of<ActivityProvider>(
+                    context,
+                    listen: false,
+                  ).loadActivities();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Données rafraîchies')),
+                    const SnackBar(content: Text('DonnÃ©es rafraÃ®chies')),
                   );
                 },
                 icon: const Icon(Icons.refresh),
@@ -651,6 +632,17 @@ class _FiltersSectionState extends State<FiltersSection> {
         return 'Ajustement Stock';
       case ActivityType.cancellation:
         return 'Annulation';
+      case ActivityType.userAction:
+        return 'Utilisateur';
+      case ActivityType.prescriptionAction:
+        return 'Ordonnance';
+      case ActivityType.financeAction:
+        return 'Finance';
+      case ActivityType.systemAction:
+        return 'Système';
+      case ActivityType.order:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -732,7 +724,7 @@ class TransactionsTable extends StatelessWidget {
                   DataCell(Text('${transaction.quantity}')),
                   DataCell(
                     Text(
-                      '€${transaction.totalAmount.toStringAsFixed(2)}',
+                      '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: transaction.totalAmount >= 0
@@ -817,12 +809,15 @@ class TransactionsTable extends StatelessWidget {
   }
 
   Widget _buildActivityBadge(ActivityType type) {
+    // Note: We need a temporary model to get the color/label if not passed
+    // But better to pass the whole transaction in the table.
+    // For now, let's use a mapping here but keep it consistent.
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: _getActivityColor(type).withOpacity(0.2),
+        color: _getActivityColor(type).withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _getActivityColor(type)),
+        border: Border.all(color: _getActivityColor(type).withOpacity(0.5)),
       ),
       child: Text(
         _getActivityLabel(type),
@@ -856,57 +851,49 @@ class TransactionsTable extends StatelessWidget {
 
   Color _getActivityColor(ActivityType type) {
     switch (type) {
-      case ActivityType.sale:
-        return kPrimaryGreen;
-      case ActivityType.return_:
-        return kAccentBlue;
-      case ActivityType.restocking:
-        return const Color(0xFF7B1FA2);
-      case ActivityType.stockAdjustment:
-        return const Color(0xFF0097A7);
-      case ActivityType.cancellation:
-        return kWarningOrange;
+      case ActivityType.sale: return Colors.green;
+      case ActivityType.order: return Colors.orange;
+      case ActivityType.restocking: return Colors.blue;
+      case ActivityType.return_: return Colors.deepOrange;
+      case ActivityType.stockAdjustment: return Colors.teal;
+      case ActivityType.cancellation: return Colors.red;
+      case ActivityType.userAction: return Colors.indigo;
+      case ActivityType.prescriptionAction: return Colors.purple;
+      case ActivityType.financeAction: return Colors.amber;
+      case ActivityType.systemAction: return Colors.blueGrey;
     }
   }
 
   Color _getStatusColor(TransactionStatus status) {
     switch (status) {
-      case TransactionStatus.completed:
-        return kPrimaryGreen;
-      case TransactionStatus.pending:
-        return kWarningOrange;
-      case TransactionStatus.cancelled:
-        return kDangerRed;
-      case TransactionStatus.onHold:
-        return kAccentBlue;
+      case TransactionStatus.completed: return Colors.green;
+      case TransactionStatus.pending: return Colors.orange;
+      case TransactionStatus.cancelled: return Colors.red;
+      case TransactionStatus.onHold: return Colors.blueGrey;
     }
   }
 
   String _getActivityLabel(ActivityType type) {
     switch (type) {
-      case ActivityType.sale:
-        return 'Vente';
-      case ActivityType.return_:
-        return 'Retour';
-      case ActivityType.restocking:
-        return 'Approv.';
-      case ActivityType.stockAdjustment:
-        return 'Ajust.';
-      case ActivityType.cancellation:
-        return 'Annul.';
+      case ActivityType.sale: return 'Vente';
+      case ActivityType.order: return 'Commande';
+      case ActivityType.restocking: return 'Approv.';
+      case ActivityType.return_: return 'Retour';
+      case ActivityType.stockAdjustment: return 'Ajust.';
+      case ActivityType.cancellation: return 'Annul.';
+      case ActivityType.userAction: return 'Util.';
+      case ActivityType.prescriptionAction: return 'Ord.';
+      case ActivityType.financeAction: return 'Fin.';
+      case ActivityType.systemAction: return 'Syst.';
     }
   }
 
   String _getStatusLabel(TransactionStatus status) {
     switch (status) {
-      case TransactionStatus.completed:
-        return 'Complétée';
-      case TransactionStatus.pending:
-        return 'En attente';
-      case TransactionStatus.cancelled:
-        return 'Annulée';
-      case TransactionStatus.onHold:
-        return 'Suspens';
+      case TransactionStatus.completed: return 'Complétée';
+      case TransactionStatus.pending: return 'En attente';
+      case TransactionStatus.cancelled: return 'Annulé';
+      case TransactionStatus.onHold: return 'En pause';
     }
   }
 
@@ -961,7 +948,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Détails Transaction - ${transaction.reference}',
+                      'DÃ©tails Transaction - ${transaction.reference}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -981,8 +968,8 @@ class TransactionDetailsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Basic Information
-                    _buildSection('Informations Générales', [
-                      _buildDetailRow('Référence', transaction.reference),
+                    _buildSection('Informations GÃ©nÃ©rales', [
+                      _buildDetailRow('RÃ©fÃ©rence', transaction.reference),
                       _buildDetailRow(
                         'Date & Heure',
                         _formatDateTime(transaction.dateTime),
@@ -995,7 +982,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                     // Party Information
                     _buildSection('Tiers', [
                       _buildDetailRow('Nom', transaction.clientOrSupplierName),
-                      _buildDetailRow('Employé', transaction.employeeName),
+                      _buildDetailRow('EmployÃ©', transaction.employeeName),
                     ]),
                     const SizedBox(height: 16),
 
@@ -1011,15 +998,15 @@ class TransactionDetailsDialog extends StatelessWidget {
                     _buildSection('Informations Financières', [
                       _buildDetailRow(
                         'Montant HT',
-                        '€${(transaction.totalAmount - transaction.taxAmount).abs().toStringAsFixed(2)}',
+                        '${(transaction.totalAmount - transaction.taxAmount).abs().toStringAsFixed(0)} FCFA',
                       ),
                       _buildDetailRow(
                         'Taxes',
-                        '€${transaction.taxAmount.toStringAsFixed(2)}',
+                        '${transaction.taxAmount.toStringAsFixed(0)} FCFA',
                       ),
                       _buildDetailRow(
                         'Total',
-                        '€${transaction.totalAmount.toStringAsFixed(2)}',
+                        '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
                         isBold: true,
                       ),
                       _buildDetailRow(
@@ -1051,13 +1038,13 @@ class TransactionDetailsDialog extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Impression du reçu - Fonctionnalité future',
+                                  'Impression du reÃ§u - FonctionnalitÃ© future',
                                 ),
                               ),
                             );
                           },
                           icon: const Icon(Icons.print),
-                          label: const Text('Imprimer Reçu'),
+                          label: const Text('Imprimer ReÃ§u'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: kPrimaryGreen,
                             foregroundColor: Colors.white,
@@ -1146,14 +1133,14 @@ class TransactionDetailsDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Qté: ${item.quantity} × €${item.unitPrice.toStringAsFixed(2)}',
+                      'Qté: ${item.quantity} × ${item.unitPrice.toStringAsFixed(0)} FCFA',
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ],
                 ),
               ),
               Text(
-                '€${item.totalPrice.toStringAsFixed(2)}',
+                '${item.totalPrice.toStringAsFixed(0)} FCFA',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: item.totalPrice >= 0 ? kPrimaryGreen : kDangerRed,
@@ -1167,7 +1154,8 @@ class TransactionDetailsDialog extends StatelessWidget {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    final local = dateTime.toLocal();
+    return '${local.day}/${local.month}/${local.year} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
   }
 }
 
@@ -1180,23 +1168,17 @@ class AnalyticsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Exemple : récupérer les transactions
     final transactions = Provider.of<ActivityProvider>(context).transactions;
 
-    // Exemple : calculer ventes par jour
     final List<SalesByDay> salesByDay = ActivityService.getSalesByDay(
       transactions,
     );
 
-    // ✅ Sécuriser les calculs
-    double avgSales = salesByDay.isNotEmpty
-        ? salesByDay.map((e) => e.amount).reduce((a, b) => a + b) /
-              salesByDay.length
-        : 0;
-
-    if (avgSales.isNaN || avgSales.isInfinite) {
-      avgSales = 0;
-    }
+    // Répartition par type
+    final salesCount = transactions.where((t) => t.type == ActivityType.sale).length.toDouble();
+    final returnsCount = transactions.where((t) => t.type == ActivityType.return_).length.toDouble();
+    final restockingCount = transactions.where((t) => t.type == ActivityType.restocking).length.toDouble();
+    final othersCount = (transactions.length - salesCount - returnsCount - restockingCount).toDouble();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1211,7 +1193,6 @@ class AnalyticsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // Exemple : carte avec graphique simple
         Row(
           children: [
             Expanded(
@@ -1232,8 +1213,8 @@ class AnalyticsSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       salesByDay.isEmpty
-                          ? const Text("Pas de données disponibles")
-                          : SizedBox(height: 200, child: _buildSimpleChart()),
+                          ? const Center(child: Text("Pas de données disponibles"))
+                          : SizedBox(height: 200, child: _buildSimpleChart(salesByDay)),
                     ],
                   ),
                 ),
@@ -1241,7 +1222,6 @@ class AnalyticsSection extends StatelessWidget {
             ),
             const SizedBox(width: 12),
 
-            // Exemple : autre carte
             Expanded(
               child: Card(
                 elevation: 2,
@@ -1262,10 +1242,10 @@ class AnalyticsSection extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildChartBar('Ventes', 0, kPrimaryGreen),
-                          _buildChartBar('Retours', 0, kAccentBlue),
-                          _buildChartBar('Approv.', 0, const Color(0xFF7B1FA2)),
-                          _buildChartBar('Autres', 0, kWarningOrange),
+                          _buildChartBar('Ventes', salesCount, kPrimaryGreen),
+                          _buildChartBar('Retours', returnsCount, kAccentBlue),
+                          _buildChartBar('Approv.', restockingCount, const Color(0xFF7B1FA2)),
+                          _buildChartBar('Autres', othersCount, kWarningOrange),
                         ],
                       ),
                     ],
@@ -1279,53 +1259,84 @@ class AnalyticsSection extends StatelessWidget {
     );
   }
 
-  // Exemple de barre de graphique
   Widget _buildChartBar(String label, double value, Color color) {
-    // ✅ Sécuriser la largeur
-    final safeValue = (value.isNaN || value.isInfinite) ? 0 : value;
+    final safeValue = (value.isNaN || value.isInfinite) ? 0.0 : value;
+    // Scale value for visual representation (max 100 pixels or so)
+    final barWidth = (safeValue * 10).clamp(0.0, 150.0);
 
-    return Row(
-      children: [
-        SizedBox(width: 60, child: Text(label)),
-        Expanded(
-          child: Container(
-            height: 12,
-            width: value.toDouble(), // valeur sécurisée
-            color: color,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(width: 70, child: Text(label, style: const TextStyle(fontSize: 12))),
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                Container(
+                  height: 12,
+                  width: barWidth,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Text(safeValue.toString()),
-      ],
+          const SizedBox(width: 8),
+          Text(safeValue.toInt().toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 
-  Widget _buildSimpleChart() {
-    final data = [0, 0, 0, 0, 0, 0, 0];
-    final maxValue = data.isEmpty ? 1 : data.reduce((a, b) => a > b ? a : b);
+  Widget _buildSimpleChart(List<SalesByDay> salesByDay) {
+    if (salesByDay.isEmpty) return const SizedBox.shrink();
+    
+    final last7Days = salesByDay.length > 7 
+        ? salesByDay.sublist(salesByDay.length - 7) 
+        : salesByDay;
+    
+    final maxValue = last7Days.map((e) => e.amount).reduce((a, b) => a > b ? a : b);
+    final displayMaxValue = maxValue == 0 ? 1.0 : maxValue;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(7, (index) {
+      children: last7Days.map((data) {
         return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Container(
-              width: 20,
-              height: (data[index] / maxValue * 100),
-              decoration: BoxDecoration(
-                color: kPrimaryGreen.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(4),
+            Tooltip(
+              message: '${data.amount.toStringAsFixed(0)} FCFA',
+              child: Container(
+                width: 25,
+                height: (data.amount / displayMaxValue * 150),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [kPrimaryGreen, kPrimaryGreen.withOpacity(0.5)],
+                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              ['L', 'M', 'M', 'J', 'V', 'S', 'D'][index],
+              data.day.split('/')[0], // Just the day number
               style: const TextStyle(fontSize: 10, color: Colors.grey),
             ),
           ],
         );
-      }),
+      }).toList(),
     );
   }
 }

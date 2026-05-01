@@ -12,4 +12,3 @@ router.get("/", saleController.getSales);
 router.patch("/:id/cancel", saleController.cancelSale);
 
 module.exports = router;
-

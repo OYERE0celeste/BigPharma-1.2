@@ -32,10 +32,19 @@ class _CartPageState extends State<CartPage> {
     }
 
     final cart = context.read<CartProvider>();
+    if (cart.items.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Votre panier est vide.')),
+      );
+      return;
+    }
+
     final orderProvider = context.read<OrderProviderClient>();
 
     setState(() => _isSubmitting = true);
-    final result = await orderProvider.createOrder(cart.orderItems);
+    final orderItems = cart.orderItems;
+    debugPrint('Submitting order with ${orderItems.length} items: ${orderItems.map((e) => e.toRequestJson())}');
+    final result = await orderProvider.createOrder(orderItems);
     setState(() => _isSubmitting = false);
 
     if (!mounted) {

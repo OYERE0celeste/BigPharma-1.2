@@ -33,7 +33,16 @@ const MouvementStockSchema = new mongoose.Schema(
     reason: {
       type: String,
       required: true,
-      enum: ["vente", "achat", "retour_client", "retour_fournisseur", "ajustement_manuel", "perte", "expiration", "annulation_vente"],
+      enum: [
+        "vente",
+        "achat",
+        "retour_client",
+        "retour_fournisseur",
+        "ajustement_manuel",
+        "perte",
+        "expiration",
+        "annulation_vente",
+      ],
     },
     referenceId: {
       type: mongoose.Schema.Types.ObjectId,

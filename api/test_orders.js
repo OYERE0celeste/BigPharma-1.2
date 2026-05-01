@@ -13,11 +13,11 @@ const runTest = async () => {
     console.log("--- Starting Backend Tests ---");
 
     // 1. Setup Test Company
-    const testCompany = new Company({ 
+    const testCompany = new Company({
       name: "Test Pharmacy Corp",
       email: `test_corp_${Date.now()}@example.com`,
       phone: "0102030405",
-      address: "123 Test Street"
+      address: "123 Test Street",
     });
     await testCompany.save();
     console.log("1. Test Company created:", testCompany._id);
@@ -28,7 +28,7 @@ const runTest = async () => {
       email: `test_admin_${Date.now()}@example.com`,
       passwordHash: "dummyhash",
       role: "admin",
-      companyId: testCompany._id
+      companyId: testCompany._id,
     });
     await testUser.save();
     console.log("2. Test User created:", testUser._id);
@@ -39,7 +39,7 @@ const runTest = async () => {
       phone: "0102030405",
       dateOfBirth: new Date(1990, 0, 1),
       gender: "male",
-      companyId: testCompany._id
+      companyId: testCompany._id,
     });
     await testClient.save();
     console.log("3. Test Client created:", testClient._id);
@@ -51,20 +51,30 @@ const runTest = async () => {
       purchasePrice: 5,
       sellingPrice: 10,
       stockQuantity: 100,
-      lots: [{ lotNumber: "LOT-001", quantity: 100, quantityAvailable: 100, costPrice: 5, expirationDate: new Date(2030, 0, 1) }],
-      companyId: testCompany._id
+      lots: [
+        {
+          lotNumber: "LOT-001",
+          quantity: 100,
+          quantityAvailable: 100,
+          costPrice: 5,
+          expirationDate: new Date(2030, 0, 1),
+        },
+      ],
+      companyId: testCompany._id,
     });
     await testProduct.save();
     console.log("4. Test Product created:", testProduct._id, "Stock:", testProduct.stockQuantity);
 
     // 5. Create Order
-    const orderItems = [{
-      product: testProduct._id,
-      name: testProduct.name,
-      price: testProduct.sellingPrice,
-      quantity: 10,
-      subtotal: 100
-    }];
+    const orderItems = [
+      {
+        product: testProduct._id,
+        name: testProduct.name,
+        price: testProduct.sellingPrice,
+        quantity: 10,
+        subtotal: 100,
+      },
+    ];
 
     const orderNumber = `CMD-TEST-${Date.now()}`;
     const order = new Order({
@@ -74,7 +84,7 @@ const runTest = async () => {
       total: 100,
       createdBy: testUser._id,
       companyId: testCompany._id,
-      status: "pending"
+      status: "pending",
     });
     await order.save();
     console.log("5. Order created:", order.orderNumber, "Status:", order.status);
@@ -124,7 +134,10 @@ const runTest = async () => {
     console.log("Test finished.");
   } catch (err) {
     if (err.errors) {
-      console.error("VALIDATION ERRORS:", Object.keys(err.errors).map(k => `${k}: ${err.errors[k].message}`));
+      console.error(
+        "VALIDATION ERRORS:",
+        Object.keys(err.errors).map((k) => `${k}: ${err.errors[k].message}`)
+      );
     }
     console.error("TEST FAILED:", err);
     process.exit(1);

@@ -6,6 +6,11 @@ enum ActivityType {
   restocking,
   stockAdjustment,
   cancellation,
+  userAction,
+  prescriptionAction,
+  financeAction,
+  systemAction,
+  order,
 }
 
 enum PaymentMethod { cash, card, check, transfer, other, mobileMoney }
@@ -29,8 +34,8 @@ class TransactionItem {
     return TransactionItem(
       productName: json['productName'] ?? '',
       quantity: json['quantity'] ?? 0,
-      unitPrice: (json['unitPrice'] ?? 0.0).toDouble(),
-      totalPrice: (json['totalPrice'] ?? 0.0).toDouble(),
+      unitPrice: double.tryParse(json['unitPrice']?.toString() ?? '0') ?? 0.0,
+      totalPrice: double.tryParse(json['totalPrice']?.toString() ?? '0') ?? 0.0,
     );
   }
 
@@ -84,11 +89,21 @@ class ActivityModel {
       case ActivityType.return_:
         return 'Retour';
       case ActivityType.restocking:
-        return 'Approvisionnement';
+        return 'Approv.';
       case ActivityType.stockAdjustment:
-        return 'Ajustement Stock';
+        return 'Ajustement';
       case ActivityType.cancellation:
         return 'Annulation';
+      case ActivityType.userAction:
+        return 'Utilisateur';
+      case ActivityType.prescriptionAction:
+        return 'Ordonnance';
+      case ActivityType.financeAction:
+        return 'Finance';
+      case ActivityType.systemAction:
+        return 'Système';
+      case ActivityType.order:
+        return 'Commande';
     }
   }
 
@@ -121,6 +136,16 @@ class ActivityModel {
         return Icons.settings_backup_restore;
       case ActivityType.cancellation:
         return Icons.cancel;
+      case ActivityType.userAction:
+        return Icons.person;
+      case ActivityType.prescriptionAction:
+        return Icons.description;
+      case ActivityType.financeAction:
+        return Icons.attach_money;
+      case ActivityType.systemAction:
+        return Icons.settings;
+      case ActivityType.order:
+        return Icons.assignment_turned_in;
     }
   }
 
@@ -136,13 +161,23 @@ class ActivityModel {
         return Colors.teal;
       case ActivityType.cancellation:
         return Colors.red;
+      case ActivityType.userAction:
+        return Colors.indigo;
+      case ActivityType.prescriptionAction:
+        return Colors.deepOrange;
+      case ActivityType.financeAction:
+        return Colors.amber;
+      case ActivityType.systemAction:
+        return Colors.blueGrey;
+      case ActivityType.order:
+        return Colors.orange;
     }
   }
 
   String get statusLabel {
     switch (status) {
       case TransactionStatus.completed:
-        return 'Terminé';
+        return 'Complétée';
       case TransactionStatus.pending:
         return 'En attente';
       case TransactionStatus.cancelled:
@@ -187,25 +222,28 @@ class ActivityModel {
   }
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) {
+    final String entityType = json['entityType'] ?? '';
+    final String entityName = json['entityName'] ?? '';
+    final String user = json['user'] ?? '';
+    final String createdAt = json['createdAt'] ?? json['dateTime'] ?? '';
+
     return ActivityModel(
       id: json['_id'] ?? json['id'] ?? '',
-      dateTime: json['dateTime'] != null
-          ? DateTime.parse(json['dateTime'])
-          : DateTime.now(),
-      type: _parseActivityType(json['type']),
-      reference: json['reference'] ?? '',
-      clientOrSupplierName: json['clientOrSupplierName'] ?? '',
-      productName: json['productName'] ?? '',
+      dateTime: createdAt.isNotEmpty ? DateTime.parse(createdAt).toLocal() : DateTime.now(),
+      type: _parseActivityType(entityType.isNotEmpty ? entityType : json['type']),
+      reference: json['reference'] ?? json['entityId'] ?? '',
+      clientOrSupplierName: json['clientOrSupplierName'] ?? (['client', 'user'].contains(entityType) ? entityName : ''),
+      productName: json['productName'] ?? (entityType == 'product' ? entityName : ''),
       quantity: json['quantity'] ?? 0,
-      totalAmount: (json['totalAmount'] ?? 0.0).toDouble(),
+      totalAmount: double.tryParse(json['totalAmount']?.toString() ?? '0') ?? 0.0,
       paymentMethod: _parsePaymentMethod(json['paymentMethod']),
-      employeeName: json['employeeName'] ?? '',
-      status: _parseTransactionStatus(json['status']),
+      employeeName: json['employeeName'] ?? user,
+      status: _parseTransactionStatus(json['status'] ?? json['actionType']),
       listOfItems: (json['listOfItems'] as List? ?? [])
           .map((item) => TransactionItem.fromJson(item as Map<String, dynamic>))
           .toList(),
       taxAmount: (json['taxAmount'] ?? 0.0).toDouble(),
-      notes: json['notes'] ?? '',
+      notes: json['notes'] ?? json['description'] ?? '',
     );
   }
 
@@ -228,6 +266,20 @@ class ActivityModel {
   }
 
   static ActivityType _parseActivityType(String? type) {
+    if (type == null) return ActivityType.sale;
+    
+    // Map backend entity types to activity types
+    switch (type) {
+      case 'product': return ActivityType.restocking;
+      case 'sale': return ActivityType.sale;
+      case 'client': return ActivityType.userAction;
+      case 'user': return ActivityType.userAction;
+      case 'prescription': return ActivityType.prescriptionAction;
+      case 'finance': return ActivityType.financeAction;
+      case 'system': return ActivityType.systemAction;
+      case 'order': return ActivityType.order;
+    }
+    
     return ActivityType.values.firstWhere(
       (e) => e.name == type,
       orElse: () => ActivityType.sale,
@@ -242,6 +294,9 @@ class ActivityModel {
   }
 
   static TransactionStatus _parseTransactionStatus(String? status) {
+    if (status == 'create' || status == 'completed' || status == 'update') return TransactionStatus.completed;
+    if (status == 'delete' || status == 'cancelled') return TransactionStatus.cancelled;
+    
     return TransactionStatus.values.firstWhere(
       (e) => e.name == status,
       orElse: () => TransactionStatus.completed,

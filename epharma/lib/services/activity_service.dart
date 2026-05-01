@@ -39,26 +39,35 @@ class ActivityService {
   }
 
   static Map<String, dynamic> getStatistics(List<ActivityModel> transactions) {
-    final sales = transactions
-        .where(
-          (t) =>
-              t.type == ActivityType.sale &&
-              t.status == TransactionStatus.completed,
-        )
-        .length;
+    double totalRevenue = 0;
+    double totalIncome = 0;
+    double totalExpenses = 0;
+    int totalProductsSold = 0;
+    int transactionCount = transactions.length;
 
-    final totalAmount = transactions
-        .where(
-          (t) =>
-              t.type == ActivityType.sale &&
-              t.status == TransactionStatus.completed,
-        )
-        .fold(0.0, (sum, t) => sum + t.totalAmount);
+    for (var t in transactions) {
+      // Revenu des ventes et commandes complétées
+      if ((t.type == ActivityType.sale || t.type == ActivityType.order) &&
+          t.status == TransactionStatus.completed) {
+        totalRevenue += t.totalAmount;
+        totalProductsSold += t.quantity;
+      }
+
+      // Flux de trésorerie (Entrées / Sorties)
+      if (t.totalAmount > 0) {
+        totalIncome += t.totalAmount;
+      } else if (t.totalAmount < 0) {
+        totalExpenses += t.totalAmount.abs();
+      }
+    }
 
     return {
-      'totalTransactions': transactions.length,
-      'totalSales': sales,
-      'totalAmount': totalAmount,
+      'totalRevenue': totalRevenue,
+      'transactionCount': transactionCount,
+      'totalIncome': totalIncome,
+      'totalExpenses': totalExpenses,
+      'estimatedProfit': totalIncome - totalExpenses, // Updated to use all income/expenses
+      'totalProductsSold': totalProductsSold,
     };
   }
 

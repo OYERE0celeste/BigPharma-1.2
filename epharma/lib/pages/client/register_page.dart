@@ -18,8 +18,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _addressController = TextEditingController();
   final _companyIdController = TextEditingController(
-    text: '661000000000000000000001',
-  ); // Mock/Default ID
+    text: '69e359c9d74117580fd1e1ce',
+  ); // Real Company ID (aa)
 
   DateTime? _selectedDate;
   String _selectedGender = 'male';

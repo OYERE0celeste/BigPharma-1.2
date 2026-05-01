@@ -25,7 +25,6 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   int _currentPage = 0;
   String _sortColumn = 'name';
   bool _sortAscending = true;
-  List<Product> _products = [];
 
   final _searchController = TextEditingController();
 
@@ -33,35 +32,13 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      final provider = context.read<ProductProvider>();
-      provider
-          .loadProducts()
-          .then((_) {
-            if (!mounted) return;
-            setState(() {
-              _products = provider.products;
-            });
-          })
-          .catchError((error) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Erreur de chargement des produits : $error'),
-                ),
-              );
-            }
-          });
+      context.read<ProductProvider>().loadProducts();
     });
   }
 
   Future<void> _loadProducts() async {
     try {
-      final provider = context.read<ProductProvider>();
-      await provider.loadProducts();
-      if (!mounted) return;
-      setState(() {
-        _products = provider.products;
-      });
+      await context.read<ProductProvider>().loadProducts();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -71,54 +48,6 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
     }
   }
 
-  List<Product> get _filtered {
-    var list = _products.where((p) {
-      final q = _search.toLowerCase();
-      if (q.isNotEmpty &&
-          !(p.name.toLowerCase().contains(q) ||
-              p.category.toLowerCase().contains(q))) {
-        return false;
-      }
-      if (_filter == 'Low stock' && p.availableStock > p.lowStockThreshold) {
-        return false;
-      }
-      if (_filter == 'Out of stock' && p.availableStock > 0) {
-        return false;
-      }
-      if (_filter == 'Expired' && p.expirationStatus != 'EXPIRÉ') {
-        return false;
-      }
-      if (_filter == 'Near expiration' && p.expirationStatus != 'BIENTÔT EXPIRÉ') {
-        return false;
-      }
-      if (_filter == 'Prescription required' && !p.prescriptionRequired) {
-        return false;
-      }
-      return true;
-    }).toList();
-
-    // Sort
-    list.sort((a, b) {
-      int result = 0;
-      switch (_sortColumn) {
-        case 'name':
-          result = a.name.compareTo(b.name);
-          break;
-        case 'category':
-          result = a.category.compareTo(b.category);
-          break;
-        case 'stock':
-          result = a.availableStock.compareTo(b.availableStock);
-          break;
-        case 'price':
-          result = a.sellingPrice.compareTo(b.sellingPrice);
-          break;
-      }
-      return _sortAscending ? result : -result;
-    });
-
-    return list;
-  }
 
   void _changeSort(String column) {
     setState(() {
@@ -159,86 +88,139 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
         foregroundColor: Colors.black87,
         elevation: 1,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ProductTable(
-                products: _filtered,
-                rowsPerPage: _rowsPerPage,
-                currentPage: _currentPage,
-                onPageChanged: (p) => setState(() => _currentPage = p),
-                onRowsPerPageChanged: (r) => setState(() => _rowsPerPage = r),
-                onSort: _changeSort,
-                sortColumn: _sortColumn,
-                sortAscending: _sortAscending,
-                onView: (p) => showDialog(
-                  context: context,
-                  builder: (_) => ProductDetailsPanel(product: p),
-                ),
-                onEdit: (p) async {
-                  final updated = await showDialog<Product>(
-                    context: context,
-                    builder: (_) => ProductFormDialog(product: p),
-                  );
-                  if (updated != null) {
-                    try {
-                      await context.read<ProductProvider>().updateProduct(
-                        updated,
-                      );
-                      await _loadProducts();
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Erreur mise à jour produit : $e'),
+      body: Consumer<ProductProvider>(
+        builder: (context, provider, child) {
+          final products = provider.products;
+          
+          // Apply local filters to the provider's products
+          final filtered = products.where((p) {
+            final q = _search.toLowerCase();
+            if (q.isNotEmpty &&
+                !(p.name.toLowerCase().contains(q) ||
+                    p.category.toLowerCase().contains(q))) {
+              return false;
+            }
+            if (_filter == 'Low stock' && p.availableStock > p.lowStockThreshold) {
+              return false;
+            }
+            if (_filter == 'Out of stock' && p.availableStock > 0) {
+              return false;
+            }
+            if (_filter == 'Expired' && p.expirationStatus != 'EXPIRÉ') {
+              return false;
+            }
+            if (_filter == 'Near expiration' && p.expirationStatus != 'BIENTÔT EXPIRÉ') {
+              return false;
+            }
+            if (_filter == 'Prescription required' && !p.prescriptionRequired) {
+              return false;
+            }
+            return true;
+          }).toList();
+
+          // Sort
+          filtered.sort((a, b) {
+            int result = 0;
+            switch (_sortColumn) {
+              case 'name':
+                result = a.name.compareTo(b.name);
+                break;
+              case 'category':
+                result = a.category.compareTo(b.category);
+                break;
+              case 'stock':
+                result = a.availableStock.compareTo(b.availableStock);
+                break;
+              case 'price':
+                result = a.sellingPrice.compareTo(b.sellingPrice);
+                break;
+            }
+            return _sortAscending ? result : -result;
+          });
+
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeader(context),
+                const SizedBox(height: 12),
+                if (provider.isLoading && products.isEmpty)
+                  const Expanded(child: Center(child: CircularProgressIndicator()))
+                else
+                  Expanded(
+                    child: ProductTable(
+                      products: filtered,
+                      rowsPerPage: _rowsPerPage,
+                      currentPage: _currentPage,
+                      onPageChanged: (p) => setState(() => _currentPage = p),
+                      onRowsPerPageChanged: (r) => setState(() => _rowsPerPage = r),
+                      onSort: _changeSort,
+                      sortColumn: _sortColumn,
+                      sortAscending: _sortAscending,
+                      onView: (p) => showDialog(
+                        context: context,
+                        builder: (_) => ProductDetailsPanel(product: p),
+                      ),
+                      onEdit: (p) async {
+                        final updated = await showDialog<Product>(
+                          context: context,
+                          builder: (_) => ProductFormDialog(product: p),
+                        );
+                        if (updated != null) {
+                          try {
+                            await provider.updateProduct(updated);
+                            await provider.loadProducts();
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Erreur mise à jour produit : $e'),
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      },
+                      onDelete: (p) async {
+                        final ok = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Confirm delete'),
+                            content: Text('Delete ${p.name}?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
                           ),
                         );
-                      }
-                    }
-                  }
-                },
-                onDelete: (p) async {
-                  final ok = await showDialog<bool>(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Confirm delete'),
-                      content: Text('Delete ${p.name}?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text('Delete'),
-                        ),
-                      ],
+                        if (ok == true) {
+                          try {
+                            await provider.deleteProduct(p.id);
+                            await provider.loadProducts();
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Erreur suppression produit : $e'),
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      },
                     ),
-                  );
-                  if (ok == true) {
-                    try {
-                      await context.read<ProductProvider>().deleteProduct(p.id);
-                      await _loadProducts();
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Erreur suppression produit : $e'),
-                          ),
-                        );
-                      }
-                    }
-                  }
-                },
-              ),
+                  ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -297,6 +279,12 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
             ),
           ],
           onChanged: (v) => setState(() => _filter = v ?? 'All products'),
+        ),
+        const SizedBox(width: 12),
+        IconButton(
+          onPressed: _loadProducts,
+          icon: const Icon(Icons.refresh),
+          tooltip: 'Refresh products',
         ),
         const SizedBox(width: 12),
         ElevatedButton.icon(

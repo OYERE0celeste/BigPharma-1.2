@@ -1,4 +1,4 @@
-﻿const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema(
@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Email is required"],
       unique: true,
       lowercase: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Provide a valid email"],
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Provide a valid email"],
     },
     passwordHash: {
       type: String,
@@ -33,14 +33,18 @@ const UserSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: true,
-      maxlength: 20,
+      maxlength: 200, // Increased for encrypted content
       default: "",
+      set: (v) => require("../utils/encryption").encrypt(v),
+      get: (v) => require("../utils/encryption").decrypt(v),
     },
     address: {
       type: String,
       trim: true,
-      maxlength: 250,
+      maxlength: 500, // Increased for encrypted content
       default: "",
+      set: (v) => require("../utils/encryption").encrypt(v),
+      get: (v) => require("../utils/encryption").decrypt(v),
     },
     isActive: {
       type: Boolean,
@@ -66,9 +70,20 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       select: false,
     },
+    refreshTokens: [
+      {
+        token: { type: String, required: true },
+        expiresAt: { type: Date, required: true },
+        createdAt: { type: Date, default: Date.now },
+        replacedByToken: { type: String },
+        revokedAt: { type: Date },
+      },
+    ],
   },
   {
     timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true },
   }
 );
 

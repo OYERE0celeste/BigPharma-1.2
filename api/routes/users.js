@@ -1,6 +1,7 @@
-﻿const express = require("express");
+const express = require("express");
 const User = require("../models/User");
 const authorizeRoles = require("../middleware/authorizeRoles");
+const auditAccess = require("../middleware/auditMiddleware");
 const { success, failure } = require("../utils/response");
 
 const router = express.Router();
@@ -43,7 +44,7 @@ router.post("/", authorizeRoles(["admin"]), async (req, res, next) => {
   }
 });
 
-router.get("/", authorizeRoles(["admin"]), async (req, res, next) => {
+router.get("/", authorizeRoles(["admin"]), auditAccess("read", "user_list"), async (req, res, next) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;

@@ -2,14 +2,12 @@ String orderStatusLabel(String status) {
   switch (status) {
     case 'en_attente':
       return 'En attente';
-    case 'validee':
-      return 'Validée';
     case 'en_preparation':
       return 'En préparation';
-    case 'en_livraison':
-      return 'En livraison';
-    case 'livree':
-      return 'Livrée';
+    case 'pret_pour_recuperation':
+      return 'Prête (à récupérer)';
+    case 'validee':
+      return 'Récupérée';
     case 'annulee':
       return 'Annulée';
     default:
@@ -41,8 +39,12 @@ class OrderItem {
     return OrderItem(
       productId: resolvedProductId,
       name: (json['name'] ?? '').toString(),
-      price: (json['price'] ?? 0).toDouble(),
-      quantity: ((json['quantity'] ?? 0) as num).toInt(),
+      price: (json['price'] is num)
+          ? (json['price'] as num).toDouble()
+          : double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
+      quantity: (json['quantity'] is num)
+          ? (json['quantity'] as num).toInt()
+          : int.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
     );
   }
 
@@ -81,7 +83,7 @@ class Order {
   });
 
   String get statusLabel => orderStatusLabel(status);
-  bool get isTerminal => status == 'livree' || status == 'annulee';
+  bool get isTerminal => status == 'validee' || status == 'annulee';
 
   factory Order.fromJson(Map<String, dynamic> json) {
     final user = json['userId'];
@@ -103,7 +105,11 @@ class Order {
       items: products
           .map((item) => OrderItem.fromJson(item as Map<String, dynamic>))
           .toList(),
-      totalPrice: (json['totalPrice'] ?? json['total'] ?? 0).toDouble(),
+      totalPrice: (json['totalPrice'] is num)
+          ? (json['totalPrice'] as num).toDouble()
+          : (json['total'] is num)
+              ? (json['total'] as num).toDouble()
+              : double.tryParse((json['totalPrice'] ?? json['total'] ?? '0').toString()) ?? 0.0,
       status: (json['status'] ?? 'en_attente').toString(),
       prescriptionRequired: json['prescriptionRequired'] == true,
       prescriptionId: json['prescriptionId']?.toString(),

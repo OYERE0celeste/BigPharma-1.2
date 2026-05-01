@@ -5,7 +5,7 @@ import 'auth_service.dart';
 import 'api_constants.dart';
 
 class ActivityApiService {
-  static String get baseUrl => '${ApiConstants.baseUrl}/activities';
+  static String get baseUrl => '${ApiConstants.baseUrl}/activityLogs';
   static final AuthService _authService = AuthService();
 
   static Future<List<ActivityModel>> getAllActivities() async {
@@ -16,7 +16,7 @@ class ActivityApiService {
         final decoded = json.decode(response.body);
         final data = decoded['data'] ?? [];
         if (data is List) {
-          return data.map((json) => ActivityModel.fromJson(json)).toList();
+          return data.map((item) => ActivityModel.fromJson(item as Map<String, dynamic>)).toList();
         }
       }
       return [];
@@ -41,7 +41,7 @@ class ActivityApiService {
         final decoded = json.decode(response.body);
         final data = decoded['data'] ?? [];
         if (data is List) {
-          return data.map((json) => ActivityModel.fromJson(json)).toList();
+          return data.map((item) => ActivityModel.fromJson(item as Map<String, dynamic>)).toList();
         }
       }
       return [];

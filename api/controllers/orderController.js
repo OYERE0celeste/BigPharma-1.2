@@ -3,33 +3,31 @@ const Order = require("../models/order");
 const OrderTimeline = require("../models/orderTimeline");
 const Prescription = require("../models/prescription");
 const Product = require("../models/product");
+const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
 const { success, failure } = require("../utils/response");
 
 const ORDER_STATUSES = [
   "en_attente",
-  "validee",
   "en_preparation",
-  "en_livraison",
-  "livree",
+  "pret_pour_recuperation",
+  "validee",
   "annulee",
 ];
 
 const ORDER_TRANSITIONS = {
-  en_attente: ["validee", "annulee"],
-  validee: ["en_preparation", "annulee"],
-  en_preparation: ["en_livraison", "annulee"],
-  en_livraison: ["livree", "annulee"],
-  livree: [],
+  en_attente: ["en_preparation", "pret_pour_recuperation", "validee", "annulee"],
+  en_preparation: ["pret_pour_recuperation", "validee", "annulee"],
+  pret_pour_recuperation: ["validee", "annulee"],
+  validee: [],
   annulee: [],
 };
 
 const ORDER_STATUS_LABELS = {
   en_attente: "en attente",
-  validee: "validée",
   en_preparation: "en préparation",
-  en_livraison: "en livraison",
-  livree: "livrée",
+  pret_pour_recuperation: "prête pour récupération",
+  validee: "validée (récupérée)",
   annulee: "annulée",
 };
 
@@ -165,9 +163,7 @@ const resolvePrescriptionForOrder = async ({
   }).sort({ validatedAt: -1, createdAt: -1 });
 
   if (!latestValidatedPrescription) {
-    throw new Error(
-      "Cette commande contient des produits nécessitant une ordonnance valide"
-    );
+    throw new Error("Cette commande contient des produits nécessitant une ordonnance valide");
   }
 
   return latestValidatedPrescription;
@@ -186,9 +182,9 @@ const computeOrderStats = async (companyId) => {
 exports.createOrder = async (req, res, next) => {
   try {
     let rawProducts = req.body.products || req.body.items || [];
-    
+
     // If it's a string, try to parse it (sometimes happens with some clients/proxies)
-    if (typeof rawProducts === 'string') {
+    if (typeof rawProducts === "string") {
       try {
         rawProducts = JSON.parse(rawProducts);
       } catch (e) {
@@ -199,7 +195,7 @@ exports.createOrder = async (req, res, next) => {
     if (!Array.isArray(rawProducts) || rawProducts.length === 0) {
       console.log("Order creation failed: empty or invalid products list.", {
         body: req.body,
-        extracted: rawProducts
+        extracted: rawProducts,
       });
       return failure(res, {
         status: 400,
@@ -216,17 +212,11 @@ exports.createOrder = async (req, res, next) => {
     }
 
     const normalizedProducts = rawProducts.map((item) => ({
-      productId:
-        item.productId ||
-        item.product ||
-        item._id ||
-        item.id,
+      productId: item.productId || item.product || item._id || item.id,
       quantity: toPositiveInteger(item.quantity),
     }));
 
-    if (
-      normalizedProducts.some((item) => !item.productId || item.quantity === null)
-    ) {
+    if (normalizedProducts.some((item) => !item.productId || item.quantity === null)) {
       return failure(res, {
         status: 400,
         message: "Chaque produit doit contenir productId et une quantité valide",
@@ -248,6 +238,12 @@ exports.createOrder = async (req, res, next) => {
     });
 
     if (products.length !== productIds.length) {
+      console.log("Product mismatch details:", {
+        userCompanyId: req.user.companyId,
+        requestedProductIds: productIds,
+        foundProductsCount: products.length,
+        foundProductsCompanyIds: products.map((p) => p.companyId),
+      });
       return failure(res, {
         status: 404,
         message: "Un ou plusieurs produits de la commande sont introuvables",
@@ -278,8 +274,7 @@ exports.createOrder = async (req, res, next) => {
       }
 
       totalPrice += product.sellingPrice * requestedProduct.quantity;
-      prescriptionRequired =
-        prescriptionRequired || Boolean(product.prescriptionRequired);
+      prescriptionRequired = prescriptionRequired || Boolean(product.prescriptionRequired);
 
       orderProducts.push({
         productId: product._id,
@@ -332,7 +327,17 @@ exports.createOrder = async (req, res, next) => {
       entityName: order.orderNumber,
       description: `Nouvelle commande ${order.orderNumber} créée`,
       companyId: req.user.companyId,
-      user: req.user.fullName,
+      user: req.user.fullName || "Client",
+      clientOrSupplierName: client.fullName,
+      totalAmount: order.totalPrice,
+      quantity: order.products.reduce((sum, p) => sum + p.quantity, 0),
+      status: "pending",
+      listOfItems: order.products.map((p) => ({
+        productName: p.name,
+        quantity: p.quantity,
+        unitPrice: p.price,
+        totalPrice: p.price * p.quantity,
+      })),
     });
 
     const savedOrder = await buildOrderQuery({ _id: order._id });
@@ -498,6 +503,7 @@ exports.updateOrderStatus = async (req, res, next) => {
     }
 
     const allowedTransitions = ORDER_TRANSITIONS[order.status] || [];
+
     if (!allowedTransitions.includes(status)) {
       return failure(res, {
         status: 400,
@@ -505,14 +511,12 @@ exports.updateOrderStatus = async (req, res, next) => {
       });
     }
 
-    if (status === "livree" && order.status !== "en_livraison") {
-      return failure(res, {
-        status: 400,
-        message: "Une commande doit être en livraison avant d'être livrée",
-      });
-    }
+    // Allocation de stock si on passe à un état actif (non attente, non annulée)
+    // et que le stock n'est pas encore alloué
+    const isActiveStatus = ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
+    const wasAllocated = order.stockAllocations && order.stockAllocations.length > 0;
 
-    if (status === "validee") {
+    if (isActiveStatus && !wasAllocated) {
       const allocations = [];
 
       const productIds = order.products.map((product) => product.productId);
@@ -542,6 +546,7 @@ exports.updateOrderStatus = async (req, res, next) => {
       for (const orderedProduct of order.products) {
         const product = productsById.get(String(orderedProduct.productId));
         const lotAllocations = allocateStock(product, orderedProduct.quantity);
+        product.markModified("lots");
         await product.save();
         allocations.push({
           productId: product._id,
@@ -552,10 +557,8 @@ exports.updateOrderStatus = async (req, res, next) => {
       order.stockAllocations = allocations;
     }
 
-    if (
-      status === "annulee" &&
-      ["validee", "en_preparation", "en_livraison"].includes(order.status)
-    ) {
+    // Restauration de stock si on annule une commande qui avait du stock alloué
+    if (status === "annulee" && wasAllocated) {
       for (const allocation of order.stockAllocations || []) {
         const product = await Product.findOne({
           _id: allocation.productId,
@@ -567,10 +570,28 @@ exports.updateOrderStatus = async (req, res, next) => {
         }
 
         restoreStock(product, allocation.lotAllocations);
+        product.markModified("lots");
         await product.save();
       }
 
       order.stockAllocations = [];
+    }
+
+    // Record in Finance if validated
+    if (status === "validee") {
+      await new Finance({
+        dateTime: new Date(),
+        type: "sale",
+        sourceModule: "Commandes",
+        reference: order.orderNumber,
+        description: `Commande ${order.orderNumber} récupérée par le client`,
+        amount: order.totalPrice,
+        isIncome: true,
+        paymentMethod: "other", // Default for orders
+        employeeName: req.user.fullName,
+        orderId: order._id,
+        companyId: req.user.companyId,
+      }).save();
     }
 
     const previousStatus = order.status;
@@ -595,6 +616,16 @@ exports.updateOrderStatus = async (req, res, next) => {
       description: `Commande ${order.orderNumber} mise à jour : ${ORDER_STATUS_LABELS[status]}`,
       companyId: req.user.companyId,
       user: req.user.fullName,
+      clientOrSupplierName: order.clientId?.fullName || "Client",
+      totalAmount: order.totalPrice,
+      quantity: order.products.reduce((sum, p) => sum + p.quantity, 0),
+      status: status === "validee" ? "completed" : status === "annulee" ? "cancelled" : "pending",
+      listOfItems: order.products.map((p) => ({
+        productName: p.name,
+        quantity: p.quantity,
+        unitPrice: p.price,
+        totalPrice: p.price * p.quantity,
+      })),
     });
 
     const updatedOrder = await buildOrderQuery({ _id: order._id });
@@ -629,8 +660,7 @@ exports.exportOrders = async (req, res, next) => {
       }
     }
 
-    const orders = await buildOrdersQuery(query)
-      .sort({ createdAt: -1 });
+    const orders = await buildOrdersQuery(query).sort({ createdAt: -1 });
 
     let csv = "Numero,Client,Total,Statut,Date\n";
     for (const order of orders) {

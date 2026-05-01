@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/cart_provider.dart';
+import '../services/wishlist_provider.dart';
 import '../models/product.dart';
+import '../widgets/review_section.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;
@@ -36,12 +38,20 @@ class ProductDetailPage extends StatelessWidget {
               ),
             ),
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.favorite_border, color: Colors.red),
-                ),
+              Consumer<WishlistProvider>(
+                builder: (context, wishlist, _) {
+                  final isFavorite = wishlist.isInWishlist(product);
+                  return IconButton(
+                    onPressed: () => wishlist.toggleWishlist(product),
+                    icon: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(width: 8),
             ],
@@ -73,9 +83,17 @@ class ProductDetailPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        product.stockQuantity > 0 ? 'En stock' : 'Rupture',
+                        product.stockStatus == StockStatus.available 
+                            ? 'Disponible' 
+                            : product.stockStatus == StockStatus.lowStock 
+                                ? 'Stock Faible' 
+                                : 'En Rupture',
                         style: TextStyle(
-                          color: product.stockQuantity > 0 ? Colors.green : Colors.red,
+                          color: product.stockStatus == StockStatus.available 
+                              ? Colors.green 
+                              : product.stockStatus == StockStatus.lowStock 
+                                  ? Colors.orange 
+                                  : Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -129,12 +147,22 @@ class ProductDetailPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildInfoItem(Icons.inventory_2_outlined, 'Stock', '${product.stockQuantity}'),
+                        _buildInfoItem(
+                          Icons.inventory_2_outlined, 
+                          'Stock', 
+                          product.stockStatus == StockStatus.available 
+                              ? 'Disponible' 
+                              : product.stockStatus == StockStatus.lowStock 
+                                  ? 'Faible' 
+                                  : 'Rupture'
+                        ),
                         _buildInfoItem(Icons.verified_user_outlined, 'Qualité', 'Certifié'),
                         _buildInfoItem(Icons.local_shipping_outlined, 'Livraison', '24h/48h'),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 32),
+                  ReviewSection(rating: product.rating, reviewsCount: product.reviewsCount),
                   const SizedBox(height: 100), // Space for bottom button
                 ],
               ),
@@ -160,7 +188,6 @@ class ProductDetailPage extends StatelessWidget {
               child: FilledButton(
                 onPressed: () {
                   context.read<CartProvider>().addItem(product);
-                  Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${product.name} ajouté au panier'),
@@ -169,6 +196,7 @@ class ProductDetailPage extends StatelessWidget {
                       duration: const Duration(seconds: 1),
                     ),
                   );
+                  Navigator.pop(context);
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: primary,

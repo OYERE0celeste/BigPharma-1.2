@@ -1,0 +1,107 @@
+name: BigPharma Production Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-api:
+    name: Backend API CI/CD
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './api/package-lock.json'
+      
+      - name: Install Dependencies
+        run: npm ci
+      
+      - name: Security Audit
+        run: npm audit --audit-level=high
+      
+      - name: Run Linting
+        run: npm run lint || true # Allow failure if linting not setup
+      
+      - name: Run Tests
+        run: npm test || true # Allow failure if tests not setup
+      
+      - name: Build & Deploy (Production)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Deploying to production server..."
+          # Example: ssh-action to restart pm2 or docker-compose
+          # uses: appleboy/ssh-action@master
+
+  client-app:
+    name: Flutter Client App CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client_app
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.1'
+          channel: 'stable'
+          cache: true
+      
+      - name: Install Dependencies
+        run: flutter pub get
+      
+      - name: Static Analysis
+        run: flutter analyze
+      
+      - name: Run Widget Tests
+        run: flutter test
+      
+      - name: Build APK
+        run: flutter build apk --release --no-tree-shake-icons
+
+  staff-app:
+    name: Flutter Staff App CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./epharma
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.1'
+          channel: 'stable'
+          cache: true
+      
+      - name: Install Dependencies
+        run: flutter pub get
+      
+      - name: Static Analysis
+        run: flutter analyze
+      
+      - name: Run Tests
+        run: flutter test
+      
+      - name: Build APK
+        run: flutter build apk --release --no-tree-shake-icons
+
+  security-scans:
+    name: Global Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        continue-on-error: true

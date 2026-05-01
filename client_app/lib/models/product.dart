@@ -1,3 +1,5 @@
+enum StockStatus { available, lowStock, outOfStock }
+
 class Product {
   final String id;
   final String name;
@@ -5,8 +7,11 @@ class Product {
   final String category;
   final String description;
   final int stockQuantity;
+  final int lowStockThreshold;
   final String image;
   final bool prescriptionRequired;
+  final double rating;
+  final int reviewsCount;
 
   const Product({
     required this.id,
@@ -15,20 +20,38 @@ class Product {
     required this.category,
     required this.description,
     required this.stockQuantity,
+    this.lowStockThreshold = 10,
     this.image = 'assets/images/placeholder.png',
     this.prescriptionRequired = false,
+    this.rating = 0.0,
+    this.reviewsCount = 0,
   });
+
+  StockStatus get stockStatus {
+    if (stockQuantity <= 0) return StockStatus.outOfStock;
+    if (stockQuantity <= lowStockThreshold) return StockStatus.lowStock;
+    return StockStatus.available;
+  }
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: (json['_id'] ?? '').toString(),
+      id: (json['_id'] ?? json['id'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
-      sellingPrice: (json['sellingPrice'] ?? 0).toDouble(),
+      sellingPrice: (json['sellingPrice'] is num)
+          ? (json['sellingPrice'] as num).toDouble()
+          : double.tryParse(json['sellingPrice']?.toString() ?? '0') ?? 0.0,
       category: (json['category'] ?? 'Général').toString(),
       description: (json['description'] ?? '').toString(),
-      stockQuantity: ((json['stockQuantity'] ?? 0) as num).toInt(),
+      stockQuantity: (json['stockQuantity'] is num)
+          ? (json['stockQuantity'] as num).toInt()
+          : int.tryParse(json['stockQuantity']?.toString() ?? '0') ?? 0,
+      lowStockThreshold: (json['lowStockThreshold'] is num)
+          ? (json['lowStockThreshold'] as num).toInt()
+          : int.tryParse(json['lowStockThreshold']?.toString() ?? '10') ?? 10,
       image: (json['image'] ?? 'assets/images/placeholder.png').toString(),
       prescriptionRequired: json['prescriptionRequired'] == true,
+      rating: (json['rating'] is num) ? (json['rating'] as num).toDouble() : 0.0,
+      reviewsCount: (json['reviewsCount'] is num) ? (json['reviewsCount'] as num).toInt() : 0,
     );
   }
 
@@ -40,8 +63,11 @@ class Product {
       'category': category,
       'description': description,
       'stockQuantity': stockQuantity,
+      'lowStockThreshold': lowStockThreshold,
       'image': image,
       'prescriptionRequired': prescriptionRequired,
+      'rating': rating,
+      'reviewsCount': reviewsCount,
     };
   }
 }

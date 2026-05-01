@@ -35,30 +35,30 @@ const buildProductPayload = (body = {}) => {
 exports.getProducts = async (req, res, next) => {
   try {
     const { page = 1, limit = 10, search, category, stockStatus, companyId } = req.query;
-    
+
     let query = { isActive: true };
-    
+
     if (companyId) {
       query.companyId = companyId;
     }
-    
+
     // Category filtering
     if (category) query.category = category;
-    
+
     const now = new Date();
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(now.getDate() + 30);
 
     // Stock status filtering
     if (stockStatus) {
-      if (stockStatus === 'out_of_stock') {
+      if (stockStatus === "out_of_stock") {
         query.stockQuantity = 0;
-      } else if (stockStatus === 'low_stock') {
+      } else if (stockStatus === "low_stock") {
         query.$expr = { $lte: ["$stockQuantity", "$minStockLevel"] };
         query.stockQuantity = { $gt: 0 };
-      } else if (stockStatus === 'expired') {
+      } else if (stockStatus === "expired") {
         query["lots.expirationDate"] = { $lt: now };
-      } else if (stockStatus === 'near_expiration') {
+      } else if (stockStatus === "near_expiration") {
         query["lots.expirationDate"] = { $gte: now, $lte: thirtyDaysFromNow };
       }
     }
@@ -66,19 +66,19 @@ exports.getProducts = async (req, res, next) => {
     // Search filtering
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
       ];
     }
-    
+
     const products = await Product.find(query)
       .populate("companyId", "name email")
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
-      
+
     const total = await Product.countDocuments(query);
-    
+
     return success(res, {
       data: products,
       extra: {
@@ -86,9 +86,9 @@ exports.getProducts = async (req, res, next) => {
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
-        }
-      }
+          pages: Math.ceil(total / limit),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -101,14 +101,14 @@ exports.getProducts = async (req, res, next) => {
 exports.getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id).populate("companyId", "name email");
-    
+
     if (!product || !product.isActive) {
       return failure(res, {
         status: 404,
         message: "Produit introuvable",
       });
     }
-    
+
     return success(res, { data: product });
   } catch (error) {
     next(error);
@@ -122,14 +122,14 @@ exports.createProduct = async (req, res, next) => {
   try {
     const productPayload = buildProductPayload(req.body);
     const { name, purchasePrice, lots } = productPayload;
-    
+
     const result = await runInTransaction(async (session) => {
       const normalizedName = name ? name.trim() : "";
 
       const query = {
         companyId: req.user.companyId,
         isActive: true,
-        name: new RegExp(`^${normalizedName}$`, 'i'),
+        name: new RegExp(`^${normalizedName}$`, "i"),
         purchasePrice,
       };
 
@@ -139,19 +139,20 @@ exports.createProduct = async (req, res, next) => {
 
       if (product) {
         beforeTotal = product.stockQuantity;
-        
+
         if (lots && Array.isArray(lots)) {
           for (const newLot of lots) {
-            const existingLot = product.lots.find(l => 
-              l.lotNumber === newLot.lotNumber && 
-              new Date(l.expirationDate).getTime() === new Date(newLot.expirationDate).getTime()
+            const existingLot = product.lots.find(
+              (l) =>
+                l.lotNumber === newLot.lotNumber &&
+                new Date(l.expirationDate).getTime() === new Date(newLot.expirationDate).getTime()
             );
 
             if (existingLot) {
               const beforeLotQty = existingLot.quantityAvailable;
               existingLot.quantityAvailable += newLot.quantityAvailable;
-              existingLot.quantity += newLot.quantity; 
-              
+              existingLot.quantity += newLot.quantity;
+
               await new MouvementStock({
                 produitId: product._id,
                 lotNumber: existingLot.lotNumber,
@@ -165,7 +166,7 @@ exports.createProduct = async (req, res, next) => {
               }).save({ session });
             } else {
               product.lots.push(newLot);
-              
+
               await new MouvementStock({
                 produitId: product._id,
                 lotNumber: newLot.lotNumber,
@@ -180,16 +181,19 @@ exports.createProduct = async (req, res, next) => {
             }
           }
         }
-        
+
         Object.assign(product, productPayload);
-        product.stockQuantity = product.lots.reduce((sum, l) => sum + (l.quantityAvailable || 0), 0);
+        product.stockQuantity = product.lots.reduce(
+          (sum, l) => sum + (l.quantityAvailable || 0),
+          0
+        );
         await product.save({ session });
       } else {
         isNew = true;
         const productData = { ...productPayload, companyId: req.user.companyId };
         product = new Product(productData);
         const savedProduct = await product.save({ session });
-        
+
         if (lots && Array.isArray(lots)) {
           for (const lot of lots) {
             await new MouvementStock({
@@ -212,9 +216,17 @@ exports.createProduct = async (req, res, next) => {
         entityType: "product",
         entityId: product._id.toString(),
         entityName: product.name,
-        description: isNew ? `Nouveau produit créé: ${product.name}` : `Produit fusionné/mis à jour: ${product.name} (Stock: ${beforeTotal} -> ${product.stockQuantity})`,
+        description: isNew
+          ? `Nouveau produit créé: ${product.name}`
+          : `Produit fusionné/mis à jour: ${product.name} (Stock: ${beforeTotal} -> ${product.stockQuantity})`,
         companyId: req.user.companyId,
         user: req.user.fullName,
+        productName: product.name,
+        quantity: isNew ? product.stockQuantity : product.stockQuantity - beforeTotal,
+        totalAmount:
+          (isNew ? product.stockQuantity : product.stockQuantity - beforeTotal) *
+          product.purchasePrice,
+        status: "completed",
       });
 
       return { product, isNew };
@@ -222,7 +234,7 @@ exports.createProduct = async (req, res, next) => {
 
     return success(res, {
       status: result.isNew ? 201 : 200,
-      data: result.product
+      data: result.product,
     });
   } catch (error) {
     next(error);
@@ -240,7 +252,7 @@ exports.updateProduct = async (req, res, next) => {
       productPayload,
       { new: true, runValidators: true }
     );
-    
+
     if (!product) {
       return failure(res, {
         status: 404,
@@ -270,8 +282,8 @@ exports.updateProduct = async (req, res, next) => {
 exports.updateStock = async (req, res, next) => {
   try {
     const { quantity, operation } = req.body;
-    
-    if (!quantity || !operation || !['add', 'subtract', 'set'].includes(operation)) {
+
+    if (!quantity || !operation || !["add", "subtract", "set"].includes(operation)) {
       return failure(res, {
         status: 400,
         message: "Quantité et opération requises (add, subtract, set)",
@@ -279,20 +291,20 @@ exports.updateStock = async (req, res, next) => {
     }
 
     let updateQuery = {};
-    if (operation === 'set') {
+    if (operation === "set") {
       updateQuery.stockQuantity = quantity;
-    } else if (operation === 'add') {
+    } else if (operation === "add") {
       updateQuery.$inc = { stockQuantity: quantity };
-    } else if (operation === 'subtract') {
+    } else if (operation === "subtract") {
       updateQuery.$inc = { stockQuantity: -quantity };
     }
-    
+
     const product = await Product.findOneAndUpdate(
       { _id: req.params.id, companyId: req.user.companyId },
       updateQuery,
       { new: true, runValidators: true }
     );
-    
+
     if (!product) {
       return failure(res, {
         status: 404,
@@ -326,7 +338,7 @@ exports.deleteProduct = async (req, res, next) => {
       { isActive: false },
       { new: true }
     );
-    
+
     if (!product) {
       return failure(res, {
         status: 404,
@@ -356,13 +368,13 @@ exports.deleteProduct = async (req, res, next) => {
 exports.exportInventory = async (req, res, next) => {
   try {
     const products = await Product.find({ isActive: true });
-    
+
     let csv = "Nom,Categorie,Stock Total,Seuil Min,Status Expiration,Lot,Quantite Lot,Expiration\n";
-    
+
     for (const p of products) {
       if (p.lots && p.lots.length > 0) {
         for (const lot of p.lots) {
-          csv += `"${p.name}","${p.category}",${p.stockQuantity},${p.minStockLevel},"${p.expirationStatus}","${lot.lotNumber}",${lot.quantityAvailable},"${lot.expirationDate.toISOString().split('T')[0]}"\n`;
+          csv += `"${p.name}","${p.category}",${p.stockQuantity},${p.minStockLevel},"${p.expirationStatus}","${lot.lotNumber}",${lot.quantityAvailable},"${lot.expirationDate.toISOString().split("T")[0]}"\n`;
         }
       } else {
         csv += `"${p.name}","${p.category}",${p.stockQuantity},${p.minStockLevel},"${p.expirationStatus}","N/A",0,"N/A"\n`;

@@ -12,7 +12,7 @@ const CompanySchema = new mongoose.Schema(
       required: [true, "L'email de l'entreprise est requis"],
       unique: true,
       lowercase: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Veuillez fournir un email valide"],
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Veuillez fournir un email valide"],
     },
     phone: {
       type: String,
@@ -38,6 +38,5 @@ const CompanySchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
 
 module.exports = mongoose.model("Company", CompanySchema);

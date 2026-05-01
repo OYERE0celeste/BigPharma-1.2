@@ -95,14 +95,7 @@ const OrderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: [
-        "en_attente",
-        "validee",
-        "en_preparation",
-        "en_livraison",
-        "livree",
-        "annulee",
-      ],
+      enum: ["en_attente", "en_preparation", "pret_pour_recuperation", "validee", "annulee"],
       default: "en_attente",
     },
     prescriptionRequired: {

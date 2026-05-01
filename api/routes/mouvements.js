@@ -32,8 +32,8 @@ router.get("/", async (req, res, next) => {
         total,
         page: parseInt(page),
         limit: parseInt(limit),
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     next(error);
@@ -57,9 +57,9 @@ router.get("/export", async (req, res, next) => {
       .sort({ createdAt: -1 });
 
     let csv = "Date,Produit,Lot,Type,Quantite,Avant,Apres,Raison,Utilisateur\n";
-    
+
     for (const m of mouvements) {
-      csv += `"${m.createdAt.toISOString()}","${m.produitId?.name || 'N/A'}","${m.lotNumber}","${m.type}",${m.quantite},${m.beforeQuantity},${m.afterQuantity},"${m.reason}","${m.utilisateur}"\n`;
+      csv += `"${m.createdAt.toISOString()}","${m.produitId?.name || "N/A"}","${m.lotNumber}","${m.type}",${m.quantite},${m.beforeQuantity},${m.afterQuantity},"${m.reason}","${m.utilisateur}"\n`;
     }
 
     res.header("Content-Type", "text/csv");

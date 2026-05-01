@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'filter_bottom_sheet.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key, required this.primary});
@@ -12,6 +13,17 @@ class SearchBar extends StatelessWidget {
         hintText: 'Rechercher un medicament...',
         hintStyle: const TextStyle(fontSize: 16),
         prefixIcon: Icon(Icons.search_rounded, color: primary),
+        suffixIcon: IconButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => const FilterBottomSheet(),
+            );
+          },
+          icon: Icon(Icons.tune_rounded, color: primary),
+        ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),

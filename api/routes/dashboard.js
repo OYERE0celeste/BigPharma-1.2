@@ -6,10 +6,20 @@ const Product = require("../models/product");
 const Consultation = require("../models/consultation");
 const Sale = require("../models/sale");
 const ActivityLog = require("../models/activityLog");
+const cache = require("../utils/cache");
 
 // GET /api/dashboard/summary
 router.get("/summary", async (req, res, next) => {
   try {
+    const companyId = req.user.companyId.toString();
+    const cacheKey = `dashboard_summary_${companyId}`;
+    
+    // 1. Try to get from cache
+    const cachedData = await cache.get(cacheKey);
+    if (cachedData) {
+      return res.json({ success: true, data: cachedData, source: "cache" });
+    }
+
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const companyQuery = { companyId: req.user.companyId };
@@ -36,23 +46,23 @@ router.get("/summary", async (req, res, next) => {
       Supplier.countDocuments(companyQuery),
       Product.countDocuments({ ...companyQuery, isActive: true }),
       Consultation.countDocuments(companyQuery),
-      Sale.countDocuments({ ...companyQuery, status: 'active' }),
-      Product.countDocuments({ 
+      Sale.countDocuments({ ...companyQuery, status: "active" }),
+      Product.countDocuments({
         ...companyQuery,
         isActive: true,
         $expr: { $lte: ["$stockQuantity", "$minStockLevel"] },
-        stockQuantity: { $gt: 0 }
+        stockQuantity: { $gt: 0 },
       }),
       Product.countDocuments({ ...companyQuery, isActive: true, stockQuantity: 0 }),
       Product.countDocuments({
         ...companyQuery,
         isActive: true,
-        "lots.expirationDate": { $lt: now }
+        "lots.expirationDate": { $lt: now },
       }),
       Product.countDocuments({
         ...companyQuery,
         isActive: true,
-        "lots.expirationDate": { $gte: now, $lte: thirtyDaysFromNow }
+        "lots.expirationDate": { $gte: now, $lte: thirtyDaysFromNow },
       }),
       ActivityLog.countDocuments({ ...companyQuery, createdAt: { $gte: startOfToday } }),
       ActivityLog.countDocuments({
@@ -68,28 +78,34 @@ router.get("/summary", async (req, res, next) => {
         createdAt: { $gte: startOfToday },
       }),
       Sale.aggregate([
-        { $match: { ...companyQuery, saleDate: { $gte: startOfToday }, status: 'active' } },
-        { $group: { _id: null, total: { $sum: "$total" } } }
-      ]).then(result => result[0]?.total || 0),
+        { $match: { ...companyQuery, saleDate: { $gte: startOfToday }, status: "active" } },
+        { $group: { _id: null, total: { $sum: "$total" } } },
+      ]).then((result) => result[0]?.total || 0),
     ]);
+
+    const resultData = {
+      totalClients,
+      totalSuppliers,
+      totalProducts,
+      totalConsultations,
+      totalSales,
+      productsLowStock,
+      productsOutOfStock,
+      productsExpired,
+      productsNearExpiration,
+      activitiesToday,
+      newClientsToday,
+      newConsultationsToday,
+      todaySalesRevenue,
+    };
+
+    // 2. Save to cache (Short lived: 5 minutes)
+    await cache.set(cacheKey, resultData, 300);
 
     res.json({
       success: true,
-      data: {
-        totalClients,
-        totalSuppliers,
-        totalProducts,
-        totalConsultations,
-        totalSales,
-        productsLowStock,
-        productsOutOfStock,
-        productsExpired,
-        productsNearExpiration,
-        activitiesToday,
-        newClientsToday,
-        newConsultationsToday,
-        todaySalesRevenue,
-      },
+      data: resultData,
+      source: "db"
     });
   } catch (err) {
     next(err);
@@ -97,4 +113,3 @@ router.get("/summary", async (req, res, next) => {
 });
 
 module.exports = router;
-

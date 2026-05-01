@@ -5,16 +5,25 @@ const normalizeSupplierData = (data) => {
   const normalized = { ...data };
 
   // S'assurer que tous les champs texte sont bien des chaînes
-  const stringFields = ['name', 'contactName', 'phone', 'email', 'address', 'city', 'country', 'notes'];
-  stringFields.forEach(field => {
+  const stringFields = [
+    "name",
+    "contactName",
+    "phone",
+    "email",
+    "address",
+    "city",
+    "country",
+    "notes",
+  ];
+  stringFields.forEach((field) => {
     if (normalized[field] !== null && normalized[field] !== undefined) {
       normalized[field] = normalized[field].toString();
     }
   });
 
   // S'assurer que les champs numériques sont bien des nombres
-  const numberFields = ['totalOrders', 'totalAmount'];
-  numberFields.forEach(field => {
+  const numberFields = ["totalOrders", "totalAmount"];
+  numberFields.forEach((field) => {
     if (normalized[field] !== null && normalized[field] !== undefined) {
       const num = Number(normalized[field]);
       normalized[field] = isNaN(num) ? 0 : num;
@@ -31,36 +40,36 @@ const normalizeSupplierData = (data) => {
 
   // Normaliser le statut
   if (normalized.status) {
-    const validStatuses = ['active', 'inactive', 'suspended'];
-    normalized.status = validStatuses.includes(normalized.status.toString()) 
-      ? normalized.status.toString() 
-      : 'active';
+    const validStatuses = ["active", "inactive", "suspended"];
+    normalized.status = validStatuses.includes(normalized.status.toString())
+      ? normalized.status.toString()
+      : "active";
   }
 
   return normalized;
 };
 
 const _toStringOrEmpty = (value) => {
-  if (value === null || value === undefined) return '';
+  if (value === null || value === undefined) return "";
   return value.toString();
 };
 
 const _toNumberOrZero = (value) => {
-  if (value === null || value === undefined || value === '') return 0;
+  if (value === null || value === undefined || value === "") return 0;
   const n = Number(value);
   return Number.isFinite(n) ? n : 0;
 };
 
 const _toBoolean = (value) => {
   if (value === null || value === undefined) return false;
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'number') return value !== 0;
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
   const s = value.toString().trim().toLowerCase();
-  return s === 'true' || s === '1' || s === 'yes' || s === 'y';
+  return s === "true" || s === "1" || s === "yes" || s === "y";
 };
 
 const _toIsoDateStringOrNull = (value) => {
-  if (value === null || value === undefined || value === '') return null;
+  if (value === null || value === undefined || value === "") return null;
   const d = value instanceof Date ? value : new Date(value);
   return Number.isNaN(d.getTime()) ? null : d.toISOString();
 };
@@ -84,14 +93,14 @@ const normalizeClientData = (data) => {
 
   // Téléphone: uniquement chiffres
   const phoneRaw = _toStringOrEmpty(normalized.phone).trim();
-  normalized.phone = phoneRaw.replace(/\D/g, '');
+  normalized.phone = phoneRaw.replace(/\D/g, "");
 
   normalized.address = _toStringOrEmpty(normalized.address).trim();
 
   // Enum gender (obligatoire)
-  const validGenders = ['male', 'female'];
+  const validGenders = ["male", "female"];
   const genderStr = _toStringOrEmpty(normalized.gender).trim();
-  normalized.gender = validGenders.includes(genderStr) ? genderStr : 'male';
+  normalized.gender = validGenders.includes(genderStr) ? genderStr : "male";
 
   // Bool (obligatoire)
   normalized.hasMedicalHistory = _toBoolean(normalized.hasMedicalHistory);
@@ -107,21 +116,21 @@ const _transformEnvelope = (data, normalizer) => {
   if (!data) return data;
   // Cas 1: réponses "brutes" (tableau ou document)
   if (Array.isArray(data)) return data.map((item) => normalizer(item));
-  if (data && typeof data === 'object' && data.data !== undefined) {
+  if (data && typeof data === "object" && data.data !== undefined) {
     // Cas 2: enveloppe { success, message, data, ... }
     const out = { ...data };
     if (Array.isArray(out.data)) out.data = out.data.map((item) => normalizer(item));
-    else if (out.data && typeof out.data === 'object') out.data = normalizer(out.data);
+    else if (out.data && typeof out.data === "object") out.data = normalizer(out.data);
     return out;
   }
-  if (data && typeof data === 'object') return normalizer(data);
+  if (data && typeof data === "object") return normalizer(data);
   return data;
 };
 
 // Middleware Express pour transformer les réponses fournisseurs
 const transformSupplierResponse = (req, res, next) => {
   const originalJson = res.json;
-  res.json = function(data) {
+  res.json = function (data) {
     if (data && data.success && data.data) {
       if (Array.isArray(data.data)) {
         data.data = data.data.map(normalizeSupplierData);
@@ -137,7 +146,7 @@ const transformSupplierResponse = (req, res, next) => {
 // Middleware Express pour transformer les réponses clients
 const transformClientResponse = (req, res, next) => {
   const originalJson = res.json;
-  res.json = function(data) {
+  res.json = function (data) {
     if (data && data.success && data.data) {
       if (Array.isArray(data.data)) {
         data.data = data.data.map(normalizeClientData);
@@ -154,5 +163,5 @@ module.exports = {
   normalizeSupplierData,
   transformSupplierResponse,
   normalizeClientData,
-  transformClientResponse
+  transformClientResponse,
 };

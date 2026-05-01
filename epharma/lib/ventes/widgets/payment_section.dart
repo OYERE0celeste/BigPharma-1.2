@@ -89,7 +89,7 @@ class _PaymentSectionState extends State<PaymentSection> {
               setState(() {});
             },
             decoration: InputDecoration(
-              labelText: 'Montant Reçu (\$)',
+              labelText: 'Montant Reçu (FCFA)',
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 8,
@@ -115,11 +115,11 @@ class _PaymentSectionState extends State<PaymentSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Change',
+                  'Monnaie à rendre',
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                 ),
                 Text(
-                  '\$${changeAmount.toStringAsFixed(2)}',
+                  '${changeAmount.toStringAsFixed(0)} FCFA',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

@@ -31,10 +31,10 @@ class Product {
     this.expirationStatus = 'OK',
   });
 
-  int get totalStock => lots.fold<int>(0, (sum, lot) => sum + lot.quantity);
-
-  int get availableStock =>
+  int get totalStock =>
       lots.fold<int>(0, (sum, lot) => sum + lot.quantityAvailable);
+
+  int get availableStock => totalStock;
 
   Lot? get nearestExpirationLot {
     if (lots.isEmpty) return null;

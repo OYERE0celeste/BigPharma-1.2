@@ -1,4 +1,5 @@
 const Prescription = require("../models/prescription");
+const { logActivity } = require("../utils/activityLogger");
 const { success, failure } = require("../utils/response");
 
 /**
@@ -20,6 +21,16 @@ exports.createPrescription = async (req, res, next) => {
     });
 
     await prescription.save();
+
+    await logActivity({
+      actionType: "create",
+      entityType: "prescription",
+      entityId: prescription._id.toString(),
+      entityName: "Ordonnance",
+      description: `Nouvelle ordonnance téléchargée par le client`,
+      companyId: companyId,
+      user: req.user.fullName,
+    });
 
     return success(res, { status: 201, data: prescription });
   } catch (error) {
@@ -63,14 +74,17 @@ exports.getAllPrescriptions = async (req, res, next) => {
 exports.validatePrescription = async (req, res, next) => {
   try {
     const { status, pharmacyNotes } = req.body;
-    
+
     if (!["validated", "rejected"].includes(status)) {
-      return failure(res, { status: 400, message: "Statut invalide (validated ou rejected requis)" });
+      return failure(res, {
+        status: 400,
+        message: "Statut invalide (validated ou rejected requis)",
+      });
     }
 
-    const prescription = await Prescription.findOne({ 
-      _id: req.params.id, 
-      companyId: req.user.companyId 
+    const prescription = await Prescription.findOne({
+      _id: req.params.id,
+      companyId: req.user.companyId,
     });
 
     if (!prescription) {
@@ -83,6 +97,16 @@ exports.validatePrescription = async (req, res, next) => {
     prescription.validatedAt = new Date();
 
     await prescription.save();
+
+    await logActivity({
+      actionType: "update",
+      entityType: "prescription",
+      entityId: prescription._id.toString(),
+      entityName: "Ordonnance",
+      description: `Ordonnance ${status === "validated" ? "validée" : "rejetée"}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
+    });
 
     return success(res, { data: prescription });
   } catch (error) {

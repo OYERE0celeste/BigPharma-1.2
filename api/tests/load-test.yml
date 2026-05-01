@@ -1,0 +1,38 @@
+config:
+  target: "http://localhost:5000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+      name: Ramp up load
+    - duration: 300
+      arrivalRate: 50
+      name: Sustained load
+  payload:
+    path: "./payload.csv"
+    fields:
+      - "email"
+      - "password"
+
+scenarios:
+  - name: "Login and Browse Products"
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.data.token"
+              as: "token"
+      - get:
+          url: "/api/products"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/api/dashboard/summary"
+          headers:
+            Authorization: "Bearer {{ token }}"

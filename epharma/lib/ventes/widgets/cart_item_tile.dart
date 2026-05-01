@@ -36,18 +36,17 @@ class CartItemTile extends StatelessWidget {
                       cartItem.product.name,
                       style: const TextStyle(
                         fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       'Lot: ${cartItem.selectedLot.lotNumber}',
-                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                      style: TextStyle(fontSize: 10, color: Colors.grey[500]),
                     ),
-                    const SizedBox(height: 4),
                     Text(
-                      'Price: \$${cartItem.product.sellingPrice.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+                      'P.U: ${cartItem.product.sellingPrice.toStringAsFixed(0)} FCFA',
+                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -56,60 +55,32 @@ class CartItemTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '\$${cartItem.subtotal.toStringAsFixed(2)}',
+                    '${cartItem.subtotal.toStringAsFixed(0)} FCFA',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: kPrimaryGreen,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      InkWell(
-                        onTap: cartItem.quantity > 1 ? onDecrement : null,
-                        child: Icon(
-                          Icons.remove_circle,
-                          size: 18,
-                          color: cartItem.quantity > 1
-                              ? kPrimaryGreen
-                              : Colors.grey[300],
-                        ),
-                      ),
+                      _buildQtyBtn(Icons.remove, onDecrement, cartItem.quantity > 1),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           '${cartItem.quantity}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      InkWell(
-                        onTap:
-                            cartItem.quantity <
-                                cartItem.selectedLot.quantityAvailable
-                            ? onIncrement
-                            : null,
-                        child: Icon(
-                          Icons.add_circle,
-                          size: 18,
-                          color:
-                              cartItem.quantity <
-                                  cartItem.selectedLot.quantityAvailable
-                              ? kPrimaryGreen
-                              : Colors.grey[300],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      InkWell(
-                        onTap: onRemove,
-                        child: const Icon(
-                          Icons.delete_outline,
-                          size: 18,
-                          color: kDangerRed,
-                        ),
+                      _buildQtyBtn(Icons.add, onIncrement, cartItem.quantity < cartItem.selectedLot.quantityAvailable),
+                      const SizedBox(width: 12),
+                      IconButton(
+                        constraints: const BoxConstraints(),
+                        padding: EdgeInsets.zero,
+                        onPressed: onRemove,
+                        icon: const Icon(Icons.delete_outline, size: 20, color: kDangerRed),
                       ),
                     ],
                   ),
@@ -121,4 +92,22 @@ class CartItemTile extends StatelessWidget {
       ),
     );
   }
-}
+
+  Widget _buildQtyBtn(IconData icon, VoidCallback onTap, bool enabled) {
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: enabled ? kPrimaryGreen.withOpacity(0.1) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: enabled ? kPrimaryGreen : Colors.grey[400],
+        ),
+      ),
+    );
+  }
+}

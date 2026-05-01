@@ -19,7 +19,10 @@ async function registerAndLogin(overrides = {}) {
     ...overrides,
   };
 
-  const registerRes = await request(app).post("/api/auth/register").send(registerPayload).expect(201);
+  const registerRes = await request(app)
+    .post("/api/auth/register")
+    .send(registerPayload)
+    .expect(201);
   const loginRes = await request(app)
     .post("/api/auth/login")
     .send({ email: registerPayload.adminEmail, password: registerPayload.password })

@@ -19,7 +19,10 @@ async function runInTransaction(callback) {
 
   try {
     // Exécuter le callback avec la session (ou null si fallback)
-    console.log("[Transaction] Starting callback. session is function?", typeof session === 'function');
+    console.log(
+      "[Transaction] Starting callback. session is function?",
+      typeof session === "function"
+    );
     const result = await callback(useFallback ? null : session);
     console.log("[Transaction] Callback completed.");
 
@@ -27,7 +30,7 @@ async function runInTransaction(callback) {
     if (session && !useFallback) {
       await session.commitTransaction();
     }
-    
+
     return result;
   } catch (error) {
     // Annuler la transaction en cas d'erreur

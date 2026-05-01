@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "D:\\Projets\\BigPharma 1.2\\api\\logs\\.1ccc217e4eb63b83839fc5bf62c03e0ae1529b00-audit.json",
+    "files": [
+        {
+            "date": 1777536514625,
+            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-04-30.log",
+            "hash": "ef2c5550f6b2730eb1c20adf27998c7a16baeed2ef1b94268349433d1ffc7bca"
+        }
+    ],
+    "hashType": "sha256"
+}

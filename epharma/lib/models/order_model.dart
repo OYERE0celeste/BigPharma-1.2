@@ -3,24 +3,21 @@ import 'package:intl/intl.dart';
 
 enum OrderStatus {
   enAttente,
-  validee,
   enPreparation,
-  enLivraison,
-  livree,
+  pretPourRecuperation,
+  validee,
   annulee;
 
   String get apiValue {
     switch (this) {
       case OrderStatus.enAttente:
         return 'en_attente';
-      case OrderStatus.validee:
-        return 'validee';
       case OrderStatus.enPreparation:
         return 'en_preparation';
-      case OrderStatus.enLivraison:
-        return 'en_livraison';
-      case OrderStatus.livree:
-        return 'livree';
+      case OrderStatus.pretPourRecuperation:
+        return 'pret_pour_recuperation';
+      case OrderStatus.validee:
+        return 'validee';
       case OrderStatus.annulee:
         return 'annulee';
     }
@@ -30,14 +27,12 @@ enum OrderStatus {
     switch (this) {
       case OrderStatus.enAttente:
         return 'En attente';
-      case OrderStatus.validee:
-        return 'Validée';
       case OrderStatus.enPreparation:
         return 'En préparation';
-      case OrderStatus.enLivraison:
-        return 'En livraison';
-      case OrderStatus.livree:
-        return 'Livrée';
+      case OrderStatus.pretPourRecuperation:
+        return 'Prête (en attente récupération)';
+      case OrderStatus.validee:
+        return 'Validée (récupérée)';
       case OrderStatus.annulee:
         return 'Annulée';
     }
@@ -47,14 +42,12 @@ enum OrderStatus {
     switch (this) {
       case OrderStatus.enAttente:
         return Colors.orange;
-      case OrderStatus.validee:
-        return Colors.blue;
       case OrderStatus.enPreparation:
-        return Colors.deepPurple;
-      case OrderStatus.enLivraison:
-        return Colors.teal;
-      case OrderStatus.livree:
-        return Colors.green;
+        return Colors.blue;
+      case OrderStatus.pretPourRecuperation:
+        return Colors.purple;
+      case OrderStatus.validee:
+        return Colors.pink;
       case OrderStatus.annulee:
         return Colors.red;
     }
@@ -202,19 +195,22 @@ class OrderModel {
     );
   }
 
-  String get formattedDate => DateFormat('dd/MM/yyyy HH:mm').format(createdAt);
+  String get formattedDate => DateFormat('dd/MM/yyyy HH:mm').format(createdAt.toLocal());
 
   List<OrderStatus> get availableNextStatuses {
     switch (status) {
       case OrderStatus.enAttente:
+        return [
+          OrderStatus.enPreparation,
+          OrderStatus.pretPourRecuperation,
+          OrderStatus.annulee
+        ];
+      case OrderStatus.enPreparation:
+        return [OrderStatus.pretPourRecuperation, OrderStatus.annulee];
+      case OrderStatus.pretPourRecuperation:
         return [OrderStatus.validee, OrderStatus.annulee];
       case OrderStatus.validee:
-        return [OrderStatus.enPreparation, OrderStatus.annulee];
-      case OrderStatus.enPreparation:
-        return [OrderStatus.enLivraison, OrderStatus.annulee];
-      case OrderStatus.enLivraison:
-        return [OrderStatus.livree, OrderStatus.annulee];
-      case OrderStatus.livree:
+        return [];
       case OrderStatus.annulee:
         return [];
     }

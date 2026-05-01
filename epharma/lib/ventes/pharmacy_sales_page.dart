@@ -220,313 +220,315 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _showSalesHistory ? _buildSalesHistoryView() : _buildPOSView();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Increased threshold to 1100 for better tablet/small laptop support
+        if (constraints.maxWidth < 1100) {
+          return _buildMobilePOSView(constraints);
+        }
+        return _showSalesHistory ? _buildSalesHistoryView() : _buildPOSView();
+      },
+    );
+  }
+
+  Widget _buildMobilePOSView(BoxConstraints constraints) {
+    if (_showSalesHistory) return _buildSalesHistoryView();
+    
+    // Simple tabbed view for mobile: Products vs Cart
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('POS - SALES', style: TextStyle(fontSize: 16)),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.history),
+              onPressed: () => setState(() => _showSalesHistory = true),
+            ),
+          ],
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Produits', icon: Icon(Icons.grid_view)),
+              Tab(text: 'Panier', icon: Icon(Icons.shopping_cart)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _buildProductsSection(isMobile: true),
+            _buildCartSection(isMobile: true),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildPOSView() {
-    final productProvider = context.watch<ProductProvider>();
-    final allProducts = productProvider.products;
-
-    final query = _searchController.text.toLowerCase();
-    List<Product> filteredProducts = allProducts;
-    if (query.isNotEmpty) {
-      filteredProducts = allProducts
-          .where(
-            (product) =>
-                product.name.toLowerCase().contains(query) ||
-                product.category.toLowerCase().contains(query) ||
-                product.id.toLowerCase().contains(query),
-          )
-          .toList();
-    }
-
     return Row(
       children: [
         // LEFT SIDE: Product Search & Selection
-        Expanded(
-          flex: 2,
-          child: Container(
-            color: Colors.grey.shade50,
-            child: Column(
-              children: [
-                // Header with tab switcher
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey.shade200),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'POS - SALES',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        spacing: 8,
-                        children: [
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              setState(() => _showSalesHistory = false);
-                            },
-                            icon: const Icon(Icons.shopping_bag, size: 16),
-                            label: const Text('Nouvelle Vente'),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: _showSalesHistory
-                                  ? Colors.transparent
-                                  : kSoftBlue,
-                            ),
-                          ),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              setState(() => _showSalesHistory = true);
-                            },
-                            icon: const Icon(Icons.history, size: 16),
-                            label: const Text('Historique des Ventes'),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: _showSalesHistory
-                                  ? kSoftBlue
-                                  : Colors.transparent,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                // Search bar
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  color: Colors.white,
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: _filterProducts,
-                    decoration: InputDecoration(
-                      hintText:
-                          'Rechercher par nom de produit, code-barres ou catégorie...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ),
-                // Products grid
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.75,
-                          ),
-                      itemCount: filteredProducts.length,
-                      itemBuilder: (context, index) {
-                        final product = filteredProducts[index];
-                        final isInCart = _cart.any(
-                          (item) => item.product.id == product.id,
-                        );
+        _buildProductsSection(isMobile: false),
+        // RIGHT SIDE: Cart & Transaction Summary
+        _buildCartSection(isMobile: false),
+      ],
+    );
+  }
 
-                        return ProductCard(
-                          product: product,
-                          isSelected: isInCart,
-                          onAddToCart: () => _addProductToCart(product),
+  Widget _buildProductsSection({required bool isMobile}) {
+    final productProvider = context.watch<ProductProvider>();
+    final allProducts = productProvider.products;
+    final query = _searchController.text.toLowerCase();
+    
+    List<Product> filteredProducts = allProducts;
+    if (query.isNotEmpty) {
+      filteredProducts = allProducts
+          .where((p) => p.name.toLowerCase().contains(query) || 
+                         p.category.toLowerCase().contains(query) || 
+                         p.id.toLowerCase().contains(query))
+          .toList();
+    }
+
+    return Expanded(
+      flex: isMobile ? 1 : 2,
+      child: Container(
+        color: Colors.grey.shade50,
+        child: Column(
+          children: [
+            if (!isMobile) // Header only for desktop
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+                ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: [
+                        const Text(
+                          'POS - SALES',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _buildHeaderBtn(
+                              label: 'Nouvelle Vente', 
+                              icon: Icons.shopping_bag, 
+                              isActive: !_showSalesHistory, 
+                              onPressed: () => setState(() => _showSalesHistory = false)
+                            ),
+                            _buildHeaderBtn(
+                              label: 'Historique', 
+                              icon: Icons.history, 
+                              isActive: _showSalesHistory, 
+                              onPressed: () => setState(() => _showSalesHistory = true)
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }
+                ),
+              ),
+            // Search bar
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: Colors.white,
+              child: TextField(
+                controller: _searchController,
+                onChanged: _filterProducts,
+                decoration: InputDecoration(
+                  hintText: 'Rechercher un produit...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                ),
+              ),
+            ),
+            // Products grid
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth;
+                  int crossCount = 3;
+                  double ratio = 0.7; // Lower ratio to give more vertical space
+                  
+                  if (width < 500) { crossCount = 1; ratio = 1.8; }
+                  else if (width < 800) { crossCount = 2; ratio = 0.8; }
+                  else if (width < 1200) { crossCount = 3; ratio = 0.7; }
+                  else { crossCount = 4; ratio = 0.75; }
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(12),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossCount,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: ratio,
+                    ),
+                    itemCount: filteredProducts.length,
+                    itemBuilder: (context, index) {
+                      final p = filteredProducts[index];
+                      return ProductCard(
+                        product: p,
+                        isSelected: _cart.any((item) => item.product.id == p.id),
+                        onAddToCart: () => _addProductToCart(p),
+                      );
+                    },
+                  );
+                }
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderBtn({required String label, required IconData icon, required bool isActive, required VoidCallback onPressed}) {
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 16),
+      label: Text(label),
+      style: OutlinedButton.styleFrom(
+        backgroundColor: isActive ? kSoftBlue : Colors.transparent,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+    );
+  }
+
+  Widget _buildCartSection({required bool isMobile}) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            // Cart Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('PANIER', style: TextStyle(fontWeight: FontWeight.bold)),
+                  if (_cart.isNotEmpty)
+                    TextButton.icon(
+                      onPressed: () => setState(() => _cart.clear()),
+                      icon: const Icon(Icons.delete_sweep, size: 16),
+                      label: const Text('Vider'),
+                      style: TextButton.styleFrom(foregroundColor: kDangerRed),
+                    ),
+                ],
+              ),
+            ),
+            // Cart Items
+            Expanded(
+              child: _cart.isEmpty
+                  ? _buildEmptyCart()
+                  : ListView.builder(
+                      itemCount: _cart.length,
+                      itemBuilder: (context, index) {
+                        final item = _cart[index];
+                        return Column(
+                          children: [
+                            if (index == 0 && _hasPrescriptionRequiredItems)
+                              _buildPrescriptionBanner(),
+                            CartItemTile(
+                              cartItem: item,
+                              onIncrement: () => setState(() {
+                                if (item.quantity < item.selectedLot.quantityAvailable) item.quantity++;
+                              }),
+                              onDecrement: () => setState(() {
+                                if (item.quantity > 1) item.quantity--;
+                              }),
+                              onRemove: () => _removeFromCart(item),
+                            ),
+                          ],
                         );
                       },
                     ),
-                  ),
-                ),
-              ],
+            ),
+            // Footer (Total & Payment)
+            if (_cart.isNotEmpty) _buildCartFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyCart() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.shopping_basket_outlined, size: 48, color: Colors.grey[300]),
+          const SizedBox(height: 16),
+          const Text('Le panier est vide', style: TextStyle(color: Colors.grey)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPrescriptionBanner() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: PrescriptionBanner(
+        isVerified: _prescriptionVerified,
+        onAttach: () {},
+        onVerificationToggle: (v) => setState(() => _prescriptionVerified = v),
+      ),
+    );
+  }
+
+  Widget _buildCartFooter() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -4))],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TransactionSummaryPanel(
+            subtotal: _cartSubtotal,
+            discount: _customDiscount,
+            tax: _customTax,
+            onDiscountChanged: (v) => setState(() => _customDiscount = v),
+          ),
+          PaymentSection(
+            totalAmount: _cartSubtotal - _customDiscount + _customTax,
+            onPaymentMethodChanged: (m) => setState(() => _selectedPaymentMethod = m),
+            onAmountReceivedChanged: (a) => setState(() => _amountReceived = a),
+            amountReceived: _amountReceived,
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              onPressed: _confirmSale,
+              icon: const Icon(Icons.check_circle),
+              label: const Text('CONFIRMER LA VENTE'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kPrimaryGreen,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
             ),
           ),
-        ),
-        // RIGHT SIDE: Cart & Transaction Summary
-        Expanded(
-          child: Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                // Cart Header
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey.shade200),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'SHOPPING CART',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${_cart.length} item(s)',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (_cart.isNotEmpty)
-                        OutlinedButton.icon(
-                          onPressed: () => setState(() => _cart.clear()),
-                          icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Vider le Panier'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: kDangerRed,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                // Cart Items
-                Expanded(
-                  child: _cart.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.shopping_bag,
-                                size: 48,
-                                color: Colors.grey[300],
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Le panier est vide',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // Prescription Banner
-                              if (_hasPrescriptionRequiredItems)
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  color: Colors.white,
-                                  child: PrescriptionBanner(
-                                    isVerified: _prescriptionVerified,
-                                    onAttach: () {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Fonctionnalité de pièce jointe d\'ordonnance à venir',
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    onVerificationToggle: (verified) {
-                                      setState(
-                                        () => _prescriptionVerified = verified,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              // Cart items
-                              ..._cart.map(
-                                (item) => CartItemTile(
-                                  cartItem: item,
-                                  onIncrement: () {
-                                    setState(() {
-                                      if (item.quantity <
-                                          item.selectedLot.quantityAvailable) {
-                                        item.quantity++;
-                                      }
-                                    });
-                                  },
-                                  onDecrement: () {
-                                    setState(() {
-                                      if (item.quantity > 1) {
-                                        item.quantity--;
-                                      }
-                                    });
-                                  },
-                                  onRemove: () => _removeFromCart(item),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                ),
-                // Transaction Summary
-                if (_cart.isNotEmpty) ...[
-                  TransactionSummaryPanel(
-                    subtotal: _cartSubtotal,
-                    discount: _customDiscount,
-                    tax: _customTax,
-                    onDiscountChanged: (value) {
-                      setState(() => _customDiscount = value);
-                    },
-                  ),
-                  // Payment Section
-                  PaymentSection(
-                    totalAmount: _cartSubtotal - _customDiscount + _customTax,
-                    onPaymentMethodChanged: (method) {
-                      setState(() => _selectedPaymentMethod = method);
-                    },
-                    onAmountReceivedChanged: (amount) {
-                      setState(() => _amountReceived = amount);
-                    },
-                    amountReceived: _amountReceived,
-                  ),
-                  // Confirm Sale Button
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    color: Colors.white,
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        onPressed: _confirmSale,
-                        icon: const Icon(Icons.check_circle),
-                        label: const Text('CONFIRMER LA VENTE'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: kPrimaryGreen,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

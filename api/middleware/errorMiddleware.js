@@ -1,17 +1,32 @@
-﻿const { failure } = require("../utils/response");
+const { failure } = require("../utils/response");
+const logger = require("../utils/logger");
+const Sentry = require("@sentry/node");
+const { ERROR_CODES } = require("../constants");
 
 const errorHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
+  let statusCode = err.status || 500;
   let message = err.message || "Internal server error";
-  let code = err.code || "SERVER_ERROR";
+  let code = err.code || ERROR_CODES.INTERNAL_SERVER_ERROR;
+  let details = err.details || null;
 
-  console.error(`[Error] ${req.method} ${req.originalUrl}`, err);
+  // Log error using Winston
+  logger.error(`${err.name || 'Error'}: ${message}`, {
+    method: req.method,
+    path: req.originalUrl,
+    requestId: req.id,
+    stack: err.stack,
+  });
 
-  // Mongoose CastError
+  // Track non-operational errors (bugs) in Sentry
+  if (!err.isOperational && process.env.SENTRY_DSN) {
+    Sentry.captureException(err);
+  }
+
+  // Mongoose CastError (Bad ID)
   if (err.name === "CastError") {
     statusCode = 404;
-    message = `Resource not found for id ${err.value}`;
-    code = "NOT_FOUND";
+    message = `Resource not found with id: ${err.value}`;
+    code = ERROR_CODES.NOT_FOUND;
   }
 
   // Mongoose duplicate key error
@@ -19,14 +34,16 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 409;
     const field = Object.keys(err.keyValue)[0];
     message = `${field} already exists`;
-    code = "DUPLICATE_ENTRY";
+    code = ERROR_CODES.DUPLICATE_ENTRY;
   }
 
   // Mongoose validation error
   if (err.name === "ValidationError") {
     statusCode = 400;
-    message = Object.values(err.errors).map((val) => val.message).join(", ");
-    code = "VALIDATION_ERROR";
+    message = Object.values(err.errors)
+      .map((val) => val.message)
+      .join(", ");
+    code = ERROR_CODES.VALIDATION_ERROR;
   }
 
   // JWT errors
@@ -46,7 +63,7 @@ const errorHandler = (err, req, res, next) => {
     status: statusCode,
     message,
     code,
-    data: process.env.NODE_ENV === "development" ? { details: err.stack } : null,
+    data: process.env.NODE_ENV === "development" ? { stack: err.stack, details } : details,
   });
 };
 

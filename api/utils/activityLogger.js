@@ -5,25 +5,9 @@ const ActivityLog = require("../models/activityLog");
  * actionType: "create" | "update" | "delete"
  * entityType: "client" | "product" | "consultation" | "supplier" | "sale"
  */
-async function logActivity({
-  actionType,
-  entityType,
-  entityId,
-  entityName,
-  description,
-  user = "system",
-  companyId,
-}) {
+async function logActivity(activityData) {
   try {
-    await ActivityLog.create({
-      actionType,
-      entityType,
-      entityId,
-      entityName,
-      description,
-      user,
-      companyId,
-    });
+    await ActivityLog.create(activityData);
   } catch (err) {
     // On log uniquement l'erreur sans casser la requête principale
     console.error("Failed to log activity:", err.message);
@@ -31,4 +15,3 @@ async function logActivity({
 }
 
 module.exports = { logActivity };
-

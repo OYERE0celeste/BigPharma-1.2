@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/product.dart';
 
 class ProductCard extends StatelessWidget {
@@ -51,34 +53,45 @@ class ProductCard extends StatelessWidget {
                       child: Hero(
                         tag: 'product_${product.id}',
                         child: product.image.startsWith('http')
-                            ? Image.network(
-                                product.image,
+                            ? CachedNetworkImage(
+                                imageUrl: product.image,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
+                                placeholder: (context, url) => Container(
+                                  color: Colors.grey[200],
+                                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                ),
+                                errorWidget: (context, url, error) =>
                                     Icon(Icons.medication_rounded, size: 40, color: primary.withOpacity(0.5)),
                               )
                             : Icon(Icons.medication_rounded, size: 40, color: primary.withOpacity(0.5)),
                       ),
                     ),
-                    // Category Badge
+                    // Category & Stock Badge
                     Positioned(
                       top: 10,
                       left: 10,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          product.category,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: primary,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              product.category,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: primary,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          _buildStockBadge(),
+                        ],
                       ),
                     ),
                   ],
@@ -127,12 +140,30 @@ class ProductCard extends StatelessWidget {
                                   color: primary,
                                 ),
                               ),
-                              if (product.stockQuantity <= 5)
-                                Text(
-                                  'Reste: ${product.stockQuantity}',
-                                  style: const TextStyle(
+                              if (product.stockStatus == StockStatus.lowStock)
+                                const Text(
+                                  'Stock Faible',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              else if (product.stockStatus == StockStatus.outOfStock)
+                                const Text(
+                                  'En Rupture',
+                                  style: TextStyle(
                                     fontSize: 10,
                                     color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              else
+                                const Text(
+                                  'Disponible',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.green,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -159,6 +190,42 @@ class ProductCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuad);
+  }
+
+  Widget _buildStockBadge() {
+    Color color;
+    String text;
+
+    switch (product.stockStatus) {
+      case StockStatus.available:
+        color = Colors.green;
+        text = 'Disponible';
+        break;
+      case StockStatus.lowStock:
+        color = Colors.orange;
+        text = 'Stock Faible';
+        break;
+      case StockStatus.outOfStock:
+        color = Colors.red;
+        text = 'Rupture';
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
       ),
     );

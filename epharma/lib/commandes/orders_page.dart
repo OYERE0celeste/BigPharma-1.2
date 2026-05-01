@@ -80,90 +80,122 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 24),
-            _buildDashboard(orderProvider),
-            const SizedBox(height: 24),
-            _buildFiltersAndSearch(),
-            const SizedBox(height: 16),
-            Expanded(
-              child: orderProvider.isLoading && orderProvider.orders.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : _buildOrdersList(orderProvider),
-            ),
-            _buildPagination(orderProvider),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              const SizedBox(height: 24),
+              _buildDashboard(orderProvider),
+              const SizedBox(height: 24),
+              _buildFiltersAndSearch(),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 500, // Fixed height for table container or use ConstrainedBox
+                child: orderProvider.isLoading && orderProvider.orders.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : _buildOrdersList(orderProvider),
+              ),
+              _buildPagination(orderProvider),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        return Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 16,
+          runSpacing: 16,
           children: [
-            const Text(
-              'Gestion des commandes',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1E293B),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Gestion des commandes',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+                Text(
+                  'Suivi en temps réel du cycle de commande.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: isMobile ? double.infinity : null,
+              child: FilledButton.icon(
+                onPressed: () => _loadOrders(page: 1),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Rafraîchir'),
               ),
             ),
-            Text(
-              'Suivi en temps réel du cycle de commande client.',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
           ],
-        ),
-        FilledButton.icon(
-          onPressed: () => _loadOrders(page: 1),
-          icon: const Icon(Icons.refresh),
-          label: const Text('Rafraîchir'),
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildDashboard(OrderProvider provider) {
-    return Row(
-      children: [
-        _buildStatCard(
-          'En attente',
-          '${provider.stats['en_attente'] ?? 0}',
-          Colors.orange,
-          Icons.timer_outlined,
-        ),
-        const SizedBox(width: 16),
-        _buildStatCard(
-          'En préparation',
-          '${provider.stats['en_preparation'] ?? 0}',
-          Colors.deepPurple,
-          Icons.inventory_2_outlined,
-        ),
-        const SizedBox(width: 16),
-        _buildStatCard(
-          'En livraison',
-          '${provider.stats['en_livraison'] ?? 0}',
-          Colors.teal,
-          Icons.local_shipping_outlined,
-        ),
-        const SizedBox(width: 16),
-        _buildStatCard(
-          'Livrées',
-          '${provider.stats['livree'] ?? 0}',
-          Colors.green,
-          Icons.check_circle_outline,
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        int crossAxisCount = 5;
+        if (width < 600) crossAxisCount = 2;
+        else if (width < 1000) crossAxisCount = 3;
+
+        return GridView.count(
+          crossAxisCount: crossAxisCount,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: width < 600 ? 1.5 : 2.0,
+          children: [
+            _buildStatCard(
+              'En attente',
+              '${provider.stats['en_attente'] ?? 0}',
+              Colors.orange,
+              Icons.timer_outlined,
+            ),
+            _buildStatCard(
+              'Préparation',
+              '${provider.stats['en_preparation'] ?? 0}',
+              Colors.blue,
+              Icons.inventory_2_outlined,
+            ),
+            _buildStatCard(
+              'Prêtes',
+              '${provider.stats['pret_pour_recuperation'] ?? 0}',
+              Colors.purple,
+              Icons.shopping_bag_outlined,
+            ),
+            _buildStatCard(
+              'Validées',
+              '${provider.stats['validee'] ?? 0}',
+              Colors.green,
+              Icons.check_circle_outline,
+            ),
+            _buildStatCard(
+              'Annulées',
+              '${provider.stats['annulee'] ?? 0}',
+              Colors.red,
+              Icons.cancel_outlined,
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -173,107 +205,135 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
     Color color,
     IconData icon,
   ) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                ),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF191D23),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final showIcon = constraints.maxWidth > 80;
+          return Row(
+            children: [
+              if (showIcon) ...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  child: Icon(icon, color: color, size: 20),
                 ),
+                const SizedBox(width: 12),
               ],
-            ),
-          ],
-        ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                    ),
+                    const SizedBox(height: 2),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF191D23),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
   Widget _buildFiltersAndSearch() {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Rechercher par numéro ou client...',
-              prefixIcon: const Icon(Icons.search),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            onChanged: (value) {
-              setState(() => _searchQuery = value);
-              _loadOrders(page: 1);
-            },
-          ),
-        ),
-        const SizedBox(width: 16),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String?>(
-              hint: const Text('Filtrer par statut'),
-              value: _selectedStatus,
-              items: [
-                const DropdownMenuItem<String?>(
-                  value: null,
-                  child: Text('Tous les statuts'),
-                ),
-                ...OrderStatus.values.map(
-                  (status) => DropdownMenuItem<String?>(
-                    value: status.apiValue,
-                    child: Text(status.label),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        return Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            SizedBox(
+              width: isMobile ? double.infinity : 350,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Rechercher par numéro ou client...',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[200]!),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[200]!),
                   ),
                 ),
-              ],
-              onChanged: (value) {
-                setState(() => _selectedStatus = value);
-                _loadOrders(page: 1);
-              },
+                onChanged: (value) {
+                  setState(() => _searchQuery = value);
+                  _loadOrders(page: 1);
+                },
+              ),
             ),
-          ),
-        ),
-      ],
+            Container(
+              width: isMobile ? double.infinity : 220,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String?>(
+                  isExpanded: true,
+                  hint: const Text('Filtrer par statut'),
+                  value: _selectedStatus,
+                  items: [
+                    const DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text('Tous les statuts'),
+                    ),
+                    ...OrderStatus.values.map(
+                      (status) => DropdownMenuItem<String?>(
+                        value: status.apiValue,
+                        child: Text(status.label),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() => _selectedStatus = value);
+                    _loadOrders(page: 1);
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -334,15 +394,20 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
           ),
         ),
         DataCell(
-          Wrap(
-            spacing: 4,
+          Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: const Icon(Icons.visibility_outlined),
                 tooltip: 'Détails',
                 onPressed: () => _viewDetails(order),
               ),
-              ...order.availableNextStatuses.map(
+              const SizedBox(width: 4),
+              ...order.availableNextStatuses
+                  .where((s) =>
+                      !(order.status == OrderStatus.validee &&
+                          s == OrderStatus.annulee))
+                  .map(
                 (status) => IconButton(
                   icon: Icon(_actionIcon(status), color: status.color),
                   tooltip: status.label,
@@ -358,14 +423,12 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
 
   IconData _actionIcon(OrderStatus status) {
     switch (status) {
-      case OrderStatus.validee:
-        return Icons.check_circle_outline;
       case OrderStatus.enPreparation:
         return Icons.inventory_2_outlined;
-      case OrderStatus.enLivraison:
-        return Icons.local_shipping_outlined;
-      case OrderStatus.livree:
-        return Icons.task_alt;
+      case OrderStatus.pretPourRecuperation:
+        return Icons.shopping_bag_outlined;
+      case OrderStatus.validee:
+        return Icons.check_circle_outline;
       case OrderStatus.annulee:
         return Icons.cancel_outlined;
       case OrderStatus.enAttente:

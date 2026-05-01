@@ -9,31 +9,31 @@ const { success, failure } = require("../utils/response");
 exports.getClients = async (req, res, next) => {
   try {
     const { page = 1, limit = 10, search, gender, companyId } = req.query;
-    
+
     let query = { isActive: true };
 
     if (companyId) {
       query.companyId = companyId;
     }
-    
+
     if (gender) query.gender = gender;
     if (search) {
       query.$or = [
-        { fullName: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { fullName: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
       ];
     }
-    
+
     const clients = await Client.find(query)
       .populate("companyId", "name")
       .populate("userId", "fullName email")
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
-      
+
     const total = await Client.countDocuments(query);
-    
+
     return success(res, {
       data: clients,
       extra: {
@@ -41,9 +41,9 @@ exports.getClients = async (req, res, next) => {
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
-        }
-      }
+          pages: Math.ceil(total / limit),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -58,15 +58,15 @@ exports.getClientById = async (req, res, next) => {
     const client = await Client.findById(req.params.id)
       .populate("companyId", "name")
       .populate("userId", "fullName email");
-    
+
     if (!client) {
-      return failure(res, { 
-        status: 404, 
+      return failure(res, {
+        status: 404,
         message: "Client not found",
-        code: "CLIENT_NOT_FOUND"
+        code: "CLIENT_NOT_FOUND",
       });
     }
-    
+
     return success(res, { data: client });
   } catch (error) {
     next(error);
@@ -79,42 +79,42 @@ exports.getClientById = async (req, res, next) => {
 exports.createClient = async (req, res, next) => {
   try {
     const { fullName, email, phone, dateOfBirth, gender, address, createUser, password } = req.body;
-    
+
     // Validate required fields
     if (!fullName || !phone || !dateOfBirth || !gender) {
       return failure(res, {
         status: 400,
         message: "Missing required fields: fullName, phone, dateOfBirth, gender",
-        code: "VALIDATION_ERROR"
+        code: "VALIDATION_ERROR",
       });
     }
 
     // Check for duplicate phone/email
     const existing = await Client.findOne({
       $or: [{ phone }, { email }],
-      companyId: req.user.companyId
+      companyId: req.user.companyId,
     });
-    
+
     if (existing) {
       return failure(res, {
         status: 409,
         message: "Client with this email or phone already exists",
-        code: "DUPLICATE_ENTRY"
+        code: "DUPLICATE_ENTRY",
       });
     }
 
     let userId = null;
-    
+
     // Create User if requested
     if (createUser) {
       if (!email || !password) {
         return failure(res, {
           status: 400,
           message: "Email and password required to create user",
-          code: "VALIDATION_ERROR"
+          code: "VALIDATION_ERROR",
         });
       }
-      
+
       const user = await User.create({
         fullName,
         email: email.toLowerCase(),
@@ -126,7 +126,7 @@ exports.createClient = async (req, res, next) => {
       });
       userId = user._id;
     }
-    
+
     const clientData = {
       fullName,
       email: email ? email.toLowerCase() : "",
@@ -135,9 +135,9 @@ exports.createClient = async (req, res, next) => {
       gender,
       address: address || "",
       companyId: req.user.companyId,
-      userId
+      userId,
     };
-    
+
     const client = await Client.create(clientData);
 
     await logActivity({
@@ -163,19 +163,20 @@ exports.updateClient = async (req, res, next) => {
   try {
     // Don't allow direct modification of certain fields
     const { companyId, userId, createdAt, ...updateData } = req.body;
-    
+
     const client = await Client.findOneAndUpdate(
       { _id: req.params.id, companyId: req.user.companyId },
       updateData,
       { new: true, runValidators: true }
-    ).populate("companyId", "name")
-     .populate("userId", "fullName email");
-    
+    )
+      .populate("companyId", "name")
+      .populate("userId", "fullName email");
+
     if (!client) {
-      return failure(res, { 
-        status: 404, 
+      return failure(res, {
+        status: 404,
         message: "Client not found",
-        code: "CLIENT_NOT_FOUND"
+        code: "CLIENT_NOT_FOUND",
       });
     }
 
@@ -205,12 +206,12 @@ exports.deleteClient = async (req, res, next) => {
       { isActive: false },
       { new: true }
     );
-    
+
     if (!client) {
-      return failure(res, { 
-        status: 404, 
+      return failure(res, {
+        status: 404,
         message: "Client not found",
-        code: "CLIENT_NOT_FOUND"
+        code: "CLIENT_NOT_FOUND",
       });
     }
 
@@ -236,20 +237,16 @@ exports.deleteClient = async (req, res, next) => {
 exports.getMyProfile = async (req, res, next) => {
   try {
     // Search for client profile matching the user ID preferred, or email/phone
-    const client = await Client.findOne({ 
-      $or: [
-        { userId: req.user._id },
-        { email: req.user.email },
-        { phone: req.user.phone }
-      ],
-      companyId: req.user.companyId
+    const client = await Client.findOne({
+      $or: [{ userId: req.user._id }, { email: req.user.email }, { phone: req.user.phone }],
+      companyId: req.user.companyId,
     }).populate("companyId", "name");
 
     if (!client) {
-      return failure(res, { 
-        status: 404, 
+      return failure(res, {
+        status: 404,
         message: "Client profile not found",
-        code: "PROFILE_NOT_FOUND"
+        code: "PROFILE_NOT_FOUND",
       });
     }
 
