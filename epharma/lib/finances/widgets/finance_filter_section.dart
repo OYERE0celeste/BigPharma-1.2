@@ -71,8 +71,6 @@ class _FinanceFilterSectionState extends State<FinanceFilterSection> {
                   value: widget.selectedType,
                   items: [
                         'Vente',
-                        'Retour',
-                        'Approvisionnement',
                       ]
                       .map(
                         (type) => DropdownMenuItem(

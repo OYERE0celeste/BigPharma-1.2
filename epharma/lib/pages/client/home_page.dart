@@ -8,6 +8,8 @@ import 'product_detail_page.dart';
 import 'cart_page.dart';
 import '../../screens/auth/login_page.dart';
 import '../../providers/auth_provider.dart';
+import 'support_page.dart';
+import '../../settings/settings_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,9 +62,22 @@ class _HomePageState extends State<HomePage> {
           Consumer<AuthProvider>(
             builder: (context, auth, _) => Padding(
               padding: const EdgeInsets.only(right: 14),
-              child: IconButton(
-                onPressed: () async {
-                  if (auth.isAuthenticated) {
+              child: PopupMenuButton<String>(
+                offset: const Offset(0, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                onSelected: (value) async {
+                  if (value == 'settings') {
+                    SettingsDialog.show(context);
+                  } else if (value == 'support') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ClientSupportPage(),
+                      ),
+                    );
+                  } else if (value == 'logout') {
                     final logout = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -86,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                     if (logout == true) auth.logout();
-                  } else {
+                  } else if (value == 'login') {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -95,16 +110,72 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                 },
-                icon: Icon(
-                  auth.isAuthenticated
-                      ? Icons.person_rounded
-                      : Icons.account_circle_rounded,
-                  size: 32,
-                  color: auth.isAuthenticated ? primary : null,
+                itemBuilder: (context) => auth.isAuthenticated
+                    ? [
+                        PopupMenuItem(
+                          value: 'settings',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.settings_outlined, size: 20),
+                              SizedBox(width: 12),
+                              Text('Paramètres'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'support',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.chat_bubble_outline_rounded, size: 20),
+                              SizedBox(width: 12),
+                              Text('Poser une question'),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                        PopupMenuItem(
+                          value: 'logout',
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.logout_rounded,
+                                size: 20,
+                                color: Colors.red,
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                'Déconnexion',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]
+                    : [
+                        PopupMenuItem(
+                          value: 'login',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.login_rounded, size: 20),
+                              SizedBox(width: 12),
+                              Text('Se connecter'),
+                            ],
+                          ),
+                        ),
+                      ],
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: auth.isAuthenticated
+                      ? primary.withOpacity(0.14)
+                      : Colors.grey[200],
+                  child: Icon(
+                    auth.isAuthenticated
+                        ? Icons.person_rounded
+                        : Icons.account_circle_rounded,
+                    size: 24,
+                    color: auth.isAuthenticated ? primary : Colors.grey[600],
+                  ),
                 ),
-                tooltip: auth.isAuthenticated
-                    ? 'Profil (${auth.user?.fullName})'
-                    : 'Connexion',
               ),
             ),
           ),
@@ -370,6 +441,44 @@ class _HomePageState extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+                      SectionTitle(title: 'Support & Questions'),
+                      const SizedBox(height: 12),
+                      Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(color: Colors.grey[200]!),
+                        ),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ClientSupportPage(),
+                              ),
+                            );
+                          },
+                          leading: CircleAvatar(
+                            backgroundColor: primary.withOpacity(0.1),
+                            child: Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              color: primary,
+                            ),
+                          ),
+                          title: const Text(
+                            'Poser une question',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: const Text(
+                            'Discutez avec nos pharmaciens pour vos besoins',
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
                           ),
                         ),
                       ),

@@ -35,6 +35,7 @@ class ApiConstants {
   // Orders
   static String get orders => '$baseUrl/orders';
   static String get myOrders => '$baseUrl/orders/my';
+  static String get questionsClients => '$baseUrl/QuestionsClients';
 
   // Storage keys
   static const String tokenKey = 'auth_token';

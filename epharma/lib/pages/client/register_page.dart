@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../client_services/auth_provider.dart';
 import 'home_page.dart';
@@ -68,6 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 _phoneController,
                 Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 16),
 
@@ -194,11 +196,13 @@ class _RegisterPageState extends State<RegisterPage> {
     IconData icon, {
     bool obscureText = false,
     TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),

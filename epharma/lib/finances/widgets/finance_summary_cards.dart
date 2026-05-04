@@ -21,18 +21,18 @@ class FinanceSummaryCards extends StatelessWidget {
       context,
       listen: false,
     );
+    final incomeTransactions = financeProvider.getFilteredTransactions(
+      startDate: startDate,
+      endDate: endDate,
+      type: 'Vente',
+    );
     final totalRevenue = financeProvider.getTotalRevenue(
       startDate: startDate,
       endDate: endDate,
     );
-    final totalExpenses = financeProvider.getTotalExpenses(
-      startDate: startDate,
-      endDate: endDate,
-    );
-    final netProfit = financeProvider.getNetProfit(
-      startDate: startDate,
-      endDate: endDate,
-    );
+    final transactionCount = incomeTransactions.length;
+    final averageBasket = transactionCount > 0 ? totalRevenue / transactionCount : 0.0;
+    
     final paymentBreakdown = financeProvider.getPaymentMethodBreakdown(
       startDate: startDate,
       endDate: endDate,
@@ -42,7 +42,7 @@ class FinanceSummaryCards extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Résumé Financier',
+          'Résumé des Entrées',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
@@ -52,27 +52,27 @@ class FinanceSummaryCards extends StatelessWidget {
               '💰 Chiffre d\'affaires total',
               FinanceService.formatAmount(totalRevenue),
               Colors.green,
-              Icons.trending_up,
+              Icons.account_balance_wallet,
             ),
             const SizedBox(width: 16),
             _buildSummaryCard(
-              '📉 Total des dépenses',
-              FinanceService.formatAmount(totalExpenses),
-              Colors.red,
-              Icons.trending_down,
+              '📊 Nombre de transactions',
+              '$transactionCount ventes',
+              Colors.blue,
+              Icons.shopping_cart,
             ),
             const SizedBox(width: 16),
             _buildSummaryCard(
-              '📈 Profit net',
-              FinanceService.formatAmount(netProfit),
-              netProfit >= 0 ? Colors.green : Colors.red,
-              netProfit >= 0 ? Icons.trending_up : Icons.trending_down,
+              '🎯 Panier moyen',
+              FinanceService.formatAmount(averageBasket),
+              Colors.orange,
+              Icons.analytics,
             ),
             const SizedBox(width: 16),
             _buildSummaryCard(
               '💳 Répartition paiements',
               '${paymentBreakdown.length} méthodes',
-              Colors.blue,
+              Colors.purple,
               Icons.payment,
             ),
           ],

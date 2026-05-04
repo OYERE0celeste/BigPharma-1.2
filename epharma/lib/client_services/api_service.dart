@@ -52,6 +52,19 @@ class ApiService {
     }
   }
 
+  Future<http.Response> patch(String endpoint, Map<String, dynamic> body) async {
+    try {
+      return await http.patch(
+        Uri.parse(endpoint),
+        headers: await _headers,
+        body: json.encode(body),
+      );
+    } catch (e) {
+      print('ApiService PATCH error: $e');
+      return http.Response(json.encode({'success': false, 'message': 'Erreur de connexion'}), 500);
+    }
+  }
+
   Future<http.Response> delete(String endpoint) async {
     try {
       return await http.delete(Uri.parse(endpoint), headers: await _headers);

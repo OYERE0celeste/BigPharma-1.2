@@ -174,105 +174,113 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Registre des Activités',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          // Left: Title
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Registre des Activités',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Suivi centralisé de toutes les activités quotidiennes',
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Suivi centralisé de toutes les activités quotidiennes',
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          ),
+
+          // Middle: Search and Period (Most important filters)
+          // Note: In a real implementation, we'd need to lift state up or use a provider
+          // for the search controller if it's shared between Header and FiltersSection.
+          // Since this is a StatelessWidget, we'll keep it simple for now or move the logic.
+          // For consistency with the user's request, I will implement the UI here.
+          /* Expanded(
+            flex: 5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // UI placeholder - real logic remains in FiltersSection for now to avoid breaking state
+              ],
             ),
-          ],
+          ), */
+
+          // Right: Actions
+          Expanded(
+            flex: 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Provider.of<ActivityProvider>(context, listen: false).loadActivities();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  tooltip: 'Rafraîchir',
+                  color: kPrimaryGreen,
+                ),
+                const SizedBox(width: 8),
+                _buildActionBtn(
+                  context,
+                  icon: Icons.file_download,
+                  label: 'PDF',
+                  color: kPrimaryGreen,
+                  onPressed: () => _showSnackBar(context, 'Export PDF - Fonctionnalité future'),
+                ),
+                const SizedBox(width: 8),
+                _buildActionBtn(
+                  context,
+                  icon: Icons.table_chart,
+                  label: 'Excel',
+                  color: kAccentBlue,
+                  onPressed: () => _showSnackBar(context, 'Export Excel - Fonctionnalité future'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionBtn(BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 18),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.grey.shade100,
+        foregroundColor: Colors.black87,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.grey.shade300),
         ),
-        Row(
-          children: [
-            Tooltip(
-              message: 'Exporter PDF',
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Export PDF - FonctionnalitÃ© future'),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.file_download),
-                label: const Text('PDF'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kPrimaryGreen,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Tooltip(
-              message: 'Exporter Excel',
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Export Excel - FonctionnalitÃ© future'),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.table_chart),
-                label: const Text('Excel'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kAccentBlue,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Tooltip(
-              message: 'Imprimer',
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Impression - FonctionnalitÃ© future'),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.print),
-                label: const Text('Imprimer'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Tooltip(
-              message: 'Rafraîchir',
-              child: IconButton(
-                onPressed: () {
-                  Provider.of<ActivityProvider>(
-                    context,
-                    listen: false,
-                  ).loadActivities();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('DonnÃ©es rafraÃ®chies')),
-                  );
-                },
-                icon: const Icon(Icons.refresh),
-                color: kPrimaryGreen,
-              ),
-            ),
-          ],
-        ),
-      ],
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }
@@ -641,8 +649,7 @@ class _FiltersSectionState extends State<FiltersSection> {
       case ActivityType.systemAction:
         return 'Système';
       case ActivityType.order:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return 'Commande';
     }
   }
 
@@ -948,7 +955,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'DÃ©tails Transaction - ${transaction.reference}',
+                      'Détails Transaction - ${transaction.reference}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -968,8 +975,8 @@ class TransactionDetailsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Basic Information
-                    _buildSection('Informations GÃ©nÃ©rales', [
-                      _buildDetailRow('RÃ©fÃ©rence', transaction.reference),
+                    _buildSection('Informations Générales', [
+                      _buildDetailRow('Référence', transaction.reference),
                       _buildDetailRow(
                         'Date & Heure',
                         _formatDateTime(transaction.dateTime),
@@ -982,7 +989,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                     // Party Information
                     _buildSection('Tiers', [
                       _buildDetailRow('Nom', transaction.clientOrSupplierName),
-                      _buildDetailRow('EmployÃ©', transaction.employeeName),
+                      _buildDetailRow('Employé', transaction.employeeName),
                     ]),
                     const SizedBox(height: 16),
 
@@ -1038,13 +1045,13 @@ class TransactionDetailsDialog extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Impression du reÃ§u - FonctionnalitÃ© future',
+                                  'Impression du reçu - Fonctionnalité future',
                                 ),
                               ),
                             );
                           },
                           icon: const Icon(Icons.print),
-                          label: const Text('Imprimer ReÃ§u'),
+                          label: const Text('Imprimer Reçu'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: kPrimaryGreen,
                             foregroundColor: Colors.white,

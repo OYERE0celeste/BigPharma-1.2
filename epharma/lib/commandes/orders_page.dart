@@ -90,7 +90,6 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               const SizedBox(height: 24),
               _buildDashboard(orderProvider),
               const SizedBox(height: 24),
-              _buildFiltersAndSearch(),
               const SizedBox(height: 16),
               SizedBox(
                 height: 500, // Fixed height for table container or use ConstrainedBox
@@ -107,17 +106,16 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
   }
 
   Widget _buildHeader() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 600;
-        return Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 16,
-          runSpacing: 16,
-          children: [
-            Column(
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          // Left: Title
+          Expanded(
+            flex: 3,
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   'Gestion des commandes',
@@ -133,17 +131,105 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                 ),
               ],
             ),
-            SizedBox(
-              width: isMobile ? double.infinity : null,
-              child: FilledButton.icon(
-                onPressed: () => _loadOrders(page: 1),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Rafraîchir'),
-              ),
+          ),
+
+          // Middle: Search and Filter
+          Expanded(
+            flex: 5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Rechercher par numéro ou client...',
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      filled: true,
+                      fillColor: Colors.white,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() => _searchQuery = value);
+                      _loadOrders(page: 1);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  width: 200,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String?>(
+                      isExpanded: true,
+                      hint: const Text('Filtrer par statut', style: TextStyle(fontSize: 14)),
+                      value: _selectedStatus,
+                      style: const TextStyle(color: Colors.black87, fontSize: 14),
+                      items: [
+                        const DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text('Tous les statuts'),
+                        ),
+                        ...OrderStatus.values.map(
+                          (status) => DropdownMenuItem<String?>(
+                            value: status.apiValue,
+                            child: Text(status.label),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() => _selectedStatus = value);
+                        _loadOrders(page: 1);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        );
-      },
+          ),
+
+          // Right: Actions
+          Expanded(
+            flex: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FilledButton.icon(
+                  onPressed: () => _loadOrders(page: 1),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Rafraîchir'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.grey.shade100,
+                    foregroundColor: Colors.black87,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -152,8 +238,10 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         int crossAxisCount = 5;
-        if (width < 600) crossAxisCount = 2;
-        else if (width < 1000) crossAxisCount = 3;
+        if (width < 600) {
+          crossAxisCount = 2;
+        // ignore: curly_braces_in_flow_control_structures
+        } else if (width < 1000) crossAxisCount = 3;
 
         return GridView.count(
           crossAxisCount: crossAxisCount,

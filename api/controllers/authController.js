@@ -12,7 +12,7 @@ const ACCESS_TOKEN_EXPIRY = "15m";
 const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
 const signAccessToken = (userId) => 
-  jwt.sign({ id: userId }, getJwtSecret(), { expiresIn: ACCESS_TOKEN_EXPIRY });
+  jwt.sign({ id: userId.toString() }, getJwtSecret(), { expiresIn: ACCESS_TOKEN_EXPIRY });
 
 const generateRefreshToken = async (user) => {
   const token = crypto.randomBytes(40).toString("hex");

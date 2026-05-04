@@ -50,39 +50,39 @@ class ClientDetailsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Personal Information Section
-                    _buildSection('Information personnel', [
-                      _buildDetailRow('Full Name', client.fullName),
+                    _buildSection('Informations personnelles', [
+                      _buildDetailRow('Nom complet', client.fullName),
                       _buildDetailRow(
-                        'Date of Birth',
+                        'Date de naissance',
                         _formatDate(client.dateOfBirth),
                       ),
-                      _buildDetailRow('Gender', client.genderDisplay),
-                      _buildDetailRow('Phone', client.phone),
+                      _buildDetailRow('Genre', client.genderDisplay),
+                      _buildDetailRow('Téléphone', client.phone),
                       _buildDetailRow('Email', client.email),
-                      _buildDetailRow('Address', client.address),
+                      _buildDetailRow('Adresse', client.address),
                       _buildDetailRow(
-                        'Registration Date',
+                        'Date d\'inscription',
                         _formatDate(client.registrationDate),
                       ),
                     ]),
                     const SizedBox(height: 20),
 
                     // Commercial Information Section
-                    _buildSection('Commercial Information', [
+                    _buildSection('Informations commerciales', [
                       _buildDetailRow(
-                        'Total Purchases',
+                        'Total achats',
                         '${client.totalPurchases}',
                       ),
                       _buildDetailRow(
-                        'Total Amount Spent',
-                        '€${client.totalSpent.toStringAsFixed(2)}',
+                        'Montant total dépensé',
+                        '${client.totalSpent.toStringAsFixed(0)} FCFA',
                       ),
                       _buildDetailRow(
-                        'Average Basket Value',
-                        '€${client.averageBasketValue.toStringAsFixed(2)}',
+                        'Valeur moyenne du panier',
+                        '${client.averageBasketValue.toStringAsFixed(0)} FCFA',
                       ),
                       _buildDetailRow(
-                        'Loyalty Level',
+                        'Niveau de fidélité',
                         client.loyaltyStatus
                             .toString()
                             .split('.')
@@ -90,7 +90,7 @@ class ClientDetailsDialog extends StatelessWidget {
                             .toUpperCase(),
                       ),
                       _buildDetailRow(
-                        'Last Visit',
+                        'Dernière visite',
                         _formatDate(client.lastVisitDate),
                       ),
                     ]),
@@ -117,7 +117,7 @@ class ClientDetailsDialog extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
-                                  'PHARMACIST ACCESS ONLY',
+                                  'ACCÈS PHARMACIEN UNIQUEMENT',
                                   style: TextStyle(
                                     color: kDangerRed,
                                     fontWeight: FontWeight.bold,
@@ -130,7 +130,7 @@ class ClientDetailsDialog extends StatelessWidget {
                             _buildDetailRow(
                               'Description',
                               client.description.isEmpty
-                                  ? 'None available'
+                                  ? 'Aucune disponible'
                                   : client.description,
                             ),
                           ],
@@ -140,14 +140,14 @@ class ClientDetailsDialog extends StatelessWidget {
                     ],
 
                     // Purchase History Section
-                    _buildSection('Purchase History', []),
+                    _buildSection('Historique des achats', []),
                     const SizedBox(height: 12),
                     _buildPurchaseHistory(client),
                     const SizedBox(height: 20),
 
                     // Prescription History Section
                     if (client.hasMedicalHistory) ...[
-                      _buildSection('Prescription History', []),
+                      _buildSection('Historique des ordonnances', []),
                       const SizedBox(height: 12),
                       _buildPrescriptionHistory(client),
                     ],
@@ -228,7 +228,7 @@ class ClientDetailsDialog extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '€${purchase.totalAmount.toStringAsFixed(2)}',
+                        '${purchase.totalAmount.toStringAsFixed(0)} FCFA',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: kPrimaryGreen,
@@ -300,7 +300,7 @@ class ClientDetailsDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Qty: ${prescription.quantity} - ${_formatDate(prescription.validationDate)}',
+                    'Qté: ${prescription.quantity} - ${_formatDate(prescription.validationDate)}',
                     style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                   ),
                 ],

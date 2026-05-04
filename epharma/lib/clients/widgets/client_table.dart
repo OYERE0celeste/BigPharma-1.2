@@ -39,13 +39,13 @@ class ClientsTable extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: DataTable(
             columns: const [
-              DataColumn(label: Text('Full Name')),
+              DataColumn(label: Text('Nom complet')),
               DataColumn(label: Text('Téléphone')),
               DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Total Purchases')),
-              DataColumn(label: Text('Total Spent')),
+              DataColumn(label: Text('Total Achats')),
+              DataColumn(label: Text('Total Dépensé')),
               DataColumn(label: Text('Dernière Visite')),
-              DataColumn(label: Text('Status')),
+              DataColumn(label: Text('Statut')),
               DataColumn(label: Text('Profil Médical')),
               DataColumn(label: Text('Actions')),
             ],
@@ -57,7 +57,7 @@ class ClientsTable extends StatelessWidget {
                   DataCell(Text(client.phone)),
                   DataCell(Text(client.email.isNotEmpty ? client.email : '—')),
                   DataCell(Text(client.totalPurchases.toString())),
-                  DataCell(Text('€${client.totalSpent.toStringAsFixed(2)}')),
+                  DataCell(Text('${client.totalSpent.toStringAsFixed(0)} FCFA')),
                   DataCell(Text(_formatDate(client.lastVisitDate))),
                   DataCell(Text(client.loyaltyStatus.name.toUpperCase())),
                   DataCell(
@@ -108,7 +108,7 @@ class ClientsTable extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Showing ${start + 1} to ${end > clients.length ? clients.length : end} of ${clients.length} clients',
+              'Affichage de ${start + 1} à ${end > clients.length ? clients.length : end} sur ${clients.length} clients',
               style: TextStyle(color: Colors.grey[600]),
             ),
             Row(

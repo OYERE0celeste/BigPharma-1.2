@@ -103,7 +103,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                             ),
                             if (!isMobile)
                               Text(
-                                'Professional Pharmacy Manager',
+                                'Gestionnaire de Pharmacie Professionnel',
                                 style: TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey[600],
@@ -242,7 +242,6 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
       ),
     ];
   }
-}
 
   void _handleProfileAction(String action) {
     switch (action) {

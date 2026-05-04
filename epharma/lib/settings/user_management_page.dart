@@ -31,7 +31,9 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
         setState(() => _isLoading = false);
       }
     }
@@ -52,7 +54,11 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                 children: [
                   const Text(
                     "Gestion des Utilisateurs",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: SettingsTheme.textPrimary),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: SettingsTheme.textPrimary,
+                    ),
                   ),
                   const Text(
                     "Gérez les accès et les rôles de votre équipe",
@@ -67,8 +73,13 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: SettingsTheme.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ],
@@ -77,9 +88,9 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _users.isEmpty 
-                    ? const Center(child: Text("Aucun utilisateur trouvé"))
-                    : _buildUserList(),
+                : _users.isEmpty
+                ? const Center(child: Text("Aucun utilisateur trouvé"))
+                : _buildUserList(),
           ),
         ],
       ),
@@ -93,7 +104,11 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: SettingsTheme.divider),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: ListView.separated(
@@ -102,19 +117,32 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
         itemBuilder: (context, index) {
           final user = _users[index];
           return ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 8,
+            ),
             leading: CircleAvatar(
               backgroundColor: SettingsTheme.primary.withOpacity(0.1),
-              child: Text(user.fullName[0].toUpperCase(), style: const TextStyle(color: SettingsTheme.primary)),
+              child: Text(
+                user.fullName[0].toUpperCase(),
+                style: const TextStyle(color: SettingsTheme.primary),
+              ),
             ),
-            title: Text(user.fullName, style: const TextStyle(fontWeight: FontWeight.w600)),
+            title: Text(
+              user.fullName,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
             subtitle: Text("${user.role} • ${user.email}"),
             trailing: PopupMenuButton(
               itemBuilder: (context) => [
                 const PopupMenuItem(child: Text("Modifier")),
                 PopupMenuItem(
-                  child: Text(user.isActive ? "Désactiver" : "Réactiver", 
-                    style: TextStyle(color: user.isActive ? Colors.red : Colors.green)),
+                  child: Text(
+                    user.isActive ? "Désactiver" : "Réactiver",
+                    style: TextStyle(
+                      color: user.isActive ? Colors.red : Colors.green,
+                    ),
+                  ),
                   onTap: () {
                     // TODO: Implement toggle active
                   },
@@ -140,21 +168,36 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: "Nom complet")),
-            TextField(controller: emailCtrl, decoration: const InputDecoration(labelText: "Email")),
-            TextField(controller: passCtrl, decoration: const InputDecoration(labelText: "Mot de passe"), obscureText: true),
+            TextField(
+              controller: nameCtrl,
+              decoration: const InputDecoration(labelText: "Nom complet"),
+            ),
+            TextField(
+              controller: emailCtrl,
+              decoration: const InputDecoration(labelText: "Email"),
+            ),
+            TextField(
+              controller: passCtrl,
+              decoration: const InputDecoration(labelText: "Mot de passe"),
+              obscureText: true,
+            ),
             DropdownButtonFormField<String>(
               value: role,
-              items: ['pharmacien', 'assistant', 'caissier']
-                  .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                  .toList(),
+              items: [
+                'pharmacien',
+                'assistant',
+                'caissier',
+              ].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
               onChanged: (val) => role = val!,
               decoration: const InputDecoration(labelText: "Rôle"),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Annuler")),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Annuler"),
+          ),
           ElevatedButton(
             onPressed: () async {
               try {
@@ -169,7 +212,9 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   _fetchUsers();
                 }
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(e.toString())));
               }
             },
             child: const Text("Ajouter"),

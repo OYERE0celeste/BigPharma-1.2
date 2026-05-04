@@ -11,6 +11,7 @@ import 'commandes/orders_page.dart';
 import 'finances/pharmacy_finance_page.dart';
 import 'settings/settings_dialog.dart';
 import 'settings/user_management_page.dart';
+import 'support/pharmacy_support_page.dart';
 
 // =====================================================================
 // MAIN LAYOUT WIDGET - Enveloppe toutes les pages
@@ -126,6 +127,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         const FeatureNotAvailablePage(title: 'Consultations'),
       ),
       'Finances': () => _navigateTo('Finances', const PharmacyFinancePage()),
+      'Support': () => _navigateTo('Support', const PharmacySupportPage()),
       'Users': () => _navigateTo('Users', const UserManagementDialog()),
       'Paramètres': () {
         if (_isSidebarOpen) _toggleSidebar();

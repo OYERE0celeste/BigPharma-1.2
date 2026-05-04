@@ -184,7 +184,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
           const Icon(Icons.settings, color: SettingsTheme.primary, size: 28),
           const SizedBox(width: 16),
-          const Text('Paramètres Système', style: SettingsTheme.headerTitle),
+          Text(
+            context.watch<SettingsProvider>().settings.role == 'client'
+                ? 'Paramètres'
+                : 'Paramètres Système',
+            style: SettingsTheme.headerTitle,
+          ),
           const Spacer(),
           IconButton(
             onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
@@ -303,24 +308,26 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     subtitle: "Informations personnelles et compte",
                     routeName: 'profile',
                   ),
-                  _buildNavigationTile(
-                    icon: Icons.people_outline_rounded,
-                    title: "Gestion des collaborateurs",
-                    subtitle: "Gérez votre équipe et les accès",
-                    routeName: 'users',
-                  ),
+                  if (provider.settings.role != 'client')
+                    _buildNavigationTile(
+                      icon: Icons.people_outline_rounded,
+                      title: "Gestion des collaborateurs",
+                      subtitle: "Gérez votre équipe et les accès",
+                      routeName: 'users',
+                    ),
                   _buildNavigationTile(
                     icon: Icons.security_outlined,
                     title: "Sécurité",
                     subtitle: "Mot de passe et authentification",
                     routeName: 'security',
                   ),
-                  _buildNavigationTile(
-                    icon: Icons.data_usage_rounded,
-                    title: "Gestion des données",
-                    subtitle: "Sauvegarde, export et nettoyage",
-                    routeName: 'data',
-                  ),
+                  if (provider.settings.role != 'client')
+                    _buildNavigationTile(
+                      icon: Icons.data_usage_rounded,
+                      title: "Gestion des données",
+                      subtitle: "Sauvegarde, export et nettoyage",
+                      routeName: 'data',
+                    ),
                 ],
               ),
             ),

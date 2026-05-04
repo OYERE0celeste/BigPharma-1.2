@@ -77,8 +77,8 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
                   icon: const Icon(Icons.calendar_today, size: 16),
                   label: Text(
                     _selectedDate == null
-                        ? 'Filter by Date'
-                        : DateFormat('MMM dd, yyyy').format(_selectedDate!),
+                        ? 'Filtrer par date'
+                        : DateFormat('dd/MM/yyyy').format(_selectedDate!),
                   ),
                 ),
               ),
@@ -89,7 +89,7 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
                     _updateFilters();
                   },
                   icon: const Icon(Icons.clear, size: 16),
-                  label: const Text('Clear Date'),
+                  label: const Text('Effacer la date'),
                 ),
             ],
           ),
@@ -103,11 +103,11 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
               child: DataTable(
                 headingRowColor: WidgetStateProperty.all(Colors.grey.shade100),
                 columns: const [
-                  DataColumn(label: Text('Invoice')),
-                  DataColumn(label: Text('Date & Time')),
+                  DataColumn(label: Text('Facture')),
+                  DataColumn(label: Text('Date & Heure')),
                   DataColumn(label: Text('Total'), numeric: true),
-                  DataColumn(label: Text('Payment Method')),
-                  DataColumn(label: Text('Pharmacist')),
+                  DataColumn(label: Text('Mode de paiement')),
+                  DataColumn(label: Text('Pharmacien')),
                   DataColumn(label: Text('Actions')),
                 ],
                 rows: _filteredSales.map((sale) {
@@ -117,13 +117,13 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
                       DataCell(
                         Text(
                           DateFormat(
-                            'MMM dd, yyyy HH:mm',
+                            'dd/MM/yyyy HH:mm',
                           ).format(sale.dateTime),
                         ),
                       ),
                       DataCell(
                         Text(
-                          '\$${sale.totalAmount.toStringAsFixed(2)}',
+                          '${sale.totalAmount.toStringAsFixed(0)} FCFA',
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -131,7 +131,7 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
                       DataCell(Text(sale.pharmacist)),
                       DataCell(
                         Tooltip(
-                          message: 'View Details',
+                          message: 'Voir les détails',
                           child: Icon(
                             Icons.visibility,
                             size: 16,
@@ -150,7 +150,7 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
               child: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Text(
-                  'No sales history found',
+                  'Aucun historique de vente trouvé',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class TransactionSummaryPanel extends StatefulWidget {
@@ -80,6 +81,7 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
                   controller: _discountController,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) =>
                       widget.onDiscountChanged(double.tryParse(value) ?? 0),
                   decoration: const InputDecoration(

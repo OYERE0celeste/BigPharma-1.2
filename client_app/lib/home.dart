@@ -8,6 +8,8 @@ import 'pages/product_detail_page.dart';
 import 'pages/cart_page.dart';
 import 'pages/login_page.dart';
 import 'services/auth_provider.dart';
+import 'pages/support_page.dart';
+import 'widgets/settings_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,37 +62,115 @@ class _HomePageState extends State<HomePage> {
           Consumer<AuthProvider>(
             builder: (context, auth, _) => Padding(
               padding: const EdgeInsets.only(right: 14),
-              child: IconButton(
-                onPressed: () async {
-                  if (auth.isAuthenticated) {
+              child: PopupMenuButton<String>(
+                offset: const Offset(0, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                onSelected: (value) async {
+                  if (value == 'settings') {
+                    SettingsDialog.show(context);
+                  } else if (value == 'support') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ClientSupportPage(),
+                      ),
+                    );
+                  } else if (value == 'logout') {
                     final logout = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Déconnexion'),
-                        content: Text('Voulez-vous vraiment vous déconnecter, ${auth.user?.fullName ?? ''} ?'),
+                        content: Text(
+                          'Voulez-vous vraiment vous déconnecter, ${auth.user?.fullName ?? ''} ?',
+                        ),
                         actions: [
-                          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Annuler'),
+                          ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: const Text('Déconnexion', style: TextStyle(color: Colors.red)),
+                            child: const Text(
+                              'Déconnexion',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ),
                         ],
                       ),
                     );
                     if (logout == true) auth.logout();
-                  } else {
+                  } else if (value == 'login') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
                     );
                   }
                 },
-                icon: Icon(
-                  auth.isAuthenticated ? Icons.person_rounded : Icons.account_circle_rounded,
-                  size: 32,
-                  color: auth.isAuthenticated ? primary : null,
+                itemBuilder: (context) => auth.isAuthenticated
+                    ? [
+                        PopupMenuItem(
+                          value: 'settings',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.settings_outlined, size: 20),
+                              SizedBox(width: 12),
+                              Text('Paramètres'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'support',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.chat_bubble_outline_rounded, size: 20),
+                              SizedBox(width: 12),
+                              Text('Poser une question'),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                        PopupMenuItem(
+                          value: 'logout',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.logout_rounded,
+                                  size: 20, color: Colors.red),
+                              SizedBox(width: 12),
+                              Text('Déconnexion',
+                                  style: TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                        ),
+                      ]
+                    : [
+                        PopupMenuItem(
+                          value: 'login',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.login_rounded, size: 20),
+                              SizedBox(width: 12),
+                              Text('Se connecter'),
+                            ],
+                          ),
+                        ),
+                      ],
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: auth.isAuthenticated
+                      ? primary.withOpacity(0.14)
+                      : Colors.grey[200],
+                  child: Icon(
+                    auth.isAuthenticated
+                        ? Icons.person_rounded
+                        : Icons.account_circle_rounded,
+                    size: 24,
+                    color: auth.isAuthenticated ? primary : Colors.grey[600],
+                  ),
                 ),
-                tooltip: auth.isAuthenticated ? 'Profil (${auth.user?.fullName})' : 'Connexion',
               ),
             ),
           ),
@@ -168,6 +248,7 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _buildGreeting(context, primary),
                       SearchBar(primary: primary),
                       const SizedBox(height: 24),
                       SectionTitle(
@@ -328,6 +409,42 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 28),
+                      const SectionTitle(title: 'Support & Questions'),
+                      const SizedBox(height: 12),
+                      Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(color: Colors.grey[200]!),
+                        ),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ClientSupportPage(),
+                              ),
+                            );
+                          },
+                          leading: CircleAvatar(
+                            backgroundColor: primary.withOpacity(0.1),
+                            child: Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              color: primary,
+                            ),
+                          ),
+                          title: const Text(
+                            'Poser une question',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: const Text(
+                            'Discutez avec nos pharmaciens pour vos besoins',
+                          ),
+                          trailing:
+                              const Icon(Icons.arrow_forward_ios, size: 16),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -351,6 +468,48 @@ class _HomePageState extends State<HomePage> {
             TextButton(onPressed: _refreshData, child: const Text('Réessayer')),
           ],
         ),
+      ),
+    );
+  }
+  
+  Widget _buildGreeting(BuildContext context, Color primary) {
+    final auth = context.watch<AuthProvider>();
+    final hour = DateTime.now().hour;
+    String greeting;
+    if (hour < 12) {
+      greeting = 'Bonjour';
+    } else if (hour < 18) {
+      greeting = 'Bon après-midi';
+    } else {
+      greeting = 'Bonsoir';
+    }
+
+    final String name = auth.user?.fullName.split(' ')[0] ?? 'Invité';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$greeting, $name ! 👋',
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2D3142),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            auth.isAuthenticated
+                ? 'Ravi de vous revoir chez BigPharma.'
+                : 'Bienvenue chez BigPharma, votre santé est notre priorité.',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
       ),
     );
   }

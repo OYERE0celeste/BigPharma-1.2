@@ -60,7 +60,7 @@ class _ProductTableState extends State<ProductTable> {
               children: [
                 Row(
                   children: [
-                    const Text('Rows per page:'),
+                    const Text('Lignes par page :'),
                     const SizedBox(width: 8),
                     DropdownButton<int>(
                       value: widget.rowsPerPage,
@@ -104,15 +104,15 @@ class _ProductTableState extends State<ProductTable> {
       sortColumnIndex: _colIndex(widget.sortColumn),
       sortAscending: widget.sortAscending,
       columns: [
-        DataColumn(label: _colHeader('Product Name', 'name')),
-        DataColumn(label: _colHeader('Category', 'category')),
-        DataColumn(label: _colHeader('Purchase Price', 'purchase')),
-        DataColumn(label: _colHeader('Selling Price', 'selling')),
-        DataColumn(label: _colHeader('Total Stock', 'stock')),
-        const DataColumn(label: Text('Nearest Expiration')),
-        const DataColumn(label: Text('Lot Count')),
-        const DataColumn(label: Text('Prescription')),
-        const DataColumn(label: Text('Status')),
+        DataColumn(label: _colHeader('Nom du produit', 'name')),
+        DataColumn(label: _colHeader('Catégorie', 'category')),
+        DataColumn(label: _colHeader('Prix d\'achat', 'purchase')),
+        DataColumn(label: _colHeader('Prix de vente', 'selling')),
+        DataColumn(label: _colHeader('Stock total', 'stock')),
+        const DataColumn(label: Text('Expiration la plus proche')),
+        const DataColumn(label: Text('Nombre de lots')),
+        const DataColumn(label: Text('Ordonnance')),
+        const DataColumn(label: Text('Statut')),
         const DataColumn(label: Text('Actions')),
       ],
       rows: items.map((p) {
@@ -135,8 +135,8 @@ class _ProductTableState extends State<ProductTable> {
               Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
             DataCell(Text(p.category)),
-            DataCell(Text('€${p.purchasePrice.toStringAsFixed(2)}')),
-            DataCell(Text('€${p.sellingPrice.toStringAsFixed(2)}')),
+            DataCell(Text('${p.purchasePrice.toStringAsFixed(0)} FCFA')),
+            DataCell(Text('${p.sellingPrice.toStringAsFixed(0)} FCFA')),
             DataCell(Text('${p.totalStock}')),
             DataCell(Text(nearest != null ? formatDate(nearest) : '-')),
             DataCell(Text('${p.lots.length}')),

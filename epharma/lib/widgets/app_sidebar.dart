@@ -68,12 +68,13 @@ class AppSidebar extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
-                _sidebarItem('Dashboard', Icons.grid_view_rounded),
-                _sidebarItem('Stock', Icons.inventory_2_outlined),
-                _sidebarItem('Sales', Icons.receipt_long_outlined),
-                _sidebarItem('Clients', Icons.people_outline_rounded),
-                _sidebarItem('Commandes', Icons.shopping_cart_outlined),
-                _sidebarItem('Finances', Icons.account_balance_wallet_outlined),
+                _sidebarItem('Dashboard', Icons.grid_view_rounded, label: 'Tableau de bord'),
+                _sidebarItem('Stock', Icons.inventory_2_outlined, label: 'Stock'),
+                _sidebarItem('Sales', Icons.receipt_long_outlined, label: 'Ventes'),
+                _sidebarItem('Clients', Icons.people_outline_rounded, label: 'Clients'),
+                _sidebarItem('Commandes', Icons.shopping_cart_outlined, label: 'Commandes'),
+                _sidebarItem('Finances', Icons.account_balance_wallet_outlined, label: 'Finances'),
+                _sidebarItem('Support', Icons.chat_bubble_outline_rounded, label: 'Support Client'),
                 /*_sidebarItem(
                   'Activity',
                   Icons.history_rounded,

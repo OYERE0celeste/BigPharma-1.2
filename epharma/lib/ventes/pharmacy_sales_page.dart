@@ -188,11 +188,11 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              Text('Invoice: ${sale.invoiceNumber}'),
-              Text('Items: ${sale.items.length}'),
-              Text('Total: \$${sale.totalAmount.toStringAsFixed(2)}'),
-              Text('Payment: ${sale.paymentMethod}'),
-              Text('Change: \$${sale.changeAmount.toStringAsFixed(2)}'),
+              Text('Facture : ${sale.invoiceNumber}'),
+              Text('Articles : ${sale.items.length}'),
+              Text('Total : ${sale.totalAmount.toStringAsFixed(0)} FCFA'),
+              Text('Paiement : ${sale.paymentMethod}'),
+              Text('Monnaie : ${sale.changeAmount.toStringAsFixed(0)} FCFA'),
             ],
           ),
         ),
@@ -239,7 +239,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('POS - SALES', style: TextStyle(fontSize: 16)),
+          title: const Text('Point de Vente', style: TextStyle(fontSize: 16)),
           actions: [
             IconButton(
               icon: const Icon(Icons.history),
@@ -296,61 +296,97 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
           children: [
             if (!isMobile) // Header only for desktop
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
                 ),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        const Text(
-                          'POS - SALES',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            _buildHeaderBtn(
-                              label: 'Nouvelle Vente', 
-                              icon: Icons.shopping_bag, 
-                              isActive: !_showSalesHistory, 
-                              onPressed: () => setState(() => _showSalesHistory = false)
+                child: Row(
+                  children: [
+                    // Left: Title
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'POINT DE VENTE',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
                             ),
-                            _buildHeaderBtn(
-                              label: 'Historique', 
-                              icon: Icons.history, 
-                              isActive: _showSalesHistory, 
-                              onPressed: () => setState(() => _showSalesHistory = true)
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Gérez vos ventes quotidiennes et ordonnances',
+                            style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Middle: Search
+                    Expanded(
+                      flex: 4,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 400,
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: _filterProducts,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.search, size: 20),
+                                hintText: 'Rechercher un produit, catégorie ou ID...',
+                                hintStyle: const TextStyle(fontSize: 14),
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 12,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
-                    );
-                  }
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Right: Actions
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          _buildHeaderBtn(
+                            label: 'Nouvelle Vente', 
+                            icon: Icons.shopping_bag, 
+                            isActive: !_showSalesHistory, 
+                            onPressed: () => setState(() => _showSalesHistory = false)
+                          ),
+                          const SizedBox(width: 8),
+                          _buildHeaderBtn(
+                            label: 'Historique', 
+                            icon: Icons.history, 
+                            isActive: _showSalesHistory, 
+                            onPressed: () => setState(() => _showSalesHistory = true)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            // Search bar
-            Container(
-              padding: const EdgeInsets.all(16),
-              color: Colors.white,
-              child: TextField(
-                controller: _searchController,
-                onChanged: _filterProducts,
-                decoration: InputDecoration(
-                  hintText: 'Rechercher un produit...',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                ),
-              ),
-            ),
             // Products grid
             Expanded(
               child: LayoutBuilder(

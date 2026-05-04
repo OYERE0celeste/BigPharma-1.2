@@ -7,6 +7,7 @@ import 'services/auth_provider.dart';
 import 'services/profile_provider.dart';
 import 'services/order_provider.dart';
 import 'services/wishlist_provider.dart';
+import 'services/support_provider.dart';
 import 'pages/login_page.dart';
 
 void main() {
@@ -59,6 +60,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
+        ChangeNotifierProvider(create: (_) => SupportProvider()),
       ],
       child: const MyApp(),
     ),

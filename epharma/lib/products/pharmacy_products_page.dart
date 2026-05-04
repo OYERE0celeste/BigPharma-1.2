@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/app_colors.dart';
 import '../models/product_model.dart';
 import '../providers/product_provider.dart';
 import 'widgets/product_table.dart';
@@ -20,7 +19,7 @@ class PharmacyProductsPage extends StatefulWidget {
 
 class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   String _search = '';
-  String _filter = 'All products';
+  String _filter = 'Tous les produits';
   int _rowsPerPage = 10;
   int _currentPage = 0;
   String _sortColumn = 'name';
@@ -47,7 +46,6 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
       }
     }
   }
-
 
   void _changeSort(String column) {
     setState(() {
@@ -82,16 +80,16 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Product Management'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        elevation: 1,
-      ),
+      //appBar: AppBar(
+      //title: const Text('Gestion des produits'),
+      //backgroundColor: Colors.white,
+      //foregroundColor: Colors.black87,
+      // elevation: 1,
+      // ),
       body: Consumer<ProductProvider>(
         builder: (context, provider, child) {
           final products = provider.products;
-          
+
           // Apply local filters to the provider's products
           final filtered = products.where((p) {
             final q = _search.toLowerCase();
@@ -100,19 +98,21 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                     p.category.toLowerCase().contains(q))) {
               return false;
             }
-            if (_filter == 'Low stock' && p.availableStock > p.lowStockThreshold) {
+            if (_filter == 'Stock faible' &&
+                p.availableStock > p.lowStockThreshold) {
               return false;
             }
-            if (_filter == 'Out of stock' && p.availableStock > 0) {
+            if (_filter == 'Rupture de stock' && p.availableStock > 0) {
               return false;
             }
-            if (_filter == 'Expired' && p.expirationStatus != 'EXPIRÉ') {
+            if (_filter == 'Expirés' && p.expirationStatus != 'EXPIRÉ') {
               return false;
             }
-            if (_filter == 'Near expiration' && p.expirationStatus != 'BIENTÔT EXPIRÉ') {
+            if (_filter == 'Bientôt expirés' &&
+                p.expirationStatus != 'BIENTÔT EXPIRÉ') {
               return false;
             }
-            if (_filter == 'Prescription required' && !p.prescriptionRequired) {
+            if (_filter == 'Ordonnance requise' && !p.prescriptionRequired) {
               return false;
             }
             return true;
@@ -146,7 +146,9 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 _buildHeader(context),
                 const SizedBox(height: 12),
                 if (provider.isLoading && products.isEmpty)
-                  const Expanded(child: Center(child: CircularProgressIndicator()))
+                  const Expanded(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 else
                   Expanded(
                     child: ProductTable(
@@ -154,7 +156,8 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                       rowsPerPage: _rowsPerPage,
                       currentPage: _currentPage,
                       onPageChanged: (p) => setState(() => _currentPage = p),
-                      onRowsPerPageChanged: (r) => setState(() => _rowsPerPage = r),
+                      onRowsPerPageChanged: (r) =>
+                          setState(() => _rowsPerPage = r),
                       onSort: _changeSort,
                       sortColumn: _sortColumn,
                       sortAscending: _sortAscending,
@@ -175,7 +178,9 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Erreur mise à jour produit : $e'),
+                                  content: Text(
+                                    'Erreur mise à jour produit : $e',
+                                  ),
                                 ),
                               );
                             }
@@ -186,16 +191,16 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         final ok = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text('Confirm delete'),
-                            content: Text('Delete ${p.name}?'),
+                            title: const Text('Confirmer la suppression'),
+                            content: Text('Supprimer ${p.name} ?'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context, false),
-                                child: const Text('Cancel'),
+                                child: const Text('Annuler'),
                               ),
                               ElevatedButton(
                                 onPressed: () => Navigator.pop(context, true),
-                                child: const Text('Delete'),
+                                child: const Text('Supprimer'),
                               ),
                             ],
                           ),
@@ -208,7 +213,9 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Erreur suppression produit : $e'),
+                                  content: Text(
+                                    'Erreur suppression produit : $e',
+                                  ),
                                 ),
                               );
                             }
@@ -226,74 +233,146 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'Product Management',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Manage medicines, stock, and pharmaceutical lots',
-                style: TextStyle(color: Colors.black54),
-              ),
-            ],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          // Left: Title and Subtitle
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text(
+                  'GESTION DES PRODUITS',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Gérez les médicaments, le stock et les lots pharmaceutiques',
+                  style: TextStyle(color: Colors.black54, fontSize: 13),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          flex: 1,
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: 'Search by name or category',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+
+          // Middle: Search and Filter
+          Expanded(
+            flex: 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 350,
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      hintText: 'Rechercher par nom ou catégorie',
+                      hintStyle: const TextStyle(fontSize: 14),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    onChanged: (v) => setState(() => _search = v),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _filter,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'Tous les produits',
+                          child: Text('Tous les produits'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Stock faible',
+                          child: Text('Stock faible'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Expirés',
+                          child: Text('Expirés'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Bientôt expirés',
+                          child: Text('Bientôt expirés'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Ordonnance requise',
+                          child: Text('Ordonnance requise'),
+                        ),
+                      ],
+                      onChanged: (v) =>
+                          setState(() => _filter = v ?? 'Tous les produits'),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            onChanged: (v) => setState(() => _search = v),
           ),
-        ),
-        const SizedBox(width: 12),
-        DropdownButton<String>(
-          value: _filter,
-          items: const [
-            DropdownMenuItem(
-              value: 'All products',
-              child: Text('All products'),
+
+          // Right: Actions
+          Expanded(
+            flex: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: _loadProducts,
+                  icon: const Icon(Icons.refresh),
+                  tooltip: 'Actualiser les produits',
+                  color: Colors.black54,
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _openAddDialog,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade100,
+                    foregroundColor: Colors.black,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  child: const Icon(Icons.add),
+                ),
+              ],
             ),
-            DropdownMenuItem(value: 'Low stock', child: Text('Low stock')),
-            DropdownMenuItem(value: 'Expired', child: Text('Expired')),
-            DropdownMenuItem(
-              value: 'Near expiration',
-              child: Text('Near expiration'),
-            ),
-            DropdownMenuItem(
-              value: 'Prescription required',
-              child: Text('Prescription required'),
-            ),
-          ],
-          onChanged: (v) => setState(() => _filter = v ?? 'All products'),
-        ),
-        const SizedBox(width: 12),
-        IconButton(
-          onPressed: _loadProducts,
-          icon: const Icon(Icons.refresh),
-          tooltip: 'Refresh products',
-        ),
-        const SizedBox(width: 12),
-        ElevatedButton.icon(
-          onPressed: _openAddDialog,
-          icon: const Icon(Icons.add),
-          label: const Text('Add New Product'),
-          style: ElevatedButton.styleFrom(backgroundColor: kPrimaryGreen),
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

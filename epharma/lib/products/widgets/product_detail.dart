@@ -57,30 +57,30 @@ class ProductDetailsPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Product Information',
+            'Informations du produit',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          _infoRow('Name', product.name),
+          _infoRow('Nom', product.name),
           _infoRow('Description', product.description),
-          _infoRow('Category', product.category),
-          _infoRow('Barcode', product.barcode),
-          _infoRow('Prescription', product.prescriptionRequired ? 'Yes' : 'No'),
+          _infoRow('Catégorie', product.category),
+          _infoRow('Code-barres', product.barcode),
+          _infoRow('Ordonnance', product.prescriptionRequired ? 'Oui' : 'Non'),
           _infoRow(
-            'Purchase price',
-            '€${product.purchasePrice.toStringAsFixed(2)}',
+            'Prix d\'achat',
+            '${product.purchasePrice.toStringAsFixed(0)} FCFA',
           ),
           _infoRow(
-            'Selling price',
-            '€${product.sellingPrice.toStringAsFixed(2)}',
+            'Prix de vente',
+            '${product.sellingPrice.toStringAsFixed(0)} FCFA',
           ),
           _infoRow(
-            'Profit margin',
-            '€${product.profitMargin.toStringAsFixed(2)}',
+            'Marge de profit',
+            '${product.profitMargin.toStringAsFixed(0)} FCFA',
           ),
           const SizedBox(height: 12),
           const Text(
-            'Movement history',
+            'Historique des mouvements',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -90,7 +90,7 @@ class ProductDetailsPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               color: Colors.grey[100],
             ),
-            child: const Center(child: Text('Movement history placeholder')),
+            child: const Center(child: Text('Emplacement de l\'historique des mouvements')),
           ),
         ],
       ),
@@ -107,11 +107,11 @@ class ProductDetailsPanel extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Total stock: ${product.totalStock}',
+          'Stock total : ${product.totalStock}',
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
-        Text('Low stock threshold: ${product.lowStockThreshold}'),
+        Text('Seuil de stock bas : ${product.lowStockThreshold}'),
         const SizedBox(height: 12),
         Expanded(
           child: ListView.separated(
@@ -128,7 +128,7 @@ class ProductDetailsPanel extends StatelessWidget {
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Row(
       children: [
-        Expanded(flex: 2, child: Text('$label:')),
+        Expanded(flex: 2, child: Text('$label :')),
         Expanded(
           flex: 3,
           child: Text(

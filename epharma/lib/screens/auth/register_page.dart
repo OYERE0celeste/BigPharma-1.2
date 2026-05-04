@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
@@ -295,6 +296,7 @@ class _RegisterPageState extends State<RegisterPage> {
           hint: "0123456789",
           icon: Icons.phone,
           keyboardType: TextInputType.phone,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           validator: _validatePhone,
         ),
         const SizedBox(height: 16),
@@ -409,6 +411,7 @@ class _RegisterPageState extends State<RegisterPage> {
     bool isPassword = false,
     String? Function(String?)? validator,
     TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,6 +425,7 @@ class _RegisterPageState extends State<RegisterPage> {
           controller: controller,
           obscureText: isPassword,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           style: const TextStyle(color: Colors.white),
           validator: validator,
           decoration: InputDecoration(

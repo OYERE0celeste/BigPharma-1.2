@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
+import 'api_constants.dart';
 import 'auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -69,8 +70,8 @@ class AuthProvider extends ChangeNotifier {
     _user = null;
     _token = null;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('auth_token');
-    await prefs.remove('auth_user');
+    await prefs.remove(ApiConstants.tokenKey);
+    await prefs.remove(ApiConstants.userKey);
     notifyListeners();
   }
 
@@ -81,7 +82,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _saveSession() async {
     final prefs = await SharedPreferences.getInstance();
-    if (_token != null) await prefs.setString('auth_token', _token!);
+    if (_token != null) await prefs.setString(ApiConstants.tokenKey, _token!);
     if (_user != null) {
       // Logic to save user info if needed, or just re-fetch on start
     }
@@ -89,7 +90,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _loadSession() async {
     final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString('auth_token');
+    _token = prefs.getString(ApiConstants.tokenKey);
     // For a real app, we should verify the token here
     notifyListeners();
   }

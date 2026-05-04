@@ -1,6 +1,7 @@
 import 'package:epharma/products/pharmacy_products_page.dart';
 import 'package:epharma/providers/product_categories.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../models/product_model.dart';
 
 class ProductFormDialog extends StatefulWidget {
@@ -171,10 +172,6 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     onChanged: (v) => setState(() => _prescription = v),
                   ),
                   const Divider(),
-                  /*const Text(
-                    'Prix et stock',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),*/
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -185,6 +182,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                             labelText: 'Prix d\'achat',
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           validator: (v) => (double.tryParse(v ?? '') == null)
                               ? 'Number invalide'
                               : null,
@@ -198,6 +196,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                             labelText: 'Prix de vente',
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           validator: (v) => (double.tryParse(v ?? '') == null)
                               ? 'Number invalide'
                               : null,
@@ -213,6 +212,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                       labelText: 'Seuil de stock bas',
                     ),
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     validator: (v) => (int.tryParse(v ?? '') == null)
                         ? 'Number invalide'
                         : null,
@@ -237,6 +237,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                             labelText: 'Quantité',
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         ),
                       ),
                     ],

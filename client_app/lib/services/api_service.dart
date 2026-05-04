@@ -76,6 +76,20 @@ class ApiService {
     }
   }
 
+  Future<http.Response> patch(String endpoint, Map<String, dynamic> body) async {
+    try {
+      return await _requestWithRetry(
+        () async => await http.patch(
+          Uri.parse(endpoint),
+          headers: await _headers,
+          body: json.encode(body),
+        ),
+      );
+    } catch (e) {
+      return _handleError(e, 'PATCH', endpoint);
+    }
+  }
+
   Future<http.Response> delete(String endpoint) async {
     try {
       return await _requestWithRetry(

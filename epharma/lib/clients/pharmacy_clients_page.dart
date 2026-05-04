@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../providers/client_provider.dart';
 import '../models/client_model.dart';
 import '../widgets/app_colors.dart';
-import 'widgets/header_client.dart';
 import 'widgets/client_detail.dart';
 import 'widgets/add_edit_client.dart';
 import 'widgets/search_filter_client.dart';
@@ -129,7 +128,6 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const HeaderClient(),
             const SizedBox(height: 16),
             SearchAndFilterClient(
               onSearchChanged: (query) {
@@ -248,7 +246,6 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const HeaderClient(),
             const SizedBox(height: 20),
             SearchAndFilterClient(
               onSearchChanged: (query) {

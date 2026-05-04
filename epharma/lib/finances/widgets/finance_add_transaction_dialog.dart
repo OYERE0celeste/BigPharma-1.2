@@ -1,5 +1,6 @@
 import 'package:epharma/models/finance_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import '../models/finance_model.dart';
 
 class FinanceAddTransactionDialog extends StatefulWidget {
@@ -74,11 +75,7 @@ class _FinanceAddTransactionDialogState
                                 items: const [
                                   DropdownMenuItem(
                                     value: true,
-                                    child: Text('Entrée'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: false,
-                                    child: Text('Sortie'),
+                                    child: Text('Entrée (Recette)'),
                                   ),
                                 ],
                                 onChanged: (value) {
@@ -98,6 +95,7 @@ class _FinanceAddTransactionDialogState
                                   prefixText: 'fcfa',
                                 ),
                                 keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Veuillez entrer un montant';

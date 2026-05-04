@@ -48,16 +48,18 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
             constraints: const BoxConstraints(maxWidth: 1400),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [
-                TopKPISection(),
-                SizedBox(height: 24),
-                AlertsAndActivityRow(),
-                SizedBox(height: 24),
-                QuickActionsSection(),
-                SizedBox(height: 24),
-                StockAndPerformanceRow(),
-                SizedBox(height: 24),
-                SystemInfoBar(),
+              children: [
+                _buildHeader(context),
+                const SizedBox(height: 24),
+                const TopKPISection(),
+                const SizedBox(height: 24),
+                const AlertsAndActivityRow(),
+                const SizedBox(height: 24),
+                const QuickActionsSection(),
+                const SizedBox(height: 24),
+                const StockAndPerformanceRow(),
+                const SizedBox(height: 24),
+                const SystemInfoBar(),
               ],
             ),
           ),
@@ -65,9 +67,113 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
       ),
     );
   }
-}
 
-// Sidebar moved to `app_sidebar.dart` (reuse `AppSidebar` widget)
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        // Left: Title
+        Expanded(
+          flex: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildGreeting(context),
+              const SizedBox(height: 4),
+              Text(
+                'Aperçu global de votre activité pharmaceutique',
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+
+        // Middle: Date/Time (Specific to Dashboard)
+        Expanded(
+          flex: 4,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.calendar_today, size: 16, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Right: Refresh
+        Expanded(
+          flex: 3,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FilledButton.icon(
+                onPressed: () {
+                  context.read<ProductProvider>().loadProducts();
+                  context.read<SalesProvider>().loadSales();
+                  context.read<FinanceProvider>().initialize();
+                  context.read<ClientProvider>().loadClients();
+                  context.read<ActivityProvider>().loadActivities();
+                },
+                icon: const Icon(Icons.refresh, size: 20),
+                label: const Text('Actualiser'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black87,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGreeting(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    final hour = DateTime.now().hour;
+    String greeting;
+    if (hour < 12) {
+      greeting = 'Bonjour';
+    } else if (hour < 18) {
+      greeting = 'Bon après-midi';
+    } else {
+      greeting = 'Bonsoir';
+    }
+
+    final String name = auth.user?.fullName.split(' ')[0] ?? 'Pharmacien';
+
+    return Text(
+      '$greeting, $name ! 👋',
+      style: const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.5,
+        color: Color(0xFF1E293B),
+      ),
+    );
+  }
+}
 
 // --------------------------- Top KPI Section ---------------------------
 class TopKPISection extends StatelessWidget {
@@ -80,52 +186,46 @@ class TopKPISection extends StatelessWidget {
           (context, productProvider, salesProvider, financeProvider, child) {
             final kpis = [
               KPIData(
-                title: "Today's revenue",
+                title: "Chiffre d'affaires aujourd'hui",
                 value: '${financeProvider.totalRevenue.toStringAsFixed(0)} FCFA',
                 icon: Icons.attach_money,
                 color: kPrimaryGreen,
               ),
               KPIData(
-                title: 'Sales today',
+                title: 'Ventes aujourd\'hui',
                 value: '${salesProvider.totalSalesCount}',
                 icon: Icons.shopping_cart,
                 color: kAccentBlue,
               ),
               KPIData(
-                title: 'Out of stock',
+                title: 'Rupture de stock',
                 value: '${productProvider.outOfStockCount}',
                 icon: Icons.warning,
                 color: kDangerRed,
               ),
               KPIData(
-                title: 'Expired',
+                title: 'Expirés',
                 value: '${productProvider.expiredCount}',
                 icon: Icons.event_busy,
                 color: Colors.redAccent,
               ),
               KPIData(
-                title: 'Near Exp.',
+                title: 'Bientôt expirés',
                 value: '${productProvider.nearExpirationCount}',
                 icon: Icons.event_note,
                 color: Colors.orangeAccent,
               ),
               KPIData(
-                title: 'Low stock',
+                title: 'Stock faible',
                 value: '${productProvider.lowStockCount}',
                 icon: Icons.warning_amber,
                 color: kWarningOrange,
               ),
               KPIData(
-                title: 'Total products',
+                title: 'Total produits',
                 value: '${productProvider.totalProducts}',
                 icon: Icons.inventory,
                 color: Colors.purple,
-              ),
-              KPIData(
-                title: 'Net profit',
-                value: '${financeProvider.netProfit.toStringAsFixed(0)} FCFA',
-                icon: Icons.trending_up,
-                color: Colors.teal,
               ),
             ];
 
@@ -336,22 +436,22 @@ class AlertsPanel extends StatelessWidget {
     
     final alerts = [
       AlertData(
-        title: 'Expired medicines',
+        title: 'Médicaments expirés',
         count: productProvider.expiredCount,
         severity: AlertSeverity.critical,
       ),
       AlertData(
-        title: 'Critical stock',
+        title: 'Stock critique',
         count: productProvider.outOfStockCount,
         severity: AlertSeverity.critical,
       ),
       AlertData(
-        title: 'Low stock alerts',
+        title: 'Alertes stock faible',
         count: productProvider.lowStockCount,
         severity: AlertSeverity.warning,
       ),
       AlertData(
-        title: 'Near expiration',
+        title: 'Date d\'expiration proche',
         count: productProvider.nearExpirationCount,
         severity: AlertSeverity.warning,
       ),
@@ -380,7 +480,7 @@ class AlertsPanel extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 const Text(
-                  'Alerts',
+                  'Alertes',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -489,7 +589,7 @@ class RecentActivityPanel extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 const Text(
-                  'Recent Activity',
+                  'Activité récente',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -525,8 +625,8 @@ class RecentActivityPanel extends StatelessWidget {
     final localDt = dt.toLocal();
     final now = DateTime.now();
     final diff = now.difference(localDt);
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inMinutes < 60) return 'il y a ${diff.inMinutes}m';
+    if (diff.inHours < 24) return 'il y a ${diff.inHours}h';
     return '${localDt.day}/${localDt.month}';
   }
 }
@@ -595,32 +695,32 @@ class QuickActionsSection extends StatelessWidget {
     final actions = [
       QuickAction(
         icon: Icons.add_box,
-        label: 'Add Product',
+        label: 'Ajouter un produit',
         color: kPrimaryGreen,
       ),
       QuickAction(
         icon: Icons.point_of_sale,
-        label: 'Register Sale',
+        label: 'Enregistrer une vente',
         color: kAccentBlue,
       ),
       QuickAction(
         icon: Icons.person_add,
-        label: 'Add Client',
+        label: 'Ajouter un client',
         color: Colors.purple,
       ),
       QuickAction(
         icon: Icons.check_circle,
-        label: 'Validate Prescription',
+        label: 'Valider une ordonnance',
         color: Colors.teal,
       ),
       QuickAction(
         icon: Icons.inventory,
-        label: 'Manage Stock',
+        label: 'Gérer le stock',
         color: Colors.brown,
       ),
       QuickAction(
         icon: Icons.bar_chart,
-        label: 'View Full Reports',
+        label: 'Rapports complets',
         color: Colors.indigo,
       ),
     ];
@@ -648,7 +748,7 @@ class QuickActionsSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 const Text(
-                  'Quick Actions',
+                  'Actions rapides',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],

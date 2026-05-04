@@ -35,6 +35,7 @@ class ApiConstants {
   static String get settingsExport => '$baseUrl/settings/export';
   static String get settingsImport => '$baseUrl/settings/import';
   static String get consultations => '$baseUrl/consultations';
+  static String get questionsClients => '$baseUrl/QuestionsClients';
   static String get mouvements => '$baseUrl/mouvements';
 
   static const String tokenKey = 'auth_token';

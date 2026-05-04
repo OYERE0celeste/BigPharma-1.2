@@ -1,4 +1,3 @@
-import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SearchAndFilterClient extends StatefulWidget {
@@ -34,97 +33,150 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search by name, phone, or email...',
-              prefixIcon: const Icon(Icons.search, color: kPrimaryGreen),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 12,
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          // Left: Title and Subtitle
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text(
+                  'GESTION DES CLIENTS',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Gérez les clients et leurs profils médicaux',
+                  style: TextStyle(color: Colors.black54, fontSize: 13),
+                ),
+              ],
             ),
-            onChanged: (query) {
-              widget.onSearchChanged(query);
-            },
           ),
-        ),
-        const SizedBox(width: 12),
-        DropdownMenu<String>(
-          initialSelection: 'all',
-          onSelected: (value) {
-            if (value != null) {
-              setState(() {});
-              widget.onFilterChanged(value);
-            }
-          },
-          dropdownMenuEntries: const [
-            DropdownMenuEntry(value: 'all', label: 'All Clients'),
-            DropdownMenuEntry(value: 'frequent', label: 'Frequent Buyers'),
-            DropdownMenuEntry(value: 'medical', label: 'With Medical Profile'),
-            DropdownMenuEntry(value: 'inactive', label: 'Inactive'),
-          ],
-        ),
-        const SizedBox(width: 12),
-        Tooltip(
-          message: 'Ajouter un nouveau client',
-          child: ElevatedButton(
-            onPressed: widget.onAddClient,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+
+          // Middle: Search and Filter
+          Expanded(
+            flex: 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 350,
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Nom, téléphone ou email...',
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    onChanged: (query) {
+                      widget.onSearchChanged(query);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value:
+                          'all', // This should probably be a widget property if it needs to be dynamic
+                      icon: const Icon(Icons.arrow_drop_down),
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'all',
+                          child: Text('Tous les clients'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'frequent',
+                          child: Text('Acheteurs fréquents'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'medical',
+                          child: Text('Profil médical'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'inactive',
+                          child: Text('Inactifs'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          widget.onFilterChanged(value);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: const Icon(Icons.add),
           ),
-        ),
-        const SizedBox(width: 8),
-        Tooltip(
-          message: 'Exporter la liste des clients',
-          child: ElevatedButton(
-            onPressed: widget.onAddClient,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+
+          // Right: Actions
+          Expanded(
+            flex: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    // Refresh logic if needed
+                    widget.onSearchChanged(_searchController.text);
+                  },
+                  icon: const Icon(Icons.refresh),
+                  tooltip: 'Rafraîchir',
+                  color: Colors.black54,
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: widget.onAddClient,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade100,
+                    foregroundColor: Colors.black,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  child: const Icon(Icons.add),
+                ),
+              ],
             ),
-            child: const Icon(Icons.download),
           ),
-        ),
-        const SizedBox(width: 8),
-        Tooltip(
-          message: 'Top Clients',
-          child: ElevatedButton(
-            onPressed: widget.onAddClient,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            ),
-            child: const Icon(Icons.trending_up),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Tooltip(
-          message: 'Imprimer la liste des clients',
-          child: ElevatedButton(
-            onPressed: widget.onAddClient,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            ),
-            child: const Icon(Icons.print),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

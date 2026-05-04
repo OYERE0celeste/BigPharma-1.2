@@ -83,18 +83,6 @@ class FinanceCharts extends StatelessWidget {
                       barWidth: 3,
                       belowBarData: BarAreaData(show: false),
                     ),
-                    LineChartBarData(
-                      spots: chartData.asMap().entries.map((entry) {
-                        return FlSpot(
-                          entry.key.toDouble(),
-                          entry.value['expenses'],
-                        );
-                      }).toList(),
-                      isCurved: true,
-                      color: Colors.red,
-                      barWidth: 3,
-                      belowBarData: BarAreaData(show: false),
-                    ),
                   ],
                 ),
               ),
@@ -111,19 +99,7 @@ class FinanceCharts extends StatelessWidget {
                       child: ColoredBox(color: Colors.green),
                     ),
                     SizedBox(width: 8),
-                    Text('Revenus'),
-                  ],
-                ),
-                SizedBox(width: 32),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 3,
-                      child: ColoredBox(color: Colors.red),
-                    ),
-                    SizedBox(width: 8),
-                    Text('Dépenses'),
+                    Text('Revenus (Entrées)'),
                   ],
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:epharma/models/activity_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PaymentSection extends StatefulWidget {
   final double totalAmount;
@@ -84,6 +85,7 @@ class _PaymentSectionState extends State<PaymentSection> {
           TextField(
             controller: _amountReceivedController,
             keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (value) {
               widget.onAmountReceivedChanged(double.tryParse(value) ?? 0);
               setState(() {});

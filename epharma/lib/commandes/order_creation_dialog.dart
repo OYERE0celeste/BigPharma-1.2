@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 import '../providers/order_provider.dart';
 import '../providers/auth_provider.dart';
@@ -56,7 +58,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
               const Divider(),
               Align(
                 alignment: Alignment.centerRight,
-                child: Text('TOTAL : ${_total.toStringAsFixed(2)} €', 
+                child: Text('TOTAL : ${_total.toStringAsFixed(0)} FCFA', 
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF6366F1))),
               ),
             ],
@@ -102,6 +104,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
             decoration: const InputDecoration(labelText: 'Qté', border: OutlineInputBorder()),
             initialValue: '1',
             keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (val) => quantity = int.tryParse(val) ?? 1,
           ),
         ),
@@ -142,7 +145,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
           final item = entry.value;
           return TableRow(children: [
             Padding(padding: const EdgeInsets.all(8), child: Text(item['name'])),
-            Padding(padding: const EdgeInsets.all(8), child: Text('${item['price']} €')),
+            Padding(padding: const EdgeInsets.all(8), child: Text('${item['price']} FCFA')),
             Padding(padding: const EdgeInsets.all(8), child: Text('${item['quantity']}')),
             IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () => setState(() => _cartItems.removeAt(idx))),
           ]);
