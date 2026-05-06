@@ -83,7 +83,7 @@ BigPharma 1.2/
 │   ├── pubspec.yaml             # Flutter dependencies
 │   └── android/, ios/           # Platform-specific code
 │
-├── epharma/                     # Flutter Web App (Staff Management)
+├── epharma/                     # Flutter Web App (Customer & Staff Platform)
 │   ├── lib/
 │   │   ├── main.dart            # App entry point
 │   │   ├── pharmacy_dashboard_page.dart # Main dashboard
@@ -127,16 +127,11 @@ BigPharma 1.2/
 - Manage personal profile
 - Prescription viewing
 
-### 💼 Staff Dashboard (epharma)
-- Staff authentication with role-based access
-- Product inventory management
-- Stock level tracking with expiration dates
-- Order management and fulfillment
-- Sales processing and reporting
-- Client management
-- Financial reports
-- Activity logging
-- Consultation management
+### 💼 Web Platform (epharma)
+The `epharma` directory contains the unified web platform for the BigPharma system. It is a **hybrid application** that dynamically adapts its interface based on the authenticated user's role:
+
+- **For Customers**: Provides a full-featured web version of the portal (browsing, ordering, profile management).
+- **For Staff (Admin, Pharmacist, etc.)**: Provides the professional management dashboard for inventory, sales, finances, and operations.
 
 ### 🔐 API Features
 - JWT token-based authentication
@@ -257,6 +252,8 @@ POST   /api/auth/register          # Admin registration
 POST   /api/auth/register-client   # Client registration
 POST   /api/auth/login             # Login
 GET    /api/auth/me                # Current user
+PUT    /api/auth/me                # Update profile
+POST   /api/auth/change-password   # Change password
 ```
 
 **Products**

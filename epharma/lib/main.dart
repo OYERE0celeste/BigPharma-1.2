@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'main_layout.dart';
 import 'providers/product_provider.dart';
@@ -18,6 +19,10 @@ import 'pages/client/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Fix: A message on the flutter/lifecycle channel was discarded before it could be handled.
+  // This happens on web when the framework is initializing.
+  ServicesBinding.instance.channelBuffers.resize('flutter/lifecycle', 100);
   runApp(const MyApp());
 }
 
@@ -52,8 +57,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color(0xFF6366F1), // Indigo premium
             brightness: Brightness.light,
           ),
-          fontFamily:
-              'Inter', // We should ensure Inter is added or use a system font
+          // fontFamily: 'Inter', // Standardized to system font as Inter assets are missing
         ),
         home: const AuthWrapper(),
         debugShowCheckedModeBanner: false,

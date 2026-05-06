@@ -129,6 +129,31 @@ GET /api/auth/me
 Authorization: Bearer <token>
 ```
 
+#### Update Profile
+```
+PUT /api/auth/me
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "fullName": "New Name",
+  "phone": "+1234567890",
+  "address": "New Address"
+}
+```
+
+#### Change Password
+```
+POST /api/auth/change-password
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "currentPassword": "oldPassword123",
+  "newPassword": "newSecurePassword123"
+}
+```
+
 ### Products
 
 #### Get Products

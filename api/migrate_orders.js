@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const migrate = async () => {
   try {
-    const dbUri = process.env.MONGODB_URI || "mongodb://localhost:27017/bigpharma";
+    const dbUri = process.env.MONGODB_URI || "mongodb://localhost:27017/BigPharmaDB";
     console.log(`Connecting to ${dbUri}...`);
     await mongoose.connect(dbUri);
     console.log("Connected to database");

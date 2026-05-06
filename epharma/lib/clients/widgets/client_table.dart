@@ -35,72 +35,76 @@ class ClientsTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columns: const [
-              DataColumn(label: Text('Nom complet')),
-              DataColumn(label: Text('Téléphone')),
-              DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Total Achats')),
-              DataColumn(label: Text('Total Dépensé')),
-              DataColumn(label: Text('Dernière Visite')),
-              DataColumn(label: Text('Statut')),
-              DataColumn(label: Text('Profil Médical')),
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: paginatedClients.map((client) {
-              return DataRow(
-                onSelectChanged: (_) => onViewDetails(client),
-                cells: [
-                  DataCell(Text(client.fullName)),
-                  DataCell(Text(client.phone)),
-                  DataCell(Text(client.email.isNotEmpty ? client.email : '—')),
-                  DataCell(Text(client.totalPurchases.toString())),
-                  DataCell(Text('${client.totalSpent.toStringAsFixed(0)} FCFA')),
-                  DataCell(Text(_formatDate(client.lastVisitDate))),
-                  DataCell(Text(client.loyaltyStatus.name.toUpperCase())),
-                  DataCell(
-                    client.hasMedicalHistory
-                        ? const Tooltip(
-                            message: 'Profil médical disponible',
-                            child: Icon(
-                              Icons.check_circle,
-                              color: kPrimaryGreen,
-                              size: 20,
-                            ),
-                          )
-                        : const Icon(
-                            Icons.cancel,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                  ),
-                  DataCell(
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.visibility_outlined),
-                          onPressed: () => onViewDetails(client),
-                          tooltip: 'Voir les détails',
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit_outlined),
-                          onPressed: () => onEditClient(client),
-                          tooltip: 'Modifier',
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline),
-                          onPressed: () => onDeleteClient(client),
-                          tooltip: 'Supprimer',
-                        ),
-                      ],
-                    ),
-                  ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Nom complet')),
+                  DataColumn(label: Text('Téléphone')),
+                  DataColumn(label: Text('Email')),
+                  DataColumn(label: Text('Total Achats')),
+                  DataColumn(label: Text('Total Dépensé')),
+                  DataColumn(label: Text('Dernière Visite')),
+                  DataColumn(label: Text('Statut')),
+                  DataColumn(label: Text('Profil Médical')),
+                  DataColumn(label: Text('Actions')),
                 ],
-              );
-            }).toList(),
+                rows: paginatedClients.map((client) {
+                  return DataRow(
+                    onSelectChanged: (_) => onViewDetails(client),
+                    cells: [
+                      DataCell(Text(client.fullName)),
+                      DataCell(Text(client.phone)),
+                      DataCell(Text(client.email.isNotEmpty ? client.email : '—')),
+                      DataCell(Text(client.totalPurchases.toString())),
+                      DataCell(Text('${client.totalSpent.toStringAsFixed(0)} FCFA')),
+                      DataCell(Text(_formatDate(client.lastVisitDate))),
+                      DataCell(Text(client.loyaltyStatus.name.toUpperCase())),
+                      DataCell(
+                        client.hasMedicalHistory
+                            ? const Tooltip(
+                                message: 'Profil médical disponible',
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: kPrimaryGreen,
+                                  size: 20,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.cancel,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
+                      ),
+                      DataCell(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.visibility_outlined),
+                              onPressed: () => onViewDetails(client),
+                              tooltip: 'Voir les détails',
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit_outlined),
+                              onPressed: () => onEditClient(client),
+                              tooltip: 'Modifier',
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () => onDeleteClient(client),
+                              tooltip: 'Supprimer',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 12),

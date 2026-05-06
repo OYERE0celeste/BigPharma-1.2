@@ -50,9 +50,13 @@ class _ProductTableState extends State<ProductTable> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: _buildDataTable(items),
+            Expanded(
+              child: SingleChildScrollView(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: _buildDataTable(items),
+                ),
+              ),
             ),
             const SizedBox(height: 12),
             Row(

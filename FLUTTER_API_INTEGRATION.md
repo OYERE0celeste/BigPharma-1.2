@@ -26,7 +26,7 @@ Both `client_app` and `epharma` Flutter applications are designed to work with t
          │                │
 ┌────────┴────────┐  ┌───┴──────────┐
 │   epharma       │  │   MongoDB    │
-│   (Flutter Web) │  │              │
+│ (Customer/Staff)│  │              │
 └─────────────────┘  └──────────────┘
 ```
 
@@ -282,6 +282,7 @@ flutter run -d android
 POST   /api/auth/register-client
 POST   /api/auth/login
 GET    /api/auth/me
+PUT    /api/auth/me
 GET    /api/products
 GET    /api/products/:id
 GET    /api/clients/me

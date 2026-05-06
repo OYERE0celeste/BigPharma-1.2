@@ -241,7 +241,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
     final filteredClients = _getFilteredClients(provider.clients);
 
     return SafeArea(
-      child: SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -264,43 +264,48 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
             ),
             const SizedBox(height: 20),
             if (isLoading)
-              const Center(child: CircularProgressIndicator())
+              const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (error != null)
-              Center(
-                child: Text(error, style: const TextStyle(color: Colors.red)),
+              Expanded(
+                child: Center(
+                  child: Text(error, style: const TextStyle(color: Colors.red)),
+                ),
               )
             else if (filteredClients.isEmpty)
-              const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.people_outline, size: 64, color: Colors.grey),
-                    SizedBox(height: 16),
-                    Text('Aucun client trouvé'),
-                  ],
+              const Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.people_outline, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text('Aucun client trouvé'),
+                    ],
+                  ),
                 ),
               )
             else
-              ClientsTable(
-                clients: filteredClients,
-                currentPage: _currentPage,
-                pageSize: _pageSize,
-                onViewDetails: (client) {
-                  _showClientDetailsPanel(client);
-                },
-                onEditClient: (client) {
-                  _showClientFormDialog(client);
-                },
-                onDeleteClient: (client) {
-                  _showDeleteConfirmation(client);
-                },
-                onPageChanged: (page) {
-                  setState(() {
-                    _currentPage = page;
-                  });
-                },
+              Expanded(
+                child: ClientsTable(
+                  clients: filteredClients,
+                  currentPage: _currentPage,
+                  pageSize: _pageSize,
+                  onViewDetails: (client) {
+                    _showClientDetailsPanel(client);
+                  },
+                  onEditClient: (client) {
+                    _showClientFormDialog(client);
+                  },
+                  onDeleteClient: (client) {
+                    _showDeleteConfirmation(client);
+                  },
+                  onPageChanged: (page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                ),
               ),
-            const SizedBox(height: 20),
           ],
         ),
       ),

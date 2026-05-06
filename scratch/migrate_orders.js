@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const migrate = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/bigpharma');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/BigPharmaDB');
     console.log('Connected to database');
 
     // Orders in 'en_preparation' or 'en_livraison' -> 'annulee' (as per user request "remplaces par annulé")

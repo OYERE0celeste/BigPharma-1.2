@@ -57,25 +57,6 @@ app.use(globalLimiter);
 // Compression
 app.use(compression());
 
-// Security headers with CSP
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       directives: {
-//         defaultSrc: ["'self'"],
-//         scriptSrc: ["'self'", "'unsafe-inline'"],
-//         styleSrc: ["'self'", "'unsafe-inline'"],
-//         imgSrc: ["'self'", "data:", "https:"],
-//         connectSrc: ["'self'", "https://sentry.io", "http://localhost:5000", "http://127.0.0.1:5000", "ws://localhost:5000", "ws://127.0.0.1:5000"],
-//       },
-//     },
-//     crossOriginEmbedderPolicy: false,
-//     referrerPolicy: { policy: "strict-origin-when-cross-origin" },
-//   })
-// );
-
-// app.use(mongoSanitize());
-// app.use(xss());
 app.use(cookieParser());
 app.use(requestIdMiddleware);
 app.use(metricsMiddleware);
@@ -124,8 +105,17 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 
+// Custom sanitization function to avoid Express 5 read-only property issues
+// In Express 5, req.query is a getter, so we mutate it in place rather than reassigning.
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.query) mongoSanitize.sanitize(req.query);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  next();
+});
+
 // Health check
-app.get("/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   return success(res, {
     data: { status: "healthy", timestamp: new Date().toISOString(), environment: nodeEnv, requestId: req.id },
   });

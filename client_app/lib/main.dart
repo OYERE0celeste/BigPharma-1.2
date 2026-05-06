@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:client_app/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'services/cart_provider.dart';
 import 'services/auth_provider.dart';
@@ -12,6 +13,10 @@ import 'pages/login_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Fix: A message on the flutter/lifecycle channel was discarded before it could be handled.
+  // This happens on web when the framework is initializing.
+  ServicesBinding.instance.channelBuffers.resize('flutter/lifecycle', 100);
 
   // Catch Flutter framework errors
   FlutterError.onError = (details) {

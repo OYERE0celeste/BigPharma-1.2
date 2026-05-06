@@ -1,4 +1,4 @@
-﻿# ePharma
+# ePharma
 
 Application full-stack de gestion pharmaceutique unifiée.
 
@@ -46,7 +46,7 @@ Fichier: `api/.env`
 
 Variables requises:
 
-- `MONGODB_URI` (obligatoire)
+- `MONGODB_URI` (obligatoire, e.g. `mongodb://localhost:27017/BigPharmaDB`)
 - `JWT_SECRET` (obligatoire)
 
 Variables optionnelles:
@@ -54,32 +54,31 @@ Variables optionnelles:
 - `PORT` (défaut: `5000`)
 - `CORS_ORIGIN` (défaut: `*`)
 
-## Structure de l'application
+## Structure de l'application (Hybride)
+
+L'application `epharma` est conçue comme un portail unifié. L'organisation des dossiers reflète cette dualité :
 
 - `lib/` : Code Flutter principal
-  - `models/` : Modèles de données pour pharmacies
-  - `client_models/` : Modèles de données pour clients
-  - `services/` : Services API pour pharmacies
-  - `client_services/` : Services API pour clients
-  - `providers/` : Providers pour gestion d'état pharmacies
-  - `client_services/` : Providers pour clients (CartProvider, etc.)
-  - `pages/client/` : Pages spécifiques aux clients
-  - `screens/` : Pages communes et pour pharmacies
+  - `models/` : Modèles pour l'interface Staff (Dashboard)
+  - `client_models/` : Modèles pour l'interface Client
+  - `services/` : Services API pour Staff
+  - `client_services/` : Services API pour Clients (Cart, Profile, Orders)
+  - `providers/` : Gestion d'état pour Staff
+  - `pages/client/` : Pages du portail client (Home, Support, etc.)
+  - `screens/` : Pages du dashboard staff et écrans communs
 
 ## Authentification et Rôles
 
 L'application utilise l'API backend pour l'authentification. Les rôles supportés :
-- `client` : Accès aux fonctionnalités client
-- `pharmacien`, `admin`, etc. : Accès aux fonctionnalités pharmacie
+- `client` : Redirige vers `HomePage()` (Client)
+- `pharmacien`, `admin`, etc. : Redirige vers `MainLayout()` (Staff Dashboard)
 
-Après connexion, l'app redirige automatiquement vers l'interface appropriée selon le rôle.
-- `FEATURE_2FA_ENABLED` (`true`/`false`, défaut `false`)
-- `NODE_ENV` (`development`, `test`, `production`)
+Après connexion, l'app redirige automatiquement vers l'interface appropriée selon le rôle défini dans l'objet User.
 
-Exemple minimal:
+Exemple de configuration `.env` locale:
 
 ```env
-MONGODB_URI=mongodb://127.0.0.1:27017/epharma
+MONGODB_URI=mongodb://127.0.0.1:27017/BigPharmaDB
 JWT_SECRET=change-me-strong-secret
 PORT=5000
 CORS_ORIGIN=http://localhost:3000,http://localhost:5000,http://127.0.0.1:5000

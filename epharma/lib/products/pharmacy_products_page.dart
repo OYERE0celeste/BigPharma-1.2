@@ -233,146 +233,280 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          // Left: Title and Subtitle
-          Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text(
-                  'GESTION DES PRODUITS',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Gérez les médicaments, le stock et les lots pharmaceutiques',
-                  style: TextStyle(color: Colors.black54, fontSize: 13),
-                ),
-              ],
-            ),
-          ),
-
-          // Middle: Search and Filter
-          Expanded(
-            flex: 4,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 350,
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search, size: 20),
-                      hintText: 'Rechercher par nom ou catégorie',
-                      hintStyle: const TextStyle(fontSize: 14),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 12,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                    ),
-                    onChanged: (v) => setState(() => _search = v),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _filter,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      style: const TextStyle(
-                        color: Colors.black87,
-                        fontSize: 14,
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'Tous les produits',
-                          child: Text('Tous les produits'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Stock faible',
-                          child: Text('Stock faible'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Expirés',
-                          child: Text('Expirés'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Bientôt expirés',
-                          child: Text('Bientôt expirés'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Ordonnance requise',
-                          child: Text('Ordonnance requise'),
-                        ),
-                      ],
-                      onChanged: (v) =>
-                          setState(() => _filter = v ?? 'Tous les produits'),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 1100) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Title and Subtitle
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    'GESTION DES PRODUITS',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          // Right: Actions
-          Expanded(
-            flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: _loadProducts,
-                  icon: const Icon(Icons.refresh),
-                  tooltip: 'Actualiser les produits',
-                  color: Colors.black54,
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _openAddDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade100,
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
+                  SizedBox(height: 4),
+                  Text(
+                    'Gérez les médicaments, le stock et les lots pharmaceutiques',
+                    style: TextStyle(color: Colors.black54, fontSize: 13),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Search and Filter
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.search, size: 20),
+                        hintText: 'Rechercher...',
+                        hintStyle: const TextStyle(fontSize: 14),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                      ),
+                      onChanged: (v) => setState(() => _search = v),
                     ),
-                    shape: RoundedRectangleBorder(
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _filter,
+                        icon: const Icon(Icons.arrow_drop_down),
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Tous les produits',
+                            child: Text('Tous'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Stock faible',
+                            child: Text('Faible'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Expirés',
+                            child: Text('Expirés'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Bientôt expirés',
+                            child: Text('Bientôt'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Ordonnance requise',
+                            child: Text('Ord.'),
+                          ),
+                        ],
+                        onChanged: (v) =>
+                            setState(() => _filter = v ?? 'Tous les produits'),
+                      ),
                     ),
                   ),
-                  child: const Icon(Icons.add),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Actions
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _openAddDialog,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Ajouter un produit'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade100,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Colors.grey.shade300),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: _loadProducts,
+                    icon: const Icon(Icons.refresh),
+                    tooltip: 'Actualiser',
+                    color: Colors.black54,
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              // Left: Title and Subtitle
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(
+                      'GESTION DES PRODUITS',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Gérez les médicaments, le stock et les lots pharmaceutiques',
+                      style: TextStyle(color: Colors.black54, fontSize: 13),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              // Middle: Search and Filter
+              Expanded(
+                flex: 4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 400),
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.search, size: 20),
+                            hintText: 'Rechercher par nom ou catégorie',
+                            hintStyle: const TextStyle(fontSize: 14),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                          ),
+                          onChanged: (v) => setState(() => _search = v),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: _filter,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 14,
+                          ),
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'Tous les produits',
+                              child: Text('Tous les produits'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Stock faible',
+                              child: Text('Stock faible'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Expirés',
+                              child: Text('Expirés'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Bientôt expirés',
+                              child: Text('Bientôt expirés'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Ordonnance requise',
+                              child: Text('Ordonnance requise'),
+                            ),
+                          ],
+                          onChanged: (v) => setState(
+                              () => _filter = v ?? 'Tous les produits'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Right: Actions
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: _loadProducts,
+                      icon: const Icon(Icons.refresh),
+                      tooltip: 'Actualiser les produits',
+                      color: Colors.black54,
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: _openAddDialog,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade100,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Colors.grey.shade300),
+                        ),
+                      ),
+                      child: const Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

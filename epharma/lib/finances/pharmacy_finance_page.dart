@@ -272,161 +272,305 @@ class _FinancePageContentState extends State<FinancePageContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // En-tête desktop
-          Row(
-            children: [
-              // Left: Title
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 1100) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
-                      'Finance & Comptabilité',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Suivi des revenus, dépenses et trésorerie',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Middle: Search and Filter
-              Expanded(
-                flex: 5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 300,
-                      child: TextField(
-                        onChanged: (value) {
-                          _searchQuery = value;
-                          _applyFilters();
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Recherche globale...',
-                          prefixIcon: const Icon(Icons.search, size: 20),
-                          filled: true,
-                          fillColor: Colors.white,
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
+                    // Title and Subtitle
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Finance & Comptabilité',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Suivi des revenus, dépenses et trésorerie',
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 13),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          hint: const Text('Type', style: TextStyle(fontSize: 14)),
-                          value: _selectedType,
-                          style: const TextStyle(color: Colors.black87, fontSize: 14),
-                          items: [
+                    const SizedBox(height: 16),
+                    // Search and Filter
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            onChanged: (value) {
+                              _searchQuery = value;
+                              _applyFilters();
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Recherche...',
+                              prefixIcon: const Icon(Icons.search, size: 20),
+                              filled: true,
+                              fillColor: Colors.white,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: const Text('Type',
+                                  style: TextStyle(fontSize: 14)),
+                              value: _selectedType,
+                              style: const TextStyle(
+                                  color: Colors.black87, fontSize: 14),
+                              items: [
                                 'Vente',
                                 'Retour',
                                 'Approvisionnement',
                               ]
-                              .map(
-                                (type) => DropdownMenuItem(
-                                  value: type,
-                                  child: Text(type),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
+                                  .map(
+                                    (type) => DropdownMenuItem(
+                                      value: type,
+                                      child: Text(type),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedType = value;
+                                  _applyFilters();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    // Actions
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _showAddTransactionDialog(),
+                            icon: const Icon(Icons.add),
+                            label: const Text('Ajouter une transaction'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kPrimaryGreen,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          onPressed: () {
                             setState(() {
-                              _selectedType = value;
+                              _filteredTransactions =
+                                  financeProvider.transactions;
                               _applyFilters();
                             });
                           },
                         ),
-                      ),
+                      ],
                     ),
                   ],
-                ),
-              ),
+                );
+              }
 
-              // Right: Actions
-              Expanded(
-                flex: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.picture_as_pdf),
-                      tooltip: 'Export PDF',
-                      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Export PDF - Fonctionnalité à implémenter',
+              return Row(
+                children: [
+                  // Left: Title
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Finance & Comptabilité',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Suivi des revenus, dépenses et trésorerie',
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 13),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 4),
-                    IconButton(
-                      icon: const Icon(Icons.table_chart),
-                      tooltip: 'Export Excel',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Export Excel - Fonctionnalité à implémenter',
+                  ),
+
+                  // Middle: Search and Filter
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 300),
+                            child: TextField(
+                              onChanged: (value) {
+                                _searchQuery = value;
+                                _applyFilters();
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Recherche globale...',
+                                prefixIcon: const Icon(Icons.search, size: 20),
+                                filled: true,
+                                fillColor: Colors.white,
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 12,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 4),
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      tooltip: 'Rafraîchir',
-                      onPressed: () {
-                        setState(() {
-                          _filteredTransactions = financeProvider.transactions;
-                          _applyFilters();
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: () => _showAddTransactionDialog(),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Ajouter'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryGreen,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: const Text('Type',
+                                  style: TextStyle(fontSize: 14)),
+                              value: _selectedType,
+                              style: const TextStyle(
+                                  color: Colors.black87, fontSize: 14),
+                              items: [
+                                'Vente',
+                                'Retour',
+                                'Approvisionnement',
+                              ]
+                                  .map(
+                                    (type) => DropdownMenuItem(
+                                      value: type,
+                                      child: Text(type),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedType = value;
+                                  _applyFilters();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+
+                  // Right: Actions
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.picture_as_pdf),
+                          tooltip: 'Export PDF',
+                          onPressed: () =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Export PDF - Fonctionnalité à implémenter',
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        IconButton(
+                          icon: const Icon(Icons.table_chart),
+                          tooltip: 'Export Excel',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Export Excel - Fonctionnalité à implémenter',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 4),
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          tooltip: 'Rafraîchir',
+                          onPressed: () {
+                            setState(() {
+                              _filteredTransactions =
+                                  financeProvider.transactions;
+                              _applyFilters();
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          onPressed: () => _showAddTransactionDialog(),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Ajouter'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kPrimaryGreen,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 16),
 

@@ -49,7 +49,7 @@ A comprehensive Flutter + Node.js/Express pharmaceutical management application 
 - `POST /api/auth/register` - Register new company
 - `POST /api/auth/login` - User login
 - `POST /api/auth/forgot-password` - Password reset
-- `POST /api/auth/update-me` - Update profile
+- `PUT /api/auth/me` - Update profile
 
 ### Products
 - `GET /api/products` - List products

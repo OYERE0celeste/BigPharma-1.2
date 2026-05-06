@@ -69,83 +69,168 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        // Left: Title
-        Expanded(
-          flex: 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 900) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Greeting
               _buildGreeting(context),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
                 'Aperçu global de votre activité pharmaceutique',
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
-            ],
-          ),
-        ),
-
-        // Middle: Date/Time (Specific to Dashboard)
-        Expanded(
-          flex: 4,
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
+              const SizedBox(height: 16),
+              // Date and Refresh in a row or column
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 16,
+                            color: Colors.blue,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton.icon(
+                    onPressed: () {
+                      context.read<ProductProvider>().loadProducts();
+                      context.read<SalesProvider>().loadSales();
+                      context.read<FinanceProvider>().initialize();
+                      context.read<ClientProvider>().loadClients();
+                      context.read<ActivityProvider>().loadActivities();
+                    },
+                    icon: const Icon(Icons.refresh, size: 20),
+                    label: const Text('Actualiser'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black87,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: Row(
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            // Left: Title
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.calendar_today, size: 16, color: Colors.blue),
-                  const SizedBox(width: 8),
+                  _buildGreeting(context),
+                  const SizedBox(height: 4),
                   Text(
-                    "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    'Aperçu global de votre activité pharmaceutique',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
                   ),
                 ],
               ),
             ),
-          ),
-        ),
 
-        // Right: Refresh
-        Expanded(
-          flex: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FilledButton.icon(
-                onPressed: () {
-                  context.read<ProductProvider>().loadProducts();
-                  context.read<SalesProvider>().loadSales();
-                  context.read<FinanceProvider>().initialize();
-                  context.read<ClientProvider>().loadClients();
-                  context.read<ActivityProvider>().loadActivities();
-                },
-                icon: const Icon(Icons.refresh, size: 20),
-                label: const Text('Actualiser'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black87,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: Colors.grey.shade300),
-                  ),
+            // Middle: Date/Time (Specific to Dashboard)
+            Expanded(
+              flex: 4,
+              child: Center(
+                child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+
+            // Right: Refresh
+            Expanded(
+              flex: 3,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FilledButton.icon(
+                    onPressed: () {
+                      context.read<ProductProvider>().loadProducts();
+                      context.read<SalesProvider>().loadSales();
+                      context.read<FinanceProvider>().initialize();
+                      context.read<ClientProvider>().loadClients();
+                      context.read<ActivityProvider>().loadActivities();
+                    },
+                    icon: const Icon(Icons.refresh, size: 20),
+                    label: const Text('Actualiser'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black87,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

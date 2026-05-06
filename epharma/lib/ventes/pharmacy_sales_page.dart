@@ -295,97 +295,189 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         child: Column(
           children: [
             if (!isMobile) // Header only for desktop
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
-                ),
-                child: Row(
-                  children: [
-                    // Left: Title
-                    Expanded(
-                      flex: 3,
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth < 1100) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade200),
+                        ),
+                      ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Text(
                             'POINT DE VENTE',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Gérez vos ventes quotidiennes et ordonnances',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Middle: Search
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 400,
-                            child: TextField(
-                              controller: _searchController,
-                              onChanged: _filterProducts,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.search, size: 20),
-                                hintText: 'Rechercher un produit, catégorie ou ID...',
-                                hintStyle: const TextStyle(fontSize: 14),
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 12,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
-                                ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: _searchController,
+                            onChanged: _filterProducts,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.search, size: 20),
+                              hintText: 'Rechercher un produit...',
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
                               ),
                             ),
                           ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildHeaderBtn(
+                                  label: 'Vente',
+                                  icon: Icons.shopping_bag,
+                                  isActive: !_showSalesHistory,
+                                  onPressed: () => setState(
+                                      () => _showSalesHistory = false),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _buildHeaderBtn(
+                                  label: 'Historique',
+                                  icon: Icons.history,
+                                  isActive: _showSalesHistory,
+                                  onPressed: () => setState(
+                                      () => _showSalesHistory = true),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ),
+                    );
+                  }
 
-                    // Right: Actions
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          _buildHeaderBtn(
-                            label: 'Nouvelle Vente', 
-                            icon: Icons.shopping_bag, 
-                            isActive: !_showSalesHistory, 
-                            onPressed: () => setState(() => _showSalesHistory = false)
-                          ),
-                          const SizedBox(width: 8),
-                          _buildHeaderBtn(
-                            label: 'Historique', 
-                            icon: Icons.history, 
-                            isActive: _showSalesHistory, 
-                            onPressed: () => setState(() => _showSalesHistory = true)
-                          ),
-                        ],
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade200),
                       ),
                     ),
-                  ],
-                ),
+                    child: Row(
+                      children: [
+                        // Left: Title
+                        Expanded(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'POINT DE VENTE',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Gérez vos ventes quotidiennes et ordonnances',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Middle: Search
+                        Expanded(
+                          flex: 4,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 400),
+                                  child: TextField(
+                                    controller: _searchController,
+                                    onChanged: _filterProducts,
+                                    decoration: InputDecoration(
+                                      prefixIcon:
+                                          const Icon(Icons.search, size: 20),
+                                      hintText:
+                                          'Rechercher un produit, catégorie ou ID...',
+                                      hintStyle: const TextStyle(fontSize: 14),
+                                      isDense: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 12,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Right: Actions
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              _buildHeaderBtn(
+                                label: 'Nouvelle Vente',
+                                icon: Icons.shopping_bag,
+                                isActive: !_showSalesHistory,
+                                onPressed: () =>
+                                    setState(() => _showSalesHistory = false),
+                              ),
+                              const SizedBox(width: 8),
+                              _buildHeaderBtn(
+                                label: 'Historique',
+                                icon: Icons.history,
+                                isActive: _showSalesHistory,
+                                onPressed: () =>
+                                    setState(() => _showSalesHistory = true),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             // Products grid
             Expanded(

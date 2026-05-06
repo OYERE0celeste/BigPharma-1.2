@@ -2,8 +2,8 @@ require("dotenv").config();
 
 const config = {
   mongodb: {
-    url: process.env.MONGODB_URI || "mongodb://localhost:27017/bigpharma",
-    databaseName: process.env.DB_NAME || "bigpharma",
+    url: process.env.MONGODB_URI || "mongodb://localhost:27017/BigPharmaDB",
+    databaseName: process.env.DB_NAME || "BigPharmaDB",
     options: {
       // connectTimeoutMS: 3600000,
     }
