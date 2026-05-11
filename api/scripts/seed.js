@@ -57,7 +57,7 @@ const seedDatabase = async () => {
         category: 'Antibiotique',
         stockQuantity: 50,
         companyId: company._id,
-        prescriptionRequired: true
+
       }
     ]);
 

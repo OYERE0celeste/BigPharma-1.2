@@ -7,7 +7,6 @@ const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
 const Sentry = require("@sentry/node");
 const mongoSanitize = require("express-mongo-sanitize");
-const xss = require("xss-clean");
 const cookieParser = require("cookie-parser");
 const compression = require("compression");
 const swaggerUi = require("swagger-ui-express");
@@ -105,8 +104,11 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 
-// Custom sanitization function to avoid Express 5 read-only property issues
-// In Express 5, req.query is a getter, so we mutate it in place rather than reassigning.
+// Security Middlewares
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// In Express 5, req.query is a getter. express-mongo-sanitize middleware attempts to reassign it,
+// which throws a TypeError. We manually sanitize the objects instead.
 app.use((req, res, next) => {
   if (req.body) mongoSanitize.sanitize(req.body);
   if (req.query) mongoSanitize.sanitize(req.query);
@@ -155,12 +157,10 @@ apiV1.use(tenantEnforcer);
 apiV1.use("/users", require("./routes/users"));
 apiV1.use("/clients", require("./routes/clients"));
 apiV1.use("/orders", require("./routes/orders"));
-apiV1.use("/prescriptions", require("./routes/prescriptions"));
 apiV1.use("/sales", require("./routes/sales"));
 apiV1.use("/finance", require("./routes/finance"));
 apiV1.use("/activities", require("./routes/activityLogs"));
 apiV1.use("/activityLogs", require("./routes/activityLogs"));
-apiV1.use("/consultations", require("./routes/consultations"));
 apiV1.use("/QuestionsClients", require("./routes/QuestionsClients"));
 apiV1.use("/dashboard", require("./routes/dashboard"));
 apiV1.use("/mouvements", require("./routes/mouvements"));

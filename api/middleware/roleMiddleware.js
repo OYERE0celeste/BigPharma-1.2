@@ -4,10 +4,10 @@ const { failure } = require("../utils/response");
  * Middleware to check if user has admin role
  */
 const isAdmin = (req, res, next) => {
-  if (!req.user || req.user.role !== "admin") {
+  if (!req.user || req.user.role !== "administrateur") {
     return failure(res, {
       status: 403,
-      message: "Accès refusé : Admin uniquement",
+      message: "Accès refusé : Administrateur uniquement",
     });
   }
   next();
@@ -30,7 +30,7 @@ const isClient = (req, res, next) => {
  * Middleware to check if user has any of the pharmacy roles (admin, pharmacien, etc.)
  */
 const isPharmacyStaff = (req, res, next) => {
-  const pharmacyRoles = ["admin", "pharmacien", "assistant", "caissier"];
+  const pharmacyRoles = ["administrateur", "pharmacien", "gestionnaire de stock", "agent de vente", "personnel autorisé"];
   if (!req.user || !pharmacyRoles.includes(req.user.role)) {
     return failure(res, {
       status: 403,

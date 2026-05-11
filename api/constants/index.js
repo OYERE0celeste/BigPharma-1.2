@@ -2,10 +2,11 @@
  * Role Constants
  */
 exports.ROLES = {
-  ADMIN: "admin",
+  ADMIN: "administrateur",
   PHARMACIST: "pharmacien",
-  ASSISTANT: "assistant",
-  CASHIER: "caissier",
+  STOCK_MANAGER: "gestionnaire de stock",
+  SALES_AGENT: "agent de vente",
+  AUTHORIZED_STAFF: "personnel autorisé",
   CLIENT: "client",
 };
 

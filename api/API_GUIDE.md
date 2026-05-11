@@ -7,7 +7,7 @@ The BigPharma API is a Node.js/Express server that provides endpoints for managi
 - Product Management
 - Client Management  
 - Orders
-- Prescriptions
+
 - Sales
 - Finance
 - Activity Logging
@@ -190,7 +190,7 @@ Content-Type: application/json
   "sellingPrice": 2.00,
   "lowStockThreshold": 20,
   "minStockLevel": 10,
-  "prescriptionRequired": false,
+
   "lots": [
     {
       "lotNumber": "LOT001",
@@ -394,7 +394,7 @@ Authentication endpoints are rate-limited to 100 requests per 15 minutes per IP.
 - description: String
 - purchasePrice: Number
 - sellingPrice: Number
-- prescriptionRequired: Boolean
+
 - stockQuantity: Number
 - lots: [Lot]
 - companyId: ObjectId

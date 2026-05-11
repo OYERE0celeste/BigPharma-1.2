@@ -23,7 +23,7 @@ const ProductSchema = new mongoose.Schema(
     category: { type: String, required: true, trim: true },
     description: { type: String, trim: true, maxlength: 500 },
     barcode: { type: String, trim: true, maxlength: 50 },
-    prescriptionRequired: { type: Boolean, default: false },
+
     purchasePrice: { type: Number, required: true, min: 0 },
     sellingPrice: { type: Number, required: true, min: 0 },
     lowStockThreshold: { type: Number, required: true, min: 0, default: 10 },

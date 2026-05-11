@@ -1,4 +1,4 @@
-﻿const requiredInNonTest = ["JWT_SECRET", "MONGODB_URI"];
+const requiredInNonTest = ["JWT_SECRET", "MONGODB_URI"];
 
 function ensureEnv() {
   const nodeEnv = process.env.NODE_ENV || "development";

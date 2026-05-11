@@ -12,11 +12,11 @@ const ActivityLogSchema = new mongoose.Schema(
       enum: [
         "client",
         "product",
-        "consultation",
+
         "supplier",
         "sale",
         "user",
-        "prescription",
+
         "finance",
         "system",
         "order",
@@ -79,6 +79,8 @@ const ActivityLogSchema = new mongoose.Schema(
       ref: "Company",
       required: [true, "La société est requise"],
     },
+    ipAddress: String,
+    userAgent: String,
   },
   {
     timestamps: { createdAt: true, updatedAt: false },

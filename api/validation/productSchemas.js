@@ -14,7 +14,7 @@ exports.createProductSchema = Joi.object({
   category: Joi.string().required(),
   description: Joi.string().allow(""),
   barcode: Joi.string().allow(""),
-  prescriptionRequired: Joi.boolean(),
+
   purchasePrice: Joi.number().min(0).required(),
   sellingPrice: Joi.number().min(0).required(),
   lowStockThreshold: Joi.number().min(0),
@@ -26,7 +26,7 @@ exports.updateProductSchema = Joi.object({
   category: Joi.string(),
   description: Joi.string().allow(""),
   barcode: Joi.string().allow(""),
-  prescriptionRequired: Joi.boolean(),
+
   purchasePrice: Joi.number().min(0),
   sellingPrice: Joi.number().min(0),
   lowStockThreshold: Joi.number().min(0),

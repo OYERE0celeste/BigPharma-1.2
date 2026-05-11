@@ -10,7 +10,7 @@ const buildProductPayload = (body = {}) => {
     "category",
     "description",
     "barcode",
-    "prescriptionRequired",
+
     "purchasePrice",
     "sellingPrice",
     "lowStockThreshold",
@@ -227,7 +227,16 @@ exports.createProduct = async (req, res, next) => {
           (isNew ? product.stockQuantity : product.stockQuantity - beforeTotal) *
           product.purchasePrice,
         status: "completed",
-      });
+      }, req);
+
+      if (global.io) {
+        global.io.to(req.user.companyId.toString()).emit("stock-update", {
+          productId: product._id,
+          name: product.name,
+          newQuantity: product.stockQuantity,
+          type: isNew ? "create" : "update"
+        });
+      }
 
       return { product, isNew };
     });
@@ -268,7 +277,16 @@ exports.updateProduct = async (req, res, next) => {
       description: `Produit mis à jour: ${product.name}`,
       companyId: req.user.companyId,
       user: req.user.fullName,
-    });
+    }, req);
+
+    if (global.io) {
+      global.io.to(req.user.companyId.toString()).emit("stock-update", {
+        productId: product._id,
+        name: product.name,
+        newQuantity: product.stockQuantity,
+        type: "update"
+      });
+    }
 
     return success(res, { data: product });
   } catch (error) {
@@ -320,7 +338,7 @@ exports.updateStock = async (req, res, next) => {
       description: `Stock mis à jour pour ${product.name}: ${product.stockQuantity} unités`,
       companyId: req.user.companyId,
       user: req.user.fullName,
-    });
+    }, req);
 
     return success(res, { data: product });
   } catch (error) {
@@ -354,9 +372,53 @@ exports.deleteProduct = async (req, res, next) => {
       description: `Produit supprimé (désactivé): ${product.name}`,
       companyId: req.user.companyId,
       user: req.user.fullName,
-    });
+    }, req);
+
+    if (global.io) {
+      global.io.to(req.user.companyId.toString()).emit("stock-update", {
+        productId: product._id,
+        name: product.name,
+        type: "delete"
+      });
+    }
 
     return success(res, { data: { message: "Produit supprimé avec succès" } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getStockAlerts = async (req, res, next) => {
+  try {
+    const { threshold = 10 } = req.query;
+    const lowStock = await Product.find({
+      companyId: req.user.companyId,
+      isActive: true,
+      stockQuantity: { $lte: parseInt(threshold) }
+    });
+
+    const now = new Date();
+    const threeMonthsFromNow = new Date();
+    threeMonthsFromNow.setMonth(now.getMonth() + 3);
+
+    // This is a bit complex due to the lots nested array
+    const expiring = await Product.find({
+      companyId: req.user.companyId,
+      isActive: true,
+      "lots.expirationDate": { $lte: threeMonthsFromNow }
+    });
+
+    return success(res, {
+      data: {
+        lowStock,
+        expiringCount: expiring.length,
+        expiringProducts: expiring.map(p => ({
+          _id: p._id,
+          name: p.name,
+          lots: p.lots.filter(l => new Date(l.expirationDate) <= threeMonthsFromNow)
+        }))
+      }
+    });
   } catch (error) {
     next(error);
   }

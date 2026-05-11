@@ -1,4 +1,4 @@
-﻿const request = require("supertest");
+const request = require("supertest");
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server-core");
 
@@ -128,7 +128,7 @@ describe("Auth and profile integration", () => {
         fullName: "Assistant One",
         email: `assistant${Date.now()}@example.com`,
         password: "Password123",
-        role: "assistant",
+        role: "gestionnaire de stock",
       })
       .expect(201);
 
@@ -149,7 +149,7 @@ describe("Auth and profile integration", () => {
         fullName: "Blocked",
         email: `blocked${Date.now()}@example.com`,
         password: "Password123",
-        role: "assistant",
+        role: "gestionnaire de stock",
       })
       .expect(403);
   });
@@ -163,7 +163,6 @@ describe("Mounted routes", () => {
       "/api/activityLogs",
       "/api/QuestionsClients",
       "/api/dashboard/summary",
-      "/api/consultations",
       "/api/settings/profile",
     ];
 
@@ -174,7 +173,7 @@ describe("Mounted routes", () => {
     }
   });
 
-  it("allows authenticated access to finance/activity/consultations aliases", async () => {
+  it("allows authenticated access to finance and activity aliases", async () => {
     const ctx = await registerAndLogin();
 
     const financeRes = await request(app)

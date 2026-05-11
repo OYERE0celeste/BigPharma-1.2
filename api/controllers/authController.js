@@ -68,7 +68,7 @@ exports.register = async (req, res, next) => {
       fullName,
       email: adminEmail.toLowerCase(),
       passwordHash: password,
-      role: "admin",
+      role: "administrateur",
       companyId: company._id,
       permissions: { products: true, clients: true, sales: true, finance: true, users: true, settings: true },
     });

@@ -1,4 +1,4 @@
-﻿const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const User = require("./models/User");
 const Client = require("./models/client");
@@ -27,7 +27,7 @@ const runTest = async () => {
       fullName: "Test Admin",
       email: `test_admin_${Date.now()}@example.com`,
       passwordHash: "dummyhash",
-      role: "admin",
+      role: "administrateur",
       companyId: testCompany._id,
     });
     await testUser.save();
@@ -117,9 +117,9 @@ const runTest = async () => {
     console.log("   Stock after validation:", updatedProduct.stockQuantity, "(Expected: 90)");
 
     if (updatedProduct.stockQuantity === 90) {
-      console.log("âœ… Stock reduction SUCCESS");
+      console.log("✅ Stock reduction SUCCESS");
     } else {
-      console.log("âŒ Stock reduction FAILED");
+      console.log("❌ Stock reduction FAILED");
     }
 
     // Cleanup

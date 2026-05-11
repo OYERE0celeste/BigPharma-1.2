@@ -16,6 +16,7 @@ router.use(authMiddleware);
 
 // Pharmacy staff routes
 router.patch("/:id/stock", isPharmacyStaff, productController.updateStock);
+router.get("/alerts/status", isPharmacyStaff, productController.getStockAlerts);
 router.get("/export/inventory", isPharmacyStaff, productController.exportInventory);
 
 // Admin only routes

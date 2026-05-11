@@ -98,15 +98,7 @@ const OrderSchema = new mongoose.Schema(
       enum: ["en_attente", "en_preparation", "pret_pour_recuperation", "validee", "annulee"],
       default: "en_attente",
     },
-    prescriptionRequired: {
-      type: Boolean,
-      default: false,
-    },
-    prescriptionId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Prescription",
-      default: null,
-    },
+
     stockAllocations: {
       type: [OrderAllocationSchema],
       default: [],
@@ -115,6 +107,16 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 500,
+    },
+    invoiceNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    invoiceDate: Date,
+    collectionCode: {
+      type: String,
+      index: true,
     },
   },
   {

@@ -1,4 +1,4 @@
-﻿const { failure } = require("../utils/response");
+const { failure } = require("../utils/response");
 
 const authorizeRoles = (roles) => {
   return (req, res, next) => {

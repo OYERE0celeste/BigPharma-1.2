@@ -1,7 +1,7 @@
 const Client = require("../models/client");
 const Order = require("../models/order");
 const OrderTimeline = require("../models/orderTimeline");
-const Prescription = require("../models/prescription");
+
 const Product = require("../models/product");
 const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
@@ -55,15 +55,15 @@ const buildOrdersQuery = (query = {}) =>
   Order.find(query)
     .populate("userId", "fullName email phone")
     .populate("clientId", "fullName email phone address userId")
-    .populate("prescriptionId", "status imageUrl validatedAt pharmacyNotes")
-    .populate("products.productId", "name sellingPrice stockQuantity prescriptionRequired");
+
+    .populate("products.productId", "name sellingPrice stockQuantity");
 
 const buildOrderQuery = (query = {}) =>
   Order.findOne(query)
     .populate("userId", "fullName email phone")
     .populate("clientId", "fullName email phone address userId")
-    .populate("prescriptionId", "status imageUrl validatedAt pharmacyNotes")
-    .populate("products.productId", "name sellingPrice stockQuantity prescriptionRequired");
+
+    .populate("products.productId", "name sellingPrice stockQuantity");
 
 const availableStockForProduct = (product) =>
   (product.lots || []).reduce((sum, lot) => sum + (lot.quantityAvailable || 0), 0);
@@ -131,43 +131,7 @@ const resolveClientForUser = async (user) =>
     companyId: user.companyId,
   });
 
-const resolvePrescriptionForOrder = async ({
-  prescriptionId,
-  userId,
-  companyId,
-  prescriptionRequired,
-}) => {
-  if (!prescriptionRequired) {
-    return null;
-  }
 
-  if (prescriptionId) {
-    const providedPrescription = await Prescription.findOne({
-      _id: prescriptionId,
-      client: userId,
-      companyId,
-      status: "validated",
-    });
-
-    if (!providedPrescription) {
-      throw new Error("Ordonnance invalide ou non validée");
-    }
-
-    return providedPrescription;
-  }
-
-  const latestValidatedPrescription = await Prescription.findOne({
-    client: userId,
-    companyId,
-    status: "validated",
-  }).sort({ validatedAt: -1, createdAt: -1 });
-
-  if (!latestValidatedPrescription) {
-    throw new Error("Cette commande contient des produits nécessitant une ordonnance valide");
-  }
-
-  return latestValidatedPrescription;
-};
 
 const computeOrderStats = async (companyId) => {
   const stats = await Promise.all(
@@ -253,7 +217,7 @@ exports.createOrder = async (req, res, next) => {
     const productsById = new Map(products.map((product) => [String(product._id), product]));
 
     let totalPrice = 0;
-    let prescriptionRequired = false;
+
     const orderProducts = [];
 
     for (const requestedProduct of normalizedProducts) {
@@ -274,7 +238,7 @@ exports.createOrder = async (req, res, next) => {
       }
 
       totalPrice += product.sellingPrice * requestedProduct.quantity;
-      prescriptionRequired = prescriptionRequired || Boolean(product.prescriptionRequired);
+
 
       orderProducts.push({
         productId: product._id,
@@ -284,20 +248,7 @@ exports.createOrder = async (req, res, next) => {
       });
     }
 
-    let prescription = null;
-    try {
-      prescription = await resolvePrescriptionForOrder({
-        prescriptionId: req.body.prescriptionId,
-        userId: req.user._id,
-        companyId: req.user.companyId,
-        prescriptionRequired,
-      });
-    } catch (error) {
-      return failure(res, {
-        status: 400,
-        message: error.message,
-      });
-    }
+
 
     const order = await Order.create({
       orderNumber: await generateOrderNumber(),
@@ -307,9 +258,11 @@ exports.createOrder = async (req, res, next) => {
       products: orderProducts,
       totalPrice,
       status: "en_attente",
-      prescriptionRequired,
-      prescriptionId: prescription?._id || null,
+
       notes: req.body.notes,
+      collectionCode: Math.floor(100000 + Math.random() * 900000).toString(),
+      invoiceNumber: `FACT-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      invoiceDate: new Date(),
     });
 
     await OrderTimeline.create({
@@ -338,9 +291,13 @@ exports.createOrder = async (req, res, next) => {
         unitPrice: p.price,
         totalPrice: p.price * p.quantity,
       })),
-    });
+    }, req);
 
     const savedOrder = await buildOrderQuery({ _id: order._id });
+
+    if (global.io) {
+      global.io.to(req.user.companyId.toString()).emit("new-order", savedOrder);
+    }
 
     return success(res, {
       status: 201,
@@ -626,9 +583,17 @@ exports.updateOrderStatus = async (req, res, next) => {
         unitPrice: p.price,
         totalPrice: p.price * p.quantity,
       })),
-    });
+    }, req);
 
     const updatedOrder = await buildOrderQuery({ _id: order._id });
+
+    if (global.io) {
+      // Notify staff
+      global.io.to(req.user.companyId.toString()).emit("order-status-update", updatedOrder);
+      // Notify the specific client (if they have their own room or just via company room)
+      // For now, company room is enough for staff dashboards. 
+      // Individual client notification would use a room named by their userId.
+    }
 
     return success(res, {
       data: updatedOrder,
@@ -670,6 +635,57 @@ exports.exportOrders = async (req, res, next) => {
     res.header("Content-Type", "text/csv");
     res.attachment(`orders_export_${Date.now()}.csv`);
     return res.send(csv);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getOrderInvoice = async (req, res, next) => {
+  try {
+    const order = await buildOrderQuery({ _id: req.params.id });
+
+    if (!order) {
+      return failure(res, {
+        status: 404,
+        message: "Commande introuvable",
+      });
+    }
+
+    // Security check: only the owner or staff can see the invoice
+    if (req.user.role === "client" && order.userId.toString() !== req.user._id.toString()) {
+      return failure(res, {
+        status: 403,
+        message: "Accès refusé",
+      });
+    }
+
+    const invoiceData = {
+      invoiceNumber: order.invoiceNumber,
+      invoiceDate: order.invoiceDate || order.createdAt,
+      orderNumber: order.orderNumber,
+      collectionCode: order.collectionCode,
+      client: {
+        name: order.clientId.fullName,
+        email: order.clientId.email,
+        phone: order.clientId.phone,
+        address: order.clientId.address,
+      },
+      pharmacy: {
+        name: "BigPharma Pharmacy", // Should come from Company model
+        address: "Avenue de la Santé, Cotonou, Bénin",
+        phone: "+229 00 00 00 00",
+      },
+      items: order.products.map((p) => ({
+        name: p.name,
+        price: p.price,
+        quantity: p.quantity,
+        total: p.price * p.quantity,
+      })),
+      totalAmount: order.totalPrice,
+      status: order.status,
+    };
+
+    return success(res, { data: invoiceData });
   } catch (error) {
     next(error);
   }

@@ -1,4 +1,4 @@
-﻿const validate = (schema, property = "body") => {
+const validate = (schema, property = "body") => {
   return async (req, res, next) => {
     try {
       const value = await schema.validateAsync(req[property], {

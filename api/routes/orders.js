@@ -9,6 +9,7 @@ router.use(authMiddleware);
 router.post("/", isClient, orderController.createOrder);
 router.get("/my", isClient, orderController.getMyOrders);
 router.get("/:id", orderController.getOrderById);
+router.get("/:id/invoice", orderController.getOrderInvoice);
 
 router.use(isPharmacyStaff);
 

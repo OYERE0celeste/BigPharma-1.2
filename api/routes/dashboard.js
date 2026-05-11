@@ -3,9 +3,10 @@ const router = express.Router();
 const Client = require("../models/client");
 const Supplier = require("../models/supplier");
 const Product = require("../models/product");
-const Consultation = require("../models/consultation");
+
 const Sale = require("../models/sale");
 const ActivityLog = require("../models/activityLog");
+const QuestionClient = require("../models/support"); // Adjust path if needed
 const cache = require("../utils/cache");
 
 // GET /api/dashboard/summary
@@ -31,7 +32,6 @@ router.get("/summary", async (req, res, next) => {
       totalClients,
       totalSuppliers,
       totalProducts,
-      totalConsultations,
       totalSales,
       productsLowStock,
       productsOutOfStock,
@@ -39,13 +39,12 @@ router.get("/summary", async (req, res, next) => {
       productsNearExpiration,
       activitiesToday,
       newClientsToday,
-      newConsultationsToday,
       todaySalesRevenue,
+      pendingQuestions,
     ] = await Promise.all([
       Client.countDocuments(companyQuery),
       Supplier.countDocuments(companyQuery),
       Product.countDocuments({ ...companyQuery, isActive: true }),
-      Consultation.countDocuments(companyQuery),
       Sale.countDocuments({ ...companyQuery, status: "active" }),
       Product.countDocuments({
         ...companyQuery,
@@ -71,23 +70,17 @@ router.get("/summary", async (req, res, next) => {
         actionType: "create",
         createdAt: { $gte: startOfToday },
       }),
-      ActivityLog.countDocuments({
-        ...companyQuery,
-        entityType: "consultation",
-        actionType: "create",
-        createdAt: { $gte: startOfToday },
-      }),
       Sale.aggregate([
         { $match: { ...companyQuery, saleDate: { $gte: startOfToday }, status: "active" } },
         { $group: { _id: null, total: { $sum: "$total" } } },
       ]).then((result) => result[0]?.total || 0),
+      QuestionClient.countDocuments({ ...companyQuery, status: { $ne: "répondu" } }),
     ]);
 
     const resultData = {
       totalClients,
       totalSuppliers,
       totalProducts,
-      totalConsultations,
       totalSales,
       productsLowStock,
       productsOutOfStock,
@@ -95,8 +88,8 @@ router.get("/summary", async (req, res, next) => {
       productsNearExpiration,
       activitiesToday,
       newClientsToday,
-      newConsultationsToday,
       todaySalesRevenue,
+      pendingQuestions,
     };
 
     // 2. Save to cache (Short lived: 5 minutes)

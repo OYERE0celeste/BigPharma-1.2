@@ -222,7 +222,7 @@ npm run test:api
 - **orders**: Store customer orders
 - **companies**: Store pharmacy company information
 - **sales**: Store completed sales
-- **prescriptions**: Store prescriptions
+
 - And more...
 
 ### Sample Query (in MongoDB Compass)

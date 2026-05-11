@@ -19,6 +19,16 @@
             "date": 1777966638771,
             "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-05-05.log",
             "hash": "ac231983f057f233bc2b49654205f02664d4b6d7319453b272228338fed39aad"
+        },
+        {
+            "date": 1778252415163,
+            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-05-08.log",
+            "hash": "23e0dc806fd295128ef356b0fab84d9b0e6020dcb49e232b64032c216d9f3595"
+        },
+        {
+            "date": 1778489913125,
+            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-05-11.log",
+            "hash": "ab0089d98e811d108a48a7323516d452aac23e8860821d034c1b087b89d4bd7f"
         }
     ],
     "hashType": "sha256"
