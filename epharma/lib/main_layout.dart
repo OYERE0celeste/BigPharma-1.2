@@ -17,6 +17,27 @@ import 'support/pharmacy_support_page.dart';
 // MAIN LAYOUT WIDGET - Enveloppe toutes les pages
 // =====================================================================
 
+typedef SectionNavigationCallback = void Function(String section);
+
+class MainLayoutScope extends InheritedWidget {
+  final SectionNavigationCallback navigateToSection;
+
+  const MainLayoutScope({
+    super.key,
+    required this.navigateToSection,
+    required super.child,
+  });
+
+  static MainLayoutScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<MainLayoutScope>();
+  }
+
+  @override
+  bool updateShouldNotify(MainLayoutScope oldWidget) {
+    return oldWidget.navigateToSection != navigateToSection;
+  }
+}
+
 class MainLayout extends StatefulWidget {
   final String pageTitle;
   final Widget child;
@@ -72,32 +93,44 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // ===== MAIN COLUMN (NAVBAR + FULL-WIDTH CONTENT) =====
-          Column(
-            children: [
-              GlobalNavbar(
-                onMenuToggle: _toggleSidebar,
-                isSidebarOpen: _isSidebarOpen,
-                onProfileAction: (action) {
-                  if (action == 'activity') {
-                    _navigateTo('Activity', const PharmacyActivityRegisterPage());
-                  } else if (action == 'profile') {
-                    // Profile is currently handled by showDialog in Navbar, 
-                    // but we could also navigate if needed.
-                  }
-                },
-              ),
-              Expanded(
-                child: Container(color: Colors.grey[50], child: _currentPage),
-              ),
-            ],
-          ),
-
-          // ===== OVERLAY SIDEBAR + BLUR (TOUTES LARGEURS) =====
-          _buildOverlaySidebarWithBlur(),
-        ],
+      body: MainLayoutScope(
+        navigateToSection: _navigateToSection,
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                GlobalNavbar(
+                  onMenuToggle: _toggleSidebar,
+                  isSidebarOpen: _isSidebarOpen,
+                  onProfileAction: (action) {
+                    if (action == 'activity') {
+                      _navigateToSection('Activity');
+                    }
+                  },
+                  onNotificationNavigate: (type, data) {
+                    switch (type) {
+                      case 'order':
+                        _navigateToSection('Commandes');
+                        break;
+                      case 'support':
+                        _navigateToSection('Support');
+                        break;
+                      case 'stock':
+                        _navigateToSection('Stock');
+                        break;
+                      default:
+                        _navigateToSection('Dashboard');
+                    }
+                  },
+                ),
+                Expanded(
+                  child: Container(color: Colors.grey[50], child: _currentPage),
+                ),
+              ],
+            ),
+            _buildOverlaySidebarWithBlur(),
+          ],
+        ),
       ),
     );
   }
@@ -112,31 +145,59 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     });
   }
 
-  Map<String, VoidCallback> _buildNavigationCallbacks() {
-    return {
-      'Dashboard': () =>
-          _navigateTo('Dashboard', const PharmacyDashboardPage()),
-      'Stock': () => _navigateTo('Stock', const PharmacyProductsPage()),
-      'Sales': () => _navigateTo('Sales', const PharmacySalesPage()),
-      'Commandes': () => _navigateTo('Commandes', const PharmacyOrdersPage()),
-      'Clients': () => _navigateTo('Clients', const PharmacyClientsPage()),
-      'Activity': () =>
-          _navigateTo('Activity', const PharmacyActivityRegisterPage()),
-      'Consultations': () => _navigateTo(
-        'Consultations',
-        const FeatureNotAvailablePage(title: 'Consultations'),
-      ),
-      'Finances': () => _navigateTo('Finances', const PharmacyFinancePage()),
-      'Support': () => _navigateTo('Support', const PharmacySupportPage()),
-      'Users': () => _navigateTo('Users', const UserManagementDialog()),
-      'Paramètres': () {
+  void _navigateToSection(String section) {
+    switch (section) {
+      case 'Dashboard':
+        _navigateTo('Dashboard', const PharmacyDashboardPage());
+        break;
+      case 'Stock':
+        _navigateTo('Stock', const PharmacyProductsPage());
+        break;
+      case 'Sales':
+        _navigateTo('Sales', const PharmacySalesPage());
+        break;
+      case 'Commandes':
+        _navigateTo('Commandes', const PharmacyOrdersPage());
+        break;
+      case 'Clients':
+        _navigateTo('Clients', const PharmacyClientsPage());
+        break;
+      case 'Activity':
+        _navigateTo('Activity', const PharmacyActivityRegisterPage());
+        break;
+      case 'Finances':
+        _navigateTo('Finances', const PharmacyFinancePage());
+        break;
+      case 'Support':
+        _navigateTo('Support', const PharmacySupportPage());
+        break;
+      case 'Users':
+        _navigateTo('Users', const UserManagementDialog());
+        break;
+      case 'Paramètres':
         if (_isSidebarOpen) _toggleSidebar();
         SettingsDialog.show(context);
-      },
+        break;
+      default:
+        _navigateTo('Dashboard', const PharmacyDashboardPage());
+    }
+  }
+
+  Map<String, VoidCallback> _buildNavigationCallbacks() {
+    return {
+      'Dashboard': () => _navigateToSection('Dashboard'),
+      'Stock': () => _navigateToSection('Stock'),
+      'Sales': () => _navigateToSection('Sales'),
+      'Commandes': () => _navigateToSection('Commandes'),
+      'Clients': () => _navigateToSection('Clients'),
+      'Activity': () => _navigateToSection('Activity'),
+      'Finances': () => _navigateToSection('Finances'),
+      'Support': () => _navigateToSection('Support'),
+      'Users': () => _navigateToSection('Users'),
+      'Paramètres': () => _navigateToSection('Paramètres'),
     };
   }
 
-  /// Overlay sidebar for tablet/mobile with blur + dark background
   Widget _buildOverlaySidebarWithBlur() {
     final size = MediaQuery.of(context).size;
     const navbarHeight = 70.0;
@@ -148,7 +209,6 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 250),
         child: Stack(
           children: [
-            // Darkened, blurred background (seulement sous la barre du haut)
             GestureDetector(
               onTap: _toggleSidebar,
               child: BackdropFilter(
@@ -161,11 +221,10 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            // Sliding sidebar
             AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              top: navbarHeight, // sous la navbar
+              top: navbarHeight,
               bottom: 0,
               left: _isSidebarOpen ? 0 : -260,
               child: SizedBox(
@@ -244,7 +303,7 @@ class FeatureNotAvailablePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Nous travaillons sur cette fonctionnalité.',
+            'Nous travaillons sur cette fonctionnalitÃ©.',
             style: TextStyle(fontSize: 16, color: Colors.grey[500]),
           ),
         ],

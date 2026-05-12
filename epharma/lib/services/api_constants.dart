@@ -8,7 +8,7 @@ class ApiConstants {
 
     if (kIsWeb) {
       if (Uri.base.host == 'localhost' || Uri.base.host == '127.0.0.1') {
-        return 'http://127.0.0.1:5000/api';
+        return 'http://localhost:5000/api';
       }
       return '${Uri.base.origin}/api';
     }
@@ -17,7 +17,7 @@ class ApiConstants {
       return 'http://10.0.2.2:5000/api';
     }
 
-    return 'http://127.0.0.1:5000/api';
+    return 'http://localhost:5000/api';
   }
 
   static String get login => '$baseUrl/auth/login';
@@ -34,7 +34,7 @@ class ApiConstants {
   static String get settingsRestore => '$baseUrl/settings/restore';
   static String get settingsExport => '$baseUrl/settings/export';
   static String get settingsImport => '$baseUrl/settings/import';
-  static String get consultations => '$baseUrl/consultations';
+
   static String get questionsClients => '$baseUrl/QuestionsClients';
   static String get mouvements => '$baseUrl/mouvements';
 

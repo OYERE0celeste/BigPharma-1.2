@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../services/auth_provider.dart';
-import '../home.dart';
+import 'package:client_app/services/auth_provider.dart';
+import 'home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,8 +18,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _addressController = TextEditingController();
-  final String _companyId =
-      '661000000000000000000001'; // Remplacez par l'ID de la société réelle si disponible
+  final _companyIdController = TextEditingController(
+    text: '69e359c9d74117580fd1e1ce',
+  ); // Real Company ID (aa)
 
   DateTime? _selectedDate;
   String _selectedGender = 'male';
@@ -51,13 +53,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Nom complet',
                 _fullNameController,
                 Icons.person_outline,
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return 'Ce champ est requis';
-                  if (value.length < 2)
-                    return 'Le nom doit contenir au moins 2 caractères';
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
@@ -66,14 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 _emailController,
                 Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return 'Ce champ est requis';
-                  final emailRegex = RegExp(r"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-                  if (!emailRegex.hasMatch(value))
-                    return 'Veuillez saisir un email valide';
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
@@ -82,14 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 _phoneController,
                 Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return 'Ce champ est requis';
-                  final phoneRegex = RegExp(r'^[0-9]{8,15}$');
-                  if (!phoneRegex.hasMatch(value))
-                    return 'Le téléphone doit contenir 8 à 15 chiffres';
-                  return null;
-                },
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 16),
 
@@ -98,13 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 _passwordController,
                 Icons.lock_outline,
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return 'Ce champ est requis';
-                  if (value.length < 6)
-                    return 'Le mot de passe doit contenir au moins 6 caractères';
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
@@ -112,7 +85,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Adresse',
                 _addressController,
                 Icons.location_on_outlined,
-                validator: (_) => null,
               ),
               const SizedBox(height: 16),
 
@@ -224,20 +196,19 @@ class _RegisterPageState extends State<RegisterPage> {
     IconData icon, {
     bool obscureText = false,
     TextInputType? keyboardType,
-    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      validator:
-          validator ??
-          (v) => v == null || v.isEmpty ? 'Ce champ est requis' : null,
+      validator: (v) => v == null || v.isEmpty ? 'Ce champ est requis' : null,
     );
   }
 
@@ -262,7 +233,7 @@ class _RegisterPageState extends State<RegisterPage> {
       dateOfBirth: _selectedDate!.toIso8601String(),
       gender: _selectedGender,
       address: _addressController.text,
-      companyId: _companyId,
+      companyId: _companyIdController.text, // Normally provided by the context
     );
 
     if (result['success']) {

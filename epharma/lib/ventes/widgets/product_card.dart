@@ -53,24 +53,7 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (product.prescriptionRequired)
-                    Container(
-                      margin: const EdgeInsets.only(left: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: kDangerRed, width: 0.5),
-                      ),
-                      child: const Text(
-                        'Rx',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: kDangerRed,
-                        ),
-                      ),
-                    ),
+
                 ],
               ),
               const SizedBox(height: 4),
@@ -126,4 +109,4 @@ class ProductCard extends StatelessWidget {
       ),
     );
   }
-}
+}

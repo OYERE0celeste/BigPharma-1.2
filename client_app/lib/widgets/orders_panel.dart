@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../pages/orders_page.dart';
+import 'package:client_app/pages/orders_page.dart';
 
 class OrdersPanel extends StatelessWidget {
   const OrdersPanel({super.key, required this.primary});

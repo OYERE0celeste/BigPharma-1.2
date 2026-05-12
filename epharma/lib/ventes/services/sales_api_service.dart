@@ -58,7 +58,7 @@ class SalesApiService {
     required double tax,
     required String paymentMethod,
     required double amountReceived,
-    required bool prescriptionVerified,
+
   }) async {
     try {
       final headers = await _authService.getHeaders();
@@ -79,7 +79,7 @@ class SalesApiService {
         'paymentMethod': paymentMethod,
         'amountReceived': amountReceived,
         'changeAmount': change,
-        'prescriptionVerified': prescriptionVerified,
+
         'notes': 'Vente en point de vente',
       };
 

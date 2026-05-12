@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 
 import '../services/auth_service.dart';
 import '../services/settings_service.dart';
@@ -6,6 +6,8 @@ import '../services/settings_service.dart';
 class UserSettings {
   final String fullName;
   final String email;
+  final String phone;
+  final String address;
   final String role;
   final String profileImageUrl;
   final bool twoFactorEnabled;
@@ -15,6 +17,8 @@ class UserSettings {
   UserSettings({
     required this.fullName,
     required this.email,
+    required this.phone,
+    required this.address,
     required this.role,
     required this.profileImageUrl,
     required this.twoFactorEnabled,
@@ -26,6 +30,8 @@ class UserSettings {
     return UserSettings(
       fullName: '',
       email: '',
+      phone: '',
+      address: '',
       role: 'assistant',
       profileImageUrl: '',
       twoFactorEnabled: false,
@@ -42,6 +48,8 @@ class UserSettings {
   UserSettings copyWith({
     String? fullName,
     String? email,
+    String? phone,
+    String? address,
     String? role,
     String? profileImageUrl,
     bool? twoFactorEnabled,
@@ -51,6 +59,8 @@ class UserSettings {
     return UserSettings(
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
+      phone: phone ?? this.phone,
+      address: address ?? this.address,
       role: role ?? this.role,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       twoFactorEnabled: twoFactorEnabled ?? this.twoFactorEnabled,
@@ -145,10 +155,12 @@ class SettingsProvider extends ChangeNotifier {
       }
 
       _settings = _settings.copyWith(
-        fullName: payload['fullName']?.toString() ?? '',
-        email: payload['email']?.toString() ?? '',
-        role: payload['role']?.toString() ?? 'assistant',
-        profileImageUrl: payload['profileImageUrl']?.toString() ?? '',
+        fullName: (payload['fullName'] ?? '').toString(),
+        email: (payload['email'] ?? '').toString(),
+        phone: (payload['phone'] ?? '').toString(),
+        address: (payload['address'] ?? '').toString(),
+        role: (payload['role'] ?? 'assistant').toString(),
+        profileImageUrl: (payload['profileImageUrl'] ?? '').toString(),
         twoFactorEnabled: payload['twoFactorEnabled'] == true,
         permissions: permissions.isEmpty ? _settings.permissions : permissions,
         loginHistory: history,
@@ -158,7 +170,7 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isMockData = true;
-      setError('Erreur lors du chargement des paramètres');
+      setError('Erreur lors du chargement des paramétres');
     } finally {
       setLoading(false);
     }
@@ -167,6 +179,8 @@ class SettingsProvider extends ChangeNotifier {
   Future<bool> updateProfile({
     required String fullName,
     required String email,
+    required String phone,
+    required String address,
     required String role,
   }) async {
     setLoading(true);
@@ -176,22 +190,42 @@ class SettingsProvider extends ChangeNotifier {
       final updated = await _authService.updateProfile(
         fullName: fullName,
         email: email,
-        phoneNumber: '',
+        phone: phone,
+        address: address,
       );
 
       _settings = _settings.copyWith(
         fullName: updated['fullName']?.toString() ?? fullName,
         email: updated['email']?.toString() ?? email,
+        phone: updated['phone']?.toString() ?? phone,
+        address: updated['address']?.toString() ?? address,
         role: role,
       );
       notifyListeners();
       return true;
     } catch (e) {
-      setError('Erreur lors de la mise à jour du profil');
+      setError('Erreur lors de la mise é jour du profil');
       return false;
     } finally {
       setLoading(false);
     }
+  }
+
+  void updateLocalSettings({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String address,
+    required String role,
+  }) {
+    _settings = _settings.copyWith(
+      fullName: fullName,
+      email: email,
+      phone: phone,
+      address: address,
+      role: role,
+    );
+    notifyListeners();
   }
 
   Future<bool> changePassword({
@@ -233,7 +267,7 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      setError('Erreur lors de la mise à jour de la 2FA');
+      setError('Erreur lors de la mise é jour de la 2FA');
       return false;
     } finally {
       setLoading(false);
@@ -256,7 +290,7 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      setError('Erreur lors de la mise à jour des permissions');
+      setError('Erreur lors de la mise é jour des permissions');
       return false;
     } finally {
       setLoading(false);

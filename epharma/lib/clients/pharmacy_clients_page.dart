@@ -24,21 +24,7 @@ class Purchase {
   });
 }
 
-class Prescription {
-  final String id;
-  final String medicationName;
-  final DateTime validationDate;
-  final String status;
-  final int quantity;
 
-  Prescription({
-    required this.id,
-    required this.medicationName,
-    required this.validationDate,
-    required this.status,
-    required this.quantity,
-  });
-}
 
 // =====================================================================
 // MOCK SERVICE

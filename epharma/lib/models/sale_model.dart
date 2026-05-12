@@ -94,7 +94,7 @@ class Sale {
   final double amountReceived;
   final double changeAmount;
   final String pharmacist;
-  final bool prescriptionVerified;
+
 
   Sale({
     required this.id,
@@ -110,7 +110,7 @@ class Sale {
     required this.amountReceived,
     required this.changeAmount,
     required this.pharmacist,
-    required this.prescriptionVerified,
+
   });
 
   factory Sale.fromJson(Map<String, dynamic> json) {
@@ -158,7 +158,7 @@ class Sale {
           ? (json['changeAmount'] as num).toDouble()
           : double.tryParse(json['changeAmount']?.toString() ?? '0') ?? 0.0,
       pharmacist: pharmacistName,
-      prescriptionVerified: json['prescriptionVerified'] == true,
+
     );
   }
 }

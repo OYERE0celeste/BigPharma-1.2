@@ -46,15 +46,13 @@ class FinanceApiService {
         queryParams['type'] = type;
       }
 
-      final uri = queryParams.isNotEmpty
-          ? Uri.parse(baseUrl).replace(queryParameters: queryParams)
-          : Uri.parse(baseUrl);
+      final uri = Uri.parse('$baseUrl/summary').replace(queryParameters: queryParams);
 
       final response = await http.get(uri, headers: headers);
 
       if (response.statusCode == 200) {
         final decoded = _safeDecode(response.body);
-        final List<dynamic> data = decoded['data'] ?? [];
+        final List<dynamic> data = decoded['data']?['transactions'] ?? [];
         return data
             .map(
               (item) => FinanceTransactionModel.fromJson(
@@ -78,7 +76,7 @@ class FinanceApiService {
     try {
       final headers = await _authService.getHeaders();
       final response = await http.post(
-        Uri.parse(baseUrl),
+        Uri.parse('$baseUrl/manual'),
         headers: headers,
         body: json.encode(transaction.toJson()),
       );

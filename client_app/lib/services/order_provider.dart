@@ -29,12 +29,10 @@ class OrderProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> createOrder(
-    List<OrderItem> items, {
-    String? prescriptionId,
-  }) async {
+    List<OrderItem> items,
+  ) async {
     final result = await _orderService.createOrder(
       items,
-      prescriptionId: prescriptionId,
     );
 
     if (result['success'] == true) {

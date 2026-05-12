@@ -123,13 +123,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           _formatMoney(_order!.totalPrice),
           Icons.account_balance_wallet_outlined,
         ),
-        const SizedBox(width: 16),
-        _buildInfoCard(
-          'Ordonnance',
-          _order!.prescriptionRequired ? 'Requise' : 'Non requise',
-          Icons.description_outlined,
-          color: _order!.prescriptionRequired ? Colors.orange : Colors.grey,
-        ),
       ],
     );
   }

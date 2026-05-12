@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/auth_provider.dart';
+import 'package:client_app/services/auth_provider.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -32,7 +32,11 @@ class _LoginPageState extends State<LoginPage> {
               child: CircleAvatar(
                 radius: 40,
                 backgroundColor: primary.withOpacity(0.1),
-                child: Icon(Icons.local_pharmacy_rounded, size: 40, color: primary),
+                child: Icon(
+                  Icons.local_pharmacy_rounded,
+                  size: 40,
+                  color: primary,
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -50,7 +54,9 @@ class _LoginPageState extends State<LoginPage> {
               decoration: InputDecoration(
                 labelText: 'Email',
                 prefixIcon: const Icon(Icons.email_outlined),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
@@ -62,10 +68,15 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: 'Mot de passe',
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
                 ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
             Align(
@@ -91,7 +102,9 @@ class _LoginPageState extends State<LoginPage> {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(result['message'] ?? 'Erreur de connexion'),
+                                  content: Text(
+                                    result['message'] ?? 'Erreur de connexion',
+                                  ),
                                   backgroundColor: Colors.red,
                                 ),
                               );
@@ -100,11 +113,19 @@ class _LoginPageState extends State<LoginPage> {
                         },
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                   child: auth.isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Se connecter', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      : const Text(
+                          'Se connecter',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -117,7 +138,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterPage(),
+                      ),
                     );
                   },
                   child: const Text('Inscrivez-vous'),

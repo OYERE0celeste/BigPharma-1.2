@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'app_colors.dart';
 import '../settings/settings_dialog.dart';
 import '../providers/auth_provider.dart';
+import '../providers/notification_provider.dart';
+import 'notification_panel.dart';
 
 // =====================================================================
 // GLOBAL NAVBAR WIDGET
@@ -13,11 +15,14 @@ class GlobalNavbar extends StatefulWidget {
   final VoidCallback onMenuToggle;
   final bool isSidebarOpen;
   final Function(String)? onProfileAction;
+  final Function(String, dynamic)? onNotificationNavigate;
+
 
   const GlobalNavbar({
     required this.onMenuToggle,
     required this.isSidebarOpen,
     this.onProfileAction,
+    this.onNotificationNavigate,
     super.key,
   });
 
@@ -71,7 +76,9 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
               // ===== CENTER SECTION: LOGO / BRANDING =====
               Expanded(
                 child: Row(
-                  mainAxisAlignment: isMobile ? MainAxisAlignment.start : MainAxisAlignment.center,
+                  mainAxisAlignment: isMobile
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.all(6),
@@ -93,7 +100,8 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              context.watch<AuthProvider>().company?.name ?? 'PharmaGest',
+                              context.watch<AuthProvider>().company?.name ??
+                                  'PharmaGest',
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: isMobile ? 14 : 16,
@@ -124,19 +132,50 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                 child: Row(
                   children: [
                     if (!isVerySmall)
-                      IconButton(
-                        icon: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Icon(Icons.notifications_outlined, color: Colors.grey[700], size: 22),
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: const BoxDecoration(color: kDangerRed, shape: BoxShape.circle),
+                      Builder(
+                        builder: (context) {
+                          final unreadCount = context
+                              .watch<NotificationProvider>()
+                              .unreadCount;
+                          return IconButton(
+                            icon: Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Icon(
+                                  Icons.notifications_outlined,
+                                  color: Colors.grey[700],
+                                  size: 22,
+                                ),
+                                if (unreadCount > 0)
+                                  Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                      color: kDangerRed,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 14,
+                                      minHeight: 14,
+                                    ),
+                                    child: Text(
+                                      unreadCount > 9
+                                          ? '9+'
+                                          : unreadCount.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                          ],
-                        ),
-                        onPressed: () {},
+                            onPressed: () {
+                              _showNotificationPanel(context);
+                            },
+                          );
+                        },
                       ),
 
                     const SizedBox(width: 4),
@@ -149,11 +188,15 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                         widget.onProfileAction?.call(value);
                         _handleProfileAction(value);
                       },
-                      itemBuilder: (BuildContext context) => _buildProfileItems(),
+                      itemBuilder: (BuildContext context) =>
+                          _buildProfileItems(),
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[200]!, width: 1),
+                          border: Border.all(
+                            color: Colors.grey[200]!,
+                            width: 1,
+                          ),
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Row(
@@ -162,7 +205,11 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                             CircleAvatar(
                               radius: 16,
                               backgroundColor: kPrimaryGreen.withOpacity(0.1),
-                              child: const Icon(Icons.person, color: kPrimaryGreen, size: 20),
+                              child: const Icon(
+                                Icons.person,
+                                color: kPrimaryGreen,
+                                size: 20,
+                              ),
                             ),
                             if (!isMobile) ...[
                               const SizedBox(width: 8),
@@ -171,17 +218,31 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    context.watch<AuthProvider>().user?.fullName ?? 'Utilisateur',
-                                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                    context
+                                            .watch<AuthProvider>()
+                                            .user
+                                            ?.fullName ??
+                                        'Utilisateur',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   Text(
-                                    context.watch<AuthProvider>().user?.role.toUpperCase() ?? 'PHARMACIEN',
-                                    style: TextStyle(fontSize: 9, color: Colors.grey[600]),
+                                    (context.watch<AuthProvider>().user?.role ?? 'PHARMACIEN').toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
                                 ],
                               ),
                               const SizedBox(width: 4),
-                              Icon(Icons.arrow_drop_down, color: Colors.grey[600], size: 18),
+                              Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.grey[600],
+                                size: 18,
+                              ),
                             ],
                           ],
                         ),
@@ -219,13 +280,24 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
           ],
         ),
       ),
+      if (context.read<AuthProvider>().user?.role != 'client')
+        PopupMenuItem<String>(
+          value: 'settings',
+          child: Row(
+            children: const [
+              Icon(Icons.settings, color: kAccentBlue, size: 20),
+              SizedBox(width: 12),
+              Text('Paramètres'),
+            ],
+          ),
+        ),
       PopupMenuItem<String>(
-        value: 'settings',
+        value: 'test-notification',
         child: Row(
           children: const [
-            Icon(Icons.settings, color: kAccentBlue, size: 20),
+            Icon(Icons.notifications_active, color: Colors.orange, size: 20),
             SizedBox(width: 12),
-            Text('Paramètres'),
+            Text('Tester notification'),
           ],
         ),
       ),
@@ -246,10 +318,12 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
   void _handleProfileAction(String action) {
     switch (action) {
       case 'profile':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigation vers Mon Profil')),
+        showDialog(
+          context: context,
+          builder: (context) => const SettingsDialog(),
         );
         break;
+
       case 'activity':
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Ouverture du journal d'activité")),
@@ -260,6 +334,9 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
           context: context,
           builder: (context) => const SettingsDialog(),
         );
+        break;
+      case 'test-notification':
+        _testNotification();
         break;
       case 'help':
         ScaffoldMessenger.of(context).showSnackBar(
@@ -272,6 +349,50 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
       default:
         break;
     }
+  }
+
+  void _testNotification() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Test de Notification'),
+        content: const Text('Envoi d\'une notification de test...'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: () async {
+              try {
+                await context
+                    .read<NotificationProvider>()
+                    .sendTestNotification();
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('✅ Notification de test envoyée!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('❌ Erreur: $e'),
+                      backgroundColor: kDangerRed,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Envoyer', style: TextStyle(color: Colors.green)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showLogoutDialog() {
@@ -299,4 +420,45 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
       ),
     );
   }
+
+  void _showNotificationPanel(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    // Position the panel below the notification icon
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(
+          Offset(button.size.width - 350, 70),
+          ancestor: overlay,
+        ),
+        button.localToGlobal(Offset(button.size.width, 70), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) => Stack(
+        children: [
+          Positioned(
+            top: 70, // Height of navbar
+            right: 10,
+            child: Material(
+              color: Colors.transparent,
+              child: NotificationPanel(
+                onTap: (type, data) {
+                  Navigator.pop(context); // Close dialog
+                  widget.onNotificationNavigate?.call(type, data);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+

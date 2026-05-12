@@ -1,6 +1,8 @@
 const SupportQuestion = require("../models/support");
 const Client = require("../models/client");
 const { success, failure } = require("../utils/response");
+const { sendNotification, notifyStaff } = require("../utils/notificationHelper");
+
 
 /**
  * Get all support questions
@@ -92,7 +94,17 @@ exports.createQuestion = async (req, res, next) => {
       ],
     });
 
+    // Notify staff
+    await notifyStaff({
+      companyId: question.companyId,
+      title: "Nouveau message support",
+      message: `${clientProfile.fullName} a posé une question : ${question.subject}`,
+      type: "support",
+      data: { supportId: question._id },
+    });
+
     return success(res, { status: 201, data: question });
+
   } catch (error) {
     next(error);
   }
@@ -137,7 +149,33 @@ exports.addMessage = async (req, res, next) => {
     question.status = senderType === "pharmacie" ? "repondu" : "en_attente";
     await question.save();
 
+    // Real-time notifications
+    if (senderType === "client") {
+      const clientProfile = await Client.findOne({ userId: req.user._id });
+      await notifyStaff({
+        companyId: question.companyId,
+        title: "Nouveau message support",
+        message: `${clientProfile.fullName} a répondu à : ${question.subject}`,
+        type: "support",
+        data: { supportId: question._id },
+      });
+    } else {
+      // Notify client - Need to find the userId of the client
+      const clientProfile = await Client.findById(question.clientId);
+      if (clientProfile && clientProfile.userId) {
+        await sendNotification({
+          userId: clientProfile.userId,
+          companyId: question.companyId,
+          title: "Réponse du support",
+          message: `La pharmacie a répondu à votre question : ${question.subject}`,
+          type: "support",
+          data: { supportId: question._id },
+        });
+      }
+    }
+
     return success(res, { data: question });
+
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../models/product.dart';
 
 class ProductCard extends StatelessWidget {
@@ -53,45 +51,44 @@ class ProductCard extends StatelessWidget {
                       child: Hero(
                         tag: 'product_${product.id}',
                         child: product.image.startsWith('http')
-                            ? CachedNetworkImage(
-                                imageUrl: product.image,
+                            ? Image.network(
+                                product.image,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Container(
-                                  color: Colors.grey[200],
-                                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.medication_rounded, size: 40, color: primary.withOpacity(0.5)),
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
+                                      Icons.medication_rounded,
+                                      size: 40,
+                                      color: primary.withOpacity(0.5),
+                                    ),
                               )
-                            : Icon(Icons.medication_rounded, size: 40, color: primary.withOpacity(0.5)),
+                            : Icon(
+                                Icons.medication_rounded,
+                                size: 40,
+                                color: primary.withOpacity(0.5),
+                              ),
                       ),
                     ),
-                    // Category & Stock Badge
+                    // Category Badge
                     Positioned(
                       top: 10,
                       left: 10,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              product.category,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: primary,
-                              ),
-                            ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          product.category,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: primary,
                           ),
-                          const SizedBox(height: 4),
-                          _buildStockBadge(),
-                        ],
+                        ),
                       ),
                     ),
                   ],
@@ -118,10 +115,7 @@ class ProductCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         product.description,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -140,30 +134,12 @@ class ProductCard extends StatelessWidget {
                                   color: primary,
                                 ),
                               ),
-                              if (product.stockStatus == StockStatus.lowStock)
-                                const Text(
-                                  'Stock Faible',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              else if (product.stockStatus == StockStatus.outOfStock)
-                                const Text(
-                                  'En Rupture',
-                                  style: TextStyle(
+                              if (product.stockQuantity <= 5)
+                                Text(
+                                  'Reste: ${product.stockQuantity}',
+                                  style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              else
-                                const Text(
-                                  'Disponible',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.green,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -176,8 +152,11 @@ class ProductCard extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: onAddTap,
-                              icon: const Icon(Icons.add_shopping_cart,
-                                  color: Colors.white, size: 20),
+                              icon: const Icon(
+                                Icons.add_shopping_cart,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                               constraints: const BoxConstraints(),
                               padding: const EdgeInsets.all(8),
                             ),
@@ -190,42 +169,6 @@ class ProductCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuad);
-  }
-
-  Widget _buildStockBadge() {
-    Color color;
-    String text;
-
-    switch (product.stockStatus) {
-      case StockStatus.available:
-        color = Colors.green;
-        text = 'Disponible';
-        break;
-      case StockStatus.lowStock:
-        color = Colors.orange;
-        text = 'Stock Faible';
-        break;
-      case StockStatus.outOfStock:
-        color = Colors.red;
-        text = 'Rupture';
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 9,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
         ),
       ),
     );

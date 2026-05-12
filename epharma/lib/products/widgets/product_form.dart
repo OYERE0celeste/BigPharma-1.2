@@ -19,7 +19,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   late final TextEditingController _categoryController;
   late final TextEditingController _descController;
   late final TextEditingController _barcodeController;
-  bool _prescription = false;
+
   late final TextEditingController _purchaseController;
   late final TextEditingController _sellingController;
   late final TextEditingController _thresholdController;
@@ -37,7 +37,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     _categoryController = TextEditingController(text: p?.category ?? '');
     _descController = TextEditingController(text: p?.description ?? '');
     _barcodeController = TextEditingController(text: p?.barcode ?? '');
-    _prescription = p?.prescriptionRequired ?? false;
+
     _purchaseController = TextEditingController(
       text: p != null ? p.purchasePrice.toString() : '',
     );
@@ -75,7 +75,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
       category: _selectedCategory?.value ?? _categoryController.text.trim(),
       description: _descController.text.trim(),
       barcode: _barcodeController.text.trim(),
-      prescriptionRequired: _prescription,
+
       purchasePrice: double.tryParse(_purchaseController.text) ?? 0,
       sellingPrice: double.tryParse(_sellingController.text) ?? 0,
       lowStockThreshold: int.tryParse(_thresholdController.text) ?? 10,
@@ -166,11 +166,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     maxLines: 2,
                   ),
                   const SizedBox(height: 8),
-                  SwitchListTile(
-                    title: const Text('Prescription requise'),
-                    value: _prescription,
-                    onChanged: (v) => setState(() => _prescription = v),
-                  ),
+
                   const Divider(),
                   const SizedBox(height: 8),
                   Row(

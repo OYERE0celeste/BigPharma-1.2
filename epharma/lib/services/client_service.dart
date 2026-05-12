@@ -16,21 +16,7 @@ class Purchase {
   });
 }
 
-class Prescription {
-  final String id;
-  final String medicationName;
-  final DateTime validationDate;
-  final String status;
-  final int quantity;
 
-  Prescription({
-    required this.id,
-    required this.medicationName,
-    required this.validationDate,
-    required this.status,
-    required this.quantity,
-  });
-}
 
 class ClientService {
   static final List<Client> _clients = [];
@@ -282,10 +268,7 @@ class ClientService {
     return [];
   }
 
-  static List<Prescription> getClientPrescriptions(String clientId) {
-    // Placeholder implementation
-    return [];
-  }
+
 
   static Map<String, int> getClientsByGender() {
     final Map<String, int> counts = {};

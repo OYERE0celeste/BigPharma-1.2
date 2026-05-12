@@ -2,12 +2,14 @@ String orderStatusLabel(String status) {
   switch (status) {
     case 'en_attente':
       return 'En attente';
+    case 'validee':
+      return 'Validée';
     case 'en_preparation':
       return 'En préparation';
-    case 'pret_pour_recuperation':
-      return 'Prête (à récupérer)';
-    case 'validee':
-      return 'Récupérée';
+    case 'en_livraison':
+      return 'En livraison';
+    case 'livree':
+      return 'Livrée';
     case 'annulee':
       return 'Annulée';
     default:
@@ -39,12 +41,8 @@ class OrderItem {
     return OrderItem(
       productId: resolvedProductId,
       name: (json['name'] ?? '').toString(),
-      price: (json['price'] is num)
-          ? (json['price'] as num).toDouble()
-          : double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
-      quantity: (json['quantity'] is num)
-          ? (json['quantity'] as num).toInt()
-          : int.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
+      price: (json['price'] ?? 0).toDouble(),
+      quantity: ((json['quantity'] ?? 0) as num).toInt(),
     );
   }
 
@@ -61,11 +59,13 @@ class Order {
   final List<OrderItem> items;
   final double totalPrice;
   final String status;
-  final bool prescriptionRequired;
-  final String? prescriptionId;
+
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? invoiceNumber;
+  final DateTime? invoiceDate;
+  final String? collectionCode;
 
   const Order({
     required this.id,
@@ -75,15 +75,17 @@ class Order {
     required this.items,
     required this.totalPrice,
     required this.status,
-    required this.prescriptionRequired,
-    this.prescriptionId,
+
     this.notes,
     required this.createdAt,
     required this.updatedAt,
+    this.invoiceNumber,
+    this.invoiceDate,
+    this.collectionCode,
   });
 
   String get statusLabel => orderStatusLabel(status);
-  bool get isTerminal => status == 'validee' || status == 'annulee';
+  bool get isTerminal => status == 'livree' || status == 'annulee';
 
   factory Order.fromJson(Map<String, dynamic> json) {
     final user = json['userId'];
@@ -105,14 +107,9 @@ class Order {
       items: products
           .map((item) => OrderItem.fromJson(item as Map<String, dynamic>))
           .toList(),
-      totalPrice: (json['totalPrice'] is num)
-          ? (json['totalPrice'] as num).toDouble()
-          : (json['total'] is num)
-              ? (json['total'] as num).toDouble()
-              : double.tryParse((json['totalPrice'] ?? json['total'] ?? '0').toString()) ?? 0.0,
+      totalPrice: (json['totalPrice'] ?? json['total'] ?? 0).toDouble(),
       status: (json['status'] ?? 'en_attente').toString(),
-      prescriptionRequired: json['prescriptionRequired'] == true,
-      prescriptionId: json['prescriptionId']?.toString(),
+
       notes: json['notes']?.toString(),
       createdAt:
           DateTime.tryParse((json['createdAt'] ?? '').toString()) ??
@@ -120,6 +117,11 @@ class Order {
       updatedAt:
           DateTime.tryParse((json['updatedAt'] ?? '').toString()) ??
           DateTime.now(),
+      invoiceNumber: json['invoiceNumber']?.toString(),
+      invoiceDate: json['invoiceDate'] != null
+          ? DateTime.tryParse(json['invoiceDate'].toString())
+          : null,
+      collectionCode: json['collectionCode']?.toString(),
     );
   }
 }

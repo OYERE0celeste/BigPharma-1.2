@@ -37,7 +37,7 @@ Customer-facing mobile application for:
 - Browsing products
 - Registering and managing profile
 - Creating and tracking orders
-- Viewing prescriptions
+- Creating and tracking orders
 
 ### API Base URL Detection
 
@@ -304,7 +304,7 @@ GET    /api/orders
 PATCH  /api/orders/:id/status
 GET    /api/sales
 POST   /api/sales
-GET    /api/consultations
+
 GET    /api/mouvements
 GET    /api/dashboard/summary
 ```

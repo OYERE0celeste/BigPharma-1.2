@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/profile_provider.dart';
+import '../services/auth_provider.dart';
+import 'profile_view.dart';
 import 'settings_theme.dart';
 
 class SettingsDialog extends StatefulWidget {
@@ -19,8 +20,15 @@ class SettingsDialog extends StatefulWidget {
 }
 
 class _SettingsDialogState extends State<SettingsDialog> {
-  final GlobalKey<NavigatorState> _settingsNavKey = GlobalKey<NavigatorState>();
-  bool _canGoBack = false;
+  String _currentView = 'main';
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<AuthProvider>().refreshUser();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,26 +48,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             children: [
               _buildHeader(context),
               Expanded(
-                child: Navigator(
-                  key: _settingsNavKey,
-                  initialRoute: 'main',
-                  onGenerateRoute: (settings) {
-                    Widget page;
-                    switch (settings.name) {
-                      case 'profile':
-                        page = const ClientProfileView();
-                        break;
-                      case 'security':
-                        page = const ClientSecurityView();
-                        break;
-                      case 'main':
-                      default:
-                        page = _buildMainList(context);
-                        break;
-                    }
-                    return _createSlideRoute(page, settings.name!);
-                  },
-                ),
+                child: _buildBody(),
               ),
             ],
           ),
@@ -68,7 +57,19 @@ class _SettingsDialogState extends State<SettingsDialog> {
     );
   }
 
+  Widget _buildBody() {
+    switch (_currentView) {
+      case 'profile':
+        return const ProfileView(isInsideDialog: true);
+      case 'security':
+        return const ClientSecurityView();
+      default:
+        return _buildMainList(context);
+    }
+  }
+
   Widget _buildHeader(BuildContext context) {
+    final canGoBack = _currentView != 'main';
     return Container(
       height: SettingsTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -78,41 +79,27 @@ class _SettingsDialogState extends State<SettingsDialog> {
       ),
       child: Row(
         children: [
-          if (_canGoBack)
+          if (canGoBack)
             IconButton(
-              onPressed: () {
-                _settingsNavKey.currentState?.pop();
-                setState(() => _canGoBack = _settingsNavKey.currentState?.canPop() ?? false);
-              },
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: SettingsTheme.primary, size: 20),
-            )
-          else
-            const SizedBox(width: 8),
-          const Icon(Icons.settings_rounded, color: SettingsTheme.primary, size: 28),
-          const SizedBox(width: 16),
-          const Text('Paramètres', style: SettingsTheme.headerTitle),
+              onPressed: () => setState(() => _currentView = 'main'),
+              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+            ),
+          const SizedBox(width: 8),
+          Text(
+            _currentView == 'profile'
+                ? 'Mon Profil'
+                : _currentView == 'security'
+                    ? 'Sécurité'
+                    : 'Paramètres',
+            style: SettingsTheme.headerTitle,
+          ),
           const Spacer(),
           IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.close, color: SettingsTheme.textSecondary),
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close_rounded),
           ),
         ],
       ),
-    );
-  }
-
-  Route _createSlideRoute(Widget page, String name) {
-    return PageRouteBuilder(
-      settings: RouteSettings(name: name),
-      pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(1.0, 0.0);
-        var end = Offset.zero;
-        var curve = SettingsTheme.animationCurve;
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
-      transitionDuration: SettingsTheme.animationDuration,
     );
   }
 
@@ -152,12 +139,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   Widget _buildProfileSummary() {
-    return Consumer<ProfileProvider>(
-      builder: (context, provider, _) {
-        final profile = provider.profile;
-        final name = profile?['fullName'] ?? 'Client';
-        final email = profile?['email'] ?? '';
-        
+    return Consumer<AuthProvider>(
+      builder: (context, auth, _) {
+        final user = auth.user;
+        final displayName = user?.fullName ?? 'Client';
+        final displayEmail = user?.email ?? '';
+
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -170,20 +157,50 @@ class _SettingsDialogState extends State<SettingsDialog> {
               CircleAvatar(
                 radius: 35,
                 backgroundColor: SettingsTheme.primary.withOpacity(0.1),
-                child: const Icon(Icons.person, size: 30, color: SettingsTheme.primary),
+                child: Icon(
+                  Icons.person,
+                  size: 35,
+                  color: SettingsTheme.primary.withOpacity(0.8),
+                ),
               ),
               const SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: SettingsTheme.textPrimary)),
-                    Text(email, style: const TextStyle(fontSize: 14, color: SettingsTheme.textSecondary)),
+                    Text(
+                      displayName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: SettingsTheme.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      displayEmail,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: SettingsTheme.textSecondary,
+                      ),
+                    ),
                     const SizedBox(height: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(color: SettingsTheme.primary, borderRadius: BorderRadius.circular(4)),
-                      child: const Text('CLIENT', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: SettingsTheme.primary,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'CLIENT',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -195,16 +212,16 @@ class _SettingsDialogState extends State<SettingsDialog> {
     );
   }
 
-  Widget _buildNavTile({required IconData icon, required String title, required String subtitle, required String routeName}) {
+  Widget _buildNavTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String routeName,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () {
-          _settingsNavKey.currentState?.pushNamed(routeName).then((_) {
-            if (mounted) setState(() => _canGoBack = _settingsNavKey.currentState?.canPop() ?? false);
-          });
-          setState(() => _canGoBack = true);
-        },
+        onTap: () => setState(() => _currentView = routeName),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -216,7 +233,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(color: SettingsTheme.accent, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                  color: SettingsTheme.accent,
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Icon(icon, color: SettingsTheme.primary, size: 22),
               ),
               const SizedBox(width: 16),
@@ -229,7 +249,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: SettingsTheme.textSecondary),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: SettingsTheme.textSecondary,
+              ),
             ],
           ),
         ),
@@ -238,92 +261,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 }
 
-class ClientProfileView extends StatefulWidget {
-  const ClientProfileView({super.key});
-
-  @override
-  State<ClientProfileView> createState() => _ClientProfileViewState();
-}
-
-class _ClientProfileViewState extends State<ClientProfileView> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _addressController;
-
-  @override
-  void initState() {
-    super.initState();
-    final profile = context.read<ProfileProvider>().profile;
-    _nameController = TextEditingController(text: profile?['fullName'] ?? '');
-    _phoneController = TextEditingController(text: profile?['phone'] ?? '');
-    _addressController = TextEditingController(text: profile?['address'] ?? '');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isLoading = context.watch<ProfileProvider>().isLoading;
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Informations Personnelles", style: SettingsTheme.sectionTitle),
-            const SizedBox(height: 24),
-            _buildField(_nameController, "Nom complet", Icons.person_outline),
-            const SizedBox(height: 16),
-            _buildField(_phoneController, "Téléphone", Icons.phone_outlined),
-            const SizedBox(height: 16),
-            _buildField(_addressController, "Adresse", Icons.location_on_outlined),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton.icon(
-                onPressed: isLoading ? null : _save,
-                icon: isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.save_outlined),
-                label: const Text("Enregistrer les modifications"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: SettingsTheme.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 0,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildField(TextEditingController controller, String label, IconData icon) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, size: 22, color: SettingsTheme.textSecondary),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: SettingsTheme.divider)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: SettingsTheme.divider)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: SettingsTheme.primary, width: 2)),
-      ),
-    );
-  }
-
-  void _save() async {
-    final success = await context.read<ProfileProvider>().updateProfile({
-      'fullName': _nameController.text,
-      'phone': _phoneController.text,
-      'address': _addressController.text,
-    });
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profil mis à jour avec succès')));
-    }
-  }
-}
 
 class ClientSecurityView extends StatelessWidget {
   const ClientSecurityView({super.key});
@@ -341,7 +278,9 @@ class ClientSecurityView extends StatelessWidget {
             icon: Icons.lock_outline_rounded,
             title: "Changer le mot de passe",
             subtitle: "Mettez à jour votre mot de passe régulièrement",
-            onTap: () {},
+            onTap: () {
+              _showChangePasswordDialog(context);
+            },
           ),
           _buildSecurityTile(
             icon: Icons.phonelink_lock_rounded,
@@ -354,7 +293,12 @@ class ClientSecurityView extends StatelessWidget {
     );
   }
 
-  Widget _buildSecurityTile({required IconData icon, required String title, required String subtitle, required VoidCallback onTap}) {
+  Widget _buildSecurityTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -368,6 +312,67 @@ class ClientSecurityView extends StatelessWidget {
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
         trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+      ),
+    );
+  }
+
+  void _showChangePasswordDialog(BuildContext context) {
+    final currentCtrl = TextEditingController();
+    final newCtrl = TextEditingController();
+    final confirmCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Changer de mot de passe'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: currentCtrl,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Mot de passe actuel'),
+            ),
+            TextField(
+              controller: newCtrl,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Nouveau mot de passe'),
+            ),
+            TextField(
+              controller: confirmCtrl,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Confirmer'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final result = await context.read<AuthProvider>().changePassword(
+                currentPassword: currentCtrl.text,
+                newPassword: newCtrl.text,
+                confirmPassword: confirmCtrl.text,
+              );
+              if (ctx.mounted) {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      result['success']
+                          ? 'Mot de passe modifié'
+                          : result['message'] ?? 'Erreur',
+                    ),
+                  ),
+                );
+              }
+            },
+            child: const Text('Valider'),
+          ),
+        ],
       ),
     );
   }

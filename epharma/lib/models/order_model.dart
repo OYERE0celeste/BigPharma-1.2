@@ -132,8 +132,7 @@ class OrderModel {
   final List<OrderItem> items;
   final double totalPrice;
   final OrderStatus status;
-  final bool prescriptionRequired;
-  final String? prescriptionId;
+
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -148,8 +147,7 @@ class OrderModel {
     required this.items,
     required this.totalPrice,
     required this.status,
-    required this.prescriptionRequired,
-    this.prescriptionId,
+
     this.notes,
     required this.createdAt,
     required this.updatedAt,
@@ -183,8 +181,7 @@ class OrderModel {
           .toList(),
       totalPrice: (json['totalPrice'] ?? json['total'] ?? 0).toDouble(),
       status: OrderStatus.fromString(json['status']?.toString()),
-      prescriptionRequired: json['prescriptionRequired'] == true,
-      prescriptionId: json['prescriptionId']?.toString(),
+
       notes: json['notes']?.toString(),
       createdAt:
           DateTime.tryParse((json['createdAt'] ?? '').toString()) ??

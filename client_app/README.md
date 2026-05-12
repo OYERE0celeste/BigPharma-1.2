@@ -88,7 +88,7 @@ A comprehensive Flutter + Node.js/Express pharmaceutical management application 
 
 ### Other
 - `GET /api/suppliers` - Supplier list
-- `GET /api/consultations` - Client consultations
+
 - `GET /api/settings/profile` - User settings
 - `GET /api/settings/company` - Company settings
 

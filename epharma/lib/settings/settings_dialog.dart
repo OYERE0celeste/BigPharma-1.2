@@ -1,13 +1,13 @@
-import 'package:epharma/settings/profil_dialog.dart';
-import 'package:epharma/settings/user_management_page.dart';
-import 'package:epharma/settings/securite_dialog.dart';
-import 'package:epharma/settings/gestion_donnees_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../providers/settings_provider.dart';
+import 'package:epharma/providers/settings_provider.dart';
+import 'package:epharma/providers/auth_provider.dart';
 import '../widgets/app_colors.dart';
 import 'settings_theme.dart';
+import 'profil_dialog.dart';
+import 'user_management_page.dart';
+import 'securite_dialog.dart';
+import 'gestion_donnees_dialog.dart';
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
@@ -25,10 +25,9 @@ class SettingsDialog extends StatefulWidget {
 }
 
 class _SettingsDialogState extends State<SettingsDialog> {
-  final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
-  String? _selectedRole;
+  String _currentView = 'main';
 
   @override
   void initState() {
@@ -54,14 +53,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
     final settings = provider.settings;
     _fullNameController.text = settings.fullName;
     _emailController.text = settings.email;
-
-    if (provider.availableRoles.contains(settings.role)) {
-      _selectedRole = settings.role;
-    } else {
-      _selectedRole = provider.availableRoles.isNotEmpty
-          ? provider.availableRoles.first
-          : null;
-    }
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
@@ -75,84 +66,66 @@ class _SettingsDialogState extends State<SettingsDialog> {
     );
   }
 
-  // Key for internal navigation
-  final GlobalKey<NavigatorState> _settingsNavKey = GlobalKey<NavigatorState>();
-  bool _canGoBack = false;
-
   @override
   Widget build(BuildContext context) {
-    return Shortcuts(
-      shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.escape): const DismissIntent(),
-      },
-      child: Actions(
-        actions: <Type, Action<Intent>>{
-          DismissIntent: CallbackAction<DismissIntent>(
-            onInvoke: (Intent intent) =>
-                Navigator.of(context, rootNavigator: true).pop(),
+    try {
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        elevation: 24,
+        clipBehavior: Clip.antiAlias,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: SettingsTheme.dialogMaxWidth,
+            maxHeight: SettingsTheme.dialogMaxHeight,
           ),
-        },
-        child: Focus(
-          autofocus: true,
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 24,
-            clipBehavior: Clip.antiAlias,
-            insetPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 40,
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: SettingsTheme.dialogMaxWidth,
-                maxHeight: SettingsTheme.dialogMaxHeight,
-              ),
-              child: Container(
-                color: SettingsTheme.background,
-                child: Column(
-                  children: [
-                    _buildAnimatedHeader(context),
-                    Expanded(
-                      child: Navigator(
-                        key: _settingsNavKey,
-                        initialRoute: 'main',
-                        onGenerateRoute: (settings) {
-                          Widget page;
-                          switch (settings.name) {
-                            case 'profile':
-                              page = const ProfilDialog();
-                              break;
-                            case 'users':
-                              page = const UserManagementDialog();
-                              break;
-                            case 'security':
-                              page = const SecuriteDialog();
-                              break;
-                            case 'data':
-                              page = const GestionDonneesDialog();
-                              break;
-                            case 'main':
-                            default:
-                              page = _buildMainSettingsList(context);
-                              break;
-                          }
-                          return _createSlideRoute(page, settings.name!);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          child: Container(
+            color: SettingsTheme.background,
+            child: Column(
+              children: [
+                _buildHeader(context),
+                Expanded(child: _buildBody()),
+              ],
             ),
           ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      return AlertDialog(
+        title: const Text("Erreur d'affichage"),
+        content: Text(
+          "Une erreur est survenue lors de l'ouverture des paramètres: $e",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Fermer"),
+          ),
+        ],
+      );
+    }
   }
 
-  Widget _buildAnimatedHeader(BuildContext context) {
+  Widget _buildBody() {
+    switch (_currentView) {
+      case 'profile':
+        return const ProfilDialog();
+      case 'users':
+        return const UserManagementDialog();
+      case 'security':
+        return const SecuriteDialog();
+      case 'data':
+        return const GestionDonneesDialog();
+      default:
+        return _buildMainSettingsList(context);
+    }
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final provider = context.watch<SettingsProvider>();
+    final role = provider.settings.role.toString();
+    final canGoBack = _currentView != 'main';
+
     return Container(
       height: SettingsTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -162,16 +135,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
       ),
       child: Row(
         children: [
-          // Dynamic Back Button
-          if (_canGoBack)
+          if (canGoBack)
             IconButton(
-              onPressed: () {
-                _settingsNavKey.currentState?.pop();
-                setState(
-                  () => _canGoBack =
-                      _settingsNavKey.currentState?.canPop() ?? false,
-                );
-              },
+              onPressed: () => setState(() => _currentView = 'main'),
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
                 color: SettingsTheme.primary,
@@ -185,14 +151,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
           const Icon(Icons.settings, color: SettingsTheme.primary, size: 28),
           const SizedBox(width: 16),
           Text(
-            context.watch<SettingsProvider>().settings.role == 'client'
-                ? 'Paramètres'
-                : 'Paramètres Système',
+            role == 'client' ? 'Paramètres' : 'Paramètres Système',
             style: SettingsTheme.headerTitle,
           ),
           const Spacer(),
           IconButton(
-            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close, color: SettingsTheme.textSecondary),
             splashRadius: 24,
           ),
@@ -201,26 +165,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
     );
   }
 
-  Route _createSlideRoute(Widget page, String name) {
-    return PageRouteBuilder(
-      settings: RouteSettings(name: name),
-      pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(1.0, 0.0);
-        var end = Offset.zero;
-        var curve = SettingsTheme.animationCurve;
-        var tween = Tween(
-          begin: begin,
-          end: end,
-        ).chain(CurveTween(curve: curve));
-
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
-      transitionDuration: SettingsTheme.animationDuration,
-    );
-  }
-
-  // Update navigation tile to trigger state change for header
   Widget _buildNavigationTile({
     required IconData icon,
     required String title,
@@ -230,17 +174,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () {
-          _settingsNavKey.currentState?.pushNamed(routeName).then((_) {
-            if (mounted) {
-              setState(
-                () => _canGoBack =
-                    _settingsNavKey.currentState?.canPop() ?? false,
-              );
-            }
-          });
-          setState(() => _canGoBack = true);
-        },
+        onTap: () => setState(() => _currentView = routeName),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -279,7 +213,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
     );
   }
 
-  // Update Main Settings List to use the updated tile
   Widget _buildMainSettingsList(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, provider, child) {
@@ -347,6 +280,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   Widget _buildProfileSummary(SettingsProvider provider) {
+    final authUser = context.watch<AuthProvider>().user;
+    final name = provider.settings.fullName.isNotEmpty
+        ? provider.settings.fullName
+        : authUser?.fullName ?? 'Utilisateur';
+    final email = provider.settings.email.isNotEmpty
+        ? provider.settings.email
+        : authUser?.email ?? '';
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -376,7 +317,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  provider.settings.fullName,
+                  name,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -384,7 +325,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ),
                 ),
                 Text(
-                  provider.settings.email,
+                  email,
                   style: const TextStyle(
                     fontSize: 14,
                     color: SettingsTheme.textSecondary,
@@ -415,453 +356,5 @@ class _SettingsDialogState extends State<SettingsDialog> {
         ],
       ),
     );
-  }
-
-  // End of Navigation Methods
-
-  // End of Navigation Methods
-
-  // Layout Helpers
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.grey[600], size: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: kPrimaryGreen),
-        ),
-        contentPadding: const EdgeInsets.all(12),
-      ),
-    );
-  }
-
-  Widget _buildRoleDropdown(SettingsProvider provider) {
-    return DropdownButtonFormField<String>(
-      value: _selectedRole,
-      decoration: InputDecoration(
-        labelText: 'Rôle',
-        prefixIcon: Icon(Icons.work_outline, color: Colors.grey[600], size: 20),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.all(12),
-      ),
-      items: provider.availableRoles.map((role) {
-        return DropdownMenuItem<String>(
-          value: role,
-          child: Text(role.toUpperCase()),
-        );
-      }).toList(),
-      onChanged: (value) => setState(() => _selectedRole = value),
-    );
-  }
-
-  Widget _buildPasswordChangeButton() {
-    return OutlinedButton.icon(
-      onPressed: () => _showChangePasswordDialog(),
-      icon: const Icon(Icons.lock_outline, size: 18),
-      label: const Text('Mot de passe'),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        foregroundColor: kPrimaryGreen,
-        side: const BorderSide(color: kPrimaryGreen),
-      ),
-    );
-  }
-
-  Widget _buildSaveProfileButton(SettingsProvider provider) {
-    return ElevatedButton.icon(
-      onPressed: provider.isLoading ? null : () => _saveProfile(provider),
-      icon: const Icon(Icons.save, size: 18),
-      label: const Text('Sauvegarder'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: kPrimaryGreen,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        elevation: 0,
-      ),
-    );
-  }
-
-  Widget _buildPermissionsSection(SettingsProvider provider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Rôles & Permissions',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          children: provider.settings.permissions.entries.map((entry) {
-            return FilterChip(
-              label: Text(entry.key, style: const TextStyle(fontSize: 12)),
-              selected: entry.value,
-              onSelected: (value) =>
-                  _updatePermission(provider, entry.key, value),
-              selectedColor: kSoftBlue,
-              checkmarkColor: kPrimaryGreen,
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTwoFactorSection(SettingsProvider provider) {
-    return SwitchListTile(
-      title: const Text(
-        'Authentification à deux facteurs',
-        style: TextStyle(fontSize: 14),
-      ),
-      subtitle: const Text(
-        'Sécurité renforcée pour votre compte',
-        style: TextStyle(fontSize: 12),
-      ),
-      value: provider.settings.twoFactorEnabled,
-      onChanged: (value) => _toggleTwoFactor(provider, value),
-      activeColor: kPrimaryGreen,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
-
-  Widget _buildLoginHistorySection(SettingsProvider provider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Dernières connexions',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 12),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: provider.settings.loginHistory.length > 3
-              ? 3
-              : provider.settings.loginHistory.length,
-          separatorBuilder: (_, index) => const Divider(height: 1),
-          itemBuilder: (context, index) {
-            final history = provider.settings.loginHistory[index];
-            return ListTile(
-              leading: Icon(
-                history.success ? Icons.check_circle : Icons.error,
-                color: history.success ? kPrimaryGreen : kDangerRed,
-                size: 16,
-              ),
-              title: Text(history.device, style: const TextStyle(fontSize: 13)),
-              subtitle: Text(
-                history.date.toString().substring(0, 16),
-                style: const TextStyle(fontSize: 11),
-              ),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBackupSection(SettingsProvider provider) {
-    return Row(
-      children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () => _backupData(provider),
-            icon: const Icon(Icons.backup, size: 18),
-            label: const Text('Sauvegarder'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () => _restoreData(provider),
-            icon: const Icon(Icons.restore, size: 18),
-            label: const Text('Restaurer'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: kPrimaryGreen,
-              side: const BorderSide(color: kPrimaryGreen),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildExportImportSection(SettingsProvider provider) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _exportData(provider, 'json'),
-                icon: const Icon(Icons.code, size: 18),
-                label: const Text('Export JSON'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _exportData(provider, 'csv'),
-                icon: const Icon(Icons.table_chart, size: 18),
-                label: const Text('Export CSV'),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () => _importData(provider),
-            icon: const Icon(Icons.upload_file, size: 18),
-            label: const Text('Importer un fichier'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: kWarningOrange,
-              side: const BorderSide(color: kWarningOrange),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Dialogs and Actions
-  void _showChangeProfileImageDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Photo de profil'),
-        content: const Text(
-          'La gestion des photos de profil n\'est pas disponible actuellement.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Fermer'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<String?> _showJsonInputDialog(String title, String hint) async {
-    final controller = TextEditingController();
-    return await showDialog<String>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(title),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(hint, style: const TextStyle(fontSize: 13)),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: controller,
-                  maxLines: 12,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Collez ici le contenu JSON...',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-              child: const Text('Valider'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showChangePasswordDialog() {
-    final oldCtrl = TextEditingController();
-    final newCtrl = TextEditingController();
-    final confirmCtrl = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Modifier le mot de passe'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: oldCtrl,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Ancien mot de passe',
-              ),
-            ),
-            TextField(
-              controller: newCtrl,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Nouveau mot de passe',
-              ),
-            ),
-            TextField(
-              controller: confirmCtrl,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Confirmer'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final provider = context.read<SettingsProvider>();
-              final success = await provider.changePassword(
-                currentPassword: oldCtrl.text,
-                newPassword: newCtrl.text,
-                confirmPassword: confirmCtrl.text,
-              );
-              if (!mounted) return;
-              Navigator.pop(ctx);
-              if (success) {
-                _showSnackBar('Mot de passe mis à jour');
-              } else {
-                _showSnackBar(
-                  provider.errorMessage ?? 'Échec de mise à jour',
-                  isError: true,
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Valider'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _saveProfile(SettingsProvider provider) async {
-    if (!_formKey.currentState!.validate()) return;
-    final success = await provider.updateProfile(
-      fullName: _fullNameController.text,
-      email: _emailController.text,
-      role: _selectedRole ?? '',
-    );
-    if (success) _showSnackBar('Profil mis à jour');
-  }
-
-  void _updatePermission(
-    SettingsProvider provider,
-    String key,
-    bool value,
-  ) async {
-    final success = await provider.updatePermission(key, value);
-    if (success) {
-      _showSnackBar('Permission "$key" mise à jour');
-    } else {
-      _showSnackBar('Erreur lors de la mise à jour', isError: true);
-    }
-  }
-
-  void _toggleTwoFactor(SettingsProvider provider, bool value) async {
-    final success = await provider.toggleTwoFactor(value);
-    if (success) {
-      _showSnackBar(value ? '2FA activé' : '2FA désactivé');
-    } else {
-      _showSnackBar('Erreur lors de la mise à jour', isError: true);
-    }
-  }
-
-  void _backupData(SettingsProvider provider) async {
-    final success = await provider.backupData();
-    if (success) {
-      _showSnackBar('Sauvegarde effectuée avec succès');
-    } else {
-      _showSnackBar('Échec de la sauvegarde', isError: true);
-    }
-  }
-
-  void _restoreData(SettingsProvider provider) async {
-    final jsonContent = await _showJsonInputDialog(
-      'Restaurer des données',
-      'Collez un fichier de sauvegarde JSON valide pour restaurer les données de la société.',
-    );
-
-    if (jsonContent == null || jsonContent.isEmpty) return;
-
-    final success = await provider.restoreData(jsonContent);
-    if (success) {
-      _showSnackBar('Données restaurées avec succès');
-    } else {
-      _showSnackBar('Échec de la restauration', isError: true);
-    }
-  }
-
-  void _exportData(SettingsProvider provider, String format) async {
-    final success = await provider.exportData(format);
-    if (success) {
-      _showSnackBar('Exportation $format terminée');
-    } else {
-      _showSnackBar('Échec de l\'exportation', isError: true);
-    }
-  }
-
-  void _importData(SettingsProvider provider) async {
-    final jsonContent = await _showJsonInputDialog(
-      'Importer des données',
-      'Collez le contenu JSON à importer dans le système.',
-    );
-
-    if (jsonContent == null || jsonContent.isEmpty) return;
-
-    final success = await provider.importData(jsonContent);
-    if (success) {
-      _showSnackBar('Données importées avec succès');
-    } else {
-      _showSnackBar('Échec de l\'importation', isError: true);
-    }
   }
 }

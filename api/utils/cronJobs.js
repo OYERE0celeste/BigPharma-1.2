@@ -1,6 +1,8 @@
 const cron = require("node-cron");
 const Product = require("../models/product");
 const { logActivity } = require("./activityLogger");
+const { notifyStaff } = require("./notificationHelper");
+
 
 const initCronJobs = () => {
   // Scan quotidien à 8h00
@@ -44,6 +46,23 @@ const initCronJobs = () => {
           companyId: null, // Global monitor? Or loop through companies.
           user: "System Monitor",
         });
+
+        // For simplicity, we assume one company or we should loop through companies.
+        // Let's find unique companyIds from the affected products.
+        const companyIds = new Set([
+          ...expiredProducts.map(p => p.companyId.toString()),
+          ...lowStockProducts.map(p => p.companyId.toString())
+        ]);
+
+        for (const companyId of companyIds) {
+          await notifyStaff({
+            companyId,
+            title: "Alerte Stock",
+            message: "Des produits sont expirés ou en stock faible. Veuillez consulter l'inventaire.",
+            type: "stock",
+          });
+        }
+
       }
 
       console.log(

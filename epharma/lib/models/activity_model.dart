@@ -7,7 +7,7 @@ enum ActivityType {
   stockAdjustment,
   cancellation,
   userAction,
-  prescriptionAction,
+
   financeAction,
   systemAction,
   order,
@@ -96,8 +96,7 @@ class ActivityModel {
         return 'Annulation';
       case ActivityType.userAction:
         return 'Utilisateur';
-      case ActivityType.prescriptionAction:
-        return 'Ordonnance';
+
       case ActivityType.financeAction:
         return 'Finance';
       case ActivityType.systemAction:
@@ -138,8 +137,7 @@ class ActivityModel {
         return Icons.cancel;
       case ActivityType.userAction:
         return Icons.person;
-      case ActivityType.prescriptionAction:
-        return Icons.description;
+
       case ActivityType.financeAction:
         return Icons.attach_money;
       case ActivityType.systemAction:
@@ -163,8 +161,7 @@ class ActivityModel {
         return Colors.red;
       case ActivityType.userAction:
         return Colors.indigo;
-      case ActivityType.prescriptionAction:
-        return Colors.deepOrange;
+
       case ActivityType.financeAction:
         return Colors.amber;
       case ActivityType.systemAction:
@@ -274,7 +271,7 @@ class ActivityModel {
       case 'sale': return ActivityType.sale;
       case 'client': return ActivityType.userAction;
       case 'user': return ActivityType.userAction;
-      case 'prescription': return ActivityType.prescriptionAction;
+
       case 'finance': return ActivityType.financeAction;
       case 'system': return ActivityType.systemAction;
       case 'order': return ActivityType.order;

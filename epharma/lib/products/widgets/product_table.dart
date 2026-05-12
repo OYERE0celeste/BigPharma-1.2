@@ -115,7 +115,7 @@ class _ProductTableState extends State<ProductTable> {
         DataColumn(label: _colHeader('Stock total', 'stock')),
         const DataColumn(label: Text('Expiration la plus proche')),
         const DataColumn(label: Text('Nombre de lots')),
-        const DataColumn(label: Text('Ordonnance')),
+
         const DataColumn(label: Text('Statut')),
         const DataColumn(label: Text('Actions')),
       ],
@@ -144,11 +144,7 @@ class _ProductTableState extends State<ProductTable> {
             DataCell(Text('${p.totalStock}')),
             DataCell(Text(nearest != null ? formatDate(nearest) : '-')),
             DataCell(Text('${p.lots.length}')),
-            DataCell(
-              p.prescriptionRequired
-                  ? const Icon(Icons.check_circle, color: Colors.blue, size: 18)
-                  : const Icon(Icons.cancel, color: Colors.grey, size: 18),
-            ),
+
             DataCell(StatusBadge(status: status)),
             DataCell(
               Row(

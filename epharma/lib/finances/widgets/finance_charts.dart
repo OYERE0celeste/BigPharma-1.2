@@ -42,50 +42,58 @@ class FinanceCharts extends StatelessWidget {
             const SizedBox(height: 16),
             SizedBox(
               height: 300,
-              child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(show: true),
-                  titlesData: FlTitlesData(
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= 0 &&
-                              value.toInt() < chartData.length) {
-                            final date =
-                                chartData[value.toInt()]['date'] as DateTime;
-                            return Text(DateFormat('dd/MM').format(date));
-                          }
-                          return const Text('');
-                        },
+              child: chartData.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Aucune donnée financière disponible pour le moment',
+                      ),
+                    )
+                  : LineChart(
+                      LineChartData(
+                        gridData: FlGridData(show: true),
+                        titlesData: FlTitlesData(
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                if (value.toInt() >= 0 &&
+                                    value.toInt() < chartData.length) {
+                                  final date = chartData[value.toInt()]['date']
+                                      as DateTime;
+                                  return Text(DateFormat('dd/MM').format(date));
+                                }
+                                return const Text('');
+                              },
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                return Text(
+                                  FinanceService.formatAmount(value),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        borderData: FlBorderData(show: true),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: chartData.asMap().entries.map((entry) {
+                              return FlSpot(
+                                entry.key.toDouble(),
+                                entry.value['revenue'],
+                              );
+                            }).toList(),
+                            isCurved: true,
+                            color: Colors.green,
+                            barWidth: 3,
+                            belowBarData: BarAreaData(show: false),
+                          ),
+                        ],
                       ),
                     ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          return Text(FinanceService.formatAmount(value));
-                        },
-                      ),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: true),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: chartData.asMap().entries.map((entry) {
-                        return FlSpot(
-                          entry.key.toDouble(),
-                          entry.value['revenue'],
-                        );
-                      }).toList(),
-                      isCurved: true,
-                      color: Colors.green,
-                      barWidth: 3,
-                      belowBarData: BarAreaData(show: false),
-                    ),
-                  ],
-                ),
-              ),
             ),
             const SizedBox(height: 16),
             const Row(

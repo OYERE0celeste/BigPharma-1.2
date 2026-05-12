@@ -8,6 +8,32 @@ import 'providers/finance_provider.dart';
 import 'providers/client_provider.dart';
 import 'providers/sales_provider.dart';
 import 'providers/activity_provider.dart';
+import 'models/activity_model.dart';
+import 'main_layout.dart';
+
+void _navigateToDashboardSection(BuildContext context, String section) {
+  MainLayoutScope.maybeOf(context)?.navigateToSection(section);
+}
+
+String _resolveActivitySection(ActivityType type) {
+  switch (type) {
+    case ActivityType.sale:
+    case ActivityType.return_:
+      return 'Sales';
+    case ActivityType.restocking:
+    case ActivityType.stockAdjustment:
+      return 'Stock';
+    case ActivityType.userAction:
+      return 'Clients';
+    case ActivityType.financeAction:
+      return 'Finances';
+    case ActivityType.order:
+      return 'Commandes';
+    case ActivityType.cancellation:
+    case ActivityType.systemAction:
+      return 'Dashboard';
+  }
+}
 
 class PharmacyDashboardPage extends StatelessWidget {
   const PharmacyDashboardPage({super.key});
@@ -275,42 +301,49 @@ class TopKPISection extends StatelessWidget {
                 value: '${financeProvider.totalRevenue.toStringAsFixed(0)} FCFA',
                 icon: Icons.attach_money,
                 color: kPrimaryGreen,
+                section: 'Finances',
               ),
               KPIData(
                 title: 'Ventes aujourd\'hui',
                 value: '${salesProvider.totalSalesCount}',
                 icon: Icons.shopping_cart,
                 color: kAccentBlue,
+                section: 'Sales',
               ),
               KPIData(
                 title: 'Rupture de stock',
                 value: '${productProvider.outOfStockCount}',
                 icon: Icons.warning,
                 color: kDangerRed,
+                section: 'Stock',
               ),
               KPIData(
                 title: 'Expirés',
                 value: '${productProvider.expiredCount}',
                 icon: Icons.event_busy,
                 color: Colors.redAccent,
+                section: 'Stock',
               ),
               KPIData(
                 title: 'Bientôt expirés',
                 value: '${productProvider.nearExpirationCount}',
                 icon: Icons.event_note,
                 color: Colors.orangeAccent,
+                section: 'Stock',
               ),
               KPIData(
                 title: 'Stock faible',
                 value: '${productProvider.lowStockCount}',
                 icon: Icons.warning_amber,
                 color: kWarningOrange,
+                section: 'Stock',
               ),
               KPIData(
                 title: 'Total produits',
                 value: '${productProvider.totalProducts}',
                 icon: Icons.inventory,
                 color: Colors.purple,
+                section: 'Stock',
               ),
             ];
 
@@ -353,9 +386,8 @@ class TopKPISection extends StatelessWidget {
                       value: item.value,
                       icon: item.icon,
                       color: item.color,
-                      onTap: () {
-                        // navigate to details
-                      },
+                      onTap: () =>
+                          _navigateToDashboardSection(context, item.section),
                     );
                   },
                 );
@@ -371,12 +403,14 @@ class KPIData {
   final String value;
   final IconData icon;
   final Color color;
+  final String section;
 
   KPIData({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
+    required this.section,
   });
 }
 
@@ -524,21 +558,25 @@ class AlertsPanel extends StatelessWidget {
         title: 'Médicaments expirés',
         count: productProvider.expiredCount,
         severity: AlertSeverity.critical,
+        section: 'Stock',
       ),
       AlertData(
         title: 'Stock critique',
         count: productProvider.outOfStockCount,
         severity: AlertSeverity.critical,
+        section: 'Stock',
       ),
       AlertData(
         title: 'Alertes stock faible',
         count: productProvider.lowStockCount,
         severity: AlertSeverity.warning,
+        section: 'Stock',
       ),
       AlertData(
         title: 'Date d\'expiration proche',
         count: productProvider.nearExpirationCount,
         severity: AlertSeverity.warning,
+        section: 'Stock',
       ),
     ];
 
@@ -585,8 +623,14 @@ class AlertData {
   final String title;
   final int count;
   final AlertSeverity severity;
+  final String section;
 
-  AlertData({required this.title, required this.count, required this.severity});
+  AlertData({
+    required this.title,
+    required this.count,
+    required this.severity,
+    required this.section,
+  });
 }
 
 class AlertTile extends StatelessWidget {
@@ -608,37 +652,44 @@ class AlertTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: indicatorColor,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(data.title, style: const TextStyle(fontSize: 14)),
-          ),
-          if (data.count > 0)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                // ignore: deprecated_member_use
-                color: indicatorColor.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '${data.count}',
-                style: TextStyle(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: () => _navigateToDashboardSection(context, data.section),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
                   color: indicatorColor,
-                  fontWeight: FontWeight.bold,
+                  shape: BoxShape.circle,
                 ),
               ),
-            ),
-        ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(data.title, style: const TextStyle(fontSize: 14)),
+              ),
+              if (data.count > 0)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: indicatorColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${data.count}',
+                    style: TextStyle(
+                      color: indicatorColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -695,6 +746,7 @@ class RecentActivityPanel extends StatelessWidget {
                       time: _formatTime(a.dateTime),
                       icon: a.typeIcon,
                       color: a.typeColor,
+                      section: _resolveActivitySection(a.type),
                     ),
                   );
                 },
@@ -722,6 +774,7 @@ class ActivityData {
   final String time;
   final IconData icon;
   final Color color;
+  final String section;
 
   ActivityData({
     required this.title,
@@ -729,6 +782,7 @@ class ActivityData {
     required this.time,
     required this.icon,
     required this.color,
+    required this.section,
   });
 }
 
@@ -739,34 +793,44 @@ class ActivityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 18,
-          backgroundColor: data.color.withOpacity(0.12),
-          child: Icon(data.icon, color: data.color, size: 18),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data.title,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () => _navigateToDashboardSection(context, data.section),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: data.color.withOpacity(0.12),
+              child: Icon(data.icon, color: data.color, size: 18),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.title,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    data.subtitle,
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                data.subtitle,
-                style: const TextStyle(color: Colors.black54, fontSize: 13),
-              ),
-            ],
-          ),
+            ),
+            Text(
+              data.time,
+              style: const TextStyle(color: Colors.black45, fontSize: 12),
+            ),
+          ],
         ),
-        Text(
-          data.time,
-          style: const TextStyle(color: Colors.black45, fontSize: 12),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -782,31 +846,31 @@ class QuickActionsSection extends StatelessWidget {
         icon: Icons.add_box,
         label: 'Ajouter un produit',
         color: kPrimaryGreen,
+        section: 'Stock',
       ),
       QuickAction(
         icon: Icons.point_of_sale,
         label: 'Enregistrer une vente',
         color: kAccentBlue,
+        section: 'Sales',
       ),
       QuickAction(
         icon: Icons.person_add,
         label: 'Ajouter un client',
         color: Colors.purple,
-      ),
-      QuickAction(
-        icon: Icons.check_circle,
-        label: 'Valider une ordonnance',
-        color: Colors.teal,
+        section: 'Clients',
       ),
       QuickAction(
         icon: Icons.inventory,
         label: 'Gérer le stock',
         color: Colors.brown,
+        section: 'Stock',
       ),
       QuickAction(
         icon: Icons.bar_chart,
         label: 'Rapports complets',
         color: Colors.indigo,
+        section: 'Finances',
       ),
     ];
 
@@ -877,8 +941,14 @@ class QuickAction {
   final IconData icon;
   final String label;
   final Color color;
+  final String section;
 
-  QuickAction({required this.icon, required this.label, required this.color});
+  QuickAction({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.section,
+  });
 }
 
 class QuickActionButton extends StatelessWidget {
@@ -904,7 +974,7 @@ class QuickActionButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {},
+          onTap: () => _navigateToDashboardSection(context, action.section),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Row(

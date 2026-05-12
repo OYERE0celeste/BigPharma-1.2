@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
-import 'api_constants.dart';
 import 'auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -17,7 +17,12 @@ class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   AuthProvider() {
-    _loadSession();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _loadSession();
+    await refreshUser();
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -66,13 +71,69 @@ class AuthProvider extends ChangeNotifier {
     return result;
   }
 
+  Future<Map<String, dynamic>> updateProfile({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String address,
+  }) async {
+    final result = await _authService.updateProfile(
+      fullName: fullName,
+      email: email,
+      phone: phone,
+      address: address,
+    );
+
+    if (result['success']) {
+      _user = result['user'];
+      notifyListeners();
+    }
+    return result;
+  }
+
+  Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    return await _authService.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+    );
+  }
+
   Future<void> logout() async {
     _user = null;
     _token = null;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(ApiConstants.tokenKey);
-    await prefs.remove(ApiConstants.userKey);
+    await prefs.remove('auth_token');
+    await prefs.remove('auth_user');
     notifyListeners();
+  }
+
+  Future<void> refreshUser() async {
+    if (_token == null) {
+      _user = null;
+      notifyListeners();
+      return;
+    }
+    
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      final data = await _authService.getCurrentUser();
+      if (data != null) {
+        _user = User.fromJson(data);
+        await _saveSession();
+      }
+    } catch (e) {
+      debugPrint('Error refreshing user: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   void _setLoading(bool value) {
@@ -82,16 +143,23 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _saveSession() async {
     final prefs = await SharedPreferences.getInstance();
-    if (_token != null) await prefs.setString(ApiConstants.tokenKey, _token!);
+    if (_token != null) await prefs.setString('auth_token', _token!);
     if (_user != null) {
-      // Logic to save user info if needed, or just re-fetch on start
+      await prefs.setString('auth_user', json.encode(_user!.toJson()));
     }
   }
 
   Future<void> _loadSession() async {
     final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString(ApiConstants.tokenKey);
-    // For a real app, we should verify the token here
+    _token = prefs.getString('auth_token');
+    final userStr = prefs.getString('auth_user');
+    if (userStr != null) {
+      try {
+        _user = User.fromJson(json.decode(userStr));
+      } catch (e) {
+        debugPrint('Error loading user session: $e');
+      }
+    }
     notifyListeners();
   }
 }

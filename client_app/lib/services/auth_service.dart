@@ -8,13 +8,10 @@ class AuthService {
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
-      final response = await _apiService.post(
-        ApiConstants.authLogin,
-        {
-          'email': email,
-          'password': password,
-        },
-      );
+      final response = await _apiService.post(ApiConstants.authLogin, {
+        'email': email,
+        'password': password,
+      });
 
       final body = json.decode(response.body);
       if (response.statusCode == 200 && body['success'] == true) {
@@ -30,7 +27,10 @@ class AuthService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Impossible de contacter le serveur $e'};
+      return {
+        'success': false,
+        'message': 'Impossible de contacter le serveur $e',
+      };
     }
   }
 
@@ -45,19 +45,16 @@ class AuthService {
     required String companyId,
   }) async {
     try {
-      final response = await _apiService.post(
-        ApiConstants.authRegister,
-        {
-          'fullName': fullName,
-          'email': email,
-          'phone': phone,
-          'password': password,
-          'dateOfBirth': dateOfBirth,
-          'gender': gender,
-          'address': address ?? '',
-          'companyId': companyId,
-        },
-      );
+      final response = await _apiService.post(ApiConstants.authRegister, {
+        'fullName': fullName,
+        'email': email,
+        'phone': phone,
+        'password': password,
+        'dateOfBirth': dateOfBirth,
+        'gender': gender,
+        'address': address ?? '',
+        'companyId': companyId,
+      });
 
       final body = json.decode(response.body);
       if (response.statusCode == 201 && body['success'] == true) {
@@ -73,7 +70,87 @@ class AuthService {
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Impossible de contacter le serveur $e'};
+      return {
+        'success': false,
+        'message': 'Impossible de contacter le serveur $e',
+      };
     }
+  }
+
+  Future<Map<String, dynamic>> updateProfile({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String address,
+  }) async {
+    try {
+      final response = await _apiService.put(ApiConstants.authMe, {
+        'fullName': fullName,
+        'email': email,
+        'phone': phone,
+        'address': address,
+      });
+
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body['success'] == true) {
+        return {
+          'success': true,
+          'user': User.fromJson(body['data']),
+        };
+      } else {
+        return {
+          'success': false,
+          'message': body['message'] ?? 'Erreur lors de la mise à jour',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Impossible de contacter le serveur $e',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final response = await _apiService.post(ApiConstants.authChangePassword, {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      });
+
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body['success'] == true) {
+        return {'success': true};
+      } else {
+        return {
+          'success': false,
+          'message': body['message'] ?? 'Erreur lors du changement de mot de passe',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Impossible de contacter le serveur $e',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>?> getCurrentUser() async {
+    try {
+      final response = await _apiService.get(ApiConstants.authMe);
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body['success'] == true) {
+        return body['data'];
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('Error getting current user: $e');
+    }
+    return null;
   }
 }

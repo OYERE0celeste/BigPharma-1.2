@@ -28,14 +28,12 @@ class OrderService {
   }
 
   Future<Map<String, dynamic>> createOrder(
-    List<OrderItem> items, {
-    String? prescriptionId,
-  }) async {
+    List<OrderItem> items,
+  ) async {
     try {
       final orderData = {
         'products': items.map((item) => item.toRequestJson()).toList(),
-        if (prescriptionId != null && prescriptionId.isNotEmpty)
-          'prescriptionId': prescriptionId,
+
       };
 
       final response = await _apiService.post(ApiConstants.orders, orderData);

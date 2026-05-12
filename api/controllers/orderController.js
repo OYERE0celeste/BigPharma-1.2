@@ -6,6 +6,8 @@ const Product = require("../models/product");
 const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
 const { success, failure } = require("../utils/response");
+const { sendNotification, notifyStaff } = require("../utils/notificationHelper");
+
 
 const ORDER_STATUSES = [
   "en_attente",
@@ -299,6 +301,16 @@ exports.createOrder = async (req, res, next) => {
       global.io.to(req.user.companyId.toString()).emit("new-order", savedOrder);
     }
 
+    // Notify staff via persistent notification
+    await notifyStaff({
+      companyId: req.user.companyId,
+      title: "Nouvelle commande",
+      message: `Une nouvelle commande ${order.orderNumber} a été reçue de ${client.fullName}.`,
+      type: "order",
+      data: { orderId: order._id, orderNumber: order.orderNumber },
+    });
+
+
     return success(res, {
       status: 201,
       data: savedOrder,
@@ -505,7 +517,20 @@ exports.updateOrderStatus = async (req, res, next) => {
         const lotAllocations = allocateStock(product, orderedProduct.quantity);
         product.markModified("lots");
         await product.save();
+
+        // Check for low stock alert
+        if (product.stockQuantity <= (product.minStockLevel || 0)) {
+          await notifyStaff({
+            companyId: req.user.companyId,
+            title: "Alerte Stock Faible",
+            message: `Le stock de ${product.name} est bas (${product.stockQuantity} restants).`,
+            type: "stock",
+            data: { productId: product._id },
+          });
+        }
+
         allocations.push({
+
           productId: product._id,
           lotAllocations,
         });
@@ -590,10 +615,18 @@ exports.updateOrderStatus = async (req, res, next) => {
     if (global.io) {
       // Notify staff
       global.io.to(req.user.companyId.toString()).emit("order-status-update", updatedOrder);
-      // Notify the specific client (if they have their own room or just via company room)
-      // For now, company room is enough for staff dashboards. 
-      // Individual client notification would use a room named by their userId.
     }
+
+    // Notify the specific client via persistent notification
+    await sendNotification({
+      userId: order.userId,
+      companyId: req.user.companyId,
+      title: "Mise à jour de votre commande",
+      message: `Votre commande ${order.orderNumber} est maintenant ${ORDER_STATUS_LABELS[status]}.`,
+      type: "order",
+      data: { orderId: order._id, orderNumber: order.orderNumber, status },
+    });
+
 
     return success(res, {
       data: updatedOrder,

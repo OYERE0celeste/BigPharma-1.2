@@ -40,7 +40,7 @@ class SalesProvider with ChangeNotifier {
     required double taxAmount,
     required String paymentMethod,
     required double amountReceived,
-    required bool prescriptionVerified,
+
   }) async {
     final invoiceNumber = 'INV-${DateTime.now().millisecondsSinceEpoch}';
 
@@ -53,7 +53,7 @@ class SalesProvider with ChangeNotifier {
       tax: taxAmount,
       paymentMethod: paymentMethod,
       amountReceived: amountReceived,
-      prescriptionVerified: prescriptionVerified,
+
     );
 
     if (sale != null) {

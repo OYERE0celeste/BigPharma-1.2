@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/order_provider.dart';
-import '../widgets/order_tracker.dart';
+import 'package:client_app/services/order_provider.dart';
+import 'invoice_page.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
@@ -34,12 +34,30 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   String _formatDate(DateTime date) {
-    final localDate = date.toLocal();
-    final day = localDate.day.toString().padLeft(2, '0');
-    final month = localDate.month.toString().padLeft(2, '0');
-    final hour = localDate.hour.toString().padLeft(2, '0');
-    final minute = localDate.minute.toString().padLeft(2, '0');
-    return '$day/$month/${localDate.year} à $hour:$minute';
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '$day/$month/${date.year} à $hour:$minute';
+  }
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'en_attente':
+        return Colors.orange;
+      case 'validee':
+        return Colors.blue;
+      case 'en_preparation':
+        return Colors.deepPurple;
+      case 'en_livraison':
+        return Colors.teal;
+      case 'livree':
+        return Colors.green;
+      case 'annulee':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 
   @override
@@ -76,6 +94,7 @@ class _OrdersPageState extends State<OrdersPage> {
               separatorBuilder: (_, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final order = provider.orders[index];
+                final color = _statusColor(order.status);
 
                 return Container(
                   padding: const EdgeInsets.all(16),
@@ -114,32 +133,26 @@ class _OrdersPageState extends State<OrdersPage> {
                               ],
                             ),
                           ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: color.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              order.statusLabel,
+                              style: TextStyle(
+                                color: color,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      OrderTracker(status: order.status),
-                      const SizedBox(height: 16),
-                      if (order.prescriptionRequired) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFF4D6),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.description_outlined, size: 18),
-                              SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  'Cette commande contient au moins un produit soumis à ordonnance.',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+
                       const SizedBox(height: 14),
                       ...order.items.map(
                         (item) => Padding(
@@ -171,6 +184,30 @@ class _OrdersPageState extends State<OrdersPage> {
                           ),
                         ],
                       ),
+                      if (order.status != 'annulee') ...[
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InvoicePage(order: order),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.receipt_long_rounded),
+                            label: const Text('Voir la facture / Code de retrait'),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.blue[700],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 );

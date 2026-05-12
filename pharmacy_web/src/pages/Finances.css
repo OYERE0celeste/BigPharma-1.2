@@ -1,0 +1,139 @@
+.finance-container {
+  padding: 2rem;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.finance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.finance-header h1 {
+  font-size: 1.8rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.date-picker-mock {
+  padding: 0.6rem 1.2rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.8rem;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.02);
+}
+
+.stat-card .label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 0.8rem;
+}
+
+.stat-card .value {
+  margin: 0 0 0.5rem;
+  font-size: 1.8rem;
+  color: #0f172a;
+}
+
+.stat-card .trend {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.trend.positive { color: #10b981; }
+.trend.negative { color: #f43f5e; }
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.chart-box {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.chart-box h3 {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.recent-transactions {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.recent-transactions h3 {
+  margin: 0 0 1.5rem;
+  font-size: 1.1rem;
+}
+
+.recent-transactions table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recent-transactions th {
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.recent-transactions td {
+  padding: 1rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.ref-code {
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.type-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.type-badge.sale, .type-badge.vente { background: #dcfce7; color: #166534; }
+.type-badge.purchase, .type-badge.achat { background: #fee2e2; color: #991b1b; }
+
+.amount-plus { color: #10b981; font-weight: 700; }
+.amount-minus { color: #f43f5e; font-weight: 700; }

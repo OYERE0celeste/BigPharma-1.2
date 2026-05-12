@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/support_provider.dart';
+import 'package:client_app/services/support_provider.dart';
 import '../models/support_model.dart';
+import 'package:client_app/widgets/app_colors.dart';
 
 class ClientSupportPage extends StatefulWidget {
   const ClientSupportPage({super.key});
@@ -21,8 +22,6 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).primaryColor;
-
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -32,8 +31,8 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
         foregroundColor: Colors.black87,
         actions: [
           IconButton(
-            onPressed: () => _showNewQuestionDialog(context, primary),
-            icon: Icon(Icons.add_comment_outlined, color: primary),
+            onPressed: () => _showNewQuestionDialog(context),
+            icon: const Icon(Icons.add_comment_outlined, color: kAccentBlue),
           ),
         ],
       ),
@@ -53,9 +52,8 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
                   const Text('Vous n\'avez pas encore posé de questions'),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () => _showNewQuestionDialog(context, primary),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: primary, foregroundColor: Colors.white),
+                    onPressed: () => _showNewQuestionDialog(context),
+                    style: ElevatedButton.styleFrom(backgroundColor: kAccentBlue, foregroundColor: Colors.white),
                     child: const Text('Poser ma première question'),
                   ),
                 ],
@@ -68,7 +66,7 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
             itemCount: provider.questions.length,
             itemBuilder: (context, index) {
               final q = provider.questions[index];
-              return _buildQuestionCard(q, primary);
+              return _buildQuestionCard(q);
             },
           );
         },
@@ -76,7 +74,7 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
     );
   }
 
-  Widget _buildQuestionCard(SupportQuestion q, Color primary) {
+  Widget _buildQuestionCard(SupportQuestion q) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 0,
@@ -106,7 +104,7 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                q.messages.isNotEmpty ? q.messages.last.content : 'Pas de message',
+                q.messages.last.content,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
@@ -143,7 +141,7 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
     );
   }
 
-  void _showNewQuestionDialog(BuildContext context, Color primary) {
+  void _showNewQuestionDialog(BuildContext context) {
     final subjectController = TextEditingController();
     final contentController = TextEditingController();
 
@@ -181,29 +179,16 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
               height: 50,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (subjectController.text.isNotEmpty &&
-                      contentController.text.isNotEmpty) {
-                    try {
-                      await context.read<SupportProvider>().createQuestion(
-                            subjectController.text,
-                            contentController.text,
-                          );
-                      if (mounted) Navigator.pop(context);
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('$e'),
-                            backgroundColor: Colors.red,
-                            duration: const Duration(seconds: 5),
-                          ),
-                        );
-                      }
-                    }
+                  if (subjectController.text.isNotEmpty && contentController.text.isNotEmpty) {
+                    await context.read<SupportProvider>().createQuestion(
+                      subjectController.text,
+                      contentController.text,
+                    );
+                    Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primary,
+                  backgroundColor: kAccentBlue,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -249,8 +234,6 @@ class _ClientChatPageState extends State<ClientChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).primaryColor;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_currentQuestion.subject),
@@ -267,7 +250,7 @@ class _ClientChatPageState extends State<ClientChatPage> {
               itemBuilder: (context, index) {
                 final msg = _currentQuestion.messages[index];
                 final isMe = msg.senderType == 'client';
-
+                
                 return Align(
                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
@@ -275,7 +258,7 @@ class _ClientChatPageState extends State<ClientChatPage> {
                     padding: const EdgeInsets.all(12),
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
                     decoration: BoxDecoration(
-                      color: isMe ? primary : Colors.grey[200],
+                      color: isMe ? kAccentBlue : Colors.grey[200],
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(12),
                         topRight: const Radius.circular(12),
@@ -325,7 +308,7 @@ class _ClientChatPageState extends State<ClientChatPage> {
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: _sendMessage,
-                    icon: Icon(Icons.send, color: primary),
+                    icon: const Icon(Icons.send, color: kAccentBlue),
                   ),
                 ],
               ),
@@ -337,10 +320,10 @@ class _ClientChatPageState extends State<ClientChatPage> {
 
   void _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
-
+    
     final content = _messageController.text.trim();
     _messageController.clear();
-
+    
     try {
       await context.read<SupportProvider>().sendMessage(_currentQuestion.id, content);
       setState(() {

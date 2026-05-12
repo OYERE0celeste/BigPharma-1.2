@@ -8,10 +8,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import 'api_constants.dart';
 
+class UnauthorizedException implements Exception {
+  final String message;
+  UnauthorizedException([this.message = 'Session expirée. Veuillez vous reconnecter.']);
+  @override
+  String toString() => message;
+}
+
 class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
   AuthService._internal();
+
+  static const String unauthorizedMsg = 'UNAUTHORIZED';
 
   String? _token;
   String? get token => _token;
@@ -71,6 +80,23 @@ class AuthService {
     String defaultMessage = 'Erreur serveur inattendue',
   }) {
     final data = _safeDecode(response);
+    
+    if (response.statusCode == 401) {
+      String msg = 'Session expirée';
+      String? code;
+      
+      if (data is Map<String, dynamic>) {
+        msg = data['message']?.toString() ?? msg;
+        code = data['code']?.toString();
+      }
+      
+      // Only logout for token issues, not for wrong password or other 401s
+      if (code == 'INVALID_PASSWORD') {
+        return msg;
+      }
+      
+      throw UnauthorizedException(msg);
+    }
     if (data is Map<String, dynamic>) {
       final message = data['message']?.toString() ?? '';
       final details = data['data']?['details'];
@@ -229,7 +255,8 @@ class AuthService {
   Future<Map<String, dynamic>> updateProfile({
     required String fullName,
     required String email,
-    required String phoneNumber,
+    required String phone,
+    required String address,
   }) async {
     final headers = await getHeaders();
     final response = await _sendRequest(
@@ -239,7 +266,8 @@ class AuthService {
         body: jsonEncode({
           'fullName': fullName,
           'email': email,
-          'phoneNumber': phoneNumber,
+          'phone': phone,
+          'address': address,
         }),
       ),
     );
@@ -330,7 +358,7 @@ class AuthService {
     final headers = await getHeaders();
     final response = await _sendRequest(
       () => http.get(
-        Uri.parse("${ApiConstants.baseUrl}/users"),
+        Uri.parse("${ApiConstants.baseUrl}/users/staff"),
         headers: headers,
       ),
     );
@@ -354,7 +382,7 @@ class AuthService {
     final headers = await getHeaders();
     final response = await _sendRequest(
       () => http.post(
-        Uri.parse("${ApiConstants.baseUrl}/users"),
+        Uri.parse("${ApiConstants.baseUrl}/users/staff"),
         headers: headers,
         body: jsonEncode(userData),
       ),
@@ -379,8 +407,8 @@ class AuthService {
   ) async {
     final headers = await getHeaders();
     final response = await _sendRequest(
-      () => http.put(
-        Uri.parse("${ApiConstants.baseUrl}/users/$userId"),
+      () => http.patch(
+        Uri.parse("${ApiConstants.baseUrl}/users/staff/$userId"),
         headers: headers,
         body: jsonEncode(userData),
       ),

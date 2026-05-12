@@ -74,4 +74,5 @@ const ClientSchema = new mongoose.Schema(
 
 ClientSchema.index({ companyId: 1 });
 
-module.exports = mongoose.model("Client", ClientSchema);
+module.exports = mongoose.models.Client || mongoose.model("Client", ClientSchema);
+

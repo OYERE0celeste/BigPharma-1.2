@@ -10,7 +10,7 @@ class Product {
   final String category;
   final String description;
   final String barcode;
-  final bool prescriptionRequired;
+
   final double purchasePrice;
   final double sellingPrice;
   final int lowStockThreshold;
@@ -23,7 +23,7 @@ class Product {
     required this.category,
     required this.description,
     required this.barcode,
-    required this.prescriptionRequired,
+
     required this.purchasePrice,
     required this.sellingPrice,
     required this.lowStockThreshold,
@@ -60,7 +60,7 @@ class Product {
     String? category,
     String? description,
     String? barcode,
-    bool? prescriptionRequired,
+
     double? purchasePrice,
     double? sellingPrice,
     int? lowStockThreshold,
@@ -73,7 +73,7 @@ class Product {
       category: category ?? this.category,
       description: description ?? this.description,
       barcode: barcode ?? this.barcode,
-      prescriptionRequired: prescriptionRequired ?? this.prescriptionRequired,
+
       purchasePrice: purchasePrice ?? this.purchasePrice,
       sellingPrice: sellingPrice ?? this.sellingPrice,
       lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
@@ -89,7 +89,7 @@ class Product {
       'category': category,
       'description': description,
       'barcode': barcode,
-      'prescriptionRequired': prescriptionRequired,
+
       'purchasePrice': purchasePrice,
       'sellingPrice': sellingPrice,
       'lowStockThreshold': lowStockThreshold,
@@ -105,7 +105,7 @@ class Product {
       category: json['category']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       barcode: json['barcode']?.toString() ?? '',
-      prescriptionRequired: json['prescriptionRequired'] == true,
+
       purchasePrice: (json['purchasePrice'] is num)
           ? (json['purchasePrice'] as num).toDouble()
           : double.tryParse(json['purchasePrice']?.toString() ?? '0') ?? 0.0,

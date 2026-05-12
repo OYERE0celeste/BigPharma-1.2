@@ -1,0 +1,110 @@
+.activity-container {
+  padding: 2rem;
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.activity-header h1 {
+  font-size: 1.8rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+}
+
+.filter-bar select {
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  background: white;
+  color: #475569;
+  font-weight: 500;
+}
+
+.activity-list {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f8fafc;
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+}
+
+.log-time {
+  white-space: nowrap;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.user-badge {
+  background: #f1f5f9;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.action-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.action-create { background: #dcfce7; color: #166534; }
+.action-update { background: #dbeafe; color: #1e40af; }
+.action-delete { background: #fee2e2; color: #991b1b; }
+
+.entity-badge {
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.log-desc {
+  color: #334155;
+  max-width: 400px;
+}
+
+.log-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.log-meta span {
+  white-space: nowrap;
+}

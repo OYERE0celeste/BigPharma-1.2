@@ -1,4 +1,4 @@
-import 'package:epharma/ventes/widgets/prescription_banner.dart';
+
 
 import '../models/activity_model.dart';
 import 'package:flutter/material.dart';
@@ -32,14 +32,13 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   late TextEditingController _filterController;
 
   bool _showSalesHistory = false;
-  bool _prescriptionVerified = false;
+
   double _customDiscount = 0;
   double _customTax = 0;
   double _amountReceived = 0;
   PaymentMethod _selectedPaymentMethod = PaymentMethod.cash;
 
-  bool get _hasPrescriptionRequiredItems =>
-      _cart.any((item) => item.product.prescriptionRequired);
+
 
   double get _cartSubtotal => _cart.fold(0, (sum, item) => sum + item.subtotal);
 
@@ -69,14 +68,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       return;
     }
 
-    if (product.prescriptionRequired) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('⚠️ Ce produit require une ordonnance'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
+
 
     final existingItem = _cart.firstWhere(
       (item) => item.product.id == product.id,
@@ -123,16 +115,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       return;
     }
 
-    if (_hasPrescriptionRequiredItems && !_prescriptionVerified) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Veuillez vérifier l\'ordonnance avant de confirmer la vente',
-          ),
-        ),
-      );
-      return;
-    }
+
 
     if (_amountReceived < _cartSubtotal - _customDiscount + _customTax) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -148,7 +131,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         taxAmount: _customTax,
         paymentMethod: _selectedPaymentMethod.toString().split('.').last,
         amountReceived: _amountReceived,
-        prescriptionVerified: _prescriptionVerified,
+
       );
 
       if (sale == null) {
@@ -163,7 +146,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         _customDiscount = 0;
         _customTax = 0;
         _amountReceived = 0;
-        _prescriptionVerified = false;
+
         _selectedPaymentMethod = PaymentMethod.cash;
       });
 
@@ -395,7 +378,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Gérez vos ventes quotidiennes et ordonnances',
+                                'Gérez vos ventes quotidiennes',
                                 style: TextStyle(
                                   color: Colors.grey[600],
                                   fontSize: 13,
@@ -505,7 +488,6 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                       final p = filteredProducts[index];
                       return ProductCard(
                         product: p,
-                        isSelected: _cart.any((item) => item.product.id == p.id),
                         onAddToCart: () => _addProductToCart(p),
                       );
                     },
@@ -569,8 +551,6 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                         final item = _cart[index];
                         return Column(
                           children: [
-                            if (index == 0 && _hasPrescriptionRequiredItems)
-                              _buildPrescriptionBanner(),
                             CartItemTile(
                               cartItem: item,
                               onIncrement: () => setState(() {
@@ -607,16 +587,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     );
   }
 
-  Widget _buildPrescriptionBanner() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: PrescriptionBanner(
-        isVerified: _prescriptionVerified,
-        onAttach: () {},
-        onVerificationToggle: (v) => setState(() => _prescriptionVerified = v),
-      ),
-    );
-  }
+
 
   Widget _buildCartFooter() {
     return Container(

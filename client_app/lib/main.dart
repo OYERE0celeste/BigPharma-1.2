@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:client_app/home.dart';
+import 'package:client_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +9,7 @@ import 'services/profile_provider.dart';
 import 'services/order_provider.dart';
 import 'services/wishlist_provider.dart';
 import 'services/support_provider.dart';
+import 'services/notification_provider.dart';
 import 'pages/login_page.dart';
 
 void main() {
@@ -66,7 +67,13 @@ void main() {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         ChangeNotifierProvider(create: (_) => SupportProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, NotificationProvider>(
+          create: (context) => NotificationProvider(),
+          update: (context, auth, previous) =>
+              (previous ?? NotificationProvider())..update(auth),
+        ),
       ],
+
       child: const MyApp(),
     ),
   );

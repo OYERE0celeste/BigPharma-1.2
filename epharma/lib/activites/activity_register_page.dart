@@ -642,8 +642,7 @@ class _FiltersSectionState extends State<FiltersSection> {
         return 'Annulation';
       case ActivityType.userAction:
         return 'Utilisateur';
-      case ActivityType.prescriptionAction:
-        return 'Ordonnance';
+
       case ActivityType.financeAction:
         return 'Finance';
       case ActivityType.systemAction:
@@ -865,7 +864,7 @@ class TransactionsTable extends StatelessWidget {
       case ActivityType.stockAdjustment: return Colors.teal;
       case ActivityType.cancellation: return Colors.red;
       case ActivityType.userAction: return Colors.indigo;
-      case ActivityType.prescriptionAction: return Colors.purple;
+
       case ActivityType.financeAction: return Colors.amber;
       case ActivityType.systemAction: return Colors.blueGrey;
     }
@@ -889,7 +888,7 @@ class TransactionsTable extends StatelessWidget {
       case ActivityType.stockAdjustment: return 'Ajust.';
       case ActivityType.cancellation: return 'Annul.';
       case ActivityType.userAction: return 'Util.';
-      case ActivityType.prescriptionAction: return 'Ord.';
+
       case ActivityType.financeAction: return 'Fin.';
       case ActivityType.systemAction: return 'Syst.';
     }

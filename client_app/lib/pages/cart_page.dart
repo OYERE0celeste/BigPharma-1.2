@@ -1,13 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/cart_provider.dart';
-import '../services/order_provider.dart';
-import '../services/auth_provider.dart';
-import 'login_page.dart';
+import 'package:client_app/services/auth_provider.dart';
+import 'package:client_app/services/cart_provider.dart';
+import 'package:client_app/services/order_provider.dart';
+import 'package:client_app/pages/login_page.dart';
 import 'orders_page.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  bool _isSubmitting = false;
+
+  Future<void> _submitOrder(BuildContext context) async {
+    final auth = context.read<AuthProvider>();
+    if (!auth.isAuthenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Connectez-vous pour valider la commande.'),
+        ),
+      );
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
+      return;
+    }
+
+    final cart = context.read<CartProvider>();
+    if (cart.items.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Votre panier est vide.')),
+      );
+      return;
+    }
+
+    final orderProvider = context.read<OrderProvider>();
+
+    setState(() => _isSubmitting = true);
+    final orderItems = cart.orderItems;
+    debugPrint('Submitting order with ${orderItems.length} items: ${orderItems.map((e) => e.toRequestJson())}');
+    final result = await orderProvider.createOrder(orderItems);
+    setState(() => _isSubmitting = false);
+
+    if (!mounted) {
+      return;
+    }
+
+    if (result['success'] == true) {
+      cart.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Commande créée avec succès.')),
+      );
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const OrdersPage()),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          (result['message'] ?? 'Impossible de créer la commande.').toString(),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +121,7 @@ class CartPage extends StatelessWidget {
 
           return Column(
             children: [
+
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.all(16),
@@ -80,7 +144,6 @@ class CartPage extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          // Product Image
                           Container(
                             width: 80,
                             height: 80,
@@ -102,7 +165,6 @@ class CartPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // Details
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,6 +178,7 @@ class CartPage extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                                const SizedBox(height: 4),
                                 Text(
                                   '${item.product.sellingPrice.toStringAsFixed(0)} FCFA',
                                   style: TextStyle(
@@ -123,6 +186,7 @@ class CartPage extends StatelessWidget {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
+
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
@@ -152,7 +216,6 @@ class CartPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          // Remove button
                           IconButton(
                             onPressed: () => cart.removeItem(item.product.id),
                             icon: const Icon(
@@ -166,7 +229,6 @@ class CartPage extends StatelessWidget {
                   },
                 ),
               ),
-              // Summary
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -205,7 +267,32 @@ class CartPage extends StatelessWidget {
                       const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
-                        child: _CheckoutButton(cart: cart),
+                        child: FilledButton(
+                          onPressed: _isSubmitting
+                              ? null
+                              : () => _submitOrder(context),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  'Valider la commande',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                        ),
                       ),
                     ],
                   ),
@@ -238,156 +325,6 @@ class _QuantityButton extends StatelessWidget {
         constraints: const BoxConstraints(),
         padding: const EdgeInsets.all(4),
       ),
-    );
-  }
-}
-
-class _CheckoutButton extends StatefulWidget {
-  final CartProvider cart;
-  const _CheckoutButton({required this.cart});
-
-  @override
-  State<_CheckoutButton> createState() => _CheckoutButtonState();
-}
-
-class _CheckoutButtonState extends State<_CheckoutButton> {
-  bool _isProcessing = false;
-
-  Future<void> _handleCheckout(BuildContext context) async {
-    final auth = context.read<AuthProvider>();
-    if (!auth.isAuthenticated) {
-      final login = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Connexion requise'),
-          content: const Text(
-            'Vous devez être connecté pour passer une commande.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Annuler'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Se connecter'),
-            ),
-          ],
-        ),
-      );
-
-      if (login == true && mounted) {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-      }
-      return;
-    }
-
-    if (widget.cart.requiresPrescription) {
-      // For now, we just inform, but in a real app we'd ask to upload/select a prescription
-      final proceed = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Ordonnance requise'),
-          content: const Text(
-            'Certains produits de votre panier nécessitent une ordonnance. '
-            'La pharmacie vérifiera votre ordonnance avant de valider la commande.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Annuler'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Continuer'),
-            ),
-          ],
-        ),
-      );
-      if (proceed != true) return;
-    }
-
-    if (widget.cart.items.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Votre panier est vide')),
-      );
-      return;
-    }
-
-    setState(() => _isProcessing = true);
-
-    try {
-      final orderItems = widget.cart.orderItems;
-      debugPrint('Creating order with ${orderItems.length} items: ${orderItems.map((e) => e.toRequestJson())}');
-      
-      final orderProvider = context.read<OrderProvider>();
-      final result = await orderProvider.createOrder(orderItems);
-
-      if (!mounted) return;
-
-      if (result['success'] == true) {
-        widget.cart.clear();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Commande passée avec succès !'),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        // Navigate to my orders
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const OrdersPage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result['message'] ?? 'Erreur lors de la commande'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isProcessing = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: _isProcessing ? null : () => _handleCheckout(context),
-      style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-      child: _isProcessing
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            )
-          : const Text(
-              'Commander maintenant',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
     );
   }
 }

@@ -30,8 +30,7 @@ class CartProvider extends ChangeNotifier {
     0,
     (sum, item) => sum + (item.product.sellingPrice * item.quantity),
   );
-  bool get requiresPrescription =>
-      _items.any((item) => item.product.prescriptionRequired);
+
 
   List<OrderItem> get orderItems => _items
       .map(

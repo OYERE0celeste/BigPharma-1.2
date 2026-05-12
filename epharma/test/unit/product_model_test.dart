@@ -10,7 +10,7 @@ void main() {
         category: 'Test',
         description: '',
         barcode: '',
-        prescriptionRequired: false,
+
         purchasePrice: 10.0,
         sellingPrice: 15.0,
         lowStockThreshold: 5,
@@ -44,7 +44,7 @@ void main() {
         category: 'Test',
         description: '',
         barcode: '',
-        prescriptionRequired: false,
+
         purchasePrice: 10.0,
         sellingPrice: 15.0,
         lowStockThreshold: 10,
@@ -70,7 +70,7 @@ void main() {
         category: 'Test',
         description: '',
         barcode: '',
-        prescriptionRequired: false,
+
         purchasePrice: 100.0,
         sellingPrice: 150.0,
         lowStockThreshold: 10,

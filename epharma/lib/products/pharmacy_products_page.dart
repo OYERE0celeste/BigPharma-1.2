@@ -112,9 +112,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 p.expirationStatus != 'BIENTÔT EXPIRÉ') {
               return false;
             }
-            if (_filter == 'Ordonnance requise' && !p.prescriptionRequired) {
-              return false;
-            }
+
             return true;
           }).toList();
 
@@ -315,10 +313,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             value: 'Bientôt expirés',
                             child: Text('Bientôt'),
                           ),
-                          DropdownMenuItem(
-                            value: 'Ordonnance requise',
-                            child: Text('Ord.'),
-                          ),
+
                         ],
                         onChanged: (v) =>
                             setState(() => _filter = v ?? 'Tous les produits'),
@@ -456,10 +451,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                               value: 'Bientôt expirés',
                               child: Text('Bientôt expirés'),
                             ),
-                            DropdownMenuItem(
-                              value: 'Ordonnance requise',
-                              child: Text('Ordonnance requise'),
-                            ),
+
                           ],
                           onChanged: (v) => setState(
                               () => _filter = v ?? 'Tous les produits'),

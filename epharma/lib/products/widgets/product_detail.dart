@@ -65,7 +65,7 @@ class ProductDetailsPanel extends StatelessWidget {
           _infoRow('Description', product.description),
           _infoRow('Catégorie', product.category),
           _infoRow('Code-barres', product.barcode),
-          _infoRow('Ordonnance', product.prescriptionRequired ? 'Oui' : 'Non'),
+
           _infoRow(
             'Prix d\'achat',
             '${product.purchasePrice.toStringAsFixed(0)} FCFA',

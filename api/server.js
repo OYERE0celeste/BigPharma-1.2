@@ -23,9 +23,15 @@ io.on("connection", (socket) => {
   console.log(`New client connected: ${socket.id}`);
   
   socket.on("join-company", (companyId) => {
-    socket.join(companyId);
+    socket.join(companyId.toString());
     console.log(`Socket ${socket.id} joined company: ${companyId}`);
   });
+
+  socket.on("join-user", (userId) => {
+    socket.join(userId.toString());
+    console.log(`Socket ${socket.id} joined user room: ${userId}`);
+  });
+
 
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);

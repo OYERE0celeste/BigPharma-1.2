@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../services/client_api_service.dart';
+import 'client_api_service.dart';
 
 class ProfileProvider with ChangeNotifier {
   final ClientApiService _apiService = ClientApiService();
-  
+
   Map<String, dynamic>? _profile;
   bool _isLoading = false;
   String? _error;
@@ -18,7 +18,7 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
 
     final result = await _apiService.getMyProfile();
-    
+
     _isLoading = false;
     if (result['success']) {
       _profile = result['data'];
@@ -34,7 +34,7 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
 
     final result = await _apiService.updateProfile(data);
-    
+
     _isLoading = false;
     if (result['success']) {
       _profile = result['data'];

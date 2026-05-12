@@ -145,12 +145,7 @@ class ClientDetailsDialog extends StatelessWidget {
                     _buildPurchaseHistory(client),
                     const SizedBox(height: 20),
 
-                    // Prescription History Section
-                    if (client.hasMedicalHistory) ...[
-                      _buildSection('Historique des ordonnances', []),
-                      const SizedBox(height: 12),
-                      _buildPrescriptionHistory(client),
-                    ],
+
                   ],
                 ),
               ),
@@ -256,61 +251,7 @@ class ClientDetailsDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildPrescriptionHistory(Client client) {
-    final prescriptions = ClientService.getClientPrescriptions(client.id);
-    return SizedBox(
-      height: 180,
-      child: ListView.builder(
-        itemCount: prescriptions.length,
-        itemBuilder: (context, index) {
-          final prescription = prescriptions[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        prescription.medicationName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: kPrimaryGreen.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          prescription.status,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: kPrimaryGreen,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Qté: ${prescription.quantity} - ${_formatDate(prescription.validationDate)}',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';

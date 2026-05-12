@@ -20,11 +20,10 @@ BigPharma 1.2/
 │   │
 │   ├── models/                  # MongoDB schemas
 │   │   ├── User.js              # User accounts
-│   │   ├── Client.js            # Client profiles
-│   │   ├── Product.js           # Pharmacy products
-│   │   ├── Order.js             # Customer orders
-│   │   ├── Sale.js              # Completed sales
-│   │   ├── Prescription.js      # Medical prescriptions
+│   │   ├── client.js            # Client profiles
+│   │   ├── product.js           # Pharmacy products
+│   │   ├── order.js             # Customer orders
+│   │   ├── sale.js              # Completed sales
 │   │   └── ...
 │   │
 │   ├── controllers/             # Business logic
@@ -125,7 +124,7 @@ BigPharma 1.2/
 - Place and track orders
 - View order history
 - Manage personal profile
-- Prescription viewing
+
 
 ### 💼 Web Platform (epharma)
 The `epharma` directory contains the unified web platform for the BigPharma system. It is a **hybrid application** that dynamically adapts its interface based on the authenticated user's role:
@@ -301,8 +300,7 @@ DELETE /api/orders/:id             # Cancel order
 - **orders**: Customer orders
 - **sales**: Completed transactions
 - **companies**: Pharmacy company information
-- **prescriptions**: Medical prescriptions
-- **consultations**: Doctor consultations
+
 - **activityLogs**: System activity tracking
 
 ## Authentication Flow

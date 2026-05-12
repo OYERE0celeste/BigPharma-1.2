@@ -20,6 +20,10 @@ class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
 
   String _readableError(Object error) {
+    if (error is UnauthorizedException) {
+      logout();
+      return error.message;
+    }
     final message = error.toString();
     if (message.startsWith('Exception: ')) {
       return message.substring('Exception: '.length);
@@ -119,6 +123,7 @@ class AuthProvider with ChangeNotifier {
     required String fullName,
     required String email,
     required String phoneNumber,
+    required String address,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -128,7 +133,8 @@ class AuthProvider with ChangeNotifier {
       final responseData = await _authService.updateProfile(
         fullName: fullName,
         email: email,
-        phoneNumber: phoneNumber,
+        phone: phoneNumber,
+        address: address,
       );
 
       _user = UserModel.fromJson(responseData);

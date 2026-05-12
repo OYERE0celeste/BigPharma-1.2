@@ -68,29 +68,74 @@ class AppSidebar extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
-                _sidebarItem('Dashboard', Icons.grid_view_rounded, label: 'Tableau de bord'),
-                _sidebarItem('Stock', Icons.inventory_2_outlined, label: 'Stock'),
-                _sidebarItem('Sales', Icons.receipt_long_outlined, label: 'Ventes'),
-                _sidebarItem('Clients', Icons.people_outline_rounded, label: 'Clients'),
-                _sidebarItem('Commandes', Icons.shopping_cart_outlined, label: 'Commandes'),
-                _sidebarItem('Finances', Icons.account_balance_wallet_outlined, label: 'Finances'),
-                _sidebarItem('Support', Icons.chat_bubble_outline_rounded, label: 'Support Client'),
-                /*_sidebarItem(
+                _sidebarItem(
+                  'Dashboard',
+                  Icons.grid_view_rounded,
+                  label: 'Tableau de bord',
+                ),
+                _sidebarItem(
+                  'Stock',
+                  Icons.inventory_2_outlined,
+                  label: 'Stock',
+                ),
+                _sidebarItem(
+                  'Sales',
+                  Icons.receipt_long_outlined,
+                  label: 'Ventes',
+                ),
+                _sidebarItem(
+                  'Clients',
+                  Icons.people_outline_rounded,
+                  label: 'Clients',
+                ),
+                _sidebarItem(
+                  'Commandes',
+                  Icons.shopping_cart_outlined,
+                  label: 'Commandes',
+                ),
+                _sidebarItem(
+                  'Finances',
+                  Icons.account_balance_wallet_outlined,
+                  label: 'Finances',
+                ),
+                _sidebarItem(
+                  'Support',
+                  Icons.chat_bubble_outline_rounded,
+                  label: 'Support Client',
+                ),
+                _sidebarItem(
                   'Activity',
                   Icons.history_rounded,
                   label: "Journal d'activités",
-                ),*/
+                ),
 
-                /*if (isAdmin) ...[
+                if (isAdmin) ...[
                   const Padding(
                     padding: EdgeInsets.only(left: 14, top: 20, bottom: 8),
-                    child: Text("ADMINISTRATION", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black38, letterSpacing: 1.0)),
+                    child: Text(
+                      "ADMINISTRATION",
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black38,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
                   ),
-                  _sidebarItem('Users', Icons.manage_accounts_outlined, label: "Gestion Utilisateurs"),
+                  _sidebarItem(
+                    'Users',
+                    Icons.manage_accounts_outlined,
+                    label: "Gestion Utilisateurs",
+                  ),
                 ],
-                
-                const Divider(height: 40, color: Colors.black12, indent: 8, endIndent: 8),
-                _sidebarItem('Paramètres', Icons.settings_outlined),*/
+
+                const Divider(
+                  height: 40,
+                  color: Colors.black12,
+                  indent: 8,
+                  endIndent: 8,
+                ),
+                _sidebarItem('Paramètres', Icons.settings_outlined),
               ],
             ),
           ),

@@ -50,9 +50,16 @@ class _FinancePageContentState extends State<FinancePageContent> {
   @override
   void initState() {
     super.initState();
-    // Don't initialize mock data - we want to use real transactions added by other pages
-    // The FinanceProvider will automatically read from FinanceService
     _filteredTransactions = [];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _reloadTransactions();
+    });
+  }
+
+  Future<void> _reloadTransactions() async {
+    await context.read<FinanceProvider>().loadTransactions();
+    if (!mounted) return;
+    _applyFilters();
   }
 
   void _showAddTransactionDialog() {
@@ -212,12 +219,9 @@ class _FinancePageContentState extends State<FinancePageContent> {
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.refresh),
-                    onPressed: () {
-                      setState(() {
-                        _filteredTransactions = financeProvider.transactions;
-                        _applyFilters();
-                      });
-                    },
+                    onPressed: financeProvider.isLoading
+                        ? null
+                        : () => _reloadTransactions(),
                   ),
                 ],
               ),
@@ -387,13 +391,9 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         const SizedBox(width: 8),
                         IconButton(
                           icon: const Icon(Icons.refresh),
-                          onPressed: () {
-                            setState(() {
-                              _filteredTransactions =
-                                  financeProvider.transactions;
-                              _applyFilters();
-                            });
-                          },
+                          onPressed: financeProvider.isLoading
+                              ? null
+                              : () => _reloadTransactions(),
                         ),
                       ],
                     ),
@@ -541,13 +541,9 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         IconButton(
                           icon: const Icon(Icons.refresh),
                           tooltip: 'Rafraîchir',
-                          onPressed: () {
-                            setState(() {
-                              _filteredTransactions =
-                                  financeProvider.transactions;
-                              _applyFilters();
-                            });
-                          },
+                          onPressed: financeProvider.isLoading
+                              ? null
+                              : () => _reloadTransactions(),
                         ),
                         const SizedBox(width: 8),
                         ElevatedButton.icon(

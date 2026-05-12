@@ -6,25 +6,27 @@ const Company = require("../models/Company");
 const { logActivity } = require("../utils/activityLogger");
 const { getJwtSecret } = require("../config/env");
 const { success, failure } = require("../utils/response");
+const { notifyStaff } = require("../utils/notificationHelper");
+
 
 // Token durations
 const ACCESS_TOKEN_EXPIRY = "15m";
 const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
-const signAccessToken = (userId) => 
+const signAccessToken = (userId) =>
   jwt.sign({ id: userId.toString() }, getJwtSecret(), { expiresIn: ACCESS_TOKEN_EXPIRY });
 
 const generateRefreshToken = async (user) => {
   const token = crypto.randomBytes(40).toString("hex");
   const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
-  
+
   user.refreshTokens.push({ token, expiresAt });
-  
+
   // Keep only the last 5 tokens to avoid document bloat
   if (user.refreshTokens.length > 5) {
     user.refreshTokens.shift();
   }
-  
+
   await user.save();
   return token;
 };
@@ -131,7 +133,17 @@ exports.registerClient = async (req, res, next) => {
     const accessToken = signAccessToken(user._id);
     const refreshToken = await generateRefreshToken(user);
 
+    // Notify pharmacy staff of new client registration
+    await notifyStaff({
+      companyId,
+      title: "Nouveau client inscrit",
+      message: `${fullName} s'est inscrit en tant que nouveau client.`,
+      type: "system",
+      data: { clientId: client._id },
+    });
+
     return success(res, {
+
       status: 201,
       data: {
         accessToken,
@@ -199,7 +211,7 @@ exports.refreshToken = async (req, res, next) => {
     }
 
     const user = await User.findOne({ "refreshTokens.token": token });
-    
+
     if (!user) {
       return failure(res, { status: 401, message: "Invalid refresh token", code: "INVALID_TOKEN" });
     }
@@ -216,10 +228,10 @@ exports.refreshToken = async (req, res, next) => {
     // Token Rotation: Generate new tokens and revoke old one
     const newAccessToken = signAccessToken(user._id);
     const newRefreshToken = crypto.randomBytes(40).toString("hex");
-    
+
     refreshToken.revokedAt = new Date();
     refreshToken.replacedByToken = newRefreshToken;
-    
+
     user.refreshTokens.push({
       token: newRefreshToken,
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000)
@@ -361,7 +373,7 @@ exports.updateMe = async (req, res, next) => {
       return failure(res, { status: 404, message: "User not found", code: "USER_NOT_FOUND" });
     }
 
-    if (email && email !== user.email) {
+    if (email && email.toLowerCase() !== user.email) {
       const newEmail = email.toLowerCase();
       const conflict = await User.findOne({ email: newEmail, _id: { $ne: req.user._id } }).lean();
       if (conflict) {
@@ -371,10 +383,24 @@ exports.updateMe = async (req, res, next) => {
     }
 
     if (fullName) user.fullName = fullName;
-    if (phone) user.phone = phone;
-    if (address) user.address = address;
+    if (phone !== undefined) user.phone = phone;
+    if (address !== undefined) user.address = address;
 
     await user.save();
+
+    // Also update Client document if user is a client
+    if (user.role === "client") {
+      const Client = require("../models/client");
+      await Client.findOneAndUpdate(
+        { userId: user._id },
+        {
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          address: user.address
+        }
+      );
+    }
 
     return success(res, { data: userPayload(user) });
   } catch (error) {

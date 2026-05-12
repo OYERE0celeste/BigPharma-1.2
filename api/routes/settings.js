@@ -8,6 +8,7 @@ router.use(authMiddleware);
 router.use(isAdmin);
 
 router.get("/", settingsController.getSettings);
+router.get("/profile", settingsController.getProfileSettings);
 router.patch("/system", settingsController.updateSystemSettings);
 router.patch("/pharmacy", settingsController.updatePharmacyInfo);
 

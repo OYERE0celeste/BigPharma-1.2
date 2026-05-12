@@ -5,7 +5,7 @@ Application full-stack de gestion pharmaceutique unifiée.
 Cette application Flutter combine les fonctionnalités pour les clients et les pharmacies en une seule app, avec un routage basé sur les rôles utilisateur.
 
 - **Pour les clients** : Recherche de médicaments, commandes, historique des achats.
-- **Pour les pharmacies** : Gestion des stocks, validation des prescriptions, dashboard financier.
+- **Pour les pharmacies** : Gestion des stocks, dashboard financier.
 
 - Frontend: Flutter (`lib/`)
 - Backend: Node.js/Express + MongoDB (`api/`)

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import '../models/support_model.dart';
 import 'api_constants.dart';
-import '../client_services/api_service.dart';
+import 'api_service.dart';
 
 class SupportService {
   final ApiService _apiService = ApiService();

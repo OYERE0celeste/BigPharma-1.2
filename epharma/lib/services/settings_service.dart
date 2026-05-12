@@ -25,7 +25,7 @@ class SettingsService {
     if (response.statusCode == 200 && data['success'] == true) {
       return data['data'] as Map<String, dynamic>;
     }
-    throw Exception(data['message'] ?? 'Erreur chargement paramètres');
+    throw Exception(data['message'] ?? 'Erreur chargement paramétres');
   }
 
   Future<void> updatePermissions(Map<String, bool> permissions) async {
@@ -37,7 +37,7 @@ class SettingsService {
     );
     final data = _decode(response);
     if (response.statusCode != 200 || data['success'] != true) {
-      throw Exception(data['message'] ?? 'Erreur mise à jour permissions');
+      throw Exception(data['message'] ?? 'Erreur mise é jour permissions');
     }
   }
 
@@ -50,7 +50,7 @@ class SettingsService {
     );
     final data = _decode(response);
     if (response.statusCode != 200 || data['success'] != true) {
-      throw Exception(data['message'] ?? 'Erreur mise à jour 2FA');
+      throw Exception(data['message'] ?? 'Erreur mise é jour 2FA');
     }
 
     final payload = data['data'];

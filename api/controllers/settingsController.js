@@ -47,3 +47,30 @@ exports.updatePharmacyInfo = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getProfileSettings = async (req, res, next) => {
+  try {
+    const User = require("../models/User");
+    const user = await User.findById(req.user._id).select("-passwordHash");
+    
+    if (!user) {
+      return failure(res, { status: 404, message: "Utilisateur non trouvé" });
+    }
+
+    return success(res, {
+      data: {
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone || "",
+        address: user.address || "",
+        role: user.role,
+        profileImageUrl: user.profileImageUrl || "",
+        twoFactorEnabled: user.twoFactorEnabled || false,
+        permissions: user.permissions || {},
+        loginHistory: user.loginHistory || []
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};

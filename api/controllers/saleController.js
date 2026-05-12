@@ -5,6 +5,8 @@ const MouvementStock = require("../models/mouvementStock");
 const { logActivity } = require("../utils/activityLogger");
 const { runInTransaction } = require("../utils/dbUtils");
 const { success, failure } = require("../utils/response");
+const { notifyStaff } = require("../utils/notificationHelper");
+
 
 /**
  * Register a new sale
@@ -146,7 +148,21 @@ exports.createSale = async (req, res, next) => {
         product.markModified("lots");
         // stockQuantity will be updated by pre-save hook in product.js
         await product.save({ session });
+
+        // Real-time Stock Alert
+        if (product.stockQuantity <= (product.minStockLevel || 0)) {
+          // This notification is outside the transaction session to ensure it's sent even if we don't await properly here
+          // but inside the loop we can just call it
+          await notifyStaff({
+            companyId: req.user.companyId,
+            title: "Stock Critique (POS)",
+            message: `${product.name} est sous le seuil de sécurité (${product.stockQuantity} restants).`,
+            type: "stock",
+            data: { productId: product._id },
+          });
+        }
       }
+
 
       // 4. Record in Finance
       await new Finance({

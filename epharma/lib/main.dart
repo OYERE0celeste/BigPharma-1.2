@@ -12,10 +12,9 @@ import 'providers/auth_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/support_provider.dart';
 import 'screens/auth/login_page.dart';
-import 'client_services/cart_provider.dart';
-import 'client_services/order_provider_client.dart';
-import 'client_services/profile_provider.dart';
-import 'pages/client/home_page.dart';
+import 'providers/notification_provider.dart';
+
+// Note: Client services and pages removed as they are currently missing in this module
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +22,33 @@ void main() async {
   // Fix: A message on the flutter/lifecycle channel was discarded before it could be handled.
   // This happens on web when the framework is initializing.
   ServicesBinding.instance.channelBuffers.resize('flutter/lifecycle', 100);
+  // Custom Error Widget for production
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const SizedBox(height: 16),
+            const Text(
+              'Oups ! Une erreur est survenue.',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              details.exception.toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
+    );
+  };
+
   runApp(const MyApp());
 }
 
@@ -43,12 +69,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ClientProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
-        // Client providers
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => OrderProviderClient()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => SupportProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, NotificationProvider>(
+          create: (context) => NotificationProvider(),
+          update: (context, auth, previous) =>
+              (previous ?? NotificationProvider())..update(auth),
+        ),
       ],
+
       child: MaterialApp(
         title: 'BigPharma SaaS',
         theme: ThemeData(
@@ -78,11 +106,9 @@ class AuthWrapper extends StatelessWidget {
     }
 
     if (authProvider.isAuthenticated) {
-      if (authProvider.user?.role == 'client') {
-        return const HomePage();
-      } else {
-        return const MainLayout();
-      }
+      // Direct all authenticated users to MainLayout for now,
+      // as HomePage for clients is missing in this module.
+      return const MainLayout();
     } else {
       return const LoginPage();
     }

@@ -450,7 +450,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               DataColumn(label: Text('Date')),
               DataColumn(label: Text('Total')),
               DataColumn(label: Text('Statut')),
-              DataColumn(label: Text('Ordonnance')),
+
               DataColumn(label: Text('Actions')),
             ],
             rows: provider.orders.map(_buildOrderRow).toList(),
@@ -473,14 +473,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
         DataCell(Text(order.formattedDate)),
         DataCell(Text('${order.totalPrice.toStringAsFixed(0)} FCFA')),
         DataCell(_buildStatusBadge(order.status)),
-        DataCell(
-          Icon(
-            order.prescriptionRequired
-                ? Icons.check_circle
-                : Icons.remove_circle_outline,
-            color: order.prescriptionRequired ? Colors.orange : Colors.grey,
-          ),
-        ),
+
         DataCell(
           Row(
             mainAxisSize: MainAxisSize.min,
