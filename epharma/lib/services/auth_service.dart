@@ -426,4 +426,24 @@ class AuthService {
       ),
     );
   }
+
+  Future<void> deleteUser(String userId) async {
+    final headers = await getHeaders();
+    final response = await _sendRequest(
+      () => http.delete(
+        Uri.parse("${ApiConstants.baseUrl}/users/staff/$userId"),
+        headers: headers,
+      ),
+    );
+
+    final data = _safeDecode(response);
+    if (response.statusCode != 200 || data['success'] != true) {
+      throw Exception(
+        _extractErrorMessage(
+          response,
+          defaultMessage: 'Erreur lors de la suppression',
+        ),
+      );
+    }
+  }
 }

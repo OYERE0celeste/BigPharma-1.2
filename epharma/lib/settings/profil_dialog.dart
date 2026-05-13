@@ -27,7 +27,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
-    
+
     // Refresh settings data from server when opening the dialog
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SettingsProvider>().loadSettings();
@@ -40,13 +40,14 @@ class _ProfilDialogState extends State<ProfilDialog> {
     super.didChangeDependencies();
     final settings = context.watch<SettingsProvider>().settings;
     final user = context.watch<AuthProvider>().user;
-    
+
     // Only update controllers if not currently editing
     if (!_isEditing) {
-      final effectiveFullName = settings.fullName.isNotEmpty ? settings.fullName : (user?.fullName ?? '');
-      final effectiveEmail = settings.email.isNotEmpty ? settings.email : (user?.email ?? '');
-      final effectivePhone = settings.phone.isNotEmpty ? settings.phone : (user?.phone ?? '');
-      final effectiveAddress = settings.address.isNotEmpty ? settings.address : (user?.address ?? '');
+      // Priority: Use authenticated user data first, fallback to settings
+      final effectiveFullName = user?.fullName ?? settings.fullName;
+      final effectiveEmail = user?.email ?? settings.email;
+      final effectivePhone = user?.phone ?? settings.phone;
+      final effectiveAddress = user?.address ?? settings.address;
 
       if (effectiveFullName.isNotEmpty) {
         _nameController.text = effectiveFullName;
@@ -114,11 +115,12 @@ class _ProfilDialogState extends State<ProfilDialog> {
         final settings = provider.settings;
         final user = context.watch<AuthProvider>().user;
 
-        // Fallback variables for display
-        final effectiveFullName = settings.fullName.isNotEmpty ? settings.fullName : (user?.fullName ?? '');
-        final effectiveEmail = settings.email.isNotEmpty ? settings.email : (user?.email ?? '');
-        final effectivePhone = settings.phone.isNotEmpty ? settings.phone : (user?.phone ?? '');
-        final effectiveAddress = settings.address.isNotEmpty ? settings.address : (user?.address ?? '');
+        // Priority: Use authenticated user data first, fallback to settings
+        // This ensures we always display the connected user's profile, not someone else's
+        final effectiveFullName = user?.fullName ?? settings.fullName;
+        final effectiveEmail = user?.email ?? settings.email;
+        final effectivePhone = user?.phone ?? settings.phone;
+        final effectiveAddress = user?.address ?? settings.address;
 
         final initials = effectiveFullName.trim().isEmpty
             ? '?'
@@ -292,7 +294,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
                             _buildInfoCard([
                               _buildInfoRow(
                                 'Rôle',
-                                settings.role.toUpperCase(),
+                                (user?.role ?? settings.role).toUpperCase(),
                                 Icons.security_outlined,
                               ),
                             ]),

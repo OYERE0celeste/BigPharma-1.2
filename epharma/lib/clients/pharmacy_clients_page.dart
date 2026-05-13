@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/client_provider.dart';
+import '../providers/auth_provider.dart';
 import '../models/client_model.dart';
+import '../security/rbac.dart';
 import '../widgets/app_colors.dart';
 import 'widgets/client_detail.dart';
 import 'widgets/add_edit_client.dart';
@@ -89,20 +91,36 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().user;
+    final canView = user?.can(AppPermission.viewClients) ?? false;
+    final canAdd = user?.can(AppPermission.addClient) ?? false;
+    final canEdit = user?.can(AppPermission.editClient) ?? false;
+    final canDelete = user?.can(AppPermission.deleteClient) ?? false;
+
+    if (!canView) {
+      return const Center(
+        child: Text('Acces non autorise a ce module.'),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 768;
 
         if (isMobile) {
-          return _buildMobileView();
+          return _buildMobileView(canAdd: canAdd, canEdit: canEdit, canDelete: canDelete);
         } else {
-          return _buildDesktopView();
+          return _buildDesktopView(canAdd: canAdd, canEdit: canEdit, canDelete: canDelete);
         }
       },
     );
   }
 
-  Widget _buildMobileView() {
+  Widget _buildMobileView({
+    required bool canAdd,
+    required bool canEdit,
+    required bool canDelete,
+  }) {
     final provider = context.watch<ClientProvider>();
     final isLoading = provider.isLoading;
     final error = provider.error;
@@ -128,7 +146,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                   _currentPage = 0;
                 });
               },
-              onAddClient: () => _showClientFormDialog(null),
+              onAddClient: canAdd ? () => _showClientFormDialog(null) : null,
             ),
             const SizedBox(height: 16),
             if (isLoading)
@@ -199,14 +217,16 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                             value: 'view',
                             child: Text('Voir'),
                           ),
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Text('Modifier'),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Text('Supprimer'),
-                          ),
+                          if (canEdit)
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Text('Modifier'),
+                            ),
+                          if (canDelete)
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text('Supprimer'),
+                            ),
                         ],
                       ),
                       onTap: () => _showClientDetailsPanel(client),
@@ -220,7 +240,11 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
     );
   }
 
-  Widget _buildDesktopView() {
+  Widget _buildDesktopView({
+    required bool canAdd,
+    required bool canEdit,
+    required bool canDelete,
+  }) {
     final provider = context.watch<ClientProvider>();
     final isLoading = provider.isLoading;
     final error = provider.error;
@@ -246,7 +270,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                   _currentPage = 0;
                 });
               },
-              onAddClient: () => _showClientFormDialog(null),
+              onAddClient: canAdd ? () => _showClientFormDialog(null) : null,
             ),
             const SizedBox(height: 20),
             if (isLoading)
@@ -279,12 +303,12 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                   onViewDetails: (client) {
                     _showClientDetailsPanel(client);
                   },
-                  onEditClient: (client) {
+                  onEditClient: canEdit ? (client) {
                     _showClientFormDialog(client);
-                  },
-                  onDeleteClient: (client) {
+                  } : null,
+                  onDeleteClient: canDelete ? (client) {
                     _showDeleteConfirmation(client);
-                  },
+                  } : null,
                   onPageChanged: (page) {
                     setState(() {
                       _currentPage = page;

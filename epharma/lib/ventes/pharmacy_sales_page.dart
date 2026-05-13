@@ -3,12 +3,14 @@
 import '../models/activity_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/sales_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/finance_provider.dart';
 import '../widgets/app_colors.dart';
 import '../models/product_model.dart';
 import '../models/sale_model.dart';
+import '../security/rbac.dart';
 import 'widgets/product_card.dart';
 import 'widgets/cart_item_tile.dart';
 import 'widgets/transaction_summary.dart';
@@ -203,19 +205,44 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().user;
+    final canMakeSale = user?.can(AppPermission.makeSale) ?? false;
+    final canViewHistory = user?.can(AppPermission.viewSalesHistory) ?? false;
+
+    if (!canMakeSale && !canViewHistory) {
+      return const Center(
+        child: Text('Acces non autorise a ce module.'),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         // Increased threshold to 1100 for better tablet/small laptop support
         if (constraints.maxWidth < 1100) {
-          return _buildMobilePOSView(constraints);
+          return _buildMobilePOSView(
+            constraints,
+            canMakeSale: canMakeSale,
+            canViewHistory: canViewHistory,
+          );
         }
-        return _showSalesHistory ? _buildSalesHistoryView() : _buildPOSView();
+        if (!canMakeSale && canViewHistory) {
+          return _buildSalesHistoryView(canReturnToPos: false);
+        }
+        return _showSalesHistory
+            ? _buildSalesHistoryView(canReturnToPos: canMakeSale)
+            : _buildPOSView(canMakeSale: canMakeSale, canViewHistory: canViewHistory);
       },
     );
   }
 
-  Widget _buildMobilePOSView(BoxConstraints constraints) {
-    if (_showSalesHistory) return _buildSalesHistoryView();
+  Widget _buildMobilePOSView(
+    BoxConstraints constraints, {
+    required bool canMakeSale,
+    required bool canViewHistory,
+  }) {
+    if (_showSalesHistory || !canMakeSale) {
+      return _buildSalesHistoryView(canReturnToPos: canMakeSale);
+    }
     
     // Simple tabbed view for mobile: Products vs Cart
     return DefaultTabController(
@@ -224,10 +251,11 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         appBar: AppBar(
           title: const Text('Point de Vente', style: TextStyle(fontSize: 16)),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.history),
-              onPressed: () => setState(() => _showSalesHistory = true),
-            ),
+            if (canViewHistory)
+              IconButton(
+                icon: const Icon(Icons.history),
+                onPressed: () => setState(() => _showSalesHistory = true),
+              ),
           ],
           bottom: const TabBar(
             tabs: [
@@ -246,18 +274,26 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     );
   }
 
-  Widget _buildPOSView() {
+  Widget _buildPOSView({required bool canMakeSale, required bool canViewHistory}) {
     return Row(
       children: [
         // LEFT SIDE: Product Search & Selection
-        _buildProductsSection(isMobile: false),
+        _buildProductsSection(
+          isMobile: false,
+          canMakeSale: canMakeSale,
+          canViewHistory: canViewHistory,
+        ),
         // RIGHT SIDE: Cart & Transaction Summary
         _buildCartSection(isMobile: false),
       ],
     );
   }
 
-  Widget _buildProductsSection({required bool isMobile}) {
+  Widget _buildProductsSection({
+    required bool isMobile,
+    bool canMakeSale = true,
+    bool canViewHistory = true,
+  }) {
     final productProvider = context.watch<ProductProvider>();
     final allProducts = productProvider.products;
     final query = _searchController.text.toLowerCase();
@@ -327,20 +363,21 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   label: 'Vente',
                                   icon: Icons.shopping_bag,
                                   isActive: !_showSalesHistory,
-                                  onPressed: () => setState(
-                                      () => _showSalesHistory = false),
+                                  onPressed: canMakeSale
+                                      ? () => setState(() => _showSalesHistory = false)
+                                      : null,
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              Expanded(
-                                child: _buildHeaderBtn(
-                                  label: 'Historique',
-                                  icon: Icons.history,
-                                  isActive: _showSalesHistory,
-                                  onPressed: () => setState(
-                                      () => _showSalesHistory = true),
+                              if (canViewHistory)
+                                Expanded(
+                                  child: _buildHeaderBtn(
+                                    label: 'Historique',
+                                    icon: Icons.history,
+                                    isActive: _showSalesHistory,
+                                    onPressed: () => setState(() => _showSalesHistory = true),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ],
@@ -443,17 +480,19 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                 label: 'Nouvelle Vente',
                                 icon: Icons.shopping_bag,
                                 isActive: !_showSalesHistory,
-                                onPressed: () =>
-                                    setState(() => _showSalesHistory = false),
+                                onPressed: canMakeSale
+                                    ? () => setState(() => _showSalesHistory = false)
+                                    : null,
                               ),
-                              const SizedBox(width: 8),
-                              _buildHeaderBtn(
-                                label: 'Historique',
-                                icon: Icons.history,
-                                isActive: _showSalesHistory,
-                                onPressed: () =>
-                                    setState(() => _showSalesHistory = true),
-                              ),
+                              if (canViewHistory) ...[
+                                const SizedBox(width: 8),
+                                _buildHeaderBtn(
+                                  label: 'Historique',
+                                  icon: Icons.history,
+                                  isActive: _showSalesHistory,
+                                  onPressed: () => setState(() => _showSalesHistory = true),
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -488,7 +527,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                       final p = filteredProducts[index];
                       return ProductCard(
                         product: p,
-                        onAddToCart: () => _addProductToCart(p),
+                        onAddToCart: canMakeSale ? () => _addProductToCart(p) : null,
                       );
                     },
                   );
@@ -501,7 +540,12 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     );
   }
 
-  Widget _buildHeaderBtn({required String label, required IconData icon, required bool isActive, required VoidCallback onPressed}) {
+  Widget _buildHeaderBtn({
+    required String label,
+    required IconData icon,
+    required bool isActive,
+    required VoidCallback? onPressed,
+  }) {
     return OutlinedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 16),
@@ -631,7 +675,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     );
   }
 
-  Widget _buildSalesHistoryView() {
+  Widget _buildSalesHistoryView({required bool canReturnToPos}) {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
@@ -645,13 +689,14 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                 'HISTORIQUE DES VENTES',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              OutlinedButton.icon(
-                onPressed: () {
-                  setState(() => _showSalesHistory = false);
-                },
-                icon: const Icon(Icons.close, size: 16),
-                label: const Text('Retour au POS'),
-              ),
+              if (canReturnToPos)
+                OutlinedButton.icon(
+                  onPressed: () {
+                    setState(() => _showSalesHistory = false);
+                  },
+                  icon: const Icon(Icons.close, size: 16),
+                  label: const Text('Retour au POS'),
+                ),
             ],
           ),
           const SizedBox(height: 20),

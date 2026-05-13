@@ -5,8 +5,8 @@ exports.ROLES = {
   ADMIN: "administrateur",
   PHARMACIST: "pharmacien",
   STOCK_MANAGER: "gestionnaire de stock",
-  SALES_AGENT: "agent de vente",
-  AUTHORIZED_STAFF: "personnel autorisé",
+  CASHIER: "caissier",
+  ASSISTANT: "assistante de gestion",
   CLIENT: "client",
 };
 

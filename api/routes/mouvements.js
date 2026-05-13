@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const MouvementStock = require("../models/mouvementStock");
+const { requirePermission } = require("../middleware/roleMiddleware");
+const { PERMISSIONS } = require("../utils/rolePermissions");
 
 // Liste des mouvements avec filtres et pagination
-router.get("/", async (req, res, next) => {
+router.get("/", requirePermission(PERMISSIONS.VIEW_STOCK_REPORTS), async (req, res, next) => {
   try {
     const { page = 1, limit = 20, produitId, type, reason, startDate, endDate } = req.query;
     const query = { companyId: req.user.companyId };
@@ -40,8 +42,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// Export des mouvements en CSV
-router.get("/export", async (req, res, next) => {
+router.get("/export", requirePermission(PERMISSIONS.VIEW_STOCK_REPORTS), async (req, res, next) => {
   try {
     const { startDate, endDate } = req.query;
     const query = { companyId: req.user.companyId };

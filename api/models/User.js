@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["administrateur", "admin", "pharmacien", "gestionnaire de stock", "agent de vente", "personnel autorisé", "client"],
+      enum: ["administrateur", "pharmacien", "caissier", "gestionnaire de stock", "assistante de gestion", "client"],
       default: "pharmacien",
     },
     companyId: {

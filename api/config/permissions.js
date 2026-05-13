@@ -5,8 +5,8 @@ const ROLES = {
   ADMINISTRATEUR: "administrateur",
   PHARMACIEN: "pharmacien",
   GESTIONNAIRE_STOCK: "gestionnaire de stock",
-  AGENT_VENTE: "agent de vente",
-  PERSONNEL_AUTORISE: "personnel autorisé",
+  CAISSIER: "caissier",
+  ASSISTANTE_GESTION: "assistante de gestion",
   CLIENT: "client",
 };
 
@@ -56,16 +56,17 @@ const ROLE_PERMISSIONS = {
     PERMISSIONS.PREPARE_ORDER,
   ],
   
-  [ROLES.AGENT_VENTE]: [
+  [ROLES.CAISSIER]: [
     PERMISSIONS.VIEW_PRODUCTS,
     PERMISSIONS.CREATE_SALE,
     PERMISSIONS.VIEW_SALES,
     PERMISSIONS.VIEW_ORDERS,
   ],
   
-  [ROLES.PERSONNEL_AUTORISE]: [
+  [ROLES.ASSISTANTE_GESTION]: [
     PERMISSIONS.VIEW_PRODUCTS,
     PERMISSIONS.VIEW_ORDERS,
+    PERMISSIONS.VIEW_SALES,
   ],
   
   [ROLES.CLIENT]: [

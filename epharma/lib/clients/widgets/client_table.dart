@@ -7,8 +7,8 @@ class ClientsTable extends StatelessWidget {
   final int currentPage;
   final int pageSize;
   final Function(Client) onViewDetails;
-  final Function(Client) onEditClient;
-  final Function(Client) onDeleteClient;
+  final Function(Client)? onEditClient;
+  final Function(Client)? onDeleteClient;
   final Function(int) onPageChanged;
 
   const ClientsTable({
@@ -89,12 +89,16 @@ class ClientsTable extends StatelessWidget {
                             ),
                             IconButton(
                               icon: const Icon(Icons.edit_outlined),
-                              onPressed: () => onEditClient(client),
+                              onPressed: onEditClient == null
+                                  ? null
+                                  : () => onEditClient!(client),
                               tooltip: 'Modifier',
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete_outline),
-                              onPressed: () => onDeleteClient(client),
+                              onPressed: onDeleteClient == null
+                                  ? null
+                                  : () => onDeleteClient!(client),
                               tooltip: 'Supprimer',
                             ),
                           ],

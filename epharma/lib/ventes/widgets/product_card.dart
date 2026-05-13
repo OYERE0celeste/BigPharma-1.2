@@ -5,7 +5,7 @@ import '../../widgets/app_colors.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-  final VoidCallback onAddToCart;
+  final VoidCallback? onAddToCart;
   final bool isSelected;
 
   const ProductCard({

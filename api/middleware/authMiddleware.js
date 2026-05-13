@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { getJwtSecret } = require("../config/env");
 const { failure } = require("../utils/response");
+const { resolveUserPermissions } = require("../utils/rolePermissions");
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization || "";
@@ -28,12 +29,13 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
+    user.permissions = resolveUserPermissions(user);
     req.user = user;
     return next();
   } catch (error) {
     return failure(res, {
       status: 401,
-      message: `AUTH_DEBUG: ${error.message} | Token: ${token.substring(0, 10)}...`,
+      message: "Unauthorized: invalid or expired token",
       code: "UNAUTHORIZED",
     });
   }

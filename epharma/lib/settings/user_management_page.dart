@@ -93,7 +93,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Gérez votre équipe et leurs permissions d'accès",
+                    "Gérez votre équipe et leurs comptes d'accès",
                     style: TextStyle(color: SettingsTheme.textSecondary.withOpacity(0.8), fontSize: 14),
                   ),
                 ],
@@ -196,17 +196,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
             ),
             subtitle: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: SettingsTheme.accent.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    user.role.toUpperCase(),
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SettingsTheme.primary),
-                  ),
-                ),
+                _buildRoleBadge(user.role),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -217,49 +207,72 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                 ),
               ],
             ),
-            trailing: PopupMenuButton<String>(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              icon: const Icon(Icons.more_vert_rounded),
-              onSelected: (val) {
-                if (val == 'status') {
-                  _toggleUserStatus(user);
-                } else if (val == 'edit') {
-                  // TODO: Implement edit
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit_outlined, size: 18),
-                      SizedBox(width: 12),
-                      Text("Modifier"),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'status',
-                  child: Row(
-                    children: [
-                      Icon(
-                        user.isActive ? Icons.block_flipped : Icons.check_circle_outline,
-                        size: 18,
-                        color: user.isActive ? kDangerRed : kPrimaryGreen,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        user.isActive ? "Désactiver" : "Réactiver",
-                        style: TextStyle(color: user.isActive ? kDangerRed : kPrimaryGreen),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            trailing: _buildPopupMenu(user),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildRoleBadge(String role) {
+    Color color = SettingsTheme.primary;
+    if (role == 'administrateur') color = Colors.purple;
+    if (role == 'assistante de gestion') color = Colors.orange;
+    if (role == 'caissier') color = Colors.blue;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        role.toUpperCase(),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+      ),
+    );
+  }
+
+  Widget _buildPopupMenu(UserModel user) {
+    return PopupMenuButton<String>(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      icon: const Icon(Icons.more_vert_rounded),
+      onSelected: (val) {
+        if (val == 'status') {
+          _toggleUserStatus(user);
+        } else if (val == 'delete') {
+          _showDeleteConfirm(user);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'status',
+          child: Row(
+            children: [
+              Icon(
+                user.isActive ? Icons.block_flipped : Icons.check_circle_outline,
+                size: 18,
+                color: user.isActive ? kDangerRed : kPrimaryGreen,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                user.isActive ? "Désactiver" : "Réactiver",
+                style: TextStyle(color: user.isActive ? kDangerRed : kPrimaryGreen),
+              ),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline_rounded, size: 18, color: kDangerRed),
+              SizedBox(width: 12),
+              Text("Supprimer", style: TextStyle(color: kDangerRed)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -272,65 +285,122 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text("Nouveau collaborateur"),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildField(nameCtrl, "Nom complet", Icons.person_outline),
-                const SizedBox(height: 12),
-                _buildField(emailCtrl, "Email", Icons.email_outlined),
-                const SizedBox(height: 12),
-                _buildField(passCtrl, "Mot de passe", Icons.lock_outline, obscure: true),
-                const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  value: role,
-                  decoration: _inputDecoration("Rôle", Icons.badge_outlined),
-                  items: [
-                    'pharmacien',
-                    'assistant',
-                    'caissier',
-                  ].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-                  onChanged: (val) => setDialogState(() => role = val!),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("ANNULER", style: TextStyle(color: SettingsTheme.textSecondary)),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  await _authService.createUser({
-                    'fullName': nameCtrl.text.trim(),
-                    'email': emailCtrl.text.trim(),
-                    'password': passCtrl.text,
-                    'role': role,
-                  });
-                  if (mounted) {
-                    Navigator.pop(context);
-                    _fetchUsers();
-                  }
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString().replaceAll('Exception: ', '')), backgroundColor: kDangerRed),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: SettingsTheme.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        builder: (context, setDialogState) {
+          final isAssistant = role == 'assistante de gestion';
+          final hasAssistant = _users.any((u) => u.role == 'assistante de gestion' && u.isActive);
+
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: const Text("Nouveau collaborateur"),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildField(nameCtrl, "Nom complet", Icons.person_outline),
+                  const SizedBox(height: 12),
+                  _buildField(emailCtrl, "Email", Icons.email_outlined),
+                  const SizedBox(height: 12),
+                  _buildField(passCtrl, "Mot de passe", Icons.lock_outline, obscure: true),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    value: role,
+                    decoration: _inputDecoration("Rôle", Icons.badge_outlined),
+                    items: [
+                      'pharmacien',
+                      'caissier',
+                      'gestionnaire de stock',
+                      'assistante de gestion',
+                    ].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
+                    onChanged: (val) => setDialogState(() => role = val!),
+                  ),
+                  if (isAssistant && hasAssistant)
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.red[100]!),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "Une assistante de gestion est déjà active.",
+                              style: TextStyle(color: Colors.red[900], fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               ),
-              child: const Text("AJOUTER"),
             ),
-          ],
-        ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("ANNULER", style: TextStyle(color: SettingsTheme.textSecondary)),
+              ),
+              ElevatedButton(
+                onPressed: (isAssistant && hasAssistant) ? null : () async {
+                  try {
+                    await _authService.createUser({
+                      'fullName': nameCtrl.text.trim(),
+                      'email': emailCtrl.text.trim(),
+                      'password': passCtrl.text,
+                      'role': role,
+                    });
+                    if (mounted) {
+                      Navigator.pop(context);
+                      _fetchUsers();
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(e.toString().replaceAll('Exception: ', '')), backgroundColor: kDangerRed),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: SettingsTheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Text("AJOUTER"),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showDeleteConfirm(UserModel user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Supprimer l'utilisateur ?"),
+        content: Text("Êtes-vous sûr de vouloir supprimer ${user.fullName} ? Cette action est irréversible."),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("ANNULER")),
+          TextButton(
+            onPressed: () async {
+              try {
+                await _authService.deleteUser(user.id);
+                if (mounted) {
+                  Navigator.pop(context);
+                  _fetchUsers();
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString().replaceAll('Exception: ', '')), backgroundColor: kDangerRed),
+                );
+              }
+            },
+            child: const Text("SUPPRIMER", style: TextStyle(color: kDangerRed)),
+          ),
+        ],
       ),
     );
   }

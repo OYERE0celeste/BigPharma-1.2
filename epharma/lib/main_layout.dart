@@ -1,21 +1,24 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'widgets/global_navbar.dart';
-import 'widgets/app_sidebar.dart';
-import 'pharmacy_dashboard_page.dart';
-import 'ventes/pharmacy_sales_page.dart';
-import 'products/pharmacy_products_page.dart';
-import 'clients/pharmacy_clients_page.dart';
+import 'package:provider/provider.dart';
+
 import 'activites/activity_register_page.dart';
+import 'clients/pharmacy_clients_page.dart';
 import 'commandes/orders_page.dart';
 import 'finances/pharmacy_finance_page.dart';
+import 'models/user_model.dart';
+import 'pharmacy_dashboard_page.dart';
+import 'products/pharmacy_products_page.dart';
+import 'providers/auth_provider.dart';
+import 'security/rbac.dart';
+import 'settings/rights_management_page.dart';
 import 'settings/settings_dialog.dart';
 import 'settings/user_management_page.dart';
 import 'support/pharmacy_support_page.dart';
-
-// =====================================================================
-// MAIN LAYOUT WIDGET - Enveloppe toutes les pages
-// =====================================================================
+import 'ventes/pharmacy_sales_page.dart';
+import 'widgets/app_sidebar.dart';
+import 'widgets/global_navbar.dart';
 
 typedef SectionNavigationCallback = void Function(String section);
 
@@ -62,10 +65,14 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _pageTitle = widget.pageTitle;
-    _currentPage = widget.child is SizedBox
-        ? const PharmacyDashboardPage()
-        : widget.child;
+
+    final auth = context.read<AuthProvider>();
+    final initialSection = widget.child is SizedBox
+        ? _resolveInitialSection(auth.user)
+        : widget.pageTitle;
+
+    _pageTitle = initialSection;
+    _currentPage = widget.child is SizedBox ? _pageForSection(initialSection) : widget.child;
 
     _sidebarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -77,6 +84,79 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   void dispose() {
     _sidebarAnimationController.dispose();
     super.dispose();
+  }
+
+  String _resolveInitialSection(UserModel? user) {
+    if (user == null) return 'Dashboard';
+
+    const preferredSections = [
+      'Dashboard',
+      'Products',
+      'Stock',
+      'POS',
+      'Sales',
+      'Clients',
+      'Orders',
+      'Support',
+      'Finances',
+      'Rights',
+      'Users',
+      'Activity',
+    ];
+
+    for (final section in preferredSections) {
+      for (final entry in kSidebarEntries) {
+        if (entry.key == section && user.canAny(entry.permissions)) {
+          return section;
+        }
+      }
+    }
+
+    return 'Settings';
+  }
+
+  Widget _pageForSection(String section) {
+    switch (section) {
+      case 'Dashboard':
+        return const PharmacyDashboardPage();
+      case 'Products':
+      case 'Stock':
+        return const PharmacyProductsPage();
+      case 'POS':
+      case 'Sales':
+        return const PharmacySalesPage();
+      case 'Orders':
+        return const PharmacyOrdersPage();
+      case 'Clients':
+        return const PharmacyClientsPage();
+      case 'Activity':
+        return const PharmacyActivityRegisterPage();
+      case 'Finances':
+        return const PharmacyFinancePage();
+      case 'Support':
+        return const PharmacySupportPage();
+      case 'Users':
+        return const UserManagementDialog();
+      case 'Rights':
+        return const RightsManagementDialog();
+      default:
+        return const PharmacyDashboardPage();
+    }
+  }
+
+  bool _canAccessSection(String section) {
+    if (section == 'Settings') return true;
+
+    final user = context.read<AuthProvider>().user;
+    if (user == null) return false;
+
+    for (final entry in kSidebarEntries) {
+      if (entry.key == section) {
+        return user.canAny(entry.permissions);
+      }
+    }
+
+    return false;
   }
 
   void _toggleSidebar() {
@@ -110,7 +190,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                   onNotificationNavigate: (type, data) {
                     switch (type) {
                       case 'order':
-                        _navigateToSection('Commandes');
+                        _navigateToSection('Orders');
                         break;
                       case 'support':
                         _navigateToSection('Support');
@@ -119,12 +199,15 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                         _navigateToSection('Stock');
                         break;
                       default:
-                        _navigateToSection('Dashboard');
+                        _navigateToSection(_resolveInitialSection(context.read<AuthProvider>().user));
                     }
                   },
                 ),
                 Expanded(
-                  child: Container(color: Colors.grey[50], child: _currentPage),
+                  child: Container(
+                    color: Colors.grey[50],
+                    child: _currentPage,
+                  ),
                 ),
               ],
             ),
@@ -146,55 +229,38 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   }
 
   void _navigateToSection(String section) {
-    switch (section) {
-      case 'Dashboard':
-        _navigateTo('Dashboard', const PharmacyDashboardPage());
-        break;
-      case 'Stock':
-        _navigateTo('Stock', const PharmacyProductsPage());
-        break;
-      case 'Sales':
-        _navigateTo('Sales', const PharmacySalesPage());
-        break;
-      case 'Commandes':
-        _navigateTo('Commandes', const PharmacyOrdersPage());
-        break;
-      case 'Clients':
-        _navigateTo('Clients', const PharmacyClientsPage());
-        break;
-      case 'Activity':
-        _navigateTo('Activity', const PharmacyActivityRegisterPage());
-        break;
-      case 'Finances':
-        _navigateTo('Finances', const PharmacyFinancePage());
-        break;
-      case 'Support':
-        _navigateTo('Support', const PharmacySupportPage());
-        break;
-      case 'Users':
-        _navigateTo('Users', const UserManagementDialog());
-        break;
-      case 'Paramètres':
-        if (_isSidebarOpen) _toggleSidebar();
-        SettingsDialog.show(context);
-        break;
-      default:
-        _navigateTo('Dashboard', const PharmacyDashboardPage());
+    if (!_canAccessSection(section)) {
+      final fallback = _resolveInitialSection(context.read<AuthProvider>().user);
+      if (section != fallback) {
+        _navigateTo(fallback, _pageForSection(fallback));
+      }
+      return;
     }
+
+    if (section == 'Settings') {
+      if (_isSidebarOpen) _toggleSidebar();
+      SettingsDialog.show(context);
+      return;
+    }
+
+    _navigateTo(section, _pageForSection(section));
   }
 
   Map<String, VoidCallback> _buildNavigationCallbacks() {
     return {
       'Dashboard': () => _navigateToSection('Dashboard'),
+      'Products': () => _navigateToSection('Products'),
       'Stock': () => _navigateToSection('Stock'),
+      'POS': () => _navigateToSection('POS'),
       'Sales': () => _navigateToSection('Sales'),
-      'Commandes': () => _navigateToSection('Commandes'),
+      'Orders': () => _navigateToSection('Orders'),
       'Clients': () => _navigateToSection('Clients'),
       'Activity': () => _navigateToSection('Activity'),
       'Finances': () => _navigateToSection('Finances'),
       'Support': () => _navigateToSection('Support'),
       'Users': () => _navigateToSection('Users'),
-      'Paramètres': () => _navigateToSection('Paramètres'),
+      'Rights': () => _navigateToSection('Rights'),
+      'Settings': () => _navigateToSection('Settings'),
     };
   }
 
@@ -245,10 +311,6 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   }
 }
 
-// =====================================================================
-// ENHANCED RESPONSIVE LAYOUT HELPER
-// =====================================================================
-
 class ResponsiveLayout extends StatelessWidget {
   final Widget mobileBody;
   final Widget tabletBody;
@@ -277,12 +339,9 @@ class ResponsiveLayout extends StatelessWidget {
   }
 }
 
-// =====================================================================
-// FALLBACK PAGE FOR MISSING FEATURES
-// =====================================================================
-
 class FeatureNotAvailablePage extends StatelessWidget {
   final String title;
+
   const FeatureNotAvailablePage({super.key, required this.title});
 
   @override
@@ -303,7 +362,7 @@ class FeatureNotAvailablePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Nous travaillons sur cette fonctionnalitÃ©.',
+            'Nous travaillons sur cette fonctionnalite.',
             style: TextStyle(fontSize: 16, color: Colors.grey[500]),
           ),
         ],

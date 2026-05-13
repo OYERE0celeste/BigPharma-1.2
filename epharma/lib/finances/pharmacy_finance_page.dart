@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/finance_model.dart';
+import '../providers/auth_provider.dart';
 import '../providers/finance_provider.dart';
+import '../security/rbac.dart';
 import '../widgets/app_colors.dart';
 import 'widgets/finance_summary_cards.dart';
 import 'widgets/finance_filter_section.dart';
@@ -159,6 +161,15 @@ class _FinancePageContentState extends State<FinancePageContent> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().user;
+    final canViewFinance = user?.can(AppPermission.viewFinancialReports) ?? false;
+
+    if (!canViewFinance) {
+      return const Center(
+        child: Text('Acces non autorise a ce module.'),
+      );
+    }
+
     return Consumer<FinanceProvider>(
       builder: (context, financeProvider, _) {
         // Met à jour les transactions filtrées à partir du provider et filtre uniquement les entrées
@@ -189,6 +200,8 @@ class _FinancePageContentState extends State<FinancePageContent> {
   }
 
   Widget _buildMobileView(FinanceProvider financeProvider) {
+    final canAddEntry =
+        context.read<AuthProvider>().user?.can(AppPermission.addFinanceEntry) ?? false;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -205,17 +218,18 @@ class _FinancePageContentState extends State<FinancePageContent> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _showAddTransactionDialog(),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Ajouter'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryGreen,
-                        foregroundColor: Colors.white,
+                  if (canAddEntry)
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _showAddTransactionDialog(),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Ajouter'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimaryGreen,
+                          foregroundColor: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.refresh),
@@ -270,6 +284,8 @@ class _FinancePageContentState extends State<FinancePageContent> {
   }
 
   Widget _buildDesktopView(FinanceProvider financeProvider) {
+    final canAddEntry =
+        context.read<AuthProvider>().user?.can(AppPermission.addFinanceEntry) ?? false;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -372,22 +388,23 @@ class _FinancePageContentState extends State<FinancePageContent> {
                     // Actions
                     Row(
                       children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () => _showAddTransactionDialog(),
-                            icon: const Icon(Icons.add),
-                            label: const Text('Ajouter une transaction'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: kPrimaryGreen,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                        if (canAddEntry)
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () => _showAddTransactionDialog(),
+                              icon: const Icon(Icons.add),
+                              label: const Text('Ajouter une transaction'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: kPrimaryGreen,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
                           ),
-                        ),
                         const SizedBox(width: 8),
                         IconButton(
                           icon: const Icon(Icons.refresh),
@@ -545,22 +562,24 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               ? null
                               : () => _reloadTransactions(),
                         ),
-                        const SizedBox(width: 8),
-                        ElevatedButton.icon(
-                          onPressed: () => _showAddTransactionDialog(),
-                          icon: const Icon(Icons.add),
-                          label: const Text('Ajouter'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryGreen,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        if (canAddEntry) ...[
+                          const SizedBox(width: 8),
+                          ElevatedButton.icon(
+                            onPressed: () => _showAddTransactionDialog(),
+                            icon: const Icon(Icons.add),
+                            label: const Text('Ajouter'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kPrimaryGreen,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),

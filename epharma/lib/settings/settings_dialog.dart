@@ -216,6 +216,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
   Widget _buildMainSettingsList(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, provider, child) {
+        final authUser = context.watch<AuthProvider>().user;
+        final canManageUsers = authUser?.can('manage_users') ?? false;
+        final canManageSettings = authUser?.can('manage_settings') ?? false;
         return Stack(
           children: [
             SingleChildScrollView(
@@ -241,7 +244,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     subtitle: "Informations personnelles et compte",
                     routeName: 'profile',
                   ),
-                  if (provider.settings.role != 'client')
+                  if (canManageUsers)
                     _buildNavigationTile(
                       icon: Icons.people_outline_rounded,
                       title: "Gestion des collaborateurs",
@@ -254,7 +257,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     subtitle: "Mot de passe et authentification",
                     routeName: 'security',
                   ),
-                  if (provider.settings.role != 'client')
+                  if (canManageSettings)
                     _buildNavigationTile(
                       icon: Icons.data_usage_rounded,
                       title: "Gestion des données",

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/product_model.dart';
+import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
+import '../security/rbac.dart';
 import 'widgets/product_table.dart';
 import 'widgets/product_detail.dart';
 import 'widgets/product_form.dart';
@@ -88,6 +90,11 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
       // ),
       body: Consumer<ProductProvider>(
         builder: (context, provider, child) {
+          final authProvider = Provider.of<AuthProvider>(context);
+          final user = authProvider.user;
+          final canAdd = user?.can(AppPermission.addProduct) ?? false;
+          final canEdit = user?.can(AppPermission.editProduct) ?? false;
+          final canDelete = user?.can(AppPermission.deleteProduct) ?? false;
           final products = provider.products;
 
           // Apply local filters to the provider's products
@@ -163,7 +170,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         context: context,
                         builder: (_) => ProductDetailsPanel(product: p),
                       ),
-                      onEdit: (p) async {
+                      onEdit: canEdit ? (p) async {
                         final updated = await showDialog<Product>(
                           context: context,
                           builder: (_) => ProductFormDialog(product: p),
@@ -184,8 +191,8 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             }
                           }
                         }
-                      },
-                      onDelete: (p) async {
+                      } : null,
+                      onDelete: canDelete ? (p) async {
                         final ok = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
@@ -219,7 +226,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             }
                           }
                         }
-                      },
+                      } : null,
                     ),
                   ),
               ],
@@ -231,6 +238,8 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final canAdd = authProvider.user?.can(AppPermission.addProduct) ?? false;
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 1100) {
@@ -326,9 +335,10 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
               // Actions
               Row(
                 children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: _openAddDialog,
+                  if (canAdd)
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _openAddDialog,
                       icon: const Icon(Icons.add),
                       label: const Text('Ajouter un produit'),
                       style: ElevatedButton.styleFrom(
@@ -475,8 +485,9 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                       color: Colors.black54,
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: _openAddDialog,
+                    if (canAdd)
+                      ElevatedButton(
+                        onPressed: _openAddDialog,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.shade100,
                         foregroundColor: Colors.black,

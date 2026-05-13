@@ -16,6 +16,7 @@ const { sensitiveActionLimiter } = require("../middleware/rateLimiters");
 
 const router = express.Router();
 
+router.post("/register", validate(registerSchema), authController.register);
 router.post("/register-client", validate(registerClientSchema), authController.registerClient);
 router.post("/login", validate(loginSchema), authController.login);
 router.post("/refresh-token", authController.refreshToken);

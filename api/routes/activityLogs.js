@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const ActivityLog = require("../models/activityLog");
+const { requirePermission } = require("../middleware/roleMiddleware");
+const { PERMISSIONS } = require("../utils/rolePermissions");
 
 // GET /api/activity-logs?entityType=&actionType=&limit=
-router.get("/", async (req, res, next) => {
+router.get("/", requirePermission(PERMISSIONS.VIEW_SYSTEM_LOGS), async (req, res, next) => {
   try {
     const { entityType, actionType, start, end, page = 1, limit = 50 } = req.query;
     const query = { companyId: req.user.companyId };

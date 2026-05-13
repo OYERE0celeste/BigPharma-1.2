@@ -7,6 +7,7 @@ const { logActivity } = require("../utils/activityLogger");
 const { getJwtSecret } = require("../config/env");
 const { success, failure } = require("../utils/response");
 const { notifyStaff } = require("../utils/notificationHelper");
+const { getRoleDefaults, resolveUserPermissions } = require("../utils/rolePermissions");
 
 
 // Token durations
@@ -39,6 +40,9 @@ const userPayload = (user) => ({
   phone: user.phone || "",
   address: user.address || "",
   companyId: user.companyId ? (user.companyId._id || user.companyId).toString() : null,
+  isActive: user.isActive !== false,
+  permissions: resolveUserPermissions(user),
+  lastLoginAt: user.lastLoginAt || null,
 });
 
 /**
@@ -72,7 +76,7 @@ exports.register = async (req, res, next) => {
       passwordHash: password,
       role: "administrateur",
       companyId: company._id,
-      permissions: { products: true, clients: true, sales: true, finance: true, users: true, settings: true },
+      permissions: getRoleDefaults("administrateur"),
     });
 
     const accessToken = signAccessToken(user._id);
@@ -328,11 +332,12 @@ exports.forgotPassword = async (req, res, next) => {
  * Reset password
  */
 exports.resetPassword = async (req, res, next) => {
-  const { token, password, confirmPassword } = req.body;
+  const { token, password } = req.body;
+  const confirmPassword = req.body.confirmPassword || password;
 
   try {
-    if (!token || !password || !confirmPassword) {
-      return failure(res, { status: 400, message: "Token, password and confirmation are required", code: "VALIDATION_ERROR" });
+    if (!token || !password) {
+      return failure(res, { status: 400, message: "Token and password are required", code: "VALIDATION_ERROR" });
     }
 
     if (password !== confirmPassword) {
@@ -366,7 +371,8 @@ exports.resetPassword = async (req, res, next) => {
  */
 exports.updateMe = async (req, res, next) => {
   try {
-    const { fullName, email, phone, address } = req.body;
+    const { fullName, email, address } = req.body;
+    const phone = req.body.phone ?? req.body.phoneNumber;
 
     const user = await User.findById(req.user._id).populate("companyId", "name");
     if (!user) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_provider.dart';
-//import 'app_colors.dart';
+import '../security/rbac.dart';
 
 typedef SidebarCallbacks = Map<String, VoidCallback>;
 
@@ -14,11 +15,22 @@ class AppSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final isAdmin = authProvider.user?.role == 'admin';
+    final user = authProvider.user;
+
+    final visibleEntries = kSidebarEntries.where((entry) {
+      if (user == null) return false;
+      return user.canAny(entry.permissions);
+    }).toList();
+
+    final adminKeys = {'Finances', 'Rights', 'Users', 'Activity'};
+    final primaryEntries =
+        visibleEntries.where((entry) => !adminKeys.contains(entry.key)).toList();
+    final adminEntries =
+        visibleEntries.where((entry) => adminKeys.contains(entry.key)).toList();
 
     return Container(
-      width: 240, // Slightly wider for premium look
-      color: const Color(0xFFF8FAFC), // Very light gray background
+      width: 240,
+      color: const Color(0xFFF8FAFC),
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         children: [
@@ -29,7 +41,7 @@ class AppSidebar extends StatelessWidget {
               children: [
                 const CircleAvatar(
                   radius: 20,
-                  backgroundColor: Color(0xFF6366F1), // Indigo Logo
+                  backgroundColor: Color(0xFF6366F1),
                   child: Icon(
                     Icons.local_pharmacy,
                     color: Colors.white,
@@ -68,52 +80,18 @@ class AppSidebar extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
-                _sidebarItem(
-                  'Dashboard',
-                  Icons.grid_view_rounded,
-                  label: 'Tableau de bord',
+                ...primaryEntries.map(
+                  (entry) => _sidebarItem(
+                    entry.key,
+                    entry.icon,
+                    label: entry.label,
+                  ),
                 ),
-                _sidebarItem(
-                  'Stock',
-                  Icons.inventory_2_outlined,
-                  label: 'Stock',
-                ),
-                _sidebarItem(
-                  'Sales',
-                  Icons.receipt_long_outlined,
-                  label: 'Ventes',
-                ),
-                _sidebarItem(
-                  'Clients',
-                  Icons.people_outline_rounded,
-                  label: 'Clients',
-                ),
-                _sidebarItem(
-                  'Commandes',
-                  Icons.shopping_cart_outlined,
-                  label: 'Commandes',
-                ),
-                _sidebarItem(
-                  'Finances',
-                  Icons.account_balance_wallet_outlined,
-                  label: 'Finances',
-                ),
-                _sidebarItem(
-                  'Support',
-                  Icons.chat_bubble_outline_rounded,
-                  label: 'Support Client',
-                ),
-                _sidebarItem(
-                  'Activity',
-                  Icons.history_rounded,
-                  label: "Journal d'activités",
-                ),
-
-                if (isAdmin) ...[
+                if (adminEntries.isNotEmpty) ...[
                   const Padding(
                     padding: EdgeInsets.only(left: 14, top: 20, bottom: 8),
                     child: Text(
-                      "ADMINISTRATION",
+                      'ADMINISTRATION',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -122,29 +100,29 @@ class AppSidebar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _sidebarItem(
-                    'Users',
-                    Icons.manage_accounts_outlined,
-                    label: "Gestion Utilisateurs",
+                  ...adminEntries.map(
+                    (entry) => _sidebarItem(
+                      entry.key,
+                      entry.icon,
+                      label: entry.label,
+                    ),
                   ),
                 ],
-
                 const Divider(
                   height: 40,
                   color: Colors.black12,
                   indent: 8,
                   endIndent: 8,
                 ),
-                _sidebarItem('Paramètres', Icons.settings_outlined),
+                _sidebarItem('Settings', Icons.settings_outlined, label: 'Parametres'),
               ],
             ),
           ),
-          // Logout Button
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: AppSidebarItem(
               icon: Icons.logout_rounded,
-              label: 'Déconnexion',
+              label: 'Deconnexion',
               color: Colors.redAccent.withOpacity(0.8),
               onTap: () => authProvider.logout(),
             ),
@@ -198,9 +176,7 @@ class AppSidebarItem extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  color: selected
-                      ? activeColor
-                      : (color ?? const Color(0xFF475569)),
+                  color: selected ? activeColor : (color ?? const Color(0xFF475569)),
                   size: 22,
                 ),
                 const SizedBox(width: 12),
@@ -210,9 +186,7 @@ class AppSidebarItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                      color: selected
-                          ? activeColor
-                          : (color ?? const Color(0xFF475569)),
+                      color: selected ? activeColor : (color ?? const Color(0xFF475569)),
                     ),
                   ),
                 ),

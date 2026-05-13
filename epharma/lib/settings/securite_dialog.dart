@@ -3,6 +3,7 @@ import '../services/auth_service.dart';
 import 'settings_theme.dart';
 import '../widgets/app_colors.dart';
 import 'user_management_page.dart';
+import 'rights_management_page.dart';
 
 class SecuriteDialog extends StatefulWidget {
   const SecuriteDialog({super.key});
@@ -90,6 +91,8 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         return _buildPasswordForm();
       case 'users':
         return _buildUserManagement();
+      case 'rights':
+        return _buildRightsManagement();
       case 'main':
       default:
         return _buildMainList();
@@ -120,11 +123,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
             icon: Icons.admin_panel_settings_outlined,
             title: "Gestion des droits et accès",
             subtitle: "Configurez les permissions par rôle (Admin, Caissier...)",
-            onTap: () {
-               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Configuration fine des accès bientôt disponible')),
-              );
-            },
+            onTap: () => _switchView('rights'),
           ),
           _buildListItem(
             icon: Icons.verified_user_outlined,
@@ -167,6 +166,30 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
           ),
         ),
         const Expanded(child: UserManagementDialog()),
+      ],
+    );
+  }
+
+  Widget _buildRightsManagement() {
+    return Column(
+      key: const ValueKey('rights'),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () => _switchView('main'),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+              ),
+              const Text(
+                "Droits et Accès",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        const Expanded(child: RightsManagementDialog()),
       ],
     );
   }

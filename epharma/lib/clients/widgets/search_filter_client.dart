@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SearchAndFilterClient extends StatefulWidget {
   final Function(String) onSearchChanged;
   final Function(String) onFilterChanged;
-  final VoidCallback onAddClient;
+  final VoidCallback? onAddClient;
 
   const SearchAndFilterClient({
     required this.onSearchChanged,
@@ -118,23 +118,24 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
               // Actions
               Row(
                 children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: widget.onAddClient,
-                      icon: const Icon(Icons.add),
-                      label: const Text('Ajouter un client'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade100,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(color: Colors.grey.shade300),
+                  if (widget.onAddClient != null)
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: widget.onAddClient,
+                        icon: const Icon(Icons.add),
+                        label: const Text('Ajouter un client'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade100,
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: () =>
@@ -273,23 +274,24 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                       color: Colors.black54,
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: widget.onAddClient,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade100,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
+                    if (widget.onAddClient != null)
+                      ElevatedButton(
+                        onPressed: widget.onAddClient,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade100,
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(color: Colors.grey.shade300),
-                        ),
+                        child: const Icon(Icons.add),
                       ),
-                      child: const Icon(Icons.add),
-                    ),
                   ],
                 ),
               ),

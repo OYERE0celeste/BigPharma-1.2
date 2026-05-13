@@ -2,28 +2,22 @@ const express = require("express");
 const router = express.Router();
 const clientController = require("../controllers/clientController");
 const authMiddleware = require("../middleware/authMiddleware");
-const optionalAuthMiddleware = require("../middleware/optionalAuthMiddleware");
-const { isAdmin, isClient } = require("../middleware/roleMiddleware");
+const { isClient, requirePermission } = require("../middleware/roleMiddleware");
+const { PERMISSIONS } = require("../utils/rolePermissions");
 
 // Authenticated: Client get own profile (MUST be before /:id routes)
 router.get("/me", authMiddleware, isClient, clientController.getMyProfile);
 
-// Public: Get all clients for a company (no auth required, company ID in query)
-router.get("/", optionalAuthMiddleware, clientController.getClients);
+router.get("/", authMiddleware, requirePermission(PERMISSIONS.VIEW_CLIENTS), clientController.getClients);
 
-// Admin/Pharmacy staff routes (MUST be after specific routes like /me)
-router.use(authMiddleware, isAdmin);
+router.use(authMiddleware);
 
-// Get client by ID
-router.get("/:id", clientController.getClientById);
+router.get("/:id", requirePermission(PERMISSIONS.VIEW_CLIENTS), clientController.getClientById);
 
-// Create new client
-router.post("/", clientController.createClient);
+router.post("/", requirePermission(PERMISSIONS.ADD_CLIENT), clientController.createClient);
 
-// Update client
-router.put("/:id", clientController.updateClient);
+router.put("/:id", requirePermission(PERMISSIONS.EDIT_CLIENT), clientController.updateClient);
 
-// Delete client (soft delete)
-router.delete("/:id", clientController.deleteClient);
+router.delete("/:id", requirePermission(PERMISSIONS.DELETE_CLIENT), clientController.deleteClient);
 
 module.exports = router;

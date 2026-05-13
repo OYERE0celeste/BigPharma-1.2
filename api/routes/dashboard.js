@@ -8,9 +8,11 @@ const Sale = require("../models/sale");
 const ActivityLog = require("../models/activityLog");
 const QuestionClient = require("../models/support"); // Adjust path if needed
 const cache = require("../utils/cache");
+const { requirePermission } = require("../middleware/roleMiddleware");
+const { PERMISSIONS } = require("../utils/rolePermissions");
 
 // GET /api/dashboard/summary
-router.get("/summary", async (req, res, next) => {
+router.get("/summary", requirePermission(PERMISSIONS.VIEW_DASHBOARD), async (req, res, next) => {
   try {
     const companyId = req.user.companyId.toString();
     const cacheKey = `dashboard_summary_${companyId}`;

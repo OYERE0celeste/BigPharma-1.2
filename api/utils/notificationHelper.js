@@ -48,7 +48,7 @@ const notifyStaff = async ({ companyId, title, message, type = "system", data = 
   try {
     const staffMembers = await User.find({
       companyId,
-      role: { $in: ["administrateur", "admin", "pharmacien", "gestionnaire de stock", "agent de vente", "personnel autorisé"] },
+      role: { $in: ["administrateur", "pharmacien", "gestionnaire de stock", "caissier", "assistante de gestion"] },
     });
 
     const promises = staffMembers.map((staff) =>
