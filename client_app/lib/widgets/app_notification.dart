@@ -166,14 +166,7 @@ class AppNotificationService {
   }
 
   static AppNotificationPlacement _resolvePlacement(AppNotificationType type) {
-    switch (type) {
-      case AppNotificationType.error:
-      case AppNotificationType.warning:
-        return AppNotificationPlacement.banner;
-      case AppNotificationType.success:
-      case AppNotificationType.info:
-        return AppNotificationPlacement.toast;
-    }
+    return AppNotificationPlacement.banner;
   }
 
   static String _sanitizeMessage(String message) {

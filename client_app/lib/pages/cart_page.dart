@@ -5,7 +5,6 @@ import 'package:client_app/services/auth_provider.dart';
 import 'package:client_app/services/cart_provider.dart';
 import 'package:client_app/services/order_provider.dart';
 import 'package:client_app/pages/login_page.dart';
-import 'orders_page.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -63,10 +62,7 @@ class _CartPageState extends State<CartPage> {
       AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Commande créée avec succès.')),
       );
-      await Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const OrdersPage()),
-      );
+      Navigator.pop(context);
       return;
     }
 
@@ -84,17 +80,29 @@ class _CartPageState extends State<CartPage> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          'Mon Panier',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        elevation: 0.5,
-      ),
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      insetPadding: const EdgeInsets.all(16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: SizedBox(
+          width: 600,
+          height: MediaQuery.of(context).size.height * 0.85,
+          child: Scaffold(
+            backgroundColor: Colors.grey[50],
+            appBar: AppBar(
+              title: const Text(
+                'Mon Panier',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              elevation: 0.5,
+              leading: IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
       body: Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (cart.items.isEmpty) {
@@ -327,7 +335,10 @@ class _CartPageState extends State<CartPage> {
           );
         },
       ),
-    );
+            ),
+          ),
+        ),
+      );
   }
 }
 

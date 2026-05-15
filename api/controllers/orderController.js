@@ -211,7 +211,6 @@ exports.createOrder = async (req, res, next) => {
 
     const products = await Product.find({
       _id: { $in: productIds },
-      companyId: req.user.companyId,
       isActive: true,
     });
 
@@ -227,6 +226,16 @@ exports.createOrder = async (req, res, next) => {
         message: "Un ou plusieurs produits de la commande sont introuvables",
       });
     }
+
+    const targetCompanyIds = new Set(products.map((p) => String(p.companyId)));
+    if (targetCompanyIds.size > 1) {
+      return failure(res, {
+        status: 400,
+        message: "Tous les produits de la commande doivent provenir de la même pharmacie",
+      });
+    }
+
+    const targetCompanyId = products[0].companyId;
 
     const productsById = new Map(products.map((product) => [String(product._id), product]));
 
@@ -268,7 +277,7 @@ exports.createOrder = async (req, res, next) => {
       orderNumber: await generateOrderNumber(),
       userId: req.user._id,
       clientId: client._id,
-      companyId: req.user.companyId,
+      companyId: targetCompanyId,
       products: orderProducts,
       totalPrice,
       status: "en_attente",
@@ -283,7 +292,7 @@ exports.createOrder = async (req, res, next) => {
       status: "en_attente",
       userId: req.user._id,
       note: "Commande créée par le client",
-      companyId: req.user.companyId,
+      companyId: targetCompanyId,
     });
 
     await logActivity({
@@ -292,7 +301,7 @@ exports.createOrder = async (req, res, next) => {
       entityId: order._id.toString(),
       entityName: order.orderNumber,
       description: `Nouvelle commande ${order.orderNumber} créée`,
-      companyId: req.user.companyId,
+      companyId: targetCompanyId,
       user: req.user.fullName || "Client",
       clientOrSupplierName: client.fullName,
       totalAmount: order.totalPrice,
@@ -309,12 +318,12 @@ exports.createOrder = async (req, res, next) => {
     const savedOrder = await buildOrderQuery({ _id: order._id });
 
     if (global.io) {
-      global.io.to(req.user.companyId.toString()).emit("new-order", savedOrder);
+      global.io.to(targetCompanyId.toString()).emit("new-order", savedOrder);
     }
 
     // Notify staff via persistent notification
     await notifyStaff({
-      companyId: req.user.companyId,
+      companyId: targetCompanyId,
       title: "Nouvelle commande",
       message: `Une nouvelle commande ${order.orderNumber} a été reçue de ${client.fullName}.`,
       type: "order",
@@ -755,7 +764,8 @@ exports.getOrderInvoice = async (req, res, next) => {
       });
     }
 
-    if (req.user.role === "client" && order.userId.toString() !== req.user._id.toString()) {
+    const orderUserIdStr = order.userId && order.userId._id ? order.userId._id.toString() : order.userId.toString();
+    if (req.user.role === "client" && orderUserIdStr !== req.user._id.toString()) {
       return failure(res, {
         status: 403,
         message: "Accès refusé",

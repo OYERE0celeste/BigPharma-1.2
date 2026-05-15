@@ -49,9 +49,10 @@ class OrderService {
 
       return {
         'success': false,
-        'message':
-            (body['message'] ?? 'Erreur lors de la création de la commande')
-                .toString(),
+        'message': (body['error']?['message'] ??
+                body['message'] ??
+                'Erreur lors de la création de la commande')
+            .toString(),
       };
     } catch (e) {
       return {

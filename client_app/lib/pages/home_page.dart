@@ -301,9 +301,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CartPage()),
+                showDialog(
+                  context: context,
+                  builder: (context) => const CartPage(),
                 );
               },
               backgroundColor: primary,

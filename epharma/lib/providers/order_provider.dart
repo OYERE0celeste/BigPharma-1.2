@@ -49,9 +49,10 @@ class OrderProvider with ChangeNotifier {
 
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
       if (response.statusCode != 200 || jsonData['success'] != true) {
-        _errorMessage =
-            (jsonData['message'] ?? 'Erreur lors du chargement des commandes')
-                .toString();
+        _errorMessage = (jsonData['error']?['message'] ??
+                jsonData['message'] ??
+                'Erreur lors du chargement des commandes')
+            .toString();
         return;
       }
 
@@ -88,9 +89,10 @@ class OrderProvider with ChangeNotifier {
 
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
       if (response.statusCode != 200 || jsonData['success'] != true) {
-        _errorMessage =
-            (jsonData['message'] ?? 'Erreur lors du chargement du détail')
-                .toString();
+        _errorMessage = (jsonData['error']?['message'] ??
+                jsonData['message'] ??
+                'Erreur lors du chargement du détail')
+            .toString();
         notifyListeners();
         return null;
       }
@@ -133,9 +135,10 @@ class OrderProvider with ChangeNotifier {
         return true;
       }
 
-      _errorMessage =
-          (jsonData['message'] ?? 'Impossible de mettre à jour le statut')
-              .toString();
+      _errorMessage = (jsonData['error']?['message'] ??
+              jsonData['message'] ??
+              'Impossible de mettre à jour le statut')
+          .toString();
       notifyListeners();
       return false;
     } catch (e) {
@@ -162,7 +165,9 @@ class OrderProvider with ChangeNotifier {
         return true;
       }
 
-      _errorMessage = (jsonData['message'] ?? 'Impossible de créer la commande')
+      _errorMessage = (jsonData['error']?['message'] ??
+              jsonData['message'] ??
+              'Impossible de créer la commande')
           .toString();
       notifyListeners();
       return false;

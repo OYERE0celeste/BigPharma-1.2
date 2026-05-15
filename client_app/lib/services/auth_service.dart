@@ -179,6 +179,7 @@ class AuthService {
       // ignore: avoid_print
       print('Error getting current user: $e');
     }
+    return null;
   }
 
   Future<Map<String, dynamic>> requestPasswordReset(String identifier) async {

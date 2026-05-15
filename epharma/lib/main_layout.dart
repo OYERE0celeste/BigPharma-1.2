@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -296,14 +294,11 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
           children: [
             GestureDetector(
               onTap: _toggleSidebar,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: Container(
-                  margin: const EdgeInsets.only(top: navbarHeight),
-                  width: size.width,
-                  height: size.height - navbarHeight,
-                  color: Colors.black.withOpacity(0.3),
-                ),
+              child: Container(
+                margin: const EdgeInsets.only(top: navbarHeight),
+                width: size.width,
+                height: size.height - navbarHeight,
+                color: Colors.black.withOpacity(0.4),
               ),
             ),
             AnimatedPositioned(
