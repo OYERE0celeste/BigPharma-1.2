@@ -8,7 +8,7 @@ async function moveUserToDataCompany() {
     const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/BigPharmaDB";
     await mongoose.connect(uri);
     
-    const email = "laflorale@gmail.com";
+    const email = "laflorale8@gmail.com";
     const targetCompanyId = "69e36a360f0196816d492fd0";
 
     const user = await User.findOne({ email: email.toLowerCase() });

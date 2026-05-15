@@ -66,7 +66,8 @@ class ActivityService {
       'transactionCount': transactionCount,
       'totalIncome': totalIncome,
       'totalExpenses': totalExpenses,
-      'estimatedProfit': totalIncome - totalExpenses, // Updated to use all income/expenses
+      'estimatedProfit':
+          totalIncome - totalExpenses, // Updated to use all income/expenses
       'totalProductsSold': totalProductsSold,
     };
   }

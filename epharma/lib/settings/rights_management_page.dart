@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
+import 'package:provider/provider.dart';
 
 import '../models/user_model.dart';
+import '../providers/notification_provider.dart';
 import '../security/rbac.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_colors.dart';
@@ -19,11 +22,38 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
   final AuthService _authService = AuthService();
   int? _expandedIndex;
   final Map<String, Map<String, bool>> _pendingPermissions = {};
+  NotificationProvider? _notificationProvider;
+  DateTime? _lastStaffUpdateSeen;
 
   @override
   void initState() {
     super.initState();
     _fetchUsers();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final provider = Provider.of<NotificationProvider>(context);
+    if (provider != _notificationProvider) {
+      _notificationProvider?.removeListener(_handleNotificationEvents);
+      _notificationProvider = provider;
+      _notificationProvider?.addListener(_handleNotificationEvents);
+    }
+  }
+
+  void _handleNotificationEvents() {
+    final latestUpdate = _notificationProvider?.lastStaffUpdate;
+    if (latestUpdate != null && latestUpdate != _lastStaffUpdateSeen) {
+      _lastStaffUpdateSeen = latestUpdate;
+      _fetchUsers();
+    }
+  }
+
+  @override
+  void dispose() {
+    _notificationProvider?.removeListener(_handleNotificationEvents);
+    super.dispose();
   }
 
   Future<void> _fetchUsers() async {
@@ -35,13 +65,15 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
         _isLoading = false;
         _pendingPermissions.clear();
         for (final user in users) {
-          _pendingPermissions[user.id] =
-              normalizePermissions(user.role, Map<String, bool>.from(user.permissions));
+          _pendingPermissions[user.id] = normalizePermissions(
+            user.role,
+            Map<String, bool>.from(user.permissions),
+          );
         }
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,
@@ -58,7 +90,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
       await _authService.updateUser(user.id, {'permissions': perms});
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Permissions mises a jour avec succes'),
             backgroundColor: kPrimaryGreen,
@@ -69,7 +101,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,
@@ -106,11 +138,13 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
           Expanded(
             child: _isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(color: SettingsTheme.primary),
+                    child: CircularProgressIndicator(
+                      color: SettingsTheme.primary,
+                    ),
                   )
                 : _users.isEmpty
-                    ? _buildEmptyState()
-                    : _buildUserList(),
+                ? _buildEmptyState()
+                : _buildUserList(),
           ),
         ],
       ),
@@ -163,8 +197,10 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
           child: Column(
             children: [
               ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
                 onTap: () {
                   setState(() {
                     _expandedIndex = isExpanded ? null : index;
@@ -174,7 +210,9 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
                   radius: 24,
                   backgroundColor: SettingsTheme.primary.withOpacity(0.1),
                   child: Text(
-                    user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : '?',
+                    user.fullName.isNotEmpty
+                        ? user.fullName[0].toUpperCase()
+                        : '?',
                     style: const TextStyle(
                       color: SettingsTheme.primary,
                       fontWeight: FontWeight.bold,
@@ -184,7 +222,10 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
                 ),
                 title: Text(
                   user.fullName,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 subtitle: _buildRoleBadge(user.role),
                 trailing: Icon(
@@ -298,8 +339,9 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
               TextButton(
                 onPressed: () {
                   setState(() {
-                    _pendingPermissions[user.id] =
-                        Map<String, bool>.from(kRoleDefaults[user.role] ?? permissionMap(const []));
+                    _pendingPermissions[user.id] = Map<String, bool>.from(
+                      kRoleDefaults[user.role] ?? permissionMap(const []),
+                    );
                   });
                 },
                 child: const Text('Reinitialiser'),

@@ -1,6 +1,7 @@
 class User {
   final String id;
   final String fullName;
+  final String? username;
   final String email;
   final String role;
   final String phone;
@@ -10,6 +11,7 @@ class User {
   User({
     required this.id,
     required this.fullName,
+    this.username,
     required this.email,
     required this.role,
     this.phone = '',
@@ -21,13 +23,14 @@ class User {
     return User(
       id: json['id'] ?? json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
+      username: json['username'] as String?,
       email: json['email'] ?? '',
       role: json['role'] ?? 'client',
       phone: json['phone'] ?? '',
       address: json['address'] ?? '',
-      companyId: json['companyId'] is Map 
-        ? (json['companyId']['id'] ?? json['companyId']['_id'] ?? '') 
-        : (json['companyId']?.toString() ?? ''),
+      companyId: json['companyId'] is Map
+          ? (json['companyId']['id'] ?? json['companyId']['_id'] ?? '')
+          : (json['companyId']?.toString() ?? ''),
     );
   }
 
@@ -35,6 +38,7 @@ class User {
     return {
       'id': id,
       'fullName': fullName,
+      if (username != null) 'username': username,
       'email': email,
       'role': role,
       'phone': phone,

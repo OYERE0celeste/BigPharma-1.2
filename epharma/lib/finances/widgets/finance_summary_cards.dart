@@ -31,8 +31,10 @@ class FinanceSummaryCards extends StatelessWidget {
       endDate: endDate,
     );
     final transactionCount = incomeTransactions.length;
-    final averageBasket = transactionCount > 0 ? totalRevenue / transactionCount : 0.0;
-    
+    final averageBasket = transactionCount > 0
+        ? totalRevenue / transactionCount
+        : 0.0;
+
     final paymentBreakdown = financeProvider.getPaymentMethodBreakdown(
       startDate: startDate,
       endDate: endDate,

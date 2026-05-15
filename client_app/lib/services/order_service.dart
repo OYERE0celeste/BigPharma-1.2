@@ -28,12 +28,13 @@ class OrderService {
   }
 
   Future<Map<String, dynamic>> createOrder(
-    List<OrderItem> items,
-  ) async {
+    List<OrderItem> items, {
+    String pickupMode = 'sur_place',
+  }) async {
     try {
       final orderData = {
         'products': items.map((item) => item.toRequestJson()).toList(),
-
+        'pickupMode': pickupMode,
       };
 
       final response = await _apiService.post(ApiConstants.orders, orderData);

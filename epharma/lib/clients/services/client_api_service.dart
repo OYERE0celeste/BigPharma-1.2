@@ -90,7 +90,10 @@ class ClientApiService {
 
   static Future<Client> getClientById(String id) async {
     final headers = await _authService.getHeaders();
-    final response = await http.get(Uri.parse('$baseUrl/$id'), headers: headers);
+    final response = await http.get(
+      Uri.parse('$baseUrl/$id'),
+      headers: headers,
+    );
     if (response.statusCode == 200) {
       final decoded = _safeDecode(response.body);
       return _parseClientObject(decoded);
@@ -130,7 +133,10 @@ class ClientApiService {
 
   static Future<void> deleteClient(String id) async {
     final headers = await _authService.getHeaders();
-    final response = await http.delete(Uri.parse('$baseUrl/$id'), headers: headers);
+    final response = await http.delete(
+      Uri.parse('$baseUrl/$id'),
+      headers: headers,
+    );
     if (response.statusCode == 200) return;
     throw Exception(_makeErrorMessage(response, 'Erreur suppression client'));
   }

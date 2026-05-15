@@ -8,6 +8,19 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Full name is required"],
       trim: true,
     },
+    username: {
+      type: String,
+      unique: true,
+      sparse: true, // allows multiple docs without username (migration-safe)
+      lowercase: true,
+      trim: true,
+      minlength: [3, "Le nom d'utilisateur doit comporter au moins 3 caractères"],
+      maxlength: [30, "Le nom d'utilisateur ne peut pas dépasser 30 caractères"],
+      match: [
+        /^[a-z0-9_.]+$/,
+        "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, points et underscores",
+      ],
+    },
     email: {
       type: String,
       required: [true, "Email is required"],

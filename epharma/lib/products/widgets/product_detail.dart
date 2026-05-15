@@ -90,7 +90,9 @@ class ProductDetailsPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               color: Colors.grey[100],
             ),
-            child: const Center(child: Text('Emplacement de l\'historique des mouvements')),
+            child: const Center(
+              child: Text('Emplacement de l\'historique des mouvements'),
+            ),
           ),
         ],
       ),

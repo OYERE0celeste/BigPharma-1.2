@@ -27,6 +27,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   // initial lot
   late final TextEditingController _lotNumberController;
   late final TextEditingController _lotQtyController;
+  DateTime? _lotMfg;
   DateTime? _lotExp;
 
   @override
@@ -88,11 +89,12 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   List<Lot> _buildInitialLots() {
     if (_lotNumberController.text.isEmpty) return widget.product?.lots ?? [];
     final qty = int.tryParse(_lotQtyController.text) ?? 0;
+    final mfg = _lotMfg ?? DateTime.now();
     final exp = _lotExp ?? DateTime.now().add(const Duration(days: 365));
     return [
       Lot(
         lotNumber: _lotNumberController.text.trim(),
-        manufacturingDate: DateTime.now(),
+        manufacturingDate: mfg,
         expirationDate: exp,
         quantity: qty,
         quantityAvailable: qty,
@@ -178,7 +180,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                             labelText: 'Prix d\'achat',
                           ),
                           keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           validator: (v) => (double.tryParse(v ?? '') == null)
                               ? 'Number invalide'
                               : null,
@@ -192,7 +196,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                             labelText: 'Prix de vente',
                           ),
                           keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           validator: (v) => (double.tryParse(v ?? '') == null)
                               ? 'Number invalide'
                               : null,
@@ -233,7 +239,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                             labelText: 'Quantité',
                           ),
                           keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                         ),
                       ),
                     ],
@@ -241,27 +249,64 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Text(
-                        _lotExp == null
-                            ? 'Pas d\'expiration selectionnée'
-                            : 'Exp: ${formatDate(_lotExp!)}',
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _lotMfg == null
+                                  ? 'Date de réception: N/A'
+                                  : 'Reçu: ${formatDate(_lotMfg!)}',
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                            const SizedBox(height: 4),
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                final d = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime.now(),
+                                );
+                                if (d != null) setState(() => _lotMfg = d);
+                              },
+                              icon: const Icon(Icons.input, size: 16),
+                              label: const Text('Date réception', style: TextStyle(fontSize: 12)),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () async {
-                          final d = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now().add(
-                              const Duration(days: 365),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _lotExp == null
+                                  ? 'Date d\'expiration: N/A'
+                                  : 'Expire: ${formatDate(_lotExp!)}',
+                              style: const TextStyle(fontSize: 13),
                             ),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.now().add(
-                              const Duration(days: 3650),
+                            const SizedBox(height: 4),
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                final d = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now().add(
+                                    const Duration(days: 365),
+                                  ),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime.now().add(
+                                    const Duration(days: 3650),
+                                  ),
+                                );
+                                if (d != null) setState(() => _lotExp = d);
+                              },
+                              icon: const Icon(Icons.event_busy, size: 16),
+                              label: const Text('Date expiration', style: TextStyle(fontSize: 12)),
                             ),
-                          );
-                          if (d != null) setState(() => _lotExp = d);
-                        },
-                        child: const Text('Selectionner une expiration'),
+                          ],
+                        ),
                       ),
                     ],
                   ),

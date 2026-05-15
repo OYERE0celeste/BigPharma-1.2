@@ -2,6 +2,7 @@ const Client = require("../models/client");
 const User = require("../models/User");
 const { logActivity } = require("../utils/activityLogger");
 const { success, failure } = require("../utils/response");
+const { sendClientWelcomeEmail } = require("../utils/mailService");
 
 /**
  * Get all clients (Global visibility)
@@ -55,7 +56,7 @@ exports.getClients = async (req, res, next) => {
  */
 exports.getClientById = async (req, res, next) => {
   try {
-    const client = await Client.findById(req.params.id)
+    const client = await Client.findOne({ _id: req.params.id, companyId: req.user.companyId })
       .populate("companyId", "name")
       .populate("userId", "fullName email");
 
@@ -89,9 +90,16 @@ exports.createClient = async (req, res, next) => {
       });
     }
 
-    // Check for duplicate phone/email
+    // Normalize email and phone
+    const normalizedEmail = email ? email.trim().toLowerCase() : "";
+    const normalizedPhone = phone ? phone.trim() : "";
+
+    // Check for duplicate phone/email (case-insensitive for email)
     const existing = await Client.findOne({
-      $or: [{ phone }, { email }],
+      $or: [
+        normalizedPhone ? { phone: normalizedPhone } : null,
+        normalizedEmail ? { email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' } } : null,
+      ].filter(Boolean),
       companyId: req.user.companyId,
     });
 
@@ -115,25 +123,39 @@ exports.createClient = async (req, res, next) => {
         });
       }
 
+      if (typeof password !== "string" || password.length < 8) {
+        return failure(res, {
+          status: 400,
+          message: "Password must be at least 8 characters long",
+          code: "VALIDATION_ERROR",
+        });
+      }
+
       const user = await User.create({
-        fullName,
-        email: email.toLowerCase(),
+        fullName: fullName.trim(),
+        email: normalizedEmail,
         passwordHash: password,
         role: "client",
-        phone,
-        address: address || "",
+        phone: normalizedPhone,
+        address: (address || "").trim(),
         companyId: req.user.companyId,
       });
       userId = user._id;
+
+      await sendClientWelcomeEmail({
+        email: normalizedEmail,
+        fullName: fullName.trim(),
+        companyName: "votre pharmacie",
+      });
     }
 
     const clientData = {
-      fullName,
-      email: email ? email.toLowerCase() : "",
-      phone,
+      fullName: fullName.trim(),
+      email: normalizedEmail,
+      phone: normalizedPhone,
       dateOfBirth,
       gender,
-      address: address || "",
+      address: (address || "").trim(),
       companyId: req.user.companyId,
       userId,
     };
@@ -163,6 +185,34 @@ exports.updateClient = async (req, res, next) => {
   try {
     // Don't allow direct modification of certain fields
     const { companyId, userId, createdAt, ...updateData } = req.body;
+
+    // Normalize email and phone if provided
+    if (updateData.email) {
+      updateData.email = updateData.email.trim().toLowerCase();
+    }
+    if (updateData.phone) {
+      updateData.phone = updateData.phone.trim();
+    }
+
+    // Check for duplicates if email or phone is being updated
+    if (updateData.email || updateData.phone) {
+      const existing = await Client.findOne({
+        _id: { $ne: req.params.id },
+        companyId: req.user.companyId,
+        $or: [
+          updateData.phone ? { phone: updateData.phone } : null,
+          updateData.email ? { email: { $regex: `^${updateData.email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' } } : null,
+        ].filter(Boolean),
+      });
+
+      if (existing) {
+        return failure(res, {
+          status: 409,
+          message: "Client with this email or phone already exists",
+          code: "DUPLICATE_ENTRY",
+        });
+      }
+    }
 
     const client = await Client.findOneAndUpdate(
       { _id: req.params.id, companyId: req.user.companyId },

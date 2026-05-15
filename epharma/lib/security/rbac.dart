@@ -97,10 +97,7 @@ const Map<String, List<String>> kLegacyPermissionAliases = {
     AppPermission.viewFinancialReports,
     AppPermission.addFinanceEntry,
   ],
-  'users': [
-    AppPermission.manageUsers,
-    AppPermission.managePermissions,
-  ],
+  'users': [AppPermission.manageUsers, AppPermission.managePermissions],
   'settings': [AppPermission.manageSettings],
 };
 
@@ -245,7 +242,10 @@ const Map<String, List<String>> kSystemLocked = {
   ],
 };
 
-Map<String, bool> normalizePermissions(String role, Map<String, bool> rawPermissions) {
+Map<String, bool> normalizePermissions(
+  String role,
+  Map<String, bool> rawPermissions,
+) {
   final normalized = Map<String, bool>.from(
     kRoleDefaults[role] ?? permissionMap(const []),
   );
@@ -292,13 +292,6 @@ const List<SidebarEntry> kSidebarEntries = [
       AppPermission.addProduct,
       AppPermission.editProduct,
       AppPermission.deleteProduct,
-    ],
-  ),
-  SidebarEntry(
-    key: 'Stock',
-    label: 'Stock',
-    icon: Icons.inventory_2_outlined,
-    permissions: [
       AppPermission.viewStock,
       AppPermission.editStock,
       AppPermission.viewStockAlerts,
@@ -306,16 +299,10 @@ const List<SidebarEntry> kSidebarEntries = [
     ],
   ),
   SidebarEntry(
-    key: 'POS',
-    label: 'Nouvelle vente',
-    icon: Icons.point_of_sale_rounded,
-    permissions: [AppPermission.makeSale],
-  ),
-  SidebarEntry(
     key: 'Sales',
-    label: 'Historique ventes',
-    icon: Icons.receipt_long_outlined,
-    permissions: [AppPermission.viewSalesHistory],
+    label: 'Ventes',
+    icon: Icons.point_of_sale_rounded,
+    permissions: [AppPermission.makeSale, AppPermission.viewSalesHistory],
   ),
   SidebarEntry(
     key: 'Clients',

@@ -66,21 +66,37 @@ class CartItemTile extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildQtyBtn(Icons.remove, onDecrement, cartItem.quantity > 1),
+                      _buildQtyBtn(
+                        Icons.remove,
+                        onDecrement,
+                        cartItem.quantity > 1,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           '${cartItem.quantity}',
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      _buildQtyBtn(Icons.add, onIncrement, cartItem.quantity < cartItem.selectedLot.quantityAvailable),
+                      _buildQtyBtn(
+                        Icons.add,
+                        onIncrement,
+                        cartItem.quantity <
+                            cartItem.selectedLot.quantityAvailable,
+                      ),
                       const SizedBox(width: 12),
                       IconButton(
                         constraints: const BoxConstraints(),
                         padding: EdgeInsets.zero,
                         onPressed: onRemove,
-                        icon: const Icon(Icons.delete_outline, size: 20, color: kDangerRed),
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          size: 20,
+                          color: kDangerRed,
+                        ),
                       ),
                     ],
                   ),

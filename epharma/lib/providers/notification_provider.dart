@@ -15,12 +15,18 @@ class NotificationProvider with ChangeNotifier {
   int _unreadCount = 0;
   bool _isLoading = false;
   io.Socket? _socket;
+  DateTime? _lastStaffUpdate;
+
+  DateTime? get lastStaffUpdate => _lastStaffUpdate;
 
   NotificationProvider();
 
   void update(AuthProvider auth) {
-    if (_authProvider?.token == auth.token && _authProvider?.user?.id == auth.user?.id) return;
-    
+    if (_authProvider?.token == auth.token &&
+        _authProvider?.user?.id == auth.user?.id) {
+      return;
+    }
+
     _authProvider = auth;
     if (auth.isAuthenticated) {
       fetchNotifications();
@@ -88,6 +94,24 @@ class NotificationProvider with ChangeNotifier {
         }
       });
 
+      _socket!.on('staff-updated', (data) {
+        print('🔄 Staff update event received: $data');
+        _lastStaffUpdate = DateTime.now();
+        notifyListeners();
+      });
+
+      _socket!.on('user-updated', (data) async {
+        print('👤 User update event received: $data');
+        if (data is Map<String, dynamic>) {
+          final payload = data['user'];
+          final userId =
+              payload?['id']?.toString() ?? payload?['_id']?.toString();
+          if (userId != null && userId == authProvider.user?.id) {
+            await authProvider.refreshCurrentUser();
+          }
+        }
+      });
+
       _socket!.onConnectError((data) {
         print('❌ Socket connection error: $data');
       });
@@ -122,7 +146,9 @@ class NotificationProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('📥 Fetching notifications from: ${ApiConstants.baseUrl}/notifications');
+      print(
+        '📥 Fetching notifications from: ${ApiConstants.baseUrl}/notifications',
+      );
       final response = await http
           .get(
             Uri.parse('${ApiConstants.baseUrl}/notifications'),

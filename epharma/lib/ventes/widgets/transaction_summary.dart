@@ -2,7 +2,6 @@ import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 class TransactionSummaryPanel extends StatefulWidget {
   final double subtotal;
   final ValueChanged<double> onDiscountChanged;
@@ -87,7 +86,10 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
                   decoration: const InputDecoration(
                     suffixText: ' FCFA',
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 8,
+                    ),
                   ),
                 ),
               ),
@@ -115,7 +117,11 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
             children: [
               const Text(
                 'TOTAL',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B),
+                ),
               ),
               Text(
                 '${total.toStringAsFixed(0)} FCFA',

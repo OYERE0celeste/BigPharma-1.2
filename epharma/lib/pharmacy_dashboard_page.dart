@@ -22,13 +22,13 @@ String _resolveActivitySection(ActivityType type) {
       return 'Sales';
     case ActivityType.restocking:
     case ActivityType.stockAdjustment:
-      return 'Stock';
+      return 'Products';
     case ActivityType.userAction:
       return 'Clients';
     case ActivityType.financeAction:
       return 'Finances';
     case ActivityType.order:
-      return 'Commandes';
+      return 'Orders';
     case ActivityType.cancellation:
     case ActivityType.systemAction:
       return 'Dashboard';
@@ -195,8 +195,10 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
               flex: 4,
               child: Center(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -298,7 +300,8 @@ class TopKPISection extends StatelessWidget {
             final kpis = [
               KPIData(
                 title: "Chiffre d'affaires aujourd'hui",
-                value: '${financeProvider.totalRevenue.toStringAsFixed(0)} FCFA',
+                value:
+                    '${financeProvider.totalRevenue.toStringAsFixed(0)} FCFA',
                 icon: Icons.attach_money,
                 color: kPrimaryGreen,
                 section: 'Finances',
@@ -315,46 +318,46 @@ class TopKPISection extends StatelessWidget {
                 value: '${productProvider.outOfStockCount}',
                 icon: Icons.warning,
                 color: kDangerRed,
-                section: 'Stock',
+                section: 'Products',
               ),
               KPIData(
                 title: 'Expirés',
                 value: '${productProvider.expiredCount}',
                 icon: Icons.event_busy,
                 color: Colors.redAccent,
-                section: 'Stock',
+                section: 'Products',
               ),
               KPIData(
                 title: 'Bientôt expirés',
                 value: '${productProvider.nearExpirationCount}',
                 icon: Icons.event_note,
                 color: Colors.orangeAccent,
-                section: 'Stock',
+                section: 'Products',
               ),
               KPIData(
                 title: 'Stock faible',
                 value: '${productProvider.lowStockCount}',
                 icon: Icons.warning_amber,
                 color: kWarningOrange,
-                section: 'Stock',
+                section: 'Products',
               ),
               KPIData(
                 title: 'Total produits',
                 value: '${productProvider.totalProducts}',
                 icon: Icons.inventory,
                 color: Colors.purple,
-                section: 'Stock',
+                section: 'Products',
               ),
             ];
 
             return LayoutBuilder(
               builder: (context, constraints) {
                 final width = constraints.maxWidth;
-                
+
                 // Dynamic grid configuration
                 int crossAxisCount;
                 double childAspectRatio;
-                
+
                 if (width < 600) {
                   crossAxisCount = 2; // 2 columns on mobile
                   childAspectRatio = 1.3; // More square on mobile
@@ -470,9 +473,11 @@ class KPICard extends StatelessWidget {
                           child: Icon(icon, color: color, size: 24),
                         ),
                         if (!isSmall)
-                          Icon(Icons.arrow_forward_ios, 
-                               color: Colors.grey[300], 
-                               size: 14),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey[300],
+                            size: 14,
+                          ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -552,31 +557,31 @@ class AlertsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productProvider = context.watch<ProductProvider>();
-    
+
     final alerts = [
       AlertData(
         title: 'Médicaments expirés',
         count: productProvider.expiredCount,
         severity: AlertSeverity.critical,
-        section: 'Stock',
+        section: 'Products',
       ),
       AlertData(
         title: 'Stock critique',
         count: productProvider.outOfStockCount,
         severity: AlertSeverity.critical,
-        section: 'Stock',
+        section: 'Products',
       ),
       AlertData(
         title: 'Alertes stock faible',
         count: productProvider.lowStockCount,
         severity: AlertSeverity.warning,
-        section: 'Stock',
+        section: 'Products',
       ),
       AlertData(
         title: 'Date d\'expiration proche',
         count: productProvider.nearExpirationCount,
         severity: AlertSeverity.warning,
-        section: 'Stock',
+        section: 'Products',
       ),
     ];
 
@@ -599,7 +604,11 @@ class AlertsPanel extends StatelessWidget {
                     color: kDangerRed.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.report_problem, color: kDangerRed, size: 20),
+                  child: const Icon(
+                    Icons.report_problem,
+                    color: kDangerRed,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -673,8 +682,10 @@ class AlertTile extends StatelessWidget {
               ),
               if (data.count > 0)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: indicatorColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
@@ -700,7 +711,11 @@ class RecentActivityPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activities = context.watch<ActivityProvider>().activities.take(10).toList();
+    final activities = context
+        .watch<ActivityProvider>()
+        .activities
+        .take(10)
+        .toList();
 
     return Card(
       elevation: 0,
@@ -721,7 +736,11 @@ class RecentActivityPanel extends StatelessWidget {
                     color: kAccentBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.history, color: kAccentBlue, size: 20),
+                  child: const Icon(
+                    Icons.history,
+                    color: kAccentBlue,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -736,7 +755,8 @@ class RecentActivityPanel extends StatelessWidget {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: activities.length,
-                separatorBuilder: (_, _) => Divider(height: 24, color: Colors.grey.withOpacity(0.1)),
+                separatorBuilder: (_, _) =>
+                    Divider(height: 24, color: Colors.grey.withOpacity(0.1)),
                 itemBuilder: (context, index) {
                   final a = activities[index];
                   return ActivityTile(
@@ -816,10 +836,7 @@ class ActivityTile extends StatelessWidget {
                   ),
                   Text(
                     data.subtitle,
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 13,
-                    ),
+                    style: const TextStyle(color: Colors.black54, fontSize: 13),
                   ),
                 ],
               ),
@@ -846,7 +863,7 @@ class QuickActionsSection extends StatelessWidget {
         icon: Icons.add_box,
         label: 'Ajouter un produit',
         color: kPrimaryGreen,
-        section: 'Stock',
+        section: 'Products',
       ),
       QuickAction(
         icon: Icons.point_of_sale,
@@ -864,7 +881,7 @@ class QuickActionsSection extends StatelessWidget {
         icon: Icons.inventory,
         label: 'Gérer le stock',
         color: Colors.brown,
-        section: 'Stock',
+        section: 'Products',
       ),
       QuickAction(
         icon: Icons.bar_chart,
@@ -893,7 +910,11 @@ class QuickActionsSection extends StatelessWidget {
                     color: Colors.amber.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.flash_on, color: Colors.amber, size: 20),
+                  child: const Icon(
+                    Icons.flash_on,
+                    color: Colors.amber,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -908,7 +929,7 @@ class QuickActionsSection extends StatelessWidget {
                 final width = constraints.maxWidth;
                 int cross = 3;
                 double ratio = 2.5;
-                
+
                 if (width < 500) {
                   cross = 1;
                   ratio = 4.5;
@@ -916,7 +937,7 @@ class QuickActionsSection extends StatelessWidget {
                   cross = 2;
                   ratio = 2.8;
                 }
-                
+
                 return GridView.count(
                   crossAxisCount: cross,
                   childAspectRatio: ratio,
@@ -1086,7 +1107,11 @@ class StockSummary extends StatelessWidget {
                     color: kPrimaryGreen.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.inventory_2, color: kPrimaryGreen, size: 20),
+                  child: const Icon(
+                    Icons.inventory_2,
+                    color: kPrimaryGreen,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -1102,14 +1127,21 @@ class StockSummary extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             if (bestSelling.isEmpty)
-              const Text('Aucun produit disponible', style: TextStyle(color: Colors.grey, fontSize: 13))
+              const Text(
+                'Aucun produit disponible',
+                style: TextStyle(color: Colors.grey, fontSize: 13),
+              )
             else
               ...bestSelling.map(
                 (s) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle_outline, size: 14, color: kPrimaryGreen),
+                      const Icon(
+                        Icons.check_circle_outline,
+                        size: 14,
+                        color: kPrimaryGreen,
+                      ),
                       const SizedBox(width: 8),
                       Text(s, style: const TextStyle(fontSize: 13)),
                     ],
@@ -1123,14 +1155,21 @@ class StockSummary extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             if (lowStock.isEmpty)
-              const Text('Aucun produit en rupture', style: TextStyle(color: Colors.grey, fontSize: 13))
+              const Text(
+                'Aucun produit en rupture',
+                style: TextStyle(color: Colors.grey, fontSize: 13),
+              )
             else
               ...lowStock.map(
                 (s) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.warning_amber_rounded, size: 14, color: kWarningOrange),
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        size: 14,
+                        color: kWarningOrange,
+                      ),
                       const SizedBox(width: 8),
                       Text(s, style: const TextStyle(fontSize: 13)),
                     ],
@@ -1146,7 +1185,12 @@ class StockSummary extends StatelessWidget {
             AspectRatio(
               aspectRatio: 1.5,
               child: categories.isEmpty
-                  ? const Center(child: Text('Aucune donnée', style: TextStyle(color: Colors.grey)))
+                  ? const Center(
+                      child: Text(
+                        'Aucune donnée',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
                   : PieChart(
                       PieChartData(
                         sectionsSpace: 2,
@@ -1246,7 +1290,11 @@ class PerformanceSection extends StatelessWidget {
                     color: kAccentBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.show_chart, color: kAccentBlue, size: 20),
+                  child: const Icon(
+                    Icons.show_chart,
+                    color: kAccentBlue,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -1359,7 +1407,11 @@ class SystemInfoBar extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Pharmacy: ${authProvider.company?.name ?? "..."}',
-                style: TextStyle(color: Colors.grey[700], fontSize: 12, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -1369,7 +1421,11 @@ class SystemInfoBar extends StatelessWidget {
           ),
           Text(
             _formatDateTime(now),
-            style: TextStyle(color: Colors.grey[600], fontSize: 12, fontFeatures: const [FontFeature.tabularFigures()]),
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
           ),
         ],
       ),

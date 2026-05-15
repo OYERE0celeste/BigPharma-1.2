@@ -26,17 +26,28 @@ class SupportQuestion {
   factory SupportQuestion.fromJson(Map<String, dynamic> json) {
     return SupportQuestion(
       id: json['_id'] ?? '',
-      clientId: json['clientId'] is Map ? json['clientId']['_id'] : (json['clientId'] ?? ''),
-      clientName: json['clientId'] is Map ? (json['clientId']['fullName'] ?? 'Client') : 'Client',
-      companyId: json['companyId'] is Map ? json['companyId']['_id'] : (json['companyId'] ?? ''),
+      clientId: json['clientId'] is Map
+          ? json['clientId']['_id']
+          : (json['clientId'] ?? ''),
+      clientName: json['clientId'] is Map
+          ? (json['clientId']['fullName'] ?? 'Client')
+          : 'Client',
+      companyId: json['companyId'] is Map
+          ? json['companyId']['_id']
+          : (json['companyId'] ?? ''),
       subject: json['subject'] ?? '',
       status: json['status'] ?? 'en_attente',
-      messages: (json['messages'] as List?)
+      messages:
+          (json['messages'] as List?)
               ?.map((m) => SupportMessage.fromJson(m))
               .toList() ??
           [],
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updatedAt'] ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 
@@ -71,21 +82,36 @@ class SupportMessage {
   final String content;
   final String senderId;
   final String senderType; // 'client' or 'pharmacie'
+  final String senderName;
+  final String senderRole;
   final DateTime createdAt;
 
   SupportMessage({
     required this.content,
     required this.senderId,
     required this.senderType,
+    required this.senderName,
+    required this.senderRole,
     required this.createdAt,
   });
 
   factory SupportMessage.fromJson(Map<String, dynamic> json) {
+    final sender = json['senderId'];
     return SupportMessage(
-      content: json['content'] ?? '',
-      senderId: json['senderId'] is Map ? json['senderId']['_id'] : (json['senderId'] ?? ''),
-      senderType: json['senderType'] ?? 'client',
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      content: (json['content'] ?? '').toString(),
+      senderId: sender is Map
+          ? (sender['_id'] ?? '').toString()
+          : (sender ?? '').toString(),
+      senderType: (json['senderType'] ?? 'client').toString(),
+      senderName: sender is Map
+          ? (sender['fullName'] ?? '').toString()
+          : (json['senderName'] ?? '').toString(),
+      senderRole: sender is Map
+          ? (sender['role'] ?? '').toString()
+          : (json['senderRole'] ?? '').toString(),
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 }

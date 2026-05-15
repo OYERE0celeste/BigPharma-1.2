@@ -6,12 +6,15 @@ import 'api_service.dart';
 class SupportService {
   final ApiService _apiService = ApiService();
 
-  Future<List<SupportQuestion>> getQuestions({String? status, String? clientId}) async {
+  Future<List<SupportQuestion>> getQuestions({
+    String? status,
+    String? clientId,
+  }) async {
     String url = ApiConstants.questionsClients;
     List<String> params = [];
     if (status != null) params.add('status=$status');
     if (clientId != null) params.add('clientId=$clientId');
-    
+
     if (params.isNotEmpty) {
       url += '?${params.join('&')}';
     }
@@ -28,13 +31,10 @@ class SupportService {
   }
 
   Future<SupportQuestion> createQuestion(String subject, String content) async {
-    final response = await _apiService.post(
-      ApiConstants.questionsClients,
-      {
-        'subject': subject,
-        'content': content,
-      },
-    );
+    final response = await _apiService.post(ApiConstants.questionsClients, {
+      'subject': subject,
+      'content': content,
+    });
     if (response.statusCode == 201) {
       final decoded = json.decode(response.body);
       if (decoded['success'] == true) {
@@ -45,7 +45,9 @@ class SupportService {
   }
 
   Future<SupportQuestion> getQuestionById(String id) async {
-    final response = await _apiService.get('${ApiConstants.questionsClients}/$id');
+    final response = await _apiService.get(
+      '${ApiConstants.questionsClients}/$id',
+    );
     if (response.statusCode == 200) {
       final decoded = json.decode(response.body);
       if (decoded['success'] == true) {
@@ -74,7 +76,7 @@ class SupportService {
     // But ApiService doesn't have patch. Let's add it or use put.
     // I'll use PUT/POST and update ApiService if needed.
     // For now, I'll use put and hope the backend handles it or I'll update ApiService.
-    
+
     final response = await _apiService.patch(
       '${ApiConstants.questionsClients}/$id/close',
       {},

@@ -14,6 +14,7 @@ const LotSchema = new mongoose.Schema({
   },
   quantityAvailable: { type: Number, required: true, min: 0 },
   costPrice: { type: Number, required: true, min: 0 },
+  manufacturingDate: { type: Date, required: true, default: Date.now },
   expirationDate: { type: Date, required: true },
 });
 
@@ -69,12 +70,14 @@ ProductSchema.virtual("expirationStatus").get(function () {
   let hasNearExpiration = false;
 
   for (const lot of this.lots) {
-    if (new Date(lot.expirationDate) < now) {
-      hasExpired = true;
-      break;
-    }
-    if (new Date(lot.expirationDate) <= thirtyDaysFromNow) {
-      hasNearExpiration = true;
+    if ((lot.quantityAvailable || 0) > 0) {
+      if (new Date(lot.expirationDate) < now) {
+        hasExpired = true;
+        break;
+      }
+      if (new Date(lot.expirationDate) <= thirtyDaysFromNow) {
+        hasNearExpiration = true;
+      }
     }
   }
 

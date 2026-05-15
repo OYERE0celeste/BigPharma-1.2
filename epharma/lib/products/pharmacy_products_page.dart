@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../models/product_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
 import '../security/rbac.dart';
+import '../widgets/page_stat_cards.dart';
 import 'widgets/product_table.dart';
 import 'widgets/product_detail.dart';
 import 'widgets/product_form.dart';
@@ -42,7 +44,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
       await context.read<ProductProvider>().loadProducts();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erreur de chargement des produits : $e')),
         );
       }
@@ -71,7 +73,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
         await _loadProducts();
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
+          AppScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Erreur ajout produit : $e')));
         }
@@ -149,7 +151,9 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _buildHeader(context),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                _buildStats(provider),
+                const SizedBox(height: 16),
                 if (provider.isLoading && products.isEmpty)
                   const Expanded(
                     child: Center(child: CircularProgressIndicator()),
@@ -170,63 +174,73 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         context: context,
                         builder: (_) => ProductDetailsPanel(product: p),
                       ),
-                      onEdit: canEdit ? (p) async {
-                        final updated = await showDialog<Product>(
-                          context: context,
-                          builder: (_) => ProductFormDialog(product: p),
-                        );
-                        if (updated != null) {
-                          try {
-                            await provider.updateProduct(updated);
-                            await provider.loadProducts();
-                          } catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Erreur mise à jour produit : $e',
-                                  ),
+                      onEdit: canEdit
+                          ? (p) async {
+                              final updated = await showDialog<Product>(
+                                context: context,
+                                builder: (_) => ProductFormDialog(product: p),
+                              );
+                              if (updated != null) {
+                                try {
+                                  await provider.updateProduct(updated);
+                                  await provider.loadProducts();
+                                } catch (e) {
+                                  if (mounted) {
+                                    AppScaffoldMessenger.of(
+                                      context,
+                                    ).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Erreur mise à jour produit : $e',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            }
+                          : null,
+                      onDelete: canDelete
+                          ? (p) async {
+                              final ok = await showDialog<bool>(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text('Confirmer la suppression'),
+                                  content: Text('Supprimer ${p.name} ?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: const Text('Annuler'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: const Text('Supprimer'),
+                                    ),
+                                  ],
                                 ),
                               );
+                              if (ok == true) {
+                                try {
+                                  await provider.deleteProduct(p.id);
+                                  await provider.loadProducts();
+                                } catch (e) {
+                                  if (mounted) {
+                                    AppScaffoldMessenger.of(
+                                      context,
+                                    ).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Erreur suppression produit : $e',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
                             }
-                          }
-                        }
-                      } : null,
-                      onDelete: canDelete ? (p) async {
-                        final ok = await showDialog<bool>(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text('Confirmer la suppression'),
-                            content: Text('Supprimer ${p.name} ?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: const Text('Annuler'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context, true),
-                                child: const Text('Supprimer'),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (ok == true) {
-                          try {
-                            await provider.deleteProduct(p.id);
-                            await provider.loadProducts();
-                          } catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Erreur suppression produit : $e',
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        }
-                      } : null,
+                          : null,
                     ),
                   ),
               ],
@@ -234,6 +248,43 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildStats(ProductProvider provider) {
+    return PageStatCards(
+      items: [
+        PageStatCardData(
+          label: 'Produits',
+          value: '${provider.totalProducts}',
+          color: Colors.indigo,
+          icon: Icons.medication_outlined,
+        ),
+        PageStatCardData(
+          label: 'Stock faible',
+          value: '${provider.lowStockCount}',
+          color: Colors.orange,
+          icon: Icons.inventory_2_outlined,
+        ),
+        PageStatCardData(
+          label: 'Rupture',
+          value: '${provider.outOfStockCount}',
+          color: Colors.red,
+          icon: Icons.warning_amber_rounded,
+        ),
+        PageStatCardData(
+          label: 'Expirés',
+          value: '${provider.expiredCount}',
+          color: Colors.redAccent,
+          icon: Icons.event_busy_outlined,
+        ),
+        PageStatCardData(
+          label: 'Bientôt expirés',
+          value: '${provider.nearExpirationCount}',
+          color: Colors.orange,
+          icon: Icons.event_note_outlined,
+        ),
+      ],
     );
   }
 
@@ -322,7 +373,6 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             value: 'Bientôt expirés',
                             child: Text('Bientôt'),
                           ),
-
                         ],
                         onChanged: (v) =>
                             setState(() => _filter = v ?? 'Tous les produits'),
@@ -339,20 +389,20 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _openAddDialog,
-                      icon: const Icon(Icons.add),
-                      label: const Text('Ajouter un produit'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade100,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(color: Colors.grey.shade300),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Ajouter un produit'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade100,
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: _loadProducts,
@@ -416,13 +466,15 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                           ),
                           onChanged: (v) => setState(() => _search = v),
@@ -461,10 +513,10 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                               value: 'Bientôt expirés',
                               child: Text('Bientôt expirés'),
                             ),
-
                           ],
                           onChanged: (v) => setState(
-                              () => _filter = v ?? 'Tous les produits'),
+                            () => _filter = v ?? 'Tous les produits',
+                          ),
                         ),
                       ),
                     ),
@@ -488,21 +540,21 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                     if (canAdd)
                       ElevatedButton(
                         onPressed: _openAddDialog,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade100,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade100,
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(color: Colors.grey.shade300),
-                        ),
+                        child: const Icon(Icons.add),
                       ),
-                      child: const Icon(Icons.add),
-                    ),
                   ],
                 ),
               ),

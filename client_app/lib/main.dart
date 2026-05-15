@@ -10,7 +10,11 @@ import 'services/order_provider.dart';
 import 'services/wishlist_provider.dart';
 import 'services/support_provider.dart';
 import 'services/notification_provider.dart';
+import 'services/invoice_provider.dart';
+import 'services/review_provider.dart';
+import 'services/complaint_provider.dart';
 import 'pages/login_page.dart';
+import 'widgets/app_notification.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +71,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         ChangeNotifierProvider(create: (_) => SupportProvider()),
+        ChangeNotifierProvider(create: (_) => InvoiceProvider()),
+        ChangeNotifierProvider(create: (_) => ReviewProvider()),
+        ChangeNotifierProvider(create: (_) => ComplaintProvider()),
         ChangeNotifierProxyProvider<AuthProvider, NotificationProvider>(
           create: (context) => NotificationProvider(),
           update: (context, auth, previous) =>
@@ -87,6 +94,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BigPharma',
       debugShowCheckedModeBanner: false,
+      navigatorKey: AppNotificationService.navigatorKey,
+      builder: (context, child) =>
+          AppNotificationHost(child: child ?? const SizedBox.shrink()),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF2E7D62),
@@ -94,6 +104,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
+        fontFamily: 'sans-serif',
         scaffoldBackgroundColor: Colors.grey[50],
       ),
       darkTheme: ThemeData(
@@ -103,6 +114,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
+        fontFamily: 'sans-serif',
         scaffoldBackgroundColor: const Color(0xFF121212),
       ),
       themeMode: ThemeMode.system,

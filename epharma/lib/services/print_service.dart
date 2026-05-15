@@ -20,25 +20,39 @@ class PrintService {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Center(
-                child: pw.Text(companyName, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18)),
+                child: pw.Text(
+                  companyName,
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
               ),
               pw.SizedBox(height: 10),
               pw.Text('Commande: $orderNumber'),
               pw.Text('Date: $date'),
               pw.Divider(),
-              ...items.map((item) => pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text('${item['name']} x${item['quantity']}'),
-                  pw.Text('${item['price']} FCFA'),
-                ],
-              )),
+              ...items.map(
+                (item) => pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('${item['name']} x${item['quantity']}'),
+                    pw.Text('${item['price']} FCFA'),
+                  ],
+                ),
+              ),
               pw.Divider(),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('TOTAL', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('${total.toStringAsFixed(0)} FCFA', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(
+                    'TOTAL',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.Text(
+                    '${total.toStringAsFixed(0)} FCFA',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
                 ],
               ),
               pw.SizedBox(height: 20),
@@ -49,6 +63,8 @@ class PrintService {
       ),
     );
 
-    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
   }
 }

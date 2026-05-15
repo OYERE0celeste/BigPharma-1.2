@@ -1,5 +1,6 @@
 //import 'package:epharma/activites/activity_register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import 'app_colors.dart';
 import '../settings/settings_dialog.dart';
@@ -16,7 +17,6 @@ class GlobalNavbar extends StatefulWidget {
   final bool isSidebarOpen;
   final Function(String)? onProfileAction;
   final Function(String, dynamic)? onNotificationNavigate;
-
 
   const GlobalNavbar({
     required this.onMenuToggle,
@@ -229,7 +229,9 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                                     ),
                                   ),
                                   Text(
-                                    (context.watch<AuthProvider>().user?.role ?? 'PHARMACIEN').toUpperCase(),
+                                    (context.watch<AuthProvider>().user?.role ??
+                                            'PHARMACIEN')
+                                        .toUpperCase(),
                                     style: TextStyle(
                                       fontSize: 9,
                                       color: Colors.grey[600],
@@ -325,7 +327,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
         break;
 
       case 'activity':
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Ouverture du journal d'activité")),
         );
         break;
@@ -339,7 +341,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
         _testNotification();
         break;
       case 'help':
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Ouverture Aide & Support')),
         );
         break;
@@ -370,7 +372,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                     .sendTestNotification();
                 if (context.mounted) {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  AppScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('✅ Notification de test envoyée!'),
                       backgroundColor: Colors.green,
@@ -379,7 +381,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                 }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  AppScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('❌ Erreur: $e'),
                       backgroundColor: kDangerRed,
@@ -461,4 +463,3 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
     );
   }
 }
-

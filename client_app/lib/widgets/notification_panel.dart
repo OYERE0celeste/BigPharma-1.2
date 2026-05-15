@@ -8,7 +8,6 @@ class NotificationPanel extends StatelessWidget {
   final Function(String, dynamic)? onTap;
   const NotificationPanel({super.key, this.onTap});
 
-
   @override
   Widget build(BuildContext context) {
     final notificationProvider = context.watch<NotificationProvider>();
@@ -39,9 +38,9 @@ class NotificationPanel extends StatelessWidget {
               children: [
                 Text(
                   'Notifications',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 if (notificationProvider.unreadCount > 0)
                   TextButton(
@@ -56,13 +55,12 @@ class NotificationPanel extends StatelessWidget {
           // List
           Expanded(
             child: notifications.isEmpty
-                ? const Center(
-                    child: Text('Aucune notification'),
-                  )
+                ? const Center(child: Text('Aucune notification'))
                 : ListView.separated(
                     padding: EdgeInsets.zero,
                     itemCount: notifications.length,
-                    separatorBuilder: (context, index) => const Divider(height: 1),
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
                     itemBuilder: (context, index) {
                       final notification = notifications[index];
                       return _NotificationTile(
@@ -71,7 +69,6 @@ class NotificationPanel extends StatelessWidget {
                       );
                     },
                   ),
-
           ),
         ],
       ),
@@ -96,7 +93,9 @@ class _NotificationTile extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(16),
-        color: notification.isRead ? Colors.transparent : Theme.of(context).primaryColor.withOpacity(0.05),
+        color: notification.isRead
+            ? Colors.transparent
+            : Theme.of(context).primaryColor.withOpacity(0.05),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,16 +111,15 @@ class _NotificationTile extends StatelessWidget {
                       Text(
                         notification.title,
                         style: TextStyle(
-                          fontWeight: notification.isRead ? FontWeight.w500 : FontWeight.bold,
+                          fontWeight: notification.isRead
+                              ? FontWeight.w500
+                              : FontWeight.bold,
                           fontSize: 14,
                         ),
                       ),
                       Text(
                         _formatDate(notification.createdAt),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[500],
-                        ),
+                        style: TextStyle(fontSize: 11, color: Colors.grey[500]),
                       ),
                     ],
                   ),
@@ -170,6 +168,18 @@ class _NotificationTile extends StatelessWidget {
       case 'stock':
         iconData = Icons.inventory_2_outlined;
         color = Colors.red;
+        break;
+      case 'invoice':
+        iconData = Icons.receipt_long_outlined;
+        color = Colors.green;
+        break;
+      case 'review':
+        iconData = Icons.star_outline_rounded;
+        color = Colors.amber.shade700;
+        break;
+      case 'complaint':
+        iconData = Icons.report_problem_outlined;
+        color = Colors.deepOrange;
         break;
       default:
         iconData = Icons.notifications_none;

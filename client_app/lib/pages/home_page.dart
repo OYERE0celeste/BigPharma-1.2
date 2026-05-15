@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:provider/provider.dart';
 import 'package:client_app/services/cart_provider.dart';
+import 'package:client_app/widgets/app_notification.dart';
 import 'package:client_app/widgets/index.dart';
 import 'package:client_app/services/product_service.dart';
 import 'package:client_app/models/product.dart';
@@ -13,7 +14,9 @@ import 'package:client_app/widgets/settings_dialog.dart';
 import 'package:client_app/services/notification_provider.dart';
 import 'package:client_app/widgets/notification_panel.dart';
 import 'profile_page.dart';
-
+import 'complaints_page.dart';
+import 'invoices_page.dart';
+import 'reviews_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -103,7 +106,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Consumer<AuthProvider>(
-
             builder: (context, auth, _) => Padding(
               padding: const EdgeInsets.only(right: 14),
               child: PopupMenuButton<String>(
@@ -126,6 +128,27 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const ClientSupportPage(),
+                      ),
+                    );
+                  } else if (value == 'invoices') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const InvoicesPage(),
+                      ),
+                    );
+                  } else if (value == 'reviews') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReviewsPage(),
+                      ),
+                    );
+                  } else if (value == 'complaints') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ComplaintsPage(),
                       ),
                     );
                   } else if (value == 'logout') {
@@ -180,6 +203,36 @@ class _HomePageState extends State<HomePage> {
                               Icon(Icons.settings_outlined, size: 20),
                               SizedBox(width: 12),
                               Text('Paramètres'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'invoices',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.receipt_long_outlined, size: 20),
+                              SizedBox(width: 12),
+                              Text('Mes factures'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'reviews',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.star_outline_rounded, size: 20),
+                              SizedBox(width: 12),
+                              Text('Mes avis'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'complaints',
+                          child: Row(
+                            children: const [
+                              Icon(Icons.report_problem_outlined, size: 20),
+                              SizedBox(width: 12),
+                              Text('Mes réclamations'),
                             ],
                           ),
                         ),
@@ -390,7 +443,7 @@ class _HomePageState extends State<HomePage> {
                                   context.read<CartProvider>().addItem(
                                     products[index],
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  AppScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
                                         '${products[index].name} ajouté au panier',
@@ -452,7 +505,7 @@ class _HomePageState extends State<HomePage> {
                                   child: ProductCard(
                                     product: products[index],
                                     onAddTap: () {
-                                      ScaffoldMessenger.of(
+                                      AppScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
                                         SnackBar(
@@ -591,11 +644,36 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const ClientSupportPage(),
                       ),
                     );
+                  } else if (type == 'invoice') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const InvoicesPage(),
+                      ),
+                    );
+                  } else if (type == 'review') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReviewsPage(),
+                      ),
+                    );
+                  } else if (type == 'complaint') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ComplaintsPage(),
+                      ),
+                    );
                   } else if (type == 'order') {
                     // Navigate to orders (which are on the home page)
                     // For now, just scroll to bottom or show a snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Vérifiez "Mes commandes" en bas de la page')),
+                    AppScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Vérifiez "Mes commandes" en bas de la page',
+                        ),
+                      ),
                     );
                   }
                 },
@@ -607,5 +685,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

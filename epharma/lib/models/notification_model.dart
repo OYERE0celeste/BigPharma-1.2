@@ -31,7 +31,9 @@ class NotificationModel {
       type: json['type'] ?? 'system',
       data: json['data'] ?? {},
       isRead: json['isRead'] ?? false,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 

@@ -1,5 +1,5 @@
 {"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-13 10:18:51"}
-{"level":"info","message":"[SEED] Default administrator created: laflorale@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-05-13 10:18:52"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-05-13 10:18:52"}
 {"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.766 ms","service":"bigpharma-api","timestamp":"2026-05-13 10:21:33"}
 {"level":"info","message":"POST /api/auth/login 200 759 - 170.259 ms","service":"bigpharma-api","timestamp":"2026-05-13 10:21:33"}
 {"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.329 ms","service":"bigpharma-api","timestamp":"2026-05-13 10:21:33"}

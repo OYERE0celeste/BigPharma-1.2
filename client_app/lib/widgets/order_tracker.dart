@@ -36,7 +36,10 @@ class OrderTracker extends StatelessWidget {
           children: [
             Icon(Icons.cancel, color: Colors.red),
             SizedBox(width: 8),
-            Text('Commande annulée', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            Text(
+              'Commande annulée',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       );
@@ -67,7 +70,9 @@ class OrderTracker extends StatelessWidget {
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isActive ? Theme.of(context).primaryColor : Colors.grey[300],
+                          color: isActive
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey[300],
                         ),
                         child: Icon(
                           steps[index]['icon'] as IconData,
@@ -80,8 +85,12 @@ class OrderTracker extends StatelessWidget {
                         steps[index]['label'] as String,
                         style: TextStyle(
                           fontSize: 10,
-                          color: isActive ? Theme.of(context).primaryColor : Colors.grey[600],
-                          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                          color: isActive
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey[600],
+                          fontWeight: isActive
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                       ),
                     ],
@@ -91,7 +100,9 @@ class OrderTracker extends StatelessWidget {
                       child: Container(
                         height: 2,
                         margin: const EdgeInsets.only(bottom: 16),
-                        color: index < currentStep ? Theme.of(context).primaryColor : Colors.grey[300],
+                        color: index < currentStep
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey[300],
                       ),
                     ),
                 ],

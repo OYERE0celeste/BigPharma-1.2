@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import '../services/auth_service.dart';
 import 'settings_theme.dart';
 import '../widgets/app_colors.dart';
@@ -14,7 +15,7 @@ class SecuriteDialog extends StatefulWidget {
 
 class _SecuriteDialogState extends State<SecuriteDialog> {
   String _currentSubView = 'main'; // 'main', 'password', or 'users'
-  
+
   // Password Form State
   final _formKey = GlobalKey<FormState>();
   final _currentPasswordController = TextEditingController();
@@ -48,9 +49,9 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         newPassword: _newPasswordController.text,
         confirmPassword: _confirmPasswordController.text,
       );
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mot de passe mis à jour avec succès'),
             backgroundColor: kPrimaryGreen,
@@ -64,7 +65,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,
@@ -122,7 +123,8 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
           _buildListItem(
             icon: Icons.admin_panel_settings_outlined,
             title: "Gestion des droits et accès",
-            subtitle: "Configurez les permissions par rôle (Admin, Caissier...)",
+            subtitle:
+                "Configurez les permissions par rôle (Admin, Caissier...)",
             onTap: () => _switchView('rights'),
           ),
           _buildListItem(
@@ -131,15 +133,19 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
             subtitle: "Sécurité renforcée par email",
             trailing: "Désactivé",
           ),
-          
+
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Text(
               "Gérez la sécurité de votre compte et les niveaux d'accès de votre équipe pharmaceutique.",
-              style: TextStyle(fontSize: 12, color: SettingsTheme.textSecondary, height: 1.5),
+              style: TextStyle(
+                fontSize: 12,
+                color: SettingsTheme.textSecondary,
+                height: 1.5,
+              ),
             ),
           ),
-          
+
           const SizedBox(height: 40),
         ],
       ),
@@ -222,7 +228,8 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   controller: _currentPasswordController,
                   label: "Mot de passe actuel",
                   obscure: _obscureCurrent,
-                  onToggle: () => setState(() => _obscureCurrent = !_obscureCurrent),
+                  onToggle: () =>
+                      setState(() => _obscureCurrent = !_obscureCurrent),
                 ),
                 const SizedBox(height: 16),
                 _buildPasswordField(
@@ -231,7 +238,9 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   obscure: _obscureNew,
                   onToggle: () => setState(() => _obscureNew = !_obscureNew),
                   validator: (val) {
-                    if (val == null || val.length < 6) return 'Minimum 6 caractères';
+                    if (val == null || val.length < 6) {
+                      return 'Minimum 6 caractères';
+                    }
                     return null;
                   },
                 ),
@@ -240,9 +249,12 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   controller: _confirmPasswordController,
                   label: "Confirmer le nouveau mot de passe",
                   obscure: _obscureConfirm,
-                  onToggle: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                  onToggle: () =>
+                      setState(() => _obscureConfirm = !_obscureConfirm),
                   validator: (val) {
-                    if (val != _newPasswordController.text) return 'Les mots de passe ne correspondent pas';
+                    if (val != _newPasswordController.text) {
+                      return 'Les mots de passe ne correspondent pas';
+                    }
                     return null;
                   },
                 ),
@@ -255,14 +267,24 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                       backgroundColor: SettingsTheme.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       elevation: 0,
                     ),
                     child: _isLoading
                         ? const SizedBox(
-                            height: 20, width: 20, 
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text("METTRE À JOUR", style: TextStyle(fontWeight: FontWeight.bold)),
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            "METTRE À JOUR",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ],
@@ -316,11 +338,17 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(fontSize: 12, color: SettingsTheme.textSecondary),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: SettingsTheme.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -328,30 +356,55 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
             if (trailing != null)
               Text(
                 trailing,
-                style: const TextStyle(color: SettingsTheme.primary, fontSize: 13, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: SettingsTheme.primary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
               )
             else
-              const Icon(Icons.chevron_right_rounded, color: SettingsTheme.textSecondary, size: 20),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: SettingsTheme.textSecondary,
+                size: 20,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPasswordField({required TextEditingController controller, required String label, required bool obscure, required VoidCallback onToggle, String? Function(String?)? validator}) {
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscure,
+    required VoidCallback onToggle,
+    String? Function(String?)? validator,
+  }) {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
-      validator: validator ?? (val) => val == null || val.isEmpty ? 'Champ requis' : null,
+      validator:
+          validator ??
+          (val) => val == null || val.isEmpty ? 'Champ requis' : null,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 14, color: SettingsTheme.textSecondary),
+        labelStyle: const TextStyle(
+          fontSize: 14,
+          color: SettingsTheme.textSecondary,
+        ),
         filled: true,
         fillColor: const Color(0xFFF8FAFC),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
         prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
         suffixIcon: IconButton(
-          icon: Icon(obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20),
+          icon: Icon(
+            obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            size: 20,
+          ),
           onPressed: onToggle,
         ),
       ),

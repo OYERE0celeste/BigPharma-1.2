@@ -8,7 +8,6 @@ import '../models/activity_model.dart';
 //import '../models/finance_model.dart';
 
 class SalesProvider with ChangeNotifier {
-
   List<Sale> _sales = [];
   bool _isLoading = false;
 
@@ -40,7 +39,6 @@ class SalesProvider with ChangeNotifier {
     required double taxAmount,
     required String paymentMethod,
     required double amountReceived,
-
   }) async {
     final invoiceNumber = 'INV-${DateTime.now().millisecondsSinceEpoch}';
 
@@ -53,7 +51,6 @@ class SalesProvider with ChangeNotifier {
       tax: taxAmount,
       paymentMethod: paymentMethod,
       amountReceived: amountReceived,
-
     );
 
     if (sale != null) {

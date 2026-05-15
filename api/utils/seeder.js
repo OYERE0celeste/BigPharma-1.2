@@ -21,9 +21,12 @@ async function seedAdmin() {
       logger.info("[SEED] Default company created.");
     }
 
-    // 2. Ensure a default admin exists
-    const adminEmail = "laflorale@gmail.com";
-    const adminExists = await User.findOne({ email: adminEmail });
+    // 2. Ensure a default admin exists only when the system has no admin yet.
+    // This avoids recreating the seeded account after an admin changes email.
+    const adminEmail = "laflorale8@gmail.com";
+    const adminExists = await User.exists({
+      role: { $in: ["administrateur", "admin"] },
+    });
     
     if (!adminExists) {
       await User.create({

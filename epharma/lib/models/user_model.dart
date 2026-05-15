@@ -3,6 +3,7 @@ import '../security/rbac.dart';
 class UserModel {
   final String id;
   final String fullName;
+  final String? username;
   final String email;
   final String role;
   final String companyId;
@@ -15,6 +16,7 @@ class UserModel {
   UserModel({
     required this.id,
     required this.fullName,
+    this.username,
     required this.email,
     required this.role,
     required this.companyId,
@@ -39,17 +41,19 @@ class UserModel {
     return UserModel(
       id: (json['id'] ?? json['_id'] ?? '').toString(),
       fullName: (json['fullName'] ?? '').toString(),
+      username: json['username'] as String?,
       email: (json['email'] ?? '').toString(),
       role: role,
-      companyId: json['companyId'] is Map 
-          ? (json['companyId']['_id'] ?? json['companyId']['id'] ?? '').toString()
+      companyId: json['companyId'] is Map
+          ? (json['companyId']['_id'] ?? json['companyId']['id'] ?? '')
+                .toString()
           : (json['companyId'] ?? '').toString(),
       phone: (json['phone'] ?? '').toString(),
       address: (json['address'] ?? '').toString(),
       isActive: json['isActive'] == true,
       permissions: normalizedPermissions,
-      lastLoginAt: json['lastLoginAt'] != null 
-          ? DateTime.tryParse(json['lastLoginAt'].toString()) 
+      lastLoginAt: json['lastLoginAt'] != null
+          ? DateTime.tryParse(json['lastLoginAt'].toString())
           : null,
     );
   }
@@ -66,6 +70,7 @@ class UserModel {
     return {
       'id': id,
       'fullName': fullName,
+      if (username != null) 'username': username,
       'email': email,
       'role': role,
       'companyId': companyId,

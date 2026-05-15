@@ -23,7 +23,11 @@ class WishlistPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.favorite_border, size: 64, color: Colors.grey[300]),
+                  Icon(
+                    Icons.favorite_border,
+                    size: 64,
+                    color: Colors.grey[300],
+                  ),
                   const SizedBox(height: 16),
                   const Text('Votre liste de souhaits est vide.'),
                 ],
@@ -49,7 +53,8 @@ class WishlistPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProductDetailPage(product: product),
+                        builder: (context) =>
+                            ProductDetailPage(product: product),
                       ),
                     );
                   },

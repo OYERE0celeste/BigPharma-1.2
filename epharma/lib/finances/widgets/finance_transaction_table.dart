@@ -2,6 +2,7 @@ import 'package:epharma/models/finance_model.dart';
 //import 'package:epharma/products/pharmacy_products_page.dart' ;
 import 'package:epharma/services/finance_service.dart';
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 //import '../models/finance_model.dart';
 //import '../services/finance_service.dart';
 
@@ -104,7 +105,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           if (onViewDetails != null) {
                             onViewDetails!(transaction);
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            AppScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
                                   'Détails de ${transaction.reference}',

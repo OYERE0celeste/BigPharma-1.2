@@ -25,13 +25,19 @@ class ShortcutManagerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF): const SearchIntent(),
-        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyN): const NewProductIntent(),
+        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF):
+            const SearchIntent(),
+        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyN):
+            const NewProductIntent(),
       },
       child: Actions(
         actions: <Type, Action<Intent>>{
-          SearchIntent: CallbackAction<SearchIntent>(onInvoke: (intent) => onSearch()),
-          NewProductIntent: CallbackAction<NewProductIntent>(onInvoke: (intent) => onNewProduct()),
+          SearchIntent: CallbackAction<SearchIntent>(
+            onInvoke: (intent) => onSearch(),
+          ),
+          NewProductIntent: CallbackAction<NewProductIntent>(
+            onInvoke: (intent) => onNewProduct(),
+          ),
         },
         child: child,
       ),

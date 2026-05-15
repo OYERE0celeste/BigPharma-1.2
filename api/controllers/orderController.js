@@ -1,12 +1,24 @@
 const Client = require("../models/client");
+const Company = require("../models/Company");
 const Order = require("../models/order");
 const OrderTimeline = require("../models/orderTimeline");
+const User = require("../models/User");
 
 const Product = require("../models/product");
 const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
 const { success, failure } = require("../utils/response");
 const { sendNotification, notifyStaff } = require("../utils/notificationHelper");
+const {
+  sendOrderConfirmationEmail,
+  sendOrderStatusUpdateEmail,
+  sendInvoiceReadyEmail,
+} = require("../utils/mailService");
+const {
+  createInvoiceFromOrder,
+  syncInvoiceForOrder,
+  toInvoicePayload,
+} = require("../utils/invoiceService");
 
 
 const ORDER_STATUSES = [
@@ -262,9 +274,8 @@ exports.createOrder = async (req, res, next) => {
       status: "en_attente",
 
       notes: req.body.notes,
+      pickupMode: req.body.pickupMode === "livraison" ? "livraison" : "sur_place",
       collectionCode: Math.floor(100000 + Math.random() * 900000).toString(),
-      invoiceNumber: `FACT-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
-      invoiceDate: new Date(),
     });
 
     await OrderTimeline.create({
@@ -310,6 +321,14 @@ exports.createOrder = async (req, res, next) => {
       data: { orderId: order._id, orderNumber: order.orderNumber },
     });
 
+    await sendOrderConfirmationEmail({
+      email: req.user.email,
+      fullName: req.user.fullName,
+      orderNumber: order.orderNumber,
+      pickupMode: order.pickupMode,
+      companyName: "BigPharma",
+      collectionCode: order.collectionCode,
+    });
 
     return success(res, {
       status: 201,
@@ -559,6 +578,26 @@ exports.updateOrderStatus = async (req, res, next) => {
       order.stockAllocations = [];
     }
 
+    const previousStatus = order.status;
+    const shouldNotifyInvoiceAvailability =
+      !order.invoiceNumber && ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
+
+    order.status = status;
+    await order.save();
+
+    let invoice = null;
+    if (["en_preparation", "pret_pour_recuperation", "validee"].includes(status)) {
+      const [clientProfile, company] = await Promise.all([
+        Client.findById(order.clientId),
+        Company.findById(order.companyId),
+      ]);
+      invoice = await createInvoiceFromOrder(order, {
+        client: clientProfile,
+        company,
+      });
+    }
+    invoice = await syncInvoiceForOrder(order);
+
     // Record in Finance if validated
     if (status === "validee") {
       await new Finance({
@@ -575,10 +614,6 @@ exports.updateOrderStatus = async (req, res, next) => {
         companyId: req.user.companyId,
       }).save();
     }
-
-    const previousStatus = order.status;
-    order.status = status;
-    await order.save();
 
     await OrderTimeline.create({
       orderId: order._id,
@@ -617,6 +652,17 @@ exports.updateOrderStatus = async (req, res, next) => {
       global.io.to(req.user.companyId.toString()).emit("order-status-update", updatedOrder);
     }
 
+    const clientUser = await User.findById(order.userId).select("email fullName").lean();
+    if (clientUser) {
+      await sendOrderStatusUpdateEmail({
+        email: clientUser.email,
+        fullName: clientUser.fullName,
+        orderNumber: order.orderNumber,
+        statusLabel: ORDER_STATUS_LABELS[status],
+        companyName: "BigPharma",
+      });
+    }
+
     // Notify the specific client via persistent notification
     await sendNotification({
       userId: order.userId,
@@ -627,6 +673,31 @@ exports.updateOrderStatus = async (req, res, next) => {
       data: { orderId: order._id, orderNumber: order.orderNumber, status },
     });
 
+    if (invoice && shouldNotifyInvoiceAvailability) {
+      if (clientUser) {
+        await sendInvoiceReadyEmail({
+          email: clientUser.email,
+          fullName: clientUser.fullName,
+          invoiceNumber: invoice.invoiceNumber,
+          orderNumber: order.orderNumber,
+          companyName: "BigPharma",
+        });
+      }
+
+      await sendNotification({
+        userId: order.userId,
+        companyId: req.user.companyId,
+        title: "Votre facture est disponible",
+        message: `La facture ${invoice.invoiceNumber} de la commande ${order.orderNumber} est maintenant disponible.`,
+        type: "invoice",
+        data: {
+          invoiceId: invoice._id,
+          invoiceNumber: invoice.invoiceNumber,
+          orderId: order._id,
+          orderNumber: order.orderNumber,
+        },
+      });
+    }
 
     return success(res, {
       data: updatedOrder,
@@ -684,7 +755,6 @@ exports.getOrderInvoice = async (req, res, next) => {
       });
     }
 
-    // Security check: only the owner or staff can see the invoice
     if (req.user.role === "client" && order.userId.toString() !== req.user._id.toString()) {
       return failure(res, {
         status: 403,
@@ -692,33 +762,15 @@ exports.getOrderInvoice = async (req, res, next) => {
       });
     }
 
-    const invoiceData = {
-      invoiceNumber: order.invoiceNumber,
-      invoiceDate: order.invoiceDate || order.createdAt,
-      orderNumber: order.orderNumber,
-      collectionCode: order.collectionCode,
-      client: {
-        name: order.clientId.fullName,
-        email: order.clientId.email,
-        phone: order.clientId.phone,
-        address: order.clientId.address,
-      },
-      pharmacy: {
-        name: "BigPharma Pharmacy", // Should come from Company model
-        address: "Avenue de la Santé, Cotonou, Bénin",
-        phone: "+229 00 00 00 00",
-      },
-      items: order.products.map((p) => ({
-        name: p.name,
-        price: p.price,
-        quantity: p.quantity,
-        total: p.price * p.quantity,
-      })),
-      totalAmount: order.totalPrice,
-      status: order.status,
-    };
+    const invoice = await syncInvoiceForOrder(order);
+    if (!invoice) {
+      return failure(res, {
+        status: 404,
+        message: "La facture n'est pas encore disponible pour cette commande",
+      });
+    }
 
-    return success(res, { data: invoiceData });
+    return success(res, { data: toInvoicePayload(invoice) });
   } catch (error) {
     next(error);
   }

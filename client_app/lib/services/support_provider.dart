@@ -4,7 +4,7 @@ import 'support_service.dart';
 
 class SupportProvider with ChangeNotifier {
   final SupportService _supportService = SupportService();
-  
+
   List<SupportQuestion> _questions = [];
   bool _isLoading = false;
   String? _error;
@@ -19,7 +19,10 @@ class SupportProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      _questions = await _supportService.getQuestions(status: status, clientId: clientId);
+      _questions = await _supportService.getQuestions(
+        status: status,
+        clientId: clientId,
+      );
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -34,7 +37,10 @@ class SupportProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final newQuestion = await _supportService.createQuestion(subject, content);
+      final newQuestion = await _supportService.createQuestion(
+        subject,
+        content,
+      );
       _questions.insert(0, newQuestion);
     } catch (e) {
       _error = e.toString();
@@ -47,8 +53,11 @@ class SupportProvider with ChangeNotifier {
 
   Future<void> sendMessage(String questionId, String content) async {
     try {
-      final updatedQuestion = await _supportService.addMessage(questionId, content);
-      
+      final updatedQuestion = await _supportService.addMessage(
+        questionId,
+        content,
+      );
+
       // Update the question in the list
       int index = _questions.indexWhere((q) => q.id == questionId);
       if (index != -1) {
@@ -65,7 +74,7 @@ class SupportProvider with ChangeNotifier {
   Future<void> closeQuestion(String questionId) async {
     try {
       final updatedQuestion = await _supportService.closeQuestion(questionId);
-      
+
       // Update the question in the list
       int index = _questions.indexWhere((q) => q.id == questionId);
       if (index != -1) {

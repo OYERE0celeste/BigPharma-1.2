@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:client_app/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import 'package:client_app/services/auth_provider.dart';
 import 'package:client_app/services/cart_provider.dart';
@@ -15,11 +16,12 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   bool _isSubmitting = false;
+  String _pickupMode = 'sur_place';
 
   Future<void> _submitOrder(BuildContext context) async {
     final auth = context.read<AuthProvider>();
     if (!auth.isAuthenticated) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Connectez-vous pour valider la commande.'),
         ),
@@ -33,9 +35,9 @@ class _CartPageState extends State<CartPage> {
 
     final cart = context.read<CartProvider>();
     if (cart.items.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Votre panier est vide.')),
-      );
+      AppScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Votre panier est vide.')));
       return;
     }
 
@@ -43,8 +45,13 @@ class _CartPageState extends State<CartPage> {
 
     setState(() => _isSubmitting = true);
     final orderItems = cart.orderItems;
-    debugPrint('Submitting order with ${orderItems.length} items: ${orderItems.map((e) => e.toRequestJson())}');
-    final result = await orderProvider.createOrder(orderItems);
+    debugPrint(
+      'Submitting order with ${orderItems.length} items: ${orderItems.map((e) => e.toRequestJson())}',
+    );
+    final result = await orderProvider.createOrder(
+      orderItems,
+      pickupMode: _pickupMode,
+    );
     setState(() => _isSubmitting = false);
 
     if (!mounted) {
@@ -53,7 +60,7 @@ class _CartPageState extends State<CartPage> {
 
     if (result['success'] == true) {
       cart.clear();
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Commande créée avec succès.')),
       );
       await Navigator.pushReplacement(
@@ -63,7 +70,7 @@ class _CartPageState extends State<CartPage> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    AppScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           (result['message'] ?? 'Impossible de créer la commande.').toString(),
@@ -121,7 +128,6 @@ class _CartPageState extends State<CartPage> {
 
           return Column(
             children: [
-
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.all(16),
@@ -263,6 +269,25 @@ class _CartPageState extends State<CartPage> {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 16),
+                      SegmentedButton<String>(
+                        segments: const [
+                          ButtonSegment(
+                            value: 'sur_place',
+                            label: Text('Sur place'),
+                            icon: Icon(Icons.storefront_outlined),
+                          ),
+                          ButtonSegment(
+                            value: 'livraison',
+                            label: Text('Livraison'),
+                            icon: Icon(Icons.local_shipping_outlined),
+                          ),
+                        ],
+                        selected: {_pickupMode},
+                        onSelectionChanged: (selection) {
+                          setState(() => _pickupMode = selection.first);
+                        },
                       ),
                       const SizedBox(height: 24),
                       SizedBox(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:client_app/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 
@@ -27,11 +28,11 @@ class _ProfileViewState extends State<ProfileView> {
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
-    
+
     // Refresh user data from server when opening the profile view
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AuthProvider>().refreshUser();
-      
+
       // Safety timeout for loading
       Future.delayed(const Duration(seconds: 10), () {
         if (mounted && context.read<AuthProvider>().isLoading) {
@@ -45,15 +46,19 @@ class _ProfileViewState extends State<ProfileView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final user = context.watch<AuthProvider>().user;
-    
+
     // Only update controllers if the user is available and we are NOT currently editing
     // This allows the UI to react to background updates (refreshUser)
     if (user != null && !_isEditing) {
       // We check if values are different to avoid cursor jumps
-      if (_nameController.text != user.fullName) _nameController.text = user.fullName;
-      if (_emailController.text != user.email) _emailController.text = user.email;
-      if (_phoneController.text != user.phone) _phoneController.text = user.phone;
-      if (_addressController.text != user.address) _addressController.text = user.address;
+      if (_nameController.text != user.fullName)
+        _nameController.text = user.fullName;
+      if (_emailController.text != user.email)
+        _emailController.text = user.email;
+      if (_phoneController.text != user.phone)
+        _phoneController.text = user.phone;
+      if (_addressController.text != user.address)
+        _addressController.text = user.address;
     }
   }
 
@@ -81,7 +86,7 @@ class _ProfileViewState extends State<ProfileView> {
 
     if (result['success'] && mounted) {
       setState(() => _isEditing = false);
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Profil mis à jour !'),
           backgroundColor: Colors.green,
@@ -89,7 +94,7 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       );
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result['message'] ?? 'Erreur'),
           backgroundColor: Colors.red,
@@ -109,25 +114,25 @@ class _ProfileViewState extends State<ProfileView> {
       child: (user == null && context.watch<AuthProvider>().isLoading)
           ? const Center(child: CircularProgressIndicator())
           : user == null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Impossible de charger le profil"),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => context.read<AuthProvider>().logout(),
-                        child: const Text("Se déconnecter"),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Impossible de charger le profil"),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<AuthProvider>().logout(),
+                    child: const Text("Se déconnecter"),
                   ),
-                )
-              : SingleChildScrollView(
+                ],
+              ),
+            )
+          : SingleChildScrollView(
               child: Column(
                 children: [
                   // Header Section
                   _buildHeader(primary, user),
-                  
+
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Form(
@@ -161,7 +166,7 @@ class _ProfileViewState extends State<ProfileView> {
                               hint: 'Ajouter un numéro',
                             ),
                           ]),
-                          
+
                           const SizedBox(height: 24),
                           _buildSectionTitle('LOCALISATION'),
                           _buildInfoCard([
@@ -174,7 +179,7 @@ class _ProfileViewState extends State<ProfileView> {
                               hint: 'Ajouter une adresse',
                             ),
                           ]),
-                          
+
                           const SizedBox(height: 32),
                           _buildActionButtons(primary),
                           const SizedBox(height: 40),
@@ -226,10 +231,14 @@ class _ProfileViewState extends State<ProfileView> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
                         blurRadius: 8,
-                      )
+                      ),
                     ],
                   ),
-                  child: Icon(Icons.camera_alt_rounded, size: 16, color: primary),
+                  child: Icon(
+                    Icons.camera_alt_rounded,
+                    size: 16,
+                    color: primary,
+                  ),
                 ),
             ],
           ),
@@ -291,7 +300,7 @@ class _ProfileViewState extends State<ProfileView> {
             color: Colors.black.withOpacity(0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
-          )
+          ),
         ],
       ),
       child: Column(children: children),
@@ -324,7 +333,9 @@ class _ProfileViewState extends State<ProfileView> {
       );
     }
 
-    final value = controller.text.isEmpty ? (hint ?? 'Non renseigné') : controller.text;
+    final value = controller.text.isEmpty
+        ? (hint ?? 'Non renseigné')
+        : controller.text;
     final valueColor = controller.text.isEmpty ? Colors.grey : Colors.black87;
 
     return ListTile(
@@ -371,7 +382,9 @@ class _ProfileViewState extends State<ProfileView> {
             backgroundColor: primary,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             elevation: 0,
           ),
         ),
@@ -385,7 +398,9 @@ class _ProfileViewState extends State<ProfileView> {
             onPressed: () => setState(() => _isEditing = false),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text('ANNULER'),
           ),
@@ -398,7 +413,9 @@ class _ProfileViewState extends State<ProfileView> {
               backgroundColor: primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 0,
             ),
             child: const Text('ENREGISTRER'),

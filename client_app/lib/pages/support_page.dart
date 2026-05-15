@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:client_app/services/support_provider.dart';
-import '../models/support_model.dart';
 import 'package:client_app/widgets/app_colors.dart';
+import 'package:client_app/widgets/app_notification.dart';
+
+import '../models/support_model.dart';
 
 class ClientSupportPage extends StatefulWidget {
   const ClientSupportPage({super.key});
@@ -25,7 +28,10 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Mes Questions', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Historique des consultations',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
@@ -49,12 +55,17 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
                 children: [
                   Icon(Icons.chat_outlined, size: 64, color: Colors.grey[300]),
                   const SizedBox(height: 16),
-                  const Text('Vous n\'avez pas encore posé de questions'),
+                  const Text(
+                    'Vous n’avez pas encore échangé avec le pharmacien',
+                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => _showNewQuestionDialog(context),
-                    style: ElevatedButton.styleFrom(backgroundColor: kAccentBlue, foregroundColor: Colors.white),
-                    child: const Text('Poser ma première question'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kAccentBlue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Démarrer une consultation'),
                   ),
                 ],
               ),
@@ -96,7 +107,10 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
                   Expanded(
                     child: Text(
                       q.subject,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                   _buildStatusChip(q),
@@ -117,7 +131,11 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
                     'Dernière activité: ${_formatDate(q.updatedAt)}',
                     style: TextStyle(color: Colors.grey[400], fontSize: 12),
                   ),
-                  const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: Colors.grey,
+                  ),
                 ],
               ),
             ],
@@ -136,7 +154,11 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
       ),
       child: Text(
         q.statusLabel,
-        style: TextStyle(color: q.statusColor, fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: q.statusColor,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -148,14 +170,24 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 24, right: 24, top: 24),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 24,
+          right: 24,
+          top: 24,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Nouvelle Question', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              'Nouvelle consultation',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: subjectController,
@@ -179,18 +211,22 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
               height: 50,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (subjectController.text.isNotEmpty && contentController.text.isNotEmpty) {
+                  if (subjectController.text.isNotEmpty &&
+                      contentController.text.isNotEmpty) {
                     await context.read<SupportProvider>().createQuestion(
                       subjectController.text,
                       contentController.text,
                     );
+                    if (!context.mounted) return;
                     Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kAccentBlue,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text('Envoyer'),
               ),
@@ -210,7 +246,8 @@ class _ClientSupportPageState extends State<ClientSupportPage> {
   }
 
   String _formatDate(DateTime dt) {
-    return '${dt.day}/${dt.month}/${dt.year}';
+    final minute = dt.minute.toString().padLeft(2, '0');
+    return '${dt.day}/${dt.month}/${dt.year} à ${dt.hour}:$minute';
   }
 }
 
@@ -250,13 +287,17 @@ class _ClientChatPageState extends State<ClientChatPage> {
               itemBuilder: (context, index) {
                 final msg = _currentQuestion.messages[index];
                 final isMe = msg.senderType == 'client';
-                
+
                 return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: isMe
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(12),
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    ),
                     decoration: BoxDecoration(
                       color: isMe ? kAccentBlue : Colors.grey[200],
                       borderRadius: BorderRadius.only(
@@ -270,13 +311,27 @@ class _ClientChatPageState extends State<ClientChatPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          msg.content,
-                          style: TextStyle(color: isMe ? Colors.white : Colors.black87),
+                          _messageAuthor(msg, isMe),
+                          style: TextStyle(
+                            color: isMe ? Colors.white70 : Colors.grey[700],
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${msg.createdAt.hour}:${msg.createdAt.minute.toString().padLeft(2, '0')}',
-                          style: TextStyle(color: isMe ? Colors.white70 : Colors.grey[600], fontSize: 10),
+                          msg.content,
+                          style: TextStyle(
+                            color: isMe ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${msg.createdAt.day}/${msg.createdAt.month} ${msg.createdAt.hour}:${msg.createdAt.minute.toString().padLeft(2, '0')}',
+                          style: TextStyle(
+                            color: isMe ? Colors.white70 : Colors.grey[600],
+                            fontSize: 10,
+                          ),
                         ),
                       ],
                     ),
@@ -299,7 +354,10 @@ class _ClientChatPageState extends State<ClientChatPage> {
                       controller: _messageController,
                       decoration: InputDecoration(
                         hintText: 'Votre message...',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                         filled: true,
                         fillColor: Colors.grey[100],
                       ),
@@ -320,17 +378,35 @@ class _ClientChatPageState extends State<ClientChatPage> {
 
   void _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
-    
+
     final content = _messageController.text.trim();
     _messageController.clear();
-    
+
     try {
-      await context.read<SupportProvider>().sendMessage(_currentQuestion.id, content);
+      await context.read<SupportProvider>().sendMessage(
+        _currentQuestion.id,
+        content,
+      );
+      if (!mounted) return;
       setState(() {
-        _currentQuestion = context.read<SupportProvider>().questions.firstWhere((q) => q.id == _currentQuestion.id);
+        _currentQuestion = context.read<SupportProvider>().questions.firstWhere(
+          (q) => q.id == _currentQuestion.id,
+        );
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: $e')));
+      AppScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur: $e')));
     }
+  }
+
+  String _messageAuthor(SupportMessage message, bool isMe) {
+    if (isMe) {
+      return 'Vous';
+    }
+    if (message.senderName.trim().isNotEmpty) {
+      return message.senderName;
+    }
+    return message.senderType == 'pharmacie' ? 'Pharmacien' : 'Client';
   }
 }

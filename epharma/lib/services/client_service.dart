@@ -16,8 +16,6 @@ class Purchase {
   });
 }
 
-
-
 class ClientService {
   static final List<Client> _clients = [];
   static int _nextId = 1;
@@ -267,8 +265,6 @@ class ClientService {
     // Placeholder implementation
     return [];
   }
-
-
 
   static Map<String, int> getClientsByGender() {
     final Map<String, int> counts = {};

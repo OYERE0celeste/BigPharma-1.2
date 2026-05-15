@@ -103,6 +103,14 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
+  Future<Map<String, dynamic>> requestPasswordReset(String identifier) async {
+    return await _authService.requestPasswordReset(identifier);
+  }
+
+  Future<Map<String, dynamic>> resetPassword(String otp, String newPassword) async {
+    return await _authService.resetPassword(otp, newPassword);
+  }
+
   Future<void> logout() async {
     _user = null;
     _token = null;
@@ -118,10 +126,10 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    
+
     _isLoading = true;
     notifyListeners();
-    
+
     try {
       final data = await _authService.getCurrentUser();
       if (data != null) {

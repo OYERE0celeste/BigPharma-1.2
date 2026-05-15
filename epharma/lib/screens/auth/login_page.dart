@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
@@ -14,42 +15,42 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailController = TextEditingController();
+  final _identifierController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _forgotEmailController = TextEditingController();
-  final _resetTokenController = TextEditingController();
+  final _forgotIdentifierController = TextEditingController();
+  final _resetOtpController = TextEditingController();
   final _resetPasswordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _identifierController.dispose();
     _passwordController.dispose();
-    _forgotEmailController.dispose();
-    _resetTokenController.dispose();
+    _forgotIdentifierController.dispose();
+    _resetOtpController.dispose();
     _resetPasswordController.dispose();
     super.dispose();
   }
 
   void _handleLogin() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    if (_identifierController.text.isEmpty || _passwordController.text.isEmpty) {
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Veuillez remplir tous les champs')),
       );
       return;
     }
 
     final success = await context.read<AuthProvider>().login(
-      _emailController.text.trim(),
+      _identifierController.text.trim(),
       _passwordController.text,
     );
 
     if (success && mounted) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      AppScaffoldMessenger.of(context).hideCurrentSnackBar();
       FocusScope.of(context).unfocus();
     } else if (mounted) {
       final error = context.read<AuthProvider>().errorMessage;
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error ?? 'Echec de la connexion'),
           backgroundColor: Colors.redAccent,
@@ -134,16 +135,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 48),
                         _buildTextField(
-                          controller: _emailController,
-                          label: 'Email',
-                          hint: 'admin@pharmacie.com',
-                          icon: Icons.email_outlined,
+                          controller: _identifierController,
+                          label: 'Email ou nom d\'utilisateur',
+                          hint: 'ex: celeste.karma ou admin@pharmacie.com',
+                          icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 24),
                         _buildTextField(
                           controller: _passwordController,
                           label: 'Mot de passe',
-                          hint: '��������',
+                          hint: '********',
                           icon: Icons.lock_outline_rounded,
                           isPassword: true,
                           obscure: _obscurePassword,
@@ -157,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: TextButton(
                             onPressed: _showPasswordResetSheet,
                             child: const Text(
-                              'Mot de passe oubli� ?',
+                              'Mot de passe oublié ?',
                               style: TextStyle(color: Colors.white60),
                             ),
                           ),
@@ -234,98 +235,147 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _showPasswordResetSheet() {
+    bool requestSent = false;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'R�initialiser le mot de passe',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setModalState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 24,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _forgotEmailController,
-              decoration: const InputDecoration(labelText: 'Email du compte'),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () async {
-                final email = _forgotEmailController.text.trim();
-                if (email.isEmpty) return;
-                try {
-                  await context.read<AuthProvider>().requestPasswordReset(
-                    email,
-                  );
-                  if (!mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Demande envoy�e. V�rifiez votre email.'),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Réinitialiser le mot de passe',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  requestSent
+                      ? 'Entrez le code OTP reçu par email et votre nouveau mot de passe.'
+                      : 'Entrez votre email ou nom d\'utilisateur pour recevoir un code OTP.',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                if (!requestSent) ...[
+                  TextField(
+                    controller: _forgotIdentifierController,
+                    decoration: InputDecoration(
+                      labelText: 'Email ou nom d\'utilisateur',
+                      prefixIcon: const Icon(Icons.person_outline),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  );
-                } catch (e) {
-                  if (!mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(e.toString()),
-                      backgroundColor: Colors.redAccent,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final identifier = _forgotIdentifierController.text.trim();
+                      if (identifier.isEmpty) return;
+                      try {
+                        await context.read<AuthProvider>().requestPasswordReset(identifier);
+                        if (!mounted) return;
+                        AppScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Code OTP envoyé ! Vérifiez votre email.')),
+                        );
+                        setModalState(() {
+                          requestSent = true;
+                        });
+                      } catch (e) {
+                        if (!mounted) return;
+                        AppScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  );
-                }
-              },
-              child: const Text('Envoyer'),
-            ),
-            const Divider(height: 24),
-            TextField(
-              controller: _resetTokenController,
-              decoration: const InputDecoration(labelText: 'Token'),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _resetPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Nouveau mot de passe',
-              ),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () async {
-                final token = _resetTokenController.text.trim();
-                final password = _resetPasswordController.text;
-                if (token.isEmpty || password.isEmpty) return;
-                try {
-                  await context.read<AuthProvider>().resetPassword(
-                    token,
-                    password,
-                  );
-                  if (!mounted) return;
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Mot de passe mis � jour.')),
-                  );
-                } catch (e) {
-                  if (!mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(e.toString()),
-                      backgroundColor: Colors.redAccent,
+                    child: const Text('Recevoir le code', style: TextStyle(fontSize: 16)),
+                  ),
+                ] else ...[
+                  TextField(
+                    controller: _resetOtpController,
+                    decoration: InputDecoration(
+                      labelText: 'Code OTP (6 chiffres)',
+                      prefixIcon: const Icon(Icons.pin),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  );
-                }
-              },
-              child: const Text('Valider'),
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _resetPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Nouveau mot de passe',
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final otp = _resetOtpController.text.trim();
+                      final password = _resetPasswordController.text;
+                      if (otp.isEmpty || password.isEmpty) return;
+                      try {
+                        await context.read<AuthProvider>().resetPassword(otp, password);
+                        if (!mounted) return;
+                        Navigator.pop(ctx);
+                        AppScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Mot de passe mis à jour avec succès.')),
+                        );
+                        _forgotIdentifierController.clear();
+                        _resetOtpController.clear();
+                        _resetPasswordController.clear();
+                      } catch (e) {
+                        if (!mounted) return;
+                        AppScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('Valider le nouveau mot de passe', style: TextStyle(fontSize: 16)),
+                  ),
+                ],
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

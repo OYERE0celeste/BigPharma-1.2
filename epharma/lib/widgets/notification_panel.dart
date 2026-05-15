@@ -9,7 +9,6 @@ class NotificationPanel extends StatelessWidget {
   final Function(String, dynamic)? onTap;
   const NotificationPanel({super.key, this.onTap});
 
-
   @override
   Widget build(BuildContext context) {
     final notificationProvider = context.watch<NotificationProvider>();
@@ -107,7 +106,6 @@ class NotificationPanel extends StatelessWidget {
                       );
                     },
                   ),
-
           ),
 
           const Divider(height: 1),
@@ -227,6 +225,18 @@ class _NotificationTile extends StatelessWidget {
       case 'stock':
         iconData = Icons.inventory_2_outlined;
         color = Colors.red;
+        break;
+      case 'review':
+        iconData = Icons.star_outline_rounded;
+        color = Colors.amber.shade700;
+        break;
+      case 'complaint':
+        iconData = Icons.report_problem_outlined;
+        color = Colors.deepOrange;
+        break;
+      case 'invoice':
+        iconData = Icons.receipt_long_outlined;
+        color = Colors.green;
         break;
       default:
         iconData = Icons.notifications_none;

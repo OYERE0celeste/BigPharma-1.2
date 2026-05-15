@@ -1,13 +1,13 @@
-
-
 import '../models/activity_model.dart';
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/sales_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/finance_provider.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/page_stat_cards.dart';
 import '../models/product_model.dart';
 import '../models/sale_model.dart';
 import '../security/rbac.dart';
@@ -40,8 +40,6 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   double _amountReceived = 0;
   PaymentMethod _selectedPaymentMethod = PaymentMethod.cash;
 
-
-
   double get _cartSubtotal => _cart.fold(0, (sum, item) => sum + item.subtotal);
 
   @override
@@ -49,6 +47,17 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     super.initState();
     _searchController = TextEditingController();
     _filterController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final productProvider = context.read<ProductProvider>();
+      final salesProvider = context.read<SalesProvider>();
+
+      if (productProvider.products.isEmpty) {
+        await productProvider.loadProducts();
+      }
+      if (salesProvider.sales.isEmpty) {
+        await salesProvider.loadSales();
+      }
+    });
   }
 
   @override
@@ -62,15 +71,67 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     setState(() {}); // Trigger rebuild to apply filter in build method
   }
 
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  Widget _buildSalesStats(
+    ProductProvider productProvider,
+    SalesProvider salesProvider,
+  ) {
+    final now = DateTime.now();
+    final todaySales = salesProvider.sales
+        .where((sale) => _isSameDay(sale.dateTime, now))
+        .toList();
+    final todayRevenue = todaySales.fold<double>(
+      0,
+      (sum, sale) => sum + sale.totalAmount,
+    );
+    final cartQuantity = _cart.fold<int>(0, (sum, item) => sum + item.quantity);
+
+    return PageStatCards(
+      items: [
+        PageStatCardData(
+          label: 'Produits',
+          value: '${productProvider.totalProducts}',
+          color: Colors.indigo,
+          icon: Icons.medication_outlined,
+        ),
+        PageStatCardData(
+          label: 'Panier',
+          value: '${_cart.length}',
+          color: Colors.orange,
+          icon: Icons.shopping_cart_outlined,
+        ),
+        PageStatCardData(
+          label: 'Articles',
+          value: '$cartQuantity',
+          color: Colors.blue,
+          icon: Icons.shopping_bag_outlined,
+        ),
+        PageStatCardData(
+          label: 'Ventes du jour',
+          value: '${todaySales.length}',
+          color: Colors.green,
+          icon: Icons.receipt_long_outlined,
+        ),
+        PageStatCardData(
+          label: 'CA du jour',
+          value: '${todayRevenue.toStringAsFixed(0)} FCFA',
+          color: Colors.teal,
+          icon: Icons.payments_outlined,
+        ),
+      ],
+    );
+  }
+
   void _addProductToCart(Product product) {
     if (product.availableStock == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Produit est en rupture de stock')),
       );
       return;
     }
-
-
 
     final existingItem = _cart.firstWhere(
       (item) => item.product.id == product.id,
@@ -94,7 +155,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       });
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    AppScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product.name} ajouté au panier'),
         duration: const Duration(milliseconds: 800),
@@ -111,16 +172,14 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   Future<void> _confirmSale() async {
     // Validations
     if (_cart.isEmpty) {
-      ScaffoldMessenger.of(
+      AppScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Le panier est vide')));
       return;
     }
 
-
-
     if (_amountReceived < _cartSubtotal - _customDiscount + _customTax) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Montant de paiement insuffisant')),
       );
       return;
@@ -133,7 +192,6 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         taxAmount: _customTax,
         paymentMethod: _selectedPaymentMethod.toString().split('.').last,
         amountReceived: _amountReceived,
-
       );
 
       if (sale == null) {
@@ -154,7 +212,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
       _showSuccessDialog(sale);
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erreur lors de la création de la vente: $error'),
         ),
@@ -189,7 +247,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
           ElevatedButton.icon(
             onPressed: () {
               Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
+              AppScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Simulation d\'impression de la facture...'),
                 ),
@@ -206,13 +264,13 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
+    final productProvider = context.watch<ProductProvider>();
+    final salesProvider = context.watch<SalesProvider>();
     final canMakeSale = user?.can(AppPermission.makeSale) ?? false;
     final canViewHistory = user?.can(AppPermission.viewSalesHistory) ?? false;
 
     if (!canMakeSale && !canViewHistory) {
-      return const Center(
-        child: Text('Acces non autorise a ce module.'),
-      );
+      return const Center(child: Text('Acces non autorise a ce module.'));
     }
 
     return LayoutBuilder(
@@ -221,29 +279,75 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
         if (constraints.maxWidth < 1100) {
           return _buildMobilePOSView(
             constraints,
+            productProvider: productProvider,
+            salesProvider: salesProvider,
             canMakeSale: canMakeSale,
             canViewHistory: canViewHistory,
           );
         }
         if (!canMakeSale && canViewHistory) {
-          return _buildSalesHistoryView(canReturnToPos: false);
+          return _buildSalesDesktopShell(
+            stats: _buildSalesStats(productProvider, salesProvider),
+            child: _buildSalesHistoryView(canReturnToPos: false),
+          );
         }
-        return _showSalesHistory
-            ? _buildSalesHistoryView(canReturnToPos: canMakeSale)
-            : _buildPOSView(canMakeSale: canMakeSale, canViewHistory: canViewHistory);
+        return _buildSalesDesktopShell(
+          stats: _buildSalesStats(productProvider, salesProvider),
+          child: _showSalesHistory
+              ? _buildSalesHistoryView(canReturnToPos: canMakeSale)
+              : _buildPOSView(
+                  canMakeSale: canMakeSale,
+                  canViewHistory: canViewHistory,
+                ),
+        );
       },
+    );
+  }
+
+  Widget _buildSalesDesktopShell({
+    required Widget stats,
+    required Widget child,
+  }) {
+    return Container(
+      color: Colors.grey.shade50,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: stats,
+          ),
+          const SizedBox(height: 16),
+          Expanded(child: child),
+        ],
+      ),
     );
   }
 
   Widget _buildMobilePOSView(
     BoxConstraints constraints, {
+    required ProductProvider productProvider,
+    required SalesProvider salesProvider,
     required bool canMakeSale,
     required bool canViewHistory,
   }) {
     if (_showSalesHistory || !canMakeSale) {
-      return _buildSalesHistoryView(canReturnToPos: canMakeSale);
+      return Container(
+        color: Colors.grey.shade50,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: _buildSalesStats(productProvider, salesProvider),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _buildSalesHistoryView(canReturnToPos: canMakeSale),
+            ),
+          ],
+        ),
+      );
     }
-    
+
     // Simple tabbed view for mobile: Products vs Cart
     return DefaultTabController(
       length: 2,
@@ -264,17 +368,31 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             ],
           ),
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            _buildProductsSection(isMobile: true),
-            _buildCartSection(isMobile: true),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: _buildSalesStats(productProvider, salesProvider),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _buildProductsSection(isMobile: true),
+                  _buildCartSection(isMobile: true),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPOSView({required bool canMakeSale, required bool canViewHistory}) {
+  Widget _buildPOSView({
+    required bool canMakeSale,
+    required bool canViewHistory,
+  }) {
     return Row(
       children: [
         // LEFT SIDE: Product Search & Selection
@@ -297,13 +415,16 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     final productProvider = context.watch<ProductProvider>();
     final allProducts = productProvider.products;
     final query = _searchController.text.toLowerCase();
-    
+
     List<Product> filteredProducts = allProducts;
     if (query.isNotEmpty) {
       filteredProducts = allProducts
-          .where((p) => p.name.toLowerCase().contains(query) || 
-                         p.category.toLowerCase().contains(query) || 
-                         p.id.toLowerCase().contains(query))
+          .where(
+            (p) =>
+                p.name.toLowerCase().contains(query) ||
+                p.category.toLowerCase().contains(query) ||
+                p.id.toLowerCase().contains(query),
+          )
           .toList();
     }
 
@@ -350,8 +471,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
                               ),
                             ),
                           ),
@@ -364,7 +486,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   icon: Icons.shopping_bag,
                                   isActive: !_showSalesHistory,
                                   onPressed: canMakeSale
-                                      ? () => setState(() => _showSalesHistory = false)
+                                      ? () => setState(
+                                          () => _showSalesHistory = false,
+                                        )
                                       : null,
                                 ),
                               ),
@@ -375,7 +499,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                     label: 'Historique',
                                     icon: Icons.history,
                                     isActive: _showSalesHistory,
-                                    onPressed: () => setState(() => _showSalesHistory = true),
+                                    onPressed: () => setState(
+                                      () => _showSalesHistory = true,
+                                    ),
                                   ),
                                 ),
                             ],
@@ -433,23 +559,26 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                             children: [
                               Expanded(
                                 child: Container(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 400),
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 400,
+                                  ),
                                   child: TextField(
                                     controller: _searchController,
                                     onChanged: _filterProducts,
                                     decoration: InputDecoration(
-                                      prefixIcon:
-                                          const Icon(Icons.search, size: 20),
+                                      prefixIcon: const Icon(
+                                        Icons.search,
+                                        size: 20,
+                                      ),
                                       hintText:
                                           'Rechercher un produit, catégorie ou ID...',
                                       hintStyle: const TextStyle(fontSize: 14),
                                       isDense: true,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 12,
-                                      ),
+                                            horizontal: 12,
+                                            vertical: 12,
+                                          ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         borderSide: BorderSide(
@@ -481,7 +610,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                 icon: Icons.shopping_bag,
                                 isActive: !_showSalesHistory,
                                 onPressed: canMakeSale
-                                    ? () => setState(() => _showSalesHistory = false)
+                                    ? () => setState(
+                                        () => _showSalesHistory = false,
+                                      )
                                     : null,
                               ),
                               if (canViewHistory) ...[
@@ -490,7 +621,8 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   label: 'Historique',
                                   icon: Icons.history,
                                   isActive: _showSalesHistory,
-                                  onPressed: () => setState(() => _showSalesHistory = true),
+                                  onPressed: () =>
+                                      setState(() => _showSalesHistory = true),
                                 ),
                               ],
                             ],
@@ -508,11 +640,20 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                   final width = constraints.maxWidth;
                   int crossCount = 3;
                   double ratio = 0.7; // Lower ratio to give more vertical space
-                  
-                  if (width < 500) { crossCount = 1; ratio = 1.8; }
-                  else if (width < 800) { crossCount = 2; ratio = 0.8; }
-                  else if (width < 1200) { crossCount = 3; ratio = 0.7; }
-                  else { crossCount = 4; ratio = 0.75; }
+
+                  if (width < 500) {
+                    crossCount = 1;
+                    ratio = 1.8;
+                  } else if (width < 800) {
+                    crossCount = 2;
+                    ratio = 0.8;
+                  } else if (width < 1200) {
+                    crossCount = 3;
+                    ratio = 0.7;
+                  } else {
+                    crossCount = 4;
+                    ratio = 0.75;
+                  }
 
                   return GridView.builder(
                     padding: const EdgeInsets.all(12),
@@ -527,11 +668,13 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                       final p = filteredProducts[index];
                       return ProductCard(
                         product: p,
-                        onAddToCart: canMakeSale ? () => _addProductToCart(p) : null,
+                        onAddToCart: canMakeSale
+                            ? () => _addProductToCart(p)
+                            : null,
                       );
                     },
                   );
-                }
+                },
               ),
             ),
           ],
@@ -574,7 +717,10 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('PANIER', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'PANIER',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   if (_cart.isNotEmpty)
                     TextButton.icon(
                       onPressed: () => setState(() => _cart.clear()),
@@ -598,10 +744,15 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                             CartItemTile(
                               cartItem: item,
                               onIncrement: () => setState(() {
-                                if (item.quantity < item.selectedLot.quantityAvailable) item.quantity++;
+                                if (item.quantity <
+                                    item.selectedLot.quantityAvailable) {
+                                  item.quantity++;
+                                }
                               }),
                               onDecrement: () => setState(() {
-                                if (item.quantity > 1) item.quantity--;
+                                if (item.quantity > 1) {
+                                  item.quantity--;
+                                }
                               }),
                               onRemove: () => _removeFromCart(item),
                             ),
@@ -623,22 +774,33 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_basket_outlined, size: 48, color: Colors.grey[300]),
+          Icon(
+            Icons.shopping_basket_outlined,
+            size: 48,
+            color: Colors.grey[300],
+          ),
           const SizedBox(height: 16),
-          const Text('Le panier est vide', style: TextStyle(color: Colors.grey)),
+          const Text(
+            'Le panier est vide',
+            style: TextStyle(color: Colors.grey),
+          ),
         ],
       ),
     );
   }
-
-
 
   Widget _buildCartFooter() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -651,7 +813,8 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
           ),
           PaymentSection(
             totalAmount: _cartSubtotal - _customDiscount + _customTax,
-            onPaymentMethodChanged: (m) => setState(() => _selectedPaymentMethod = m),
+            onPaymentMethodChanged: (m) =>
+                setState(() => _selectedPaymentMethod = m),
             onAmountReceivedChanged: (a) => setState(() => _amountReceived = a),
             amountReceived: _amountReceived,
           ),
@@ -666,7 +829,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: kPrimaryGreen,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
             ),
           ),

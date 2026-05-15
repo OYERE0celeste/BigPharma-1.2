@@ -1,0 +1,367 @@
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 09:18:46"}
+{"level":"info","message":"GET /api/health 200 162 - 2.125 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:19:23"}
+{"level":"info","message":"GET /api/health 200 162 - 0.440 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:20:30"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 09:27:58"}
+{"level":"info","message":"OPTIONS /api/auth/register-client 204 0 - 2.373 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:31:56"}
+{"level":"info","message":"POST /api/auth/register-client 400 188 - 44.823 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:31:56"}
+{"level":"info","message":"OPTIONS /api/auth/register-client 204 0 - 0.407 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:11"}
+{"level":"warn","message":"MailService: SMTP configuration not available, skipping email to karmacleste426@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 09:32:12"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 718.856 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:12"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.429 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.463 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.346 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.715 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.419 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"GET /api/notifications 200 107 - 109.289 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 200 - - 152.741 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"GET /api/products?limit=4 200 - - 119.855 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 48.517 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 38.862 ms","service":"bigpharma-api","timestamp":"2026-05-15 09:32:13"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 09:40:00"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 10:16:19"}
+{"level":"info","message":"OPTIONS /api/auth/register-client 204 0 - 1.703 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:16"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to karmaceleste@gmail.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-45d9ec3acf7sm13247703f8f.12 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-45d9ec3acf7sm13247703f8f.12 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-45d9ec3acf7sm13247703f8f.12 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)","timestamp":"2026-05-15 10:19:39"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 22986.022 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:39"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.349 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.328 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.203 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.220 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.150 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"GET /api/notifications 200 107 - 53.618 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 200 - - 56.474 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"GET /api/products?limit=4 200 - - 61.422 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 26.205 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 25.513 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:19:40"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 10:30:36"}
+{"level":"info","message":"OPTIONS /api/auth/register-client 204 0 - 1.542 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:33:54"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to karmaceleste426@gmail.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48fe5ab52a6sm46749075e9.10 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48fe5ab52a6sm46749075e9.10 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48fe5ab52a6sm46749075e9.10 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 28010.872 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.300 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.588 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.099 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.222 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.181 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"GET /api/notifications 200 107 - 31.642 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 200 - - 31.580 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"GET /api/products?limit=4 200 - - 45.643 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 22.021 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 20.038 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:34:22"}
+{"level":"info","message":"Email sent to karmaceleste426@gmail.com | subject=Bienvenue chez BigPharma | messageId=<7edf2bb3-c38e-bbf6-afd4-6a893251387b@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 10:41:41"}
+{"level":"info","message":"Email sent to karmaceleste426@gmail.com | subject=Votre compte BigPharma a été créé | messageId=<84b37fd5-1bf2-95a9-5702-7121f25adabf@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 10:41:43"}
+{"level":"info","message":"Email sent to karmaceleste426@gmail.com | subject=Réinitialisation de votre mot de passe | messageId=<486431dc-6fe1-2ceb-1b20-17a60922accb@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 10:41:45"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 10:43:44"}
+{"level":"info","message":"OPTIONS /api/auth/register-client 204 0 - 1.304 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:44:48"}
+{"level":"info","message":"Email sent to marmaceleste426@gmail.com | subject=Bienvenue chez BigPharma | messageId=<fad1be3f-cb6c-bbde-f7df-1123e93fa221@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 24903.005 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.446 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.220 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.138 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.127 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.182 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"GET /api/notifications 200 107 - 29.961 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"GET /api/products?limit=4 200 - - 55.100 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 200 - - 42.674 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 31.483 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 31.210 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:13"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.172 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:43"}
+{"level":"info","message":"GET /api/auth/me 200 901 - 9.723 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:43"}
+{"level":"info","message":"GET /api/auth/me 304 - - 8.830 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:44"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.164 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:54"}
+{"level":"info","message":"PUT /api/auth/me 200 901 - 44.760 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:45:54"}
+{"level":"info","message":"Email sent to karmaceleste426@gmail.com | subject=Votre profil BigPharma a été mis à jour | messageId=<284e5f7e-92bb-0f18-f357-3df44e8f3755@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 10:45:56"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.082 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:08"}
+{"level":"info","message":"GET /api/auth/me 200 901 - 8.489 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:08"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.242 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:10"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.293 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:10"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.148 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:10"}
+{"level":"info","message":"GET /api/notifications 304 - - 13.736 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:10"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 20.076 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:10"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 21.721 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:46:10"}
+{"level":"info","message":"OPTIONS /api/auth/register-client 204 0 - 0.114 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:25"}
+{"level":"info","message":"Email sent to oyereceleste172@gmail.com | subject=Bienvenue chez BigPharma | messageId=<dc50fbfa-479f-7471-c435-4b7520aff7c0@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 2509.723 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.157 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.111 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.215 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.130 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 20.100 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 17.943 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 21.343 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 19.811 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:48:28"}
+{"level":"info","message":"OPTIONS /api/invoices/my 204 0 - 0.111 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:26"}
+{"level":"info","message":"GET /api/invoices/my 200 91 - 9.746 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:26"}
+{"level":"info","message":"OPTIONS /api/reviews/my 204 0 - 0.107 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:32"}
+{"level":"info","message":"GET /api/reviews/my 200 26 - 7.200 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:32"}
+{"level":"info","message":"OPTIONS /api/complaints/my 204 0 - 0.112 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:37"}
+{"level":"info","message":"GET /api/complaints/my 200 26 - 5.735 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:37"}
+{"level":"info","message":"OPTIONS /api/orders/my 204 0 - 0.103 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:37"}
+{"level":"info","message":"GET /api/orders/my 200 91 - 12.678 ms","service":"bigpharma-api","timestamp":"2026-05-15 10:49:37"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 1.330 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:10:02"}
+{"level":"info","message":"POST /api/auth/login 400 122 - 20.925 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:10:02"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.063 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:10:36"}
+{"level":"info","message":"POST /api/auth/login 400 122 - 4.676 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:10:36"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.104 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:11:28"}
+{"level":"info","message":"POST /api/auth/login 400 122 - 0.706 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:11:28"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 11:13:18"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 2.392 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:14:40"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 47.344 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:14:40"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.167 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:15:21"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 9.615 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:15:21"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.077 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:15:48"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 3.977 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:15:48"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.073 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:17:18"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 199.692 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:17:18"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.087 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:17:47"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 70.879 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:17:47"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.227 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:18:30"}
+{"level":"info","message":"POST /api/auth/login 200 - - 119.399 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:18:30"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.193 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:18:30"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.129 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:18:30"}
+{"level":"info","message":"GET /api/notifications 200 788 - 27.130 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:18:30"}
+{"level":"info","message":"GET /api/products 200 - - 24.145 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:18:30"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.091 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:19:46"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 3.573 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:19:46"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.083 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:20:26"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 1.892 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:20:26"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.078 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:20:38"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 1.988 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:20:38"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.067 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:21:21"}
+{"level":"info","message":"Email sent to laflorale@gmail.com | subject=Réinitialisation de votre mot de passe | messageId=<51816077-e12f-62a9-608d-fdb07b9755ef@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 11:21:52"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 127 - 30807.053 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:21:52"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.067 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:22:26"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 71.001 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:22:26"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.070 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:22:38"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 1.719 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:22:38"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.060 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:24:07"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 1.769 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:24:07"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.070 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:24:29"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 2.976 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:24:29"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.063 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:24:48"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 2.132 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:24:48"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 11:26:44"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 1.483 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:03"}
+{"level":"info","message":"POST /api/auth/login 200 - - 161.005 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:03"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.169 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.143 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.254 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.166 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.137 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.088 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"GET /api/notifications 200 - - 52.174 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 72.757 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"GET /api/products 304 - - 109.689 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"GET /api/activityLogs 200 - - 90.284 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 103.839 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 200 - - 121.328 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:04"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.255 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:36"}
+{"level":"info","message":"GET /api/settings/profile 200 235 - 10.702 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:36"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.166 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:39"}
+{"level":"info","message":"GET /api/settings/profile 304 - - 13.096 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:39"}
+{"level":"info","message":"GET /api/auth/me 200 930 - 12.676 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:39"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.208 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.252 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.200 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.144 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.103 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 61.441 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"GET /api/products 304 - - 73.465 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 68.397 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 83.529 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 304 - - 95.257 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:40"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.071 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:56"}
+{"level":"info","message":"PUT /api/auth/me 200 929 - 20.576 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:56"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.112 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.142 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.295 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.081 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.139 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 43.492 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"GET /api/products 304 - - 52.094 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 43.299 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 60.615 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 304 - - 65.743 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:27:57"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.232 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:28:13"}
+{"level":"info","message":"GET /api/users/staff 200 - - 11.709 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:28:13"}
+{"level":"info","message":"Email sent to laflorale8@gmail.com | subject=Votre profil BigPharma a été mis à jour | messageId=<98c165a9-6342-b907-4370-6ff510736fca@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 11:28:20"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.078 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:30:17"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 8.064 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:30:17"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.111 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:30:21"}
+{"level":"info","message":"GET /api/users/staff 304 - - 12.490 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:30:21"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.065 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:08"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.091 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:13"}
+{"level":"info","message":"POST /api/users/staff 400 126 - 11.554 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:13"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.107 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.105 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.055 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.097 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.071 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 39.179 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"GET /api/products 304 - - 48.140 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 43.035 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 52.325 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 200 - - 59.630 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:20"}
+{"level":"info","message":"POST /api/users/staff - - - - ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:22"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.074 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/auth/me 200 929 - 6.984 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.074 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.916 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.085 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.121 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.207 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.086 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/notifications 304 - - 31.758 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 51.257 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 50.005 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/products 304 - - 66.884 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 63.868 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 200 - - 70.799 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:27"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 13.264 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:32"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=Votre compte BigPharma a été créé | messageId=<c740098f-44c2-1181-8ddc-7d839f307553@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 11:31:32"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.130 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:36"}
+{"level":"info","message":"GET /api/settings/profile 304 - - 11.738 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:36"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.149 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:37"}
+{"level":"info","message":"GET /api/users/staff 200 - - 14.231 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:31:37"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.067 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:32:14"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 2.000 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:32:14"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.067 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:32:55"}
+{"level":"info","message":"POST /api/auth/login 200 - - 75.505 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:32:55"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.130 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:32:56"}
+{"level":"info","message":"GET /api/products 304 - - 11.220 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:32:56"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.097 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:03"}
+{"level":"info","message":"GET /api/settings/profile 200 845 - 11.152 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:03"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.067 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:04"}
+{"level":"info","message":"GET /api/settings/profile 304 - - 12.471 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:04"}
+{"level":"info","message":"GET /api/auth/me 200 925 - 11.821 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:04"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.112 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:05"}
+{"level":"info","message":"GET /api/products 304 - - 10.473 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:05"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.127 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:55"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 97.871 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:33:55"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.225 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 102.939 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.144 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.109 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.107 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.465 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.099 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 53.024 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 54.207 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 68.643 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"GET /api/products 304 - - 69.594 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 304 - - 83.964 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:31"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.205 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:41"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 18.771 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:41"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.205 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:57"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 8.463 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:57"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.097 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:59"}
+{"level":"info","message":"GET /api/users/staff 200 - - 16.514 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:34:59"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.060 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:35:32"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 87.739 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:35:32"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.063 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:35:50"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 94.764 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:35:50"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.121 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:57"}
+{"level":"info","message":"POST /api/auth/login 200 - - 110.069 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:57"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.092 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.321 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.082 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.104 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.059 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"GET /api/products 304 - - 54.869 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 46.957 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"GET /api/activityLogs 304 - - 46.808 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 63.288 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 304 - - 65.460 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:36:58"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.149 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:37:01"}
+{"level":"info","message":"GET /api/settings/profile 304 - - 9.991 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:37:01"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.133 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:37:04"}
+{"level":"info","message":"GET /api/users/staff 200 - - 15.176 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:37:04"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.210 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:56:21"}
+{"level":"info","message":"POST /api/auth/login 200 - - 102.438 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:56:21"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.098 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:56:21"}
+{"level":"info","message":"GET /api/products 304 - - 13.426 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:56:21"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.265 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:57:04"}
+{"level":"info","message":"POST /api/auth/forgot-password 400 122 - 5.983 ms","service":"bigpharma-api","timestamp":"2026-05-15 11:57:04"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 12:00:18"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 1.126 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:01:21"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=829562 — Votre code de réinitialisation BigPharma | messageId=<83acc3f8-904e-d62f-d2a2-ab7879938a7e@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:01:28"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:01:28"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 7203.140 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:01:28"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.333 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:01:34"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=218360 — Votre code de réinitialisation BigPharma | messageId=<aefa33e7-69c9-cbb6-65b4-f7cc608fd14e@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:01:40"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:01:40"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 5856.386 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:01:40"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.291 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:04:48"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=646724 — Votre code de réinitialisation BigPharma | messageId=<39259634-54e5-68e4-53dc-1a7840ae0d25@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:04:51"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:04:51"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 3526.937 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:04:51"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-15 12:14:45"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.778 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:16:50"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=947796 — Votre code de réinitialisation BigPharma | messageId=<14b1458f-7d97-cbd4-09e5-537c64deb1d1@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:17:15"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:17:15"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 24276.626 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:17:15"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.326 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:17:42"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=826922 — Votre code de réinitialisation BigPharma | messageId=<a7bda016-e15a-d898-2c1d-126d590c7be7@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:17:49"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:17:49"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 6790.112 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:17:49"}
+{"level":"info","message":"OPTIONS /api/auth/reset-password 204 0 - 0.137 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:18:15"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 8.142 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:18:15"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.118 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:18:27"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=562399 — Votre code de réinitialisation BigPharma | messageId=<10b4bb54-1518-cd55-1e10-f3a6197673e9@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:18:54"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:18:54"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 27475.601 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:18:54"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.172 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:19:44"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=424432 — Votre code de réinitialisation BigPharma | messageId=<7003d2b7-8159-6f7b-666f-eabe7a597a9d@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:19:46"}
+{"level":"info","message":"OTP de réinitialisation envoyé à carlngassad@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:19:46"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2370.018 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:19:46"}
+{"level":"info","message":"OPTIONS /api/auth/reset-password 204 0 - 0.122 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:08"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 94.854 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:08"}
+{"level":"info","message":"Email sent to carlngassad@gmail.com | subject=Votre mot de passe BigPharma a été modifié | messageId=<ca7e3ea7-f176-9b67-dc3e-934c696ebe4e@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:20:10"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.187 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:19"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 79.173 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:19"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.163 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:28"}
+{"level":"info","message":"POST /api/auth/login 200 - - 84.512 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:28"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.273 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:28"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.257 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:28"}
+{"level":"info","message":"GET /api/notifications 200 107 - 17.351 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:28"}
+{"level":"info","message":"GET /api/products 200 - - 22.979 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:20:28"}
+{"level":"info","message":"OPTIONS /api/auth/forgot-password 204 0 - 0.083 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:22:47"}
+{"level":"info","message":"Email sent to karmaceleste426@gmail.com | subject=917161 — Votre code de réinitialisation BigPharma | messageId=<d1278148-98c3-31f0-0247-b3794ca6bd95@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:22:50"}
+{"level":"info","message":"OTP de réinitialisation envoyé à karmaceleste426@gmail.com","service":"bigpharma-api","timestamp":"2026-05-15 12:22:50"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2752.408 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:22:50"}
+{"level":"info","message":"OPTIONS /api/auth/reset-password 204 0 - 0.066 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:17"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 74.298 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:17"}
+{"level":"info","message":"Email sent to karmaceleste426@gmail.com | subject=Votre mot de passe BigPharma a été modifié | messageId=<e2325cb9-e3d5-e563-cb71-4bf0992b237f@gmail.com>","service":"bigpharma-api","timestamp":"2026-05-15 12:23:22"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.189 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:54"}
+{"level":"info","message":"POST /api/auth/login 200 - - 83.150 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:54"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.205 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:55"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.125 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:55"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.122 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:55"}
+{"level":"info","message":"GET /api/notifications 200 107 - 18.615 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:55"}
+{"level":"info","message":"GET /api/products?limit=4 200 - - 28.622 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:55"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 200 - - 25.922 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:23:55"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.279 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:31:56"}
+{"level":"info","message":"GET /api/auth/me 200 927 - 11.986 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:31:56"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.167 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:31:56"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.130 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:31:56"}
+{"level":"info","message":"GET /api/notifications 304 - - 13.044 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:31:56"}
+{"level":"info","message":"GET /api/products 304 - - 15.604 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:31:56"}
+{"level":"info","message":"OPTIONS /api/invoices/my 204 0 - 0.110 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:40:31"}
+{"level":"info","message":"GET /api/invoices/my 401 115 - 1.799 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:40:31"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.105 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:45:59"}
+{"level":"info","message":"GET /api/products 304 - - 11.663 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:45:59"}
+{"level":"info","message":"GET /api/products 304 - - 12.049 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:00"}
+{"level":"info","message":"GET /api/products 304 - - 12.217 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:00"}
+{"level":"info","message":"GET /api/products 304 - - 8.955 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:00"}
+{"level":"info","message":"GET /api/products 304 - - 12.184 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:00"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.112 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:42"}
+{"level":"info","message":"POST /api/auth/login 200 - - 111.946 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:42"}
+{"level":"info","message":"OPTIONS /api/products 204 0 - 0.099 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.145 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.680 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=50 204 0 - 0.225 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.150 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"GET /api/products 304 - - 64.465 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 44.640 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 65.412 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"GET /api/activityLogs 200 - - 52.428 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"GET /api/clients?page=1&limit=50 200 - - 83.352 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:43"}
+{"level":"info","message":"GET /api/products 304 - - 15.204 ms","service":"bigpharma-api","timestamp":"2026-05-15 12:46:47"}

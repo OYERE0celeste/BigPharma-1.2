@@ -2,6 +2,7 @@ const SupportQuestion = require("../models/support");
 const Client = require("../models/client");
 const { success, failure } = require("../utils/response");
 const { sendNotification, notifyStaff } = require("../utils/notificationHelper");
+const { sendSupportResponseEmail } = require("../utils/mailService");
 
 
 /**
@@ -29,6 +30,7 @@ exports.getQuestions = async (req, res, next) => {
 
     const questions = await SupportQuestion.find(query)
       .populate("clientId", "fullName phone email")
+      .populate("messages.senderId", "fullName role")
       .sort({ updatedAt: -1 });
 
     return success(res, { data: questions });
@@ -45,7 +47,9 @@ exports.getQuestionById = async (req, res, next) => {
     const question = await SupportQuestion.findOne({
       _id: req.params.id,
       companyId: req.user.companyId,
-    }).populate("clientId", "fullName phone email");
+    })
+      .populate("clientId", "fullName phone email")
+      .populate("messages.senderId", "fullName role");
 
     if (!question) {
       return failure(res, { status: 404, message: "Question non trouvée" });
@@ -103,7 +107,11 @@ exports.createQuestion = async (req, res, next) => {
       data: { supportId: question._id },
     });
 
-    return success(res, { status: 201, data: question });
+    const populatedQuestion = await SupportQuestion.findById(question._id)
+      .populate("clientId", "fullName phone email")
+      .populate("messages.senderId", "fullName role");
+
+    return success(res, { status: 201, data: populatedQuestion });
 
   } catch (error) {
     next(error);
@@ -171,10 +179,21 @@ exports.addMessage = async (req, res, next) => {
           type: "support",
           data: { supportId: question._id },
         });
+
+        await sendSupportResponseEmail({
+          email: clientProfile.email,
+          fullName: clientProfile.fullName,
+          subject: question.subject,
+          companyName: "BigPharma",
+        });
       }
     }
 
-    return success(res, { data: question });
+    const populatedQuestion = await SupportQuestion.findById(question._id)
+      .populate("clientId", "fullName phone email")
+      .populate("messages.senderId", "fullName role");
+
+    return success(res, { data: populatedQuestion });
 
   } catch (error) {
     next(error);
@@ -196,7 +215,11 @@ exports.closeQuestion = async (req, res, next) => {
       return failure(res, { status: 404, message: "Question non trouvée" });
     }
 
-    return success(res, { data: question });
+    const populatedQuestion = await SupportQuestion.findById(question._id)
+      .populate("clientId", "fullName phone email")
+      .populate("messages.senderId", "fullName role");
+
+    return success(res, { data: populatedQuestion });
   } catch (error) {
     next(error);
   }

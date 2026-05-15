@@ -25,7 +25,8 @@ class ApiConstants {
   static String get authRegister => '$baseUrl/auth/register-client';
   static String get authMe => '$baseUrl/auth/me';
   static String get authChangePassword => '$baseUrl/auth/change-password';
-
+  static String get authForgotPassword => '$baseUrl/auth/forgot-password';
+  static String get authResetPassword => '$baseUrl/auth/reset-password';
   // Products
   static String get products => '$baseUrl/products';
 
@@ -36,6 +37,17 @@ class ApiConstants {
   // Orders
   static String get orders => '$baseUrl/orders';
   static String get myOrders => '$baseUrl/orders/my';
+  static String get invoices => '$baseUrl/invoices';
+  static String get invoicesMy => '$baseUrl/invoices/my';
+
+  // Reviews
+  static String get reviews => '$baseUrl/reviews';
+  static String get reviewsMy => '$baseUrl/reviews/my';
+  static String get reviewsProduct => '$baseUrl/reviews/product';
+
+  // Complaints
+  static String get complaints => '$baseUrl/complaints';
+  static String get complaintsMy => '$baseUrl/complaints/my';
 
   // Support
   static String get questionsClients => '$baseUrl/QuestionsClients';

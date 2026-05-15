@@ -6,10 +6,8 @@ String orderStatusLabel(String status) {
       return 'Validée';
     case 'en_preparation':
       return 'En préparation';
-    case 'en_livraison':
-      return 'En livraison';
-    case 'livree':
-      return 'Livrée';
+    case 'pret_pour_recuperation':
+      return 'Prête pour récupération';
     case 'annulee':
       return 'Annulée';
     default:
@@ -41,7 +39,7 @@ class OrderItem {
     return OrderItem(
       productId: resolvedProductId,
       name: (json['name'] ?? '').toString(),
-      price: (json['price'] ?? 0).toDouble(),
+      price: ((json['price'] ?? 0) as num).toDouble(),
       quantity: ((json['quantity'] ?? 0) as num).toInt(),
     );
   }
@@ -59,13 +57,13 @@ class Order {
   final List<OrderItem> items;
   final double totalPrice;
   final String status;
-
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? invoiceNumber;
   final DateTime? invoiceDate;
   final String? collectionCode;
+  final String pickupMode;
 
   const Order({
     required this.id,
@@ -75,17 +73,18 @@ class Order {
     required this.items,
     required this.totalPrice,
     required this.status,
-
     this.notes,
     required this.createdAt,
     required this.updatedAt,
     this.invoiceNumber,
     this.invoiceDate,
     this.collectionCode,
+    this.pickupMode = 'sur_place',
   });
 
   String get statusLabel => orderStatusLabel(status);
-  bool get isTerminal => status == 'livree' || status == 'annulee';
+  bool get isTerminal => status == 'validee' || status == 'annulee';
+  bool get hasInvoice => (invoiceNumber ?? '').trim().isNotEmpty;
 
   factory Order.fromJson(Map<String, dynamic> json) {
     final user = json['userId'];
@@ -107,9 +106,9 @@ class Order {
       items: products
           .map((item) => OrderItem.fromJson(item as Map<String, dynamic>))
           .toList(),
-      totalPrice: (json['totalPrice'] ?? json['total'] ?? 0).toDouble(),
+      totalPrice: ((json['totalPrice'] ?? json['total'] ?? 0) as num)
+          .toDouble(),
       status: (json['status'] ?? 'en_attente').toString(),
-
       notes: json['notes']?.toString(),
       createdAt:
           DateTime.tryParse((json['createdAt'] ?? '').toString()) ??
@@ -122,6 +121,7 @@ class Order {
           ? DateTime.tryParse(json['invoiceDate'].toString())
           : null,
       collectionCode: json['collectionCode']?.toString(),
+      pickupMode: (json['pickupMode'] ?? 'sur_place').toString(),
     );
   }
 }

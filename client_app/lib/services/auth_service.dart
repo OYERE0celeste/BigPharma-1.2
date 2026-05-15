@@ -6,10 +6,30 @@ import 'api_service.dart';
 class AuthService {
   final ApiService _apiService = ApiService();
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  String _readErrorValue(dynamic value) {
+    if (value == null) {
+      return '';
+    }
+    if (value is String) {
+      return value.trim();
+    }
+    if (value is Map<String, dynamic>) {
+      final message = value['message']?.toString().trim() ?? '';
+      if (message.isNotEmpty) {
+        return message;
+      }
+      final error = value['error']?.toString().trim() ?? '';
+      if (error.isNotEmpty) {
+        return error;
+      }
+    }
+    return value.toString().trim();
+  }
+
+  Future<Map<String, dynamic>> login(String identifier, String password) async {
     try {
       final response = await _apiService.post(ApiConstants.authLogin, {
-        'email': email,
+        'identifier': identifier,
         'password': password,
       });
 
@@ -82,25 +102,32 @@ class AuthService {
     required String email,
     required String phone,
     required String address,
+    String? username,
   }) async {
     try {
-      final response = await _apiService.put(ApiConstants.authMe, {
+      final body = <String, dynamic>{
         'fullName': fullName,
         'email': email,
         'phone': phone,
         'address': address,
-      });
+      };
+      if (username != null) body['username'] = username;
 
-      final body = json.decode(response.body);
-      if (response.statusCode == 200 && body['success'] == true) {
-        return {
-          'success': true,
-          'user': User.fromJson(body['data']),
-        };
+      final response = await _apiService.put(ApiConstants.authMe, body);
+
+      final respBody = json.decode(response.body);
+      if (response.statusCode == 200 && respBody['success'] == true) {
+        return {'success': true, 'user': User.fromJson(respBody['data'])};
       } else {
+        final message = _readErrorValue(respBody['message']);
+        final error = _readErrorValue(respBody['error']);
         return {
           'success': false,
-          'message': body['message'] ?? 'Erreur lors de la mise à jour',
+          'message': message.isNotEmpty
+              ? message
+              : error.isNotEmpty
+              ? error
+              : 'Erreur lors de la mise à jour',
         };
       }
     } catch (e) {
@@ -129,7 +156,8 @@ class AuthService {
       } else {
         return {
           'success': false,
-          'message': body['message'] ?? 'Erreur lors du changement de mot de passe',
+          'message':
+              body['message'] ?? 'Erreur lors du changement de mot de passe',
         };
       }
     } catch (e) {
@@ -151,6 +179,52 @@ class AuthService {
       // ignore: avoid_print
       print('Error getting current user: $e');
     }
-    return null;
+  }
+
+  Future<Map<String, dynamic>> requestPasswordReset(String identifier) async {
+    try {
+      final response = await _apiService.post(ApiConstants.authForgotPassword, {
+        'identifier': identifier,
+      });
+
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body['success'] == true) {
+        return {'success': true, 'message': body['data']['message']};
+      } else {
+        return {
+          'success': false,
+          'message': body['message'] ?? 'Erreur lors de la demande',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Impossible de contacter le serveur $e',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> resetPassword(String otp, String newPassword) async {
+    try {
+      final response = await _apiService.post(ApiConstants.authResetPassword, {
+        'otp': otp,
+        'password': newPassword,
+      });
+
+      final body = json.decode(response.body);
+      if (response.statusCode == 200 && body['success'] == true) {
+        return {'success': true, 'message': body['data']['message']};
+      } else {
+        return {
+          'success': false,
+          'message': body['message'] ?? 'Erreur lors de la réinitialisation',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Impossible de contacter le serveur $e',
+      };
+    }
   }
 }

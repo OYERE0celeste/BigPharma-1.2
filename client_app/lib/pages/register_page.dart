@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:client_app/widgets/app_notification.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:client_app/services/auth_provider.dart';
@@ -215,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _handleRegister() async {
     if (!_formKey.currentState!.validate() || _selectedDate == null) {
       if (_selectedDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Veuillez sélectionner votre date de naissance'),
           ),
@@ -242,13 +243,13 @@ class _RegisterPageState extends State<RegisterPage> {
           MaterialPageRoute(builder: (context) => const HomePage()),
           (route) => false,
         );
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Inscription réussie ! Bienvenue.')),
         );
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message']),
             backgroundColor: Colors.red,

@@ -85,8 +85,12 @@ class FinanceTransactionModel {
       'paymentMethod': paymentMethod,
       'employeeName': employeeName,
     };
-    if (saleId != null) map['saleId'] = saleId as Object;
-    if (supplierOrderId != null) map['supplierOrderId'] = supplierOrderId as Object;
+    if (saleId != null) {
+      map['saleId'] = saleId as Object;
+    }
+    if (supplierOrderId != null) {
+      map['supplierOrderId'] = supplierOrderId as Object;
+    }
     return map;
   }
 

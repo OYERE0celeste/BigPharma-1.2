@@ -12,7 +12,9 @@ class StockForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final monthsLeft = monthlyAvgSales > 0 ? (currentStock / monthlyAvgSales).toStringAsFixed(1) : '∞';
+    final monthsLeft = monthlyAvgSales > 0
+        ? (currentStock / monthlyAvgSales).toStringAsFixed(1)
+        : '∞';
     final isLow = monthlyAvgSales > 0 && (currentStock / monthlyAvgSales) < 1;
 
     return Container(
@@ -27,9 +29,15 @@ class StockForecastWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.trending_down, color: isLow ? Colors.red : Colors.blue),
+              Icon(
+                Icons.trending_down,
+                color: isLow ? Colors.red : Colors.blue,
+              ),
               const SizedBox(width: 8),
-              const Text('Prévision de Stock', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Prévision de Stock',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -42,7 +50,11 @@ class StockForecastWidget extends StatelessWidget {
               padding: EdgeInsets.only(top: 8.0),
               child: Text(
                 '⚠️ Attention : Réapprovisionnement urgent recommandé.',
-                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ),
         ],

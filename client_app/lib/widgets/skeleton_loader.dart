@@ -45,7 +45,11 @@ class SkeletonProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SkeletonLoader(width: double.infinity, height: 120, borderRadius: 12),
+          const SkeletonLoader(
+            width: double.infinity,
+            height: 120,
+            borderRadius: 12,
+          ),
           const SizedBox(height: 12),
           const SkeletonLoader(width: 100, height: 16),
           const SizedBox(height: 8),
@@ -58,7 +62,10 @@ class SkeletonProductCard extends StatelessWidget {
               Container(
                 width: 36,
                 height: 36,
-                decoration: const BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                ),
               ),
             ],
           ),

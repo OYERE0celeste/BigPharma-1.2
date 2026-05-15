@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
-  const [email, setEmail] = useState('laflorale@gmail.com');
+  const [email, setEmail] = useState('laflorale8@gmail.com');
   const [password, setPassword] = useState('admin');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

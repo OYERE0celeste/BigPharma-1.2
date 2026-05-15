@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import 'package:epharma/providers/settings_provider.dart';
 import 'package:epharma/providers/auth_provider.dart';
@@ -56,7 +57,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    AppScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: isError ? kDangerRed : kPrimaryGreen,

@@ -144,8 +144,6 @@ class ClientDetailsDialog extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildPurchaseHistory(client),
                     const SizedBox(height: 20),
-
-
                   ],
                 ),
               ),
@@ -250,8 +248,6 @@ class ClientDetailsDialog extends StatelessWidget {
       ),
     );
   }
-
-
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';

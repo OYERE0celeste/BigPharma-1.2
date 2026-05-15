@@ -68,7 +68,9 @@ class SaleItem {
       productId: productId,
       productName: productName,
       lotNumber: json['lotNumber']?.toString() ?? '',
-      expirationDate: DateTime.tryParse(json['expirationDate']?.toString() ?? '') ?? DateTime.now(),
+      expirationDate:
+          DateTime.tryParse(json['expirationDate']?.toString() ?? '') ??
+          DateTime.now(),
       quantity: int.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
       unitPrice: (json['unitPrice'] is num)
           ? (json['unitPrice'] as num).toDouble()
@@ -95,7 +97,6 @@ class Sale {
   final double changeAmount;
   final String pharmacist;
 
-
   Sale({
     required this.id,
     required this.invoiceNumber,
@@ -110,34 +111,48 @@ class Sale {
     required this.amountReceived,
     required this.changeAmount,
     required this.pharmacist,
-
   });
 
   factory Sale.fromJson(Map<String, dynamic> json) {
-    final dateTime = DateTime.tryParse(json['saleDate']?.toString() ?? json['createdAt']?.toString() ?? '') ?? DateTime.now();
+    final dateTime =
+        DateTime.tryParse(
+          json['saleDate']?.toString() ?? json['createdAt']?.toString() ?? '',
+        ) ??
+        DateTime.now();
     final clientData = json['client'];
     String clientName;
     if (clientData is Map<String, dynamic>) {
-      clientName = clientData['fullName']?.toString() ?? clientData['_id']?.toString() ?? 'Client inconnu';
+      clientName =
+          clientData['fullName']?.toString() ??
+          clientData['_id']?.toString() ??
+          'Client inconnu';
     } else {
       clientName = clientData?.toString() ?? 'Client inconnu';
     }
     final pharmacistData = json['pharmacist'];
     String pharmacistName;
     if (pharmacistData is Map<String, dynamic>) {
-      pharmacistName = pharmacistData['name']?.toString() ?? pharmacistData['_id']?.toString() ?? 'Pharmacien inconnu';
+      pharmacistName =
+          pharmacistData['name']?.toString() ??
+          pharmacistData['_id']?.toString() ??
+          'Pharmacien inconnu';
     } else {
       pharmacistName = pharmacistData?.toString() ?? 'Pharmacien inconnu';
     }
 
     return Sale(
       id: json['_id']?.toString() ?? '',
-      invoiceNumber: json['invoiceNumber']?.toString() ?? json['_id']?.toString() ?? 'INV-${DateTime.now().millisecondsSinceEpoch}',
+      invoiceNumber:
+          json['invoiceNumber']?.toString() ??
+          json['_id']?.toString() ??
+          'INV-${DateTime.now().millisecondsSinceEpoch}',
       dateTime: dateTime,
       client: clientName,
-      items: (json['items'] as List<dynamic>?)
+      items:
+          (json['items'] as List<dynamic>?)
               ?.map((item) => SaleItem.fromJson(item as Map<String, dynamic>))
-              .toList() ?? [],
+              .toList() ??
+          [],
       subtotal: (json['subtotal'] is num)
           ? (json['subtotal'] as num).toDouble()
           : double.tryParse(json['subtotal']?.toString() ?? '0') ?? 0.0,
@@ -158,7 +173,6 @@ class Sale {
           ? (json['changeAmount'] as num).toDouble()
           : double.tryParse(json['changeAmount']?.toString() ?? '0') ?? 0.0,
       pharmacist: pharmacistName,
-
     );
   }
 }

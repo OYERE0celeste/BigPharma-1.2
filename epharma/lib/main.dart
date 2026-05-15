@@ -10,9 +10,12 @@ import 'providers/client_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/complaint_provider.dart';
+import 'providers/review_provider.dart';
 import 'providers/support_provider.dart';
 import 'screens/auth/login_page.dart';
 import 'providers/notification_provider.dart';
+import 'widgets/app_notification.dart';
 
 // Note: Client services and pages removed as they are currently missing in this module
 
@@ -70,6 +73,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => SupportProvider()),
+        ChangeNotifierProvider(create: (_) => ReviewProvider()),
+        ChangeNotifierProvider(create: (_) => ComplaintProvider()),
         ChangeNotifierProxyProvider<AuthProvider, NotificationProvider>(
           create: (context) => NotificationProvider(),
           update: (context, auth, previous) =>
@@ -79,12 +84,16 @@ class MyApp extends StatelessWidget {
 
       child: MaterialApp(
         title: 'BigPharma SaaS',
+        navigatorKey: AppNotificationService.navigatorKey,
+        builder: (context, child) =>
+            AppNotificationHost(child: child ?? const SizedBox.shrink()),
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0xFF6366F1), // Indigo premium
             brightness: Brightness.light,
           ),
+          fontFamily: 'sans-serif',
           // fontFamily: 'Inter', // Standardized to system font as Inter assets are missing
         ),
         home: const AuthWrapper(),

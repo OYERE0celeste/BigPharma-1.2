@@ -46,7 +46,9 @@ class FinanceApiService {
         queryParams['type'] = type;
       }
 
-      final uri = Uri.parse('$baseUrl/summary').replace(queryParameters: queryParams);
+      final uri = Uri.parse(
+        '$baseUrl/summary',
+      ).replace(queryParameters: queryParams);
 
       final response = await http.get(uri, headers: headers);
 

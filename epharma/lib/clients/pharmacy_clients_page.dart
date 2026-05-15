@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../providers/client_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/client_model.dart';
 import '../security/rbac.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/page_stat_cards.dart';
 import 'widgets/client_detail.dart';
 import 'widgets/add_edit_client.dart';
 import 'widgets/search_filter_client.dart';
@@ -25,8 +27,6 @@ class Purchase {
     required this.paymentMethod,
   });
 }
-
-
 
 // =====================================================================
 // MOCK SERVICE
@@ -89,6 +89,52 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
     return clients;
   }
 
+  int _inactiveClientsCount(List<Client> clients) {
+    final cutoffDate = DateTime.now().subtract(const Duration(days: 30));
+    return clients
+        .where((client) => client.lastVisitDate.isBefore(cutoffDate))
+        .length;
+  }
+
+  Widget _buildClientStats(List<Client> clients) {
+    final frequentCount = clients
+        .where((client) => client.totalPurchases > 50)
+        .length;
+    final medicalCount = clients
+        .where((client) => client.hasMedicalHistory)
+        .length;
+    final inactiveCount = _inactiveClientsCount(clients);
+
+    return PageStatCards(
+      items: [
+        PageStatCardData(
+          label: 'Clients',
+          value: '${clients.length}',
+          color: Colors.indigo,
+          icon: Icons.people_outline_rounded,
+        ),
+        PageStatCardData(
+          label: 'FrÃ©quents',
+          value: '$frequentCount',
+          color: Colors.blue,
+          icon: Icons.repeat_rounded,
+        ),
+        PageStatCardData(
+          label: 'Profils mÃ©dicaux',
+          value: '$medicalCount',
+          color: Colors.teal,
+          icon: Icons.medical_information_outlined,
+        ),
+        PageStatCardData(
+          label: 'Inactifs',
+          value: '$inactiveCount',
+          color: Colors.orange,
+          icon: Icons.person_off_outlined,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
@@ -98,9 +144,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
     final canDelete = user?.can(AppPermission.deleteClient) ?? false;
 
     if (!canView) {
-      return const Center(
-        child: Text('Acces non autorise a ce module.'),
-      );
+      return const Center(child: Text('Acces non autorise a ce module.'));
     }
 
     return LayoutBuilder(
@@ -108,9 +152,17 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
         final isMobile = constraints.maxWidth < 768;
 
         if (isMobile) {
-          return _buildMobileView(canAdd: canAdd, canEdit: canEdit, canDelete: canDelete);
+          return _buildMobileView(
+            canAdd: canAdd,
+            canEdit: canEdit,
+            canDelete: canDelete,
+          );
         } else {
-          return _buildDesktopView(canAdd: canAdd, canEdit: canEdit, canDelete: canDelete);
+          return _buildDesktopView(
+            canAdd: canAdd,
+            canEdit: canEdit,
+            canDelete: canDelete,
+          );
         }
       },
     );
@@ -148,6 +200,8 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               },
               onAddClient: canAdd ? () => _showClientFormDialog(null) : null,
             ),
+            const SizedBox(height: 16),
+            _buildClientStats(provider.clients),
             const SizedBox(height: 16),
             if (isLoading)
               const Center(child: CircularProgressIndicator())
@@ -273,6 +327,8 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               onAddClient: canAdd ? () => _showClientFormDialog(null) : null,
             ),
             const SizedBox(height: 20),
+            _buildClientStats(provider.clients),
+            const SizedBox(height: 20),
             if (isLoading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (error != null)
@@ -303,12 +359,16 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                   onViewDetails: (client) {
                     _showClientDetailsPanel(client);
                   },
-                  onEditClient: canEdit ? (client) {
-                    _showClientFormDialog(client);
-                  } : null,
-                  onDeleteClient: canDelete ? (client) {
-                    _showDeleteConfirmation(client);
-                  } : null,
+                  onEditClient: canEdit
+                      ? (client) {
+                          _showClientFormDialog(client);
+                        }
+                      : null,
+                  onDeleteClient: canDelete
+                      ? (client) {
+                          _showDeleteConfirmation(client);
+                        }
+                      : null,
                   onPageChanged: (page) {
                     setState(() {
                       _currentPage = page;
@@ -350,13 +410,13 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
     try {
       await context.read<ClientProvider>().addClient(client);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Client ajouté avec succès.')),
         );
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
+        AppScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Erreur ajout client: $error')));
       }
@@ -367,13 +427,13 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
     try {
       await context.read<ClientProvider>().updateClient(client.id, client);
       if (mounted) {
-        ScaffoldMessenger.of(
+        AppScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Client mis à jour.')));
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erreur mise à jour client: $error')),
         );
       }
@@ -397,7 +457,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
               try {
                 await context.read<ClientProvider>().deleteClient(client.id);
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  AppScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${client.fullName} a été supprimé.'),
                     ),
@@ -405,7 +465,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                 }
               } catch (error) {
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  AppScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Erreur suppression client: $error'),
                     ),

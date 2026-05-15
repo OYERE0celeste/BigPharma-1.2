@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:client_app/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import 'profile_view.dart';
@@ -47,9 +48,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
           child: Column(
             children: [
               _buildHeader(context),
-              Expanded(
-                child: _buildBody(),
-              ),
+              Expanded(child: _buildBody()),
             ],
           ),
         ),
@@ -89,8 +88,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
             _currentView == 'profile'
                 ? 'Mon Profil'
                 : _currentView == 'security'
-                    ? 'Sécurité'
-                    : 'Paramètres',
+                ? 'Sécurité'
+                : 'Paramètres',
             style: SettingsTheme.headerTitle,
           ),
           const Spacer(),
@@ -261,7 +260,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 }
 
-
 class ClientSecurityView extends StatelessWidget {
   const ClientSecurityView({super.key});
 
@@ -331,12 +329,16 @@ class ClientSecurityView extends StatelessWidget {
             TextField(
               controller: currentCtrl,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Mot de passe actuel'),
+              decoration: const InputDecoration(
+                labelText: 'Mot de passe actuel',
+              ),
             ),
             TextField(
               controller: newCtrl,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Nouveau mot de passe'),
+              decoration: const InputDecoration(
+                labelText: 'Nouveau mot de passe',
+              ),
             ),
             TextField(
               controller: confirmCtrl,
@@ -359,7 +361,7 @@ class ClientSecurityView extends StatelessWidget {
               );
               if (ctx.mounted) {
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
+                AppScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
                       result['success']

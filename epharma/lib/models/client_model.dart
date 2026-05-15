@@ -34,7 +34,7 @@ class Client {
     this.loyaltyStatus = LoyaltyStatus.standard,
     this.description = '',
   }) : registrationDate = registrationDate ?? DateTime.now(),
-      lastVisitDate = lastVisitDate ?? DateTime.now();
+       lastVisitDate = lastVisitDate ?? DateTime.now();
 
   int get age {
     final now = DateTime.now();

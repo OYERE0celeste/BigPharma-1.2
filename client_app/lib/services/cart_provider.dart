@@ -31,7 +31,6 @@ class CartProvider extends ChangeNotifier {
     (sum, item) => sum + (item.product.sellingPrice * item.quantity),
   );
 
-
   List<OrderItem> get orderItems => _items
       .map(
         (item) => OrderItem(

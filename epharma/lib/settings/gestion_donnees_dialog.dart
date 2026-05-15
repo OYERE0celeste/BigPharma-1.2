@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'settings_theme.dart';
 import '../services/settings_service.dart';
 import '../widgets/app_colors.dart';
@@ -20,7 +21,7 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
     try {
       await _settingsService.backupData();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Sauvegarde effectuée avec succès'),
             backgroundColor: kPrimaryGreen,
@@ -30,7 +31,7 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,
@@ -48,7 +49,7 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
     try {
       await _settingsService.exportData(format);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Exportation au format $format démarrée'),
             backgroundColor: kAccentBlue,
@@ -58,7 +59,7 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,

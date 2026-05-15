@@ -136,6 +136,8 @@ class OrderModel {
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? invoiceNumber;
+  final String pickupMode;
 
   const OrderModel({
     required this.id,
@@ -151,6 +153,8 @@ class OrderModel {
     this.notes,
     required this.createdAt,
     required this.updatedAt,
+    this.invoiceNumber,
+    this.pickupMode = 'sur_place',
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -189,10 +193,13 @@ class OrderModel {
       updatedAt:
           DateTime.tryParse((json['updatedAt'] ?? '').toString()) ??
           DateTime.now(),
+      invoiceNumber: json['invoiceNumber']?.toString(),
+      pickupMode: (json['pickupMode'] ?? 'sur_place').toString(),
     );
   }
 
-  String get formattedDate => DateFormat('dd/MM/yyyy HH:mm').format(createdAt.toLocal());
+  String get formattedDate =>
+      DateFormat('dd/MM/yyyy HH:mm').format(createdAt.toLocal());
 
   List<OrderStatus> get availableNextStatuses {
     switch (status) {
@@ -200,7 +207,7 @@ class OrderModel {
         return [
           OrderStatus.enPreparation,
           OrderStatus.pretPourRecuperation,
-          OrderStatus.annulee
+          OrderStatus.annulee,
         ];
       case OrderStatus.enPreparation:
         return [OrderStatus.pretPourRecuperation, OrderStatus.annulee];

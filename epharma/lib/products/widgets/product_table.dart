@@ -157,14 +157,18 @@ class _ProductTableState extends State<ProductTable> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    onPressed: widget.onEdit == null ? null : () => widget.onEdit!(p),
+                    onPressed: widget.onEdit == null
+                        ? null
+                        : () => widget.onEdit!(p),
                     icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    onPressed: widget.onDelete == null ? null : () => widget.onDelete!(p),
+                    onPressed: widget.onDelete == null
+                        ? null
+                        : () => widget.onDelete!(p),
                     icon: const Icon(Icons.delete, color: Colors.red, size: 20),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),

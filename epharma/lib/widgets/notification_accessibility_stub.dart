@@ -1,0 +1,1 @@
+void announceAriaAlert(String message) {}

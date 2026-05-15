@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 
 import 'package:epharma/providers/auth_provider.dart';
@@ -89,7 +90,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
       );
       setState(() => _isEditing = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Profil mis à jour avec succès'),
             backgroundColor: kPrimaryGreen,
@@ -97,10 +98,15 @@ class _ProfilDialogState extends State<ProfilDialog> {
         );
       }
     } else {
+      final errorMessage = authProvider.errorMessage;
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de la mise à jour'),
+            content: Text(
+              errorMessage != null && errorMessage.isNotEmpty
+                  ? errorMessage
+                  : 'Erreur lors de la mise à jour',
+            ),
             backgroundColor: kDangerRed,
           ),
         );

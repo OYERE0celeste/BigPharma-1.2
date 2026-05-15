@@ -18,7 +18,7 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   final ProductService _productService = ProductService();
   final ScrollController _scrollController = ScrollController();
-  
+
   final List<Product> _products = [];
   bool _isLoading = false;
   bool _hasMore = true;
@@ -29,7 +29,8 @@ class _ProductListPageState extends State<ProductListPage> {
     super.initState();
     _loadMore();
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
         _loadMore();
       }
     });
@@ -48,8 +49,9 @@ class _ProductListPageState extends State<ProductListPage> {
 
     try {
       // Mocking a paginated API call for demo (since backend has limit/page)
-      final newProducts = await _productService.getNewProducts(); // In real app, pass page/limit
-      
+      final newProducts = await _productService
+          .getNewProducts(); // In real app, pass page/limit
+
       setState(() {
         _isLoading = false;
         if (newProducts.length < _limit) {
@@ -84,8 +86,10 @@ class _ProductListPageState extends State<ProductListPage> {
             return ProductCard(
               product: product,
               onDetailsTap: () => Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (_) => ProductDetailPage(product: product))
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductDetailPage(product: product),
+                ),
               ),
             );
           } else {

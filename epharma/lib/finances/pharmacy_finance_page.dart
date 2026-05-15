@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../models/finance_model.dart';
 import '../providers/auth_provider.dart';
@@ -162,27 +163,29 @@ class _FinancePageContentState extends State<FinancePageContent> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
-    final canViewFinance = user?.can(AppPermission.viewFinancialReports) ?? false;
+    final canViewFinance =
+        user?.can(AppPermission.viewFinancialReports) ?? false;
 
     if (!canViewFinance) {
-      return const Center(
-        child: Text('Acces non autorise a ce module.'),
-      );
+      return const Center(child: Text('Acces non autorise a ce module.'));
     }
 
     return Consumer<FinanceProvider>(
       builder: (context, financeProvider, _) {
         // Met à jour les transactions filtrées à partir du provider et filtre uniquement les entrées
-        _filteredTransactions = financeProvider.getFilteredTransactions(
-          startDate: _startDate,
-          endDate: _endDate,
-          type: _selectedType,
-          paymentMethod: _selectedPaymentMethod,
-          employeeName: _selectedEmployee,
-          minAmount: _minAmount,
-          maxAmount: _maxAmount,
-          searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
-        ).where((t) => t.isIncome).toList();
+        _filteredTransactions = financeProvider
+            .getFilteredTransactions(
+              startDate: _startDate,
+              endDate: _endDate,
+              type: _selectedType,
+              paymentMethod: _selectedPaymentMethod,
+              employeeName: _selectedEmployee,
+              minAmount: _minAmount,
+              maxAmount: _maxAmount,
+              searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+            )
+            .where((t) => t.isIncome)
+            .toList();
 
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -201,7 +204,8 @@ class _FinancePageContentState extends State<FinancePageContent> {
 
   Widget _buildMobileView(FinanceProvider financeProvider) {
     final canAddEntry =
-        context.read<AuthProvider>().user?.can(AppPermission.addFinanceEntry) ?? false;
+        context.read<AuthProvider>().user?.can(AppPermission.addFinanceEntry) ??
+        false;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -285,7 +289,8 @@ class _FinancePageContentState extends State<FinancePageContent> {
 
   Widget _buildDesktopView(FinanceProvider financeProvider) {
     final canAddEntry =
-        context.read<AuthProvider>().user?.can(AppPermission.addFinanceEntry) ?? false;
+        context.read<AuthProvider>().user?.can(AppPermission.addFinanceEntry) ??
+        false;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -313,8 +318,10 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         const SizedBox(height: 4),
                         Text(
                           'Suivi des revenus, dépenses et trésorerie',
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 13),
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 13,
+                          ),
                         ),
                       ],
                     ),
@@ -340,8 +347,9 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
                               ),
                             ),
                           ),
@@ -356,16 +364,16 @@ class _FinancePageContentState extends State<FinancePageContent> {
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              hint: const Text('Type',
-                                  style: TextStyle(fontSize: 14)),
+                              hint: const Text(
+                                'Type',
+                                style: TextStyle(fontSize: 14),
+                              ),
                               value: _selectedType,
                               style: const TextStyle(
-                                  color: Colors.black87, fontSize: 14),
-                              items: [
-                                'Vente',
-                                'Retour',
-                                'Approvisionnement',
-                              ]
+                                color: Colors.black87,
+                                fontSize: 14,
+                              ),
+                              items: ['Vente', 'Retour', 'Approvisionnement']
                                   .map(
                                     (type) => DropdownMenuItem(
                                       value: type,
@@ -398,7 +406,9 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 backgroundColor: kPrimaryGreen,
                                 foregroundColor: Colors.white,
                                 elevation: 0,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -437,8 +447,10 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         const SizedBox(height: 4),
                         Text(
                           'Suivi des revenus, dépenses et trésorerie',
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 13),
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 13,
+                          ),
                         ),
                       ],
                     ),
@@ -470,13 +482,15 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
                               ),
                             ),
@@ -492,16 +506,16 @@ class _FinancePageContentState extends State<FinancePageContent> {
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              hint: const Text('Type',
-                                  style: TextStyle(fontSize: 14)),
+                              hint: const Text(
+                                'Type',
+                                style: TextStyle(fontSize: 14),
+                              ),
                               value: _selectedType,
                               style: const TextStyle(
-                                  color: Colors.black87, fontSize: 14),
-                              items: [
-                                'Vente',
-                                'Retour',
-                                'Approvisionnement',
-                              ]
+                                color: Colors.black87,
+                                fontSize: 14,
+                              ),
+                              items: ['Vente', 'Retour', 'Approvisionnement']
                                   .map(
                                     (type) => DropdownMenuItem(
                                       value: type,
@@ -532,20 +546,20 @@ class _FinancePageContentState extends State<FinancePageContent> {
                           icon: const Icon(Icons.picture_as_pdf),
                           tooltip: 'Export PDF',
                           onPressed: () =>
-                              ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Export PDF - Fonctionnalité à implémenter',
+                              AppScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Export PDF - Fonctionnalité à implémenter',
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                         const SizedBox(width: 4),
                         IconButton(
                           icon: const Icon(Icons.table_chart),
                           tooltip: 'Export Excel',
                           onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            AppScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
                                   'Export Excel - Fonctionnalité à implémenter',
@@ -576,7 +590,9 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                             ),
                           ),
                         ],

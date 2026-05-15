@@ -1,6 +1,7 @@
 import 'package:epharma/models/client_model.dart';
 import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:flutter/services.dart';
 
 class ClientFormDialog extends StatefulWidget {
@@ -186,7 +187,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
         _phoneController.text.trim().isEmpty ||
         _selectedGender == null ||
         _dateOfBirth == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Veuillez remplir tous les champs requis'),
           backgroundColor: kDangerRed,
@@ -197,7 +198,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
 
     final phone = _phoneController.text.trim();
     if (!RegExp(r'^[0-9]{8,15}$').hasMatch(phone)) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Téléphone invalide (8-15 chiffres, chiffres uniquement)',

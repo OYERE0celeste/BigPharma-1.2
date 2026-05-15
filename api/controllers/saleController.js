@@ -39,6 +39,7 @@ exports.createSale = async (req, res, next) => {
         const product = await Product.findOne({
           _id: prodId,
           isActive: true,
+          companyId: req.user.companyId,
         }).session(session);
 
         if (!product) {
@@ -84,7 +85,7 @@ exports.createSale = async (req, res, next) => {
       // 3. Stock deduction (Prioritize selected lot, then FIFO if needed)
       for (const item of activeProducts) {
         const prodId = item.product || item.productId;
-        const product = await Product.findOne({ _id: prodId }).session(session);
+        const product = await Product.findOne({ _id: prodId, companyId: req.user.companyId }).session(session);
 
         if (!product) continue;
 

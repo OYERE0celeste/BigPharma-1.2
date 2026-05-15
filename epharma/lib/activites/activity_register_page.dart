@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_colors.dart';
@@ -47,7 +48,12 @@ class _PharmacyActivityRegisterPageState
 
         switch (_periodFilter) {
           case 'today':
-            startDate = DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
+            startDate = DateTime.now().copyWith(
+              hour: 0,
+              minute: 0,
+              second: 0,
+              millisecond: 0,
+            );
             break;
           case 'week':
             startDate = DateTime.now().subtract(const Duration(days: 7));
@@ -96,13 +102,17 @@ class _PharmacyActivityRegisterPageState
                 },
                 onActivityTypeChanged: (type) {
                   setState(() {
-                    _selectedActivityType = (type?.isEmpty ?? true) ? null : type as ActivityType?;
+                    _selectedActivityType = (type?.isEmpty ?? true)
+                        ? null
+                        : type as ActivityType?;
                     _currentPage = 0;
                   });
                 },
                 onEmployeeChanged: (employee) {
                   setState(() {
-                    _selectedEmployee = (employee?.isEmpty ?? true) ? null : employee;
+                    _selectedEmployee = (employee?.isEmpty ?? true)
+                        ? null
+                        : employee;
                     _currentPage = 0;
                   });
                 },
@@ -225,7 +235,10 @@ class HeaderSection extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    Provider.of<ActivityProvider>(context, listen: false).loadActivities();
+                    Provider.of<ActivityProvider>(
+                      context,
+                      listen: false,
+                    ).loadActivities();
                   },
                   icon: const Icon(Icons.refresh),
                   tooltip: 'Rafraîchir',
@@ -237,7 +250,10 @@ class HeaderSection extends StatelessWidget {
                   icon: Icons.file_download,
                   label: 'PDF',
                   color: kPrimaryGreen,
-                  onPressed: () => _showSnackBar(context, 'Export PDF - Fonctionnalité future'),
+                  onPressed: () => _showSnackBar(
+                    context,
+                    'Export PDF - Fonctionnalité future',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 _buildActionBtn(
@@ -245,7 +261,10 @@ class HeaderSection extends StatelessWidget {
                   icon: Icons.table_chart,
                   label: 'Excel',
                   color: kAccentBlue,
-                  onPressed: () => _showSnackBar(context, 'Export Excel - Fonctionnalité future'),
+                  onPressed: () => _showSnackBar(
+                    context,
+                    'Export Excel - Fonctionnalité future',
+                  ),
                 ),
               ],
             ),
@@ -255,7 +274,8 @@ class HeaderSection extends StatelessWidget {
     );
   }
 
-  Widget _buildActionBtn(BuildContext context, {
+  Widget _buildActionBtn(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required Color color,
@@ -279,9 +299,9 @@ class HeaderSection extends StatelessWidget {
   }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    AppScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -857,49 +877,75 @@ class TransactionsTable extends StatelessWidget {
 
   Color _getActivityColor(ActivityType type) {
     switch (type) {
-      case ActivityType.sale: return Colors.green;
-      case ActivityType.order: return Colors.orange;
-      case ActivityType.restocking: return Colors.blue;
-      case ActivityType.return_: return Colors.deepOrange;
-      case ActivityType.stockAdjustment: return Colors.teal;
-      case ActivityType.cancellation: return Colors.red;
-      case ActivityType.userAction: return Colors.indigo;
+      case ActivityType.sale:
+        return Colors.green;
+      case ActivityType.order:
+        return Colors.orange;
+      case ActivityType.restocking:
+        return Colors.blue;
+      case ActivityType.return_:
+        return Colors.deepOrange;
+      case ActivityType.stockAdjustment:
+        return Colors.teal;
+      case ActivityType.cancellation:
+        return Colors.red;
+      case ActivityType.userAction:
+        return Colors.indigo;
 
-      case ActivityType.financeAction: return Colors.amber;
-      case ActivityType.systemAction: return Colors.blueGrey;
+      case ActivityType.financeAction:
+        return Colors.amber;
+      case ActivityType.systemAction:
+        return Colors.blueGrey;
     }
   }
 
   Color _getStatusColor(TransactionStatus status) {
     switch (status) {
-      case TransactionStatus.completed: return Colors.green;
-      case TransactionStatus.pending: return Colors.orange;
-      case TransactionStatus.cancelled: return Colors.red;
-      case TransactionStatus.onHold: return Colors.blueGrey;
+      case TransactionStatus.completed:
+        return Colors.green;
+      case TransactionStatus.pending:
+        return Colors.orange;
+      case TransactionStatus.cancelled:
+        return Colors.red;
+      case TransactionStatus.onHold:
+        return Colors.blueGrey;
     }
   }
 
   String _getActivityLabel(ActivityType type) {
     switch (type) {
-      case ActivityType.sale: return 'Vente';
-      case ActivityType.order: return 'Commande';
-      case ActivityType.restocking: return 'Approv.';
-      case ActivityType.return_: return 'Retour';
-      case ActivityType.stockAdjustment: return 'Ajust.';
-      case ActivityType.cancellation: return 'Annul.';
-      case ActivityType.userAction: return 'Util.';
+      case ActivityType.sale:
+        return 'Vente';
+      case ActivityType.order:
+        return 'Commande';
+      case ActivityType.restocking:
+        return 'Approv.';
+      case ActivityType.return_:
+        return 'Retour';
+      case ActivityType.stockAdjustment:
+        return 'Ajust.';
+      case ActivityType.cancellation:
+        return 'Annul.';
+      case ActivityType.userAction:
+        return 'Util.';
 
-      case ActivityType.financeAction: return 'Fin.';
-      case ActivityType.systemAction: return 'Syst.';
+      case ActivityType.financeAction:
+        return 'Fin.';
+      case ActivityType.systemAction:
+        return 'Syst.';
     }
   }
 
   String _getStatusLabel(TransactionStatus status) {
     switch (status) {
-      case TransactionStatus.completed: return 'Complétée';
-      case TransactionStatus.pending: return 'En attente';
-      case TransactionStatus.cancelled: return 'Annulé';
-      case TransactionStatus.onHold: return 'En pause';
+      case TransactionStatus.completed:
+        return 'Complétée';
+      case TransactionStatus.pending:
+        return 'En attente';
+      case TransactionStatus.cancelled:
+        return 'Annulé';
+      case TransactionStatus.onHold:
+        return 'En pause';
     }
   }
 
@@ -1041,7 +1087,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                         const SizedBox(width: 8),
                         ElevatedButton.icon(
                           onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            AppScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
                                   'Impression du reçu - Fonctionnalité future',
@@ -1181,10 +1227,21 @@ class AnalyticsSection extends StatelessWidget {
     );
 
     // Répartition par type
-    final salesCount = transactions.where((t) => t.type == ActivityType.sale).length.toDouble();
-    final returnsCount = transactions.where((t) => t.type == ActivityType.return_).length.toDouble();
-    final restockingCount = transactions.where((t) => t.type == ActivityType.restocking).length.toDouble();
-    final othersCount = (transactions.length - salesCount - returnsCount - restockingCount).toDouble();
+    final salesCount = transactions
+        .where((t) => t.type == ActivityType.sale)
+        .length
+        .toDouble();
+    final returnsCount = transactions
+        .where((t) => t.type == ActivityType.return_)
+        .length
+        .toDouble();
+    final restockingCount = transactions
+        .where((t) => t.type == ActivityType.restocking)
+        .length
+        .toDouble();
+    final othersCount =
+        (transactions.length - salesCount - returnsCount - restockingCount)
+            .toDouble();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1219,8 +1276,13 @@ class AnalyticsSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       salesByDay.isEmpty
-                          ? const Center(child: Text("Pas de données disponibles"))
-                          : SizedBox(height: 200, child: _buildSimpleChart(salesByDay)),
+                          ? const Center(
+                              child: Text("Pas de données disponibles"),
+                            )
+                          : SizedBox(
+                              height: 200,
+                              child: _buildSimpleChart(salesByDay),
+                            ),
                     ],
                   ),
                 ),
@@ -1250,7 +1312,11 @@ class AnalyticsSection extends StatelessWidget {
                         children: [
                           _buildChartBar('Ventes', salesCount, kPrimaryGreen),
                           _buildChartBar('Retours', returnsCount, kAccentBlue),
-                          _buildChartBar('Approv.', restockingCount, const Color(0xFF7B1FA2)),
+                          _buildChartBar(
+                            'Approv.',
+                            restockingCount,
+                            const Color(0xFF7B1FA2),
+                          ),
                           _buildChartBar('Autres', othersCount, kWarningOrange),
                         ],
                       ),
@@ -1274,7 +1340,10 @@ class AnalyticsSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          SizedBox(width: 70, child: Text(label, style: const TextStyle(fontSize: 12))),
+          SizedBox(
+            width: 70,
+            child: Text(label, style: const TextStyle(fontSize: 12)),
+          ),
           Expanded(
             child: Stack(
               children: [
@@ -1297,7 +1366,10 @@ class AnalyticsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Text(safeValue.toInt().toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            safeValue.toInt().toString(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -1305,12 +1377,14 @@ class AnalyticsSection extends StatelessWidget {
 
   Widget _buildSimpleChart(List<SalesByDay> salesByDay) {
     if (salesByDay.isEmpty) return const SizedBox.shrink();
-    
-    final last7Days = salesByDay.length > 7 
-        ? salesByDay.sublist(salesByDay.length - 7) 
+
+    final last7Days = salesByDay.length > 7
+        ? salesByDay.sublist(salesByDay.length - 7)
         : salesByDay;
-    
-    final maxValue = last7Days.map((e) => e.amount).reduce((a, b) => a > b ? a : b);
+
+    final maxValue = last7Days
+        .map((e) => e.amount)
+        .reduce((a, b) => a > b ? a : b);
     final displayMaxValue = maxValue == 0 ? 1.0 : maxValue;
 
     return Row(
@@ -1331,7 +1405,9 @@ class AnalyticsSection extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [kPrimaryGreen, kPrimaryGreen.withOpacity(0.5)],
                   ),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(4),
+                  ),
                 ),
               ),
             ),

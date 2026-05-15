@@ -71,8 +71,10 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         ? _resolveInitialSection(auth.user)
         : widget.pageTitle;
 
-    _pageTitle = initialSection;
-    _currentPage = widget.child is SizedBox ? _pageForSection(initialSection) : widget.child;
+    _pageTitle = _normalizeSection(initialSection);
+    _currentPage = widget.child is SizedBox
+        ? _pageForSection(initialSection)
+        : widget.child;
 
     _sidebarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -86,14 +88,25 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  String _normalizeSection(String section) {
+    switch (section) {
+      case 'Stock':
+        return 'Products';
+      case 'POS':
+        return 'Sales';
+      case 'Commandes':
+        return 'Orders';
+      default:
+        return section;
+    }
+  }
+
   String _resolveInitialSection(UserModel? user) {
     if (user == null) return 'Dashboard';
 
     const preferredSections = [
       'Dashboard',
       'Products',
-      'Stock',
-      'POS',
       'Sales',
       'Clients',
       'Orders',
@@ -116,13 +129,11 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   }
 
   Widget _pageForSection(String section) {
-    switch (section) {
+    switch (_normalizeSection(section)) {
       case 'Dashboard':
         return const PharmacyDashboardPage();
       case 'Products':
-      case 'Stock':
         return const PharmacyProductsPage();
-      case 'POS':
       case 'Sales':
         return const PharmacySalesPage();
       case 'Orders':
@@ -145,13 +156,14 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   }
 
   bool _canAccessSection(String section) {
-    if (section == 'Settings') return true;
+    final normalizedSection = _normalizeSection(section);
+    if (normalizedSection == 'Settings') return true;
 
     final user = context.read<AuthProvider>().user;
     if (user == null) return false;
 
     for (final entry in kSidebarEntries) {
-      if (entry.key == section) {
+      if (entry.key == normalizedSection) {
         return user.canAny(entry.permissions);
       }
     }
@@ -193,21 +205,27 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                         _navigateToSection('Orders');
                         break;
                       case 'support':
+                      case 'review':
+                      case 'complaint':
                         _navigateToSection('Support');
                         break;
+                      case 'invoice':
+                        _navigateToSection('Orders');
+                        break;
                       case 'stock':
-                        _navigateToSection('Stock');
+                        _navigateToSection('Products');
                         break;
                       default:
-                        _navigateToSection(_resolveInitialSection(context.read<AuthProvider>().user));
+                        _navigateToSection(
+                          _resolveInitialSection(
+                            context.read<AuthProvider>().user,
+                          ),
+                        );
                     }
                   },
                 ),
                 Expanded(
-                  child: Container(
-                    color: Colors.grey[50],
-                    child: _currentPage,
-                  ),
+                  child: Container(color: Colors.grey[50], child: _currentPage),
                 ),
               ],
             ),
@@ -229,29 +247,31 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   }
 
   void _navigateToSection(String section) {
-    if (!_canAccessSection(section)) {
-      final fallback = _resolveInitialSection(context.read<AuthProvider>().user);
-      if (section != fallback) {
+    final normalizedSection = _normalizeSection(section);
+
+    if (!_canAccessSection(normalizedSection)) {
+      final fallback = _resolveInitialSection(
+        context.read<AuthProvider>().user,
+      );
+      if (normalizedSection != fallback) {
         _navigateTo(fallback, _pageForSection(fallback));
       }
       return;
     }
 
-    if (section == 'Settings') {
+    if (normalizedSection == 'Settings') {
       if (_isSidebarOpen) _toggleSidebar();
       SettingsDialog.show(context);
       return;
     }
 
-    _navigateTo(section, _pageForSection(section));
+    _navigateTo(normalizedSection, _pageForSection(normalizedSection));
   }
 
   Map<String, VoidCallback> _buildNavigationCallbacks() {
     return {
       'Dashboard': () => _navigateToSection('Dashboard'),
       'Products': () => _navigateToSection('Products'),
-      'Stock': () => _navigateToSection('Stock'),
-      'POS': () => _navigateToSection('POS'),
       'Sales': () => _navigateToSection('Sales'),
       'Orders': () => _navigateToSection('Orders'),
       'Clients': () => _navigateToSection('Clients'),
@@ -260,7 +280,6 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
       'Support': () => _navigateToSection('Support'),
       'Users': () => _navigateToSection('Users'),
       'Rights': () => _navigateToSection('Rights'),
-      'Settings': () => _navigateToSection('Settings'),
     };
   }
 

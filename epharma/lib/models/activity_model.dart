@@ -226,13 +226,21 @@ class ActivityModel {
 
     return ActivityModel(
       id: json['_id'] ?? json['id'] ?? '',
-      dateTime: createdAt.isNotEmpty ? DateTime.parse(createdAt).toLocal() : DateTime.now(),
-      type: _parseActivityType(entityType.isNotEmpty ? entityType : json['type']),
+      dateTime: createdAt.isNotEmpty
+          ? DateTime.parse(createdAt).toLocal()
+          : DateTime.now(),
+      type: _parseActivityType(
+        entityType.isNotEmpty ? entityType : json['type'],
+      ),
       reference: json['reference'] ?? json['entityId'] ?? '',
-      clientOrSupplierName: json['clientOrSupplierName'] ?? (['client', 'user'].contains(entityType) ? entityName : ''),
-      productName: json['productName'] ?? (entityType == 'product' ? entityName : ''),
+      clientOrSupplierName:
+          json['clientOrSupplierName'] ??
+          (['client', 'user'].contains(entityType) ? entityName : ''),
+      productName:
+          json['productName'] ?? (entityType == 'product' ? entityName : ''),
       quantity: json['quantity'] ?? 0,
-      totalAmount: double.tryParse(json['totalAmount']?.toString() ?? '0') ?? 0.0,
+      totalAmount:
+          double.tryParse(json['totalAmount']?.toString() ?? '0') ?? 0.0,
       paymentMethod: _parsePaymentMethod(json['paymentMethod']),
       employeeName: json['employeeName'] ?? user,
       status: _parseTransactionStatus(json['status'] ?? json['actionType']),
@@ -264,19 +272,26 @@ class ActivityModel {
 
   static ActivityType _parseActivityType(String? type) {
     if (type == null) return ActivityType.sale;
-    
+
     // Map backend entity types to activity types
     switch (type) {
-      case 'product': return ActivityType.restocking;
-      case 'sale': return ActivityType.sale;
-      case 'client': return ActivityType.userAction;
-      case 'user': return ActivityType.userAction;
+      case 'product':
+        return ActivityType.restocking;
+      case 'sale':
+        return ActivityType.sale;
+      case 'client':
+        return ActivityType.userAction;
+      case 'user':
+        return ActivityType.userAction;
 
-      case 'finance': return ActivityType.financeAction;
-      case 'system': return ActivityType.systemAction;
-      case 'order': return ActivityType.order;
+      case 'finance':
+        return ActivityType.financeAction;
+      case 'system':
+        return ActivityType.systemAction;
+      case 'order':
+        return ActivityType.order;
     }
-    
+
     return ActivityType.values.firstWhere(
       (e) => e.name == type,
       orElse: () => ActivityType.sale,
@@ -291,9 +306,13 @@ class ActivityModel {
   }
 
   static TransactionStatus _parseTransactionStatus(String? status) {
-    if (status == 'create' || status == 'completed' || status == 'update') return TransactionStatus.completed;
-    if (status == 'delete' || status == 'cancelled') return TransactionStatus.cancelled;
-    
+    if (status == 'create' || status == 'completed' || status == 'update') {
+      return TransactionStatus.completed;
+    }
+    if (status == 'delete' || status == 'cancelled') {
+      return TransactionStatus.cancelled;
+    }
+
     return TransactionStatus.values.firstWhere(
       (e) => e.name == status,
       orElse: () => TransactionStatus.completed,

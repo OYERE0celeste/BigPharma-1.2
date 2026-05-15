@@ -100,11 +100,17 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                         items: const [
                           DropdownMenuItem(value: 'all', child: Text('Tous')),
                           DropdownMenuItem(
-                              value: 'frequent', child: Text('Fréquents')),
+                            value: 'frequent',
+                            child: Text('Fréquents'),
+                          ),
                           DropdownMenuItem(
-                              value: 'medical', child: Text('Médical')),
+                            value: 'medical',
+                            child: Text('Médical'),
+                          ),
                           DropdownMenuItem(
-                              value: 'inactive', child: Text('Inactifs')),
+                            value: 'inactive',
+                            child: Text('Inactifs'),
+                          ),
                         ],
                         onChanged: (value) {
                           if (value != null) widget.onFilterChanged(value);
@@ -199,13 +205,15 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                           ),
                           onChanged: (query) {

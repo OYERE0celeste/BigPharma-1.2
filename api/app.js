@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("./config/loadEnv");
 
 const express = require("express");
 const cors = require("cors");
@@ -149,6 +149,7 @@ const tenantEnforcer = require("./middleware/tenantEnforcer");
 
 apiV1.use("/auth", authLimiter, require("./routes/auth"));
 apiV1.use("/products", require("./routes/products"));
+apiV1.use("/reviews", require("./routes/reviews"));
 
 // Protected routes with Tenant Enforcement
 apiV1.use(authMiddleware);
@@ -162,6 +163,8 @@ apiV1.use("/finance", require("./routes/finance"));
 apiV1.use("/activities", require("./routes/activityLogs"));
 apiV1.use("/activityLogs", require("./routes/activityLogs"));
 apiV1.use("/QuestionsClients", require("./routes/QuestionsClients"));
+apiV1.use("/invoices", require("./routes/invoices"));
+apiV1.use("/complaints", require("./routes/complaints"));
 apiV1.use("/dashboard", require("./routes/dashboard"));
 apiV1.use("/mouvements", require("./routes/mouvements"));
 apiV1.use("/settings", require("./routes/settings"));

@@ -8,6 +8,15 @@ const { getJwtSecret } = require("../config/env");
 const { success, failure } = require("../utils/response");
 const { notifyStaff } = require("../utils/notificationHelper");
 const { getRoleDefaults, resolveUserPermissions } = require("../utils/rolePermissions");
+const logger = require("../utils/logger");
+const { generateUsername } = require("../utils/usernameGenerator");
+const {
+  sendStaffWelcomeEmail,
+  sendClientWelcomeEmail,
+  sendPasswordResetEmail,
+  sendProfileUpdateEmail,
+  sendPasswordChangedEmail,
+} = require("../utils/mailService");
 
 
 // Token durations
@@ -35,6 +44,7 @@ const generateRefreshToken = async (user) => {
 const userPayload = (user) => ({
   id: user._id,
   fullName: user.fullName,
+  username: user.username || null,
   email: user.email,
   role: user.role,
   phone: user.phone || "",
@@ -56,27 +66,43 @@ exports.register = async (req, res, next) => {
       return failure(res, { status: 400, message: "Missing required fields", code: "VALIDATION_ERROR" });
     }
 
-    const existingUser = await User.findOne({ email: adminEmail.toLowerCase() }).lean();
+    const normalizedAdminEmail = adminEmail.trim().toLowerCase();
+    const normalizedCompanyEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone ? phone.trim() : "";
+
+    // Check for existing user with case-insensitive email
+    const existingUser = await User.findOne({
+      email: { $regex: `^${normalizedAdminEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+    }).lean();
     if (existingUser) {
       return failure(res, { status: 409, message: "User with this email already exists", code: "USER_ALREADY_EXISTS" });
     }
 
     const company = await Company.create({
-      name,
-      email: email.toLowerCase(),
-      phone,
-      address,
-      city,
-      country,
+      name: name.trim(),
+      email: normalizedCompanyEmail,
+      phone: normalizedPhone,
+      address: (address || "").trim(),
+      city: (city || "").trim(),
+      country: (country || "").trim(),
     });
 
+    const username = await generateUsername(fullName.trim());
+
     const user = await User.create({
-      fullName,
-      email: adminEmail.toLowerCase(),
+      fullName: fullName.trim(),
+      username,
+      email: normalizedAdminEmail,
       passwordHash: password,
       role: "administrateur",
       companyId: company._id,
       permissions: getRoleDefaults("administrateur"),
+    });
+
+    await sendStaffWelcomeEmail({
+      email: normalizedAdminEmail,
+      fullName: fullName.trim(),
+      companyName: company.name,
     });
 
     const accessToken = signAccessToken(user._id);
@@ -108,30 +134,49 @@ exports.registerClient = async (req, res, next) => {
       return failure(res, { status: 400, message: "Missing required fields", code: "VALIDATION_ERROR" });
     }
 
-    const existingUser = await User.findOne({ $or: [{ email: email.toLowerCase() }, { phone }] }).lean();
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone.trim();
+
+    // Check for existing user with case-insensitive email
+    const existingUser = await User.findOne({
+      $or: [
+        { email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' } },
+        { phone: normalizedPhone },
+      ],
+    }).lean();
     if (existingUser) {
       return failure(res, { status: 409, message: "User with this email or phone already exists", code: "USER_ALREADY_EXISTS" });
     }
 
+    const username = await generateUsername(fullName.trim());
+
     const user = await User.create({
-      fullName,
-      email: email.toLowerCase(),
+      fullName: fullName.trim(),
+      username,
+      email: normalizedEmail,
       passwordHash: password,
       role: "client",
-      phone,
-      address: address || "",
+      phone: normalizedPhone,
+      address: (address || "").trim(),
       companyId,
     });
 
     const client = await Client.create({
-      fullName,
-      email: email.toLowerCase(),
-      phone,
+      fullName: fullName.trim(),
+      email: normalizedEmail,
+      phone: normalizedPhone,
       dateOfBirth: new Date(dateOfBirth),
       gender,
-      address: address || "",
+      address: (address || "").trim(),
       companyId,
       userId: user._id,
+    });
+
+    const company = await Company.findById(companyId).select("name").lean();
+    await sendClientWelcomeEmail({
+      email: normalizedEmail,
+      fullName: fullName.trim(),
+      companyName: company?.name || "votre pharmacie",
     });
 
     const accessToken = signAccessToken(user._id);
@@ -166,23 +211,32 @@ exports.registerClient = async (req, res, next) => {
  * Login user
  */
 exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
+  // Accept `identifier` (email or username) OR legacy `email` field
+  const identifier = (req.body.identifier || req.body.email || "").trim().toLowerCase();
+  const { password } = req.body;
 
   try {
-    if (!email || !password) {
-      return failure(res, { status: 400, message: "Email and password are required", code: "VALIDATION_ERROR" });
+    if (!identifier || !password) {
+      return failure(res, { status: 400, message: "Identifiant et mot de passe requis", code: "VALIDATION_ERROR" });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() })
+    // Detect if identifier looks like an email
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+
+    const query = isEmail
+      ? { email: identifier }
+      : { username: identifier };
+
+    const user = await User.findOne(query)
       .select("+passwordHash")
       .populate("companyId", "name email");
 
     if (!user || !(await user.matchPassword(password))) {
-      return failure(res, { status: 401, message: "Invalid email or password", code: "INVALID_CREDENTIALS" });
+      return failure(res, { status: 401, message: "Identifiant ou mot de passe invalide", code: "INVALID_CREDENTIALS" });
     }
 
     if (!user.isActive) {
-      return failure(res, { status: 403, message: "Account has been deactivated", code: "ACCOUNT_INACTIVE" });
+      return failure(res, { status: 403, message: "Ce compte a été désactivé", code: "ACCOUNT_INACTIVE" });
     }
 
     user.lastLoginAt = new Date();
@@ -297,70 +351,100 @@ exports.getMe = async (req, res, next) => {
 };
 
 /**
- * Forgot password
+ * Forgot password — génère un OTP à 6 chiffres et l'envoie par email
  */
 exports.forgotPassword = async (req, res, next) => {
-  const { email } = req.body;
+  // Accepte email OU nom d'utilisateur
+  const identifier = (req.body.identifier || req.body.email || "").trim().toLowerCase();
 
   try {
-    if (!email) {
-      return failure(res, { status: 400, message: "Email is required", code: "VALIDATION_ERROR" });
+    if (!identifier) {
+      return failure(res, { status: 400, message: "Email ou nom d'utilisateur requis", code: "VALIDATION_ERROR" });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() }).select("+passwordResetToken +passwordResetExpires");
+    // Cherche par email ou par username
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+    const user = await User.findOne(
+      isEmail ? { email: identifier } : { username: identifier }
+    ).select("+passwordResetToken +passwordResetExpires");
 
     if (user) {
-      const rawToken = crypto.randomBytes(32).toString("hex");
-      const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+      // Générer un OTP à 6 chiffres
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
 
-      user.passwordResetToken = tokenHash;
-      user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
+      user.passwordResetToken = otpHash;
+      user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
       await user.save();
 
-      if (process.env.NODE_ENV !== "production") {
-        return success(res, { data: { resetToken: rawToken, expiresInMinutes: 60 } });
-      }
+      await sendPasswordResetEmail({
+        email: user.email,
+        fullName: user.fullName,
+        token: otp, // L'email affiche le code OTP directement
+      });
+
+      logger.info(`OTP de réinitialisation envoyé à ${user.email}`);
     }
 
-    return success(res, { data: { message: "If the email exists, a reset link has been sent" } });
+    // Réponse identique qu'un compte existe ou non (sécurité)
+    return success(res, {
+      data: { message: "Si cet identifiant existe, un code de réinitialisation a été envoyé par email" },
+    });
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * Reset password
+ * Reset password — valide l'OTP et applique le nouveau mot de passe
  */
 exports.resetPassword = async (req, res, next) => {
-  const { token, password } = req.body;
-  const confirmPassword = req.body.confirmPassword || password;
+  const { otp, password, confirmPassword } = req.body;
+  // Compatibilité avec l'ancien champ `token`
+  const code = (otp || req.body.token || "").trim();
 
   try {
-    if (!token || !password) {
-      return failure(res, { status: 400, message: "Token and password are required", code: "VALIDATION_ERROR" });
+    if (!code || !password) {
+      return failure(res, { status: 400, message: "Code OTP et nouveau mot de passe requis", code: "VALIDATION_ERROR" });
     }
 
-    if (password !== confirmPassword) {
-      return failure(res, { status: 400, message: "Passwords do not match", code: "PASSWORD_MISMATCH" });
+    if (password !== (confirmPassword || password)) {
+      return failure(res, { status: 400, message: "Les mots de passe ne correspondent pas", code: "PASSWORD_MISMATCH" });
     }
 
-    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    if (password.length < 8) {
+      return failure(res, { status: 400, message: "Le mot de passe doit contenir au moins 8 caractères", code: "VALIDATION_ERROR" });
+    }
+
+    const otpHash = crypto.createHash("sha256").update(code).digest("hex");
 
     const user = await User.findOne({
-      passwordResetToken: tokenHash,
+      passwordResetToken: otpHash,
       passwordResetExpires: { $gt: new Date() },
     }).select("+passwordResetToken +passwordResetExpires +passwordHash");
 
     if (!user) {
-      return failure(res, { status: 400, message: "Invalid or expired reset token", code: "INVALID_RESET_TOKEN" });
+      return failure(res, {
+        status: 400,
+        message: "Code invalide ou expiré. Veuillez demander un nouveau code.",
+        code: "INVALID_RESET_TOKEN",
+      });
     }
 
     user.passwordHash = password;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
+    // Invalider tous les refresh tokens pour sécuriser la session
+    user.refreshTokens = [];
     await user.save();
 
-    return success(res, { data: { message: "Password reset successfully" } });
+    // Email de confirmation
+    sendPasswordChangedEmail({
+      email: user.email,
+      fullName: user.fullName,
+    }).catch((err) => logger.warn("Password changed email failed", err));
+
+    return success(res, { data: { message: "Mot de passe réinitialisé avec succès" } });
   } catch (error) {
     next(error);
   }
@@ -371,7 +455,7 @@ exports.resetPassword = async (req, res, next) => {
  */
 exports.updateMe = async (req, res, next) => {
   try {
-    const { fullName, email, address } = req.body;
+    const { fullName, email, address, username } = req.body;
     const phone = req.body.phone ?? req.body.phoneNumber;
 
     const user = await User.findById(req.user._id).populate("companyId", "name");
@@ -379,18 +463,51 @@ exports.updateMe = async (req, res, next) => {
       return failure(res, { status: 404, message: "User not found", code: "USER_NOT_FOUND" });
     }
 
-    if (email && email.toLowerCase() !== user.email) {
-      const newEmail = email.toLowerCase();
-      const conflict = await User.findOne({ email: newEmail, _id: { $ne: req.user._id } }).lean();
-      if (conflict) {
-        return failure(res, { status: 409, message: "Email is already taken", code: "EMAIL_ALREADY_IN_USE" });
+    // Normalize & validate email
+    if (email) {
+      const normalizedEmail = email.toString().trim().toLowerCase();
+      const currentEmail = (user.email || "").toLowerCase().trim();
+
+      if (normalizedEmail !== currentEmail) {
+        const conflict = await User.findOne({
+          email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+          _id: { $ne: req.user._id },
+        }).lean();
+
+        if (conflict) {
+          return failure(res, { status: 409, message: "Cet email est déjà utilisé", code: "EMAIL_ALREADY_IN_USE" });
+        }
       }
-      user.email = newEmail;
+      user.email = normalizedEmail;
     }
 
-    if (fullName) user.fullName = fullName;
-    if (phone !== undefined) user.phone = phone;
-    if (address !== undefined) user.address = address;
+    // Normalize & validate username
+    if (username !== undefined && username !== null) {
+      const normalizedUsername = username.toString().trim().toLowerCase();
+
+      if (normalizedUsername.length < 3 || normalizedUsername.length > 30) {
+        return failure(res, { status: 400, message: "Le nom d'utilisateur doit contenir entre 3 et 30 caractères", code: "VALIDATION_ERROR" });
+      }
+      if (!/^[a-z0-9_.]+$/.test(normalizedUsername)) {
+        return failure(res, { status: 400, message: "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, points et underscores", code: "VALIDATION_ERROR" });
+      }
+
+      if (normalizedUsername !== (user.username || "")) {
+        const usernameTaken = await User.findOne({
+          username: normalizedUsername,
+          _id: { $ne: req.user._id },
+        }).lean();
+
+        if (usernameTaken) {
+          return failure(res, { status: 409, message: "Ce nom d'utilisateur est déjà pris", code: "USERNAME_ALREADY_IN_USE" });
+        }
+        user.username = normalizedUsername;
+      }
+    }
+
+    if (fullName) user.fullName = fullName.trim();
+    if (phone !== undefined) user.phone = phone.trim();
+    if (address !== undefined) user.address = address.trim();
 
     await user.save();
 
@@ -403,10 +520,16 @@ exports.updateMe = async (req, res, next) => {
           fullName: user.fullName,
           email: user.email,
           phone: user.phone,
-          address: user.address
+          address: user.address,
         }
       );
     }
+
+    // Send profile update notification (non-blocking)
+    sendProfileUpdateEmail({
+      email: user.email,
+      fullName: user.fullName,
+    }).catch((err) => logger.warn("Profile update email failed", err));
 
     return success(res, { data: userPayload(user) });
   } catch (error) {
@@ -441,6 +564,12 @@ exports.changePassword = async (req, res, next) => {
 
     user.passwordHash = newPassword;
     await user.save();
+
+    // Send password change confirmation (non-blocking)
+    sendPasswordChangedEmail({
+      email: user.email,
+      fullName: user.fullName,
+    }).catch((err) => logger.warn("Password changed email failed", err));
 
     return success(res, { data: { message: "Password changed successfully" } });
   } catch (error) {

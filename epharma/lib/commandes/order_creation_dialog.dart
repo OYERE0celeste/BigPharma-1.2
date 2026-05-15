@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
@@ -30,7 +31,10 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
     });
   }
 
-  double get _total => _cartItems.fold(0, (sum, item) => sum + (item['price'] * item['quantity']));
+  double get _total => _cartItems.fold(
+    0,
+    (sum, item) => sum + (item['price'] * item['quantity']),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -52,23 +56,37 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
               _buildCartTable(),
               const SizedBox(height: 16),
               TextField(
-                decoration: const InputDecoration(labelText: 'Notes', border: OutlineInputBorder()),
+                decoration: const InputDecoration(
+                  labelText: 'Notes',
+                  border: OutlineInputBorder(),
+                ),
                 onChanged: (val) => _note = val,
               ),
               const Divider(),
               Align(
                 alignment: Alignment.centerRight,
-                child: Text('TOTAL : ${_total.toStringAsFixed(0)} FCFA', 
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF6366F1))),
+                child: Text(
+                  'TOTAL : ${_total.toStringAsFixed(0)} FCFA',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF6366F1),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Annuler'),
+        ),
         ElevatedButton(
-          onPressed: _selectedClient != null && _cartItems.isNotEmpty ? () => _submitOrder() : null,
+          onPressed: _selectedClient != null && _cartItems.isNotEmpty
+              ? () => _submitOrder()
+              : null,
           child: const Text('Créer la commande'),
         ),
       ],
@@ -77,8 +95,13 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
 
   Widget _buildClientSelector(ClientProvider provider) {
     return DropdownButtonFormField<Client>(
-      decoration: const InputDecoration(labelText: 'Sélectionner un Client', border: OutlineInputBorder()),
-      items: provider.clients.map((c) => DropdownMenuItem(value: c, child: Text(c.fullName))).toList(),
+      decoration: const InputDecoration(
+        labelText: 'Sélectionner un Client',
+        border: OutlineInputBorder(),
+      ),
+      items: provider.clients
+          .map((c) => DropdownMenuItem(value: c, child: Text(c.fullName)))
+          .toList(),
       onChanged: (val) => setState(() => _selectedClient = val),
     );
   }
@@ -92,8 +115,13 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
         Expanded(
           flex: 3,
           child: DropdownButtonFormField<Product>(
-            decoration: const InputDecoration(labelText: 'Ajouter un Produit', border: OutlineInputBorder()),
-            items: provider.products.map((p) => DropdownMenuItem(value: p, child: Text(p.name))).toList(),
+            decoration: const InputDecoration(
+              labelText: 'Ajouter un Produit',
+              border: OutlineInputBorder(),
+            ),
+            items: provider.products
+                .map((p) => DropdownMenuItem(value: p, child: Text(p.name)))
+                .toList(),
             onChanged: (val) => selectedProduct = val,
           ),
         ),
@@ -101,7 +129,10 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
         Expanded(
           flex: 1,
           child: TextFormField(
-            decoration: const InputDecoration(labelText: 'Qté', border: OutlineInputBorder()),
+            decoration: const InputDecoration(
+              labelText: 'Qté',
+              border: OutlineInputBorder(),
+            ),
             initialValue: '1',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -110,7 +141,11 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
         ),
         const SizedBox(width: 8),
         IconButton(
-          icon: const Icon(Icons.add_circle, color: Color(0xFF6366F1), size: 32),
+          icon: const Icon(
+            Icons.add_circle,
+            color: Color(0xFF6366F1),
+            size: 32,
+          ),
           onPressed: () {
             if (selectedProduct != null) {
               setState(() {
@@ -134,21 +169,58 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
     return Table(
       border: TableBorder.all(color: Colors.grey[300]!),
       children: [
-        const TableRow(children: [
-          Padding(padding: EdgeInsets.all(8), child: Text('Produit', style: TextStyle(fontWeight: FontWeight.bold))),
-          Padding(padding: EdgeInsets.all(8), child: Text('Prix', style: TextStyle(fontWeight: FontWeight.bold))),
-          Padding(padding: EdgeInsets.all(8), child: Text('Qté', style: TextStyle(fontWeight: FontWeight.bold))),
-          Padding(padding: EdgeInsets.all(8), child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold))),
-        ]),
+        const TableRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Produit',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Prix',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text('Qté', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Action',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
         ..._cartItems.asMap().entries.map((entry) {
           final idx = entry.key;
           final item = entry.value;
-          return TableRow(children: [
-            Padding(padding: const EdgeInsets.all(8), child: Text(item['name'])),
-            Padding(padding: const EdgeInsets.all(8), child: Text('${item['price']} FCFA')),
-            Padding(padding: const EdgeInsets.all(8), child: Text('${item['quantity']}')),
-            IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () => setState(() => _cartItems.removeAt(idx))),
-          ]);
+          return TableRow(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(item['name']),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text('${item['price']} FCFA'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text('${item['quantity']}'),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () => setState(() => _cartItems.removeAt(idx)),
+              ),
+            ],
+          );
         }),
       ],
     );
@@ -158,19 +230,23 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final orderData = {
       'client': _selectedClient!.id,
-      'items': _cartItems.map((i) => {
-        'product': i['product'],
-        'quantity': i['quantity'],
-      }).toList(),
+      'items': _cartItems
+          .map((i) => {'product': i['product'], 'quantity': i['quantity']})
+          .toList(),
       'notes': _note,
     };
 
-    final success = await Provider.of<OrderProvider>(context, listen: false).createOrder(orderData, auth.token!);
+    final success = await Provider.of<OrderProvider>(
+      context,
+      listen: false,
+    ).createOrder(orderData, auth.token!);
     if (success) {
       if (mounted) Navigator.pop(context);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Échec de la création de la commande.")));
+        AppScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Échec de la création de la commande.")),
+        );
       }
     }
   }

@@ -69,14 +69,10 @@ class _FinanceFilterSectionState extends State<FinanceFilterSection> {
                 DropdownButton<String>(
                   hint: const Text('Type de transaction'),
                   value: widget.selectedType,
-                  items: [
-                        'Vente',
-                      ]
+                  items: ['Vente']
                       .map(
-                        (type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type),
-                        ),
+                        (type) =>
+                            DropdownMenuItem(value: type, child: Text(type)),
                       )
                       .toList(),
                   onChanged: widget.onTypeChanged,

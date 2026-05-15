@@ -29,10 +29,12 @@ class OrderProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> createOrder(
-    List<OrderItem> items,
-  ) async {
+    List<OrderItem> items, {
+    String pickupMode = 'sur_place',
+  }) async {
     final result = await _orderService.createOrder(
       items,
+      pickupMode: pickupMode,
     );
 
     if (result['success'] == true) {

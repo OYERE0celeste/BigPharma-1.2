@@ -51,12 +51,18 @@ class SupportQuestion {
 
   factory SupportQuestion.fromJson(Map<String, dynamic> json) {
     var messagesList = json['messages'] as List? ?? [];
-    List<SupportMessage> msgs = messagesList.map((m) => SupportMessage.fromJson(m)).toList();
+    List<SupportMessage> msgs = messagesList
+        .map((m) => SupportMessage.fromJson(m))
+        .toList();
 
     return SupportQuestion(
       id: json['_id'] ?? '',
-      clientId: json['clientId'] is Map ? json['clientId']['_id'] : (json['clientId'] ?? ''),
-      clientName: json['clientId'] is Map ? (json['clientId']['fullName'] ?? 'Client') : 'Client',
+      clientId: json['clientId'] is Map
+          ? json['clientId']['_id']
+          : (json['clientId'] ?? ''),
+      clientName: json['clientId'] is Map
+          ? (json['clientId']['fullName'] ?? 'Client')
+          : 'Client',
       companyId: json['companyId'] ?? '',
       subject: json['subject'] ?? 'Sans sujet',
       status: json['status'] ?? 'en_attente',

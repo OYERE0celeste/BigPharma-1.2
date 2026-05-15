@@ -49,7 +49,10 @@ class ProductApiService {
   // GET - Récupérer un produit par ID
   static Future<Product> getProductById(String id) async {
     final headers = await _authService.getHeaders();
-    final response = await http.get(Uri.parse('$baseUrl/$id'), headers: headers);
+    final response = await http.get(
+      Uri.parse('$baseUrl/$id'),
+      headers: headers,
+    );
 
     if (response.statusCode == 200) {
       final body = _safeDecode(response.body);
@@ -125,7 +128,10 @@ class ProductApiService {
   // DELETE - Supprimer un produit
   static Future<void> deleteProduct(String id) async {
     final headers = await _authService.getHeaders();
-    final response = await http.delete(Uri.parse('$baseUrl/$id'), headers: headers);
+    final response = await http.delete(
+      Uri.parse('$baseUrl/$id'),
+      headers: headers,
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Erreur lors de la suppression: ${response.body}');

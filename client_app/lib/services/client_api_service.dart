@@ -10,7 +10,7 @@ class ClientApiService {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(ApiConstants.tokenKey);
     if (token == null) return null;
-    
+
     return {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -32,14 +32,12 @@ class ClientApiService {
 
       final body = json.decode(response.body);
       if (response.statusCode == 200 && body['success'] == true) {
-        return {
-          'success': true,
-          'data': body['data'],
-        };
+        return {'success': true, 'data': body['data']};
       } else {
         return {
           'success': false,
-          'message': body['message'] ?? 'Erreur lors de la récupération du profil',
+          'message':
+              body['message'] ?? 'Erreur lors de la récupération du profil',
         };
       }
     } catch (e) {
@@ -63,14 +61,12 @@ class ClientApiService {
 
       final body = json.decode(response.body);
       if (response.statusCode == 200 && body['success'] == true) {
-        return {
-          'success': true,
-          'data': body['data'],
-        };
+        return {'success': true, 'data': body['data']};
       } else {
         return {
           'success': false,
-          'message': body['message'] ?? 'Erreur lors de la mise à jour du profil',
+          'message':
+              body['message'] ?? 'Erreur lors de la mise à jour du profil',
         };
       }
     } catch (e) {

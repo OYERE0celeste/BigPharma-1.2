@@ -108,6 +108,11 @@ const OrderSchema = new mongoose.Schema(
       trim: true,
       maxlength: 500,
     },
+    pickupMode: {
+      type: String,
+      enum: ["sur_place", "livraison"],
+      default: "sur_place",
+    },
     invoiceNumber: {
       type: String,
       unique: true,

@@ -58,7 +58,6 @@ class SalesApiService {
     required double tax,
     required String paymentMethod,
     required double amountReceived,
-
   }) async {
     try {
       final headers = await _authService.getHeaders();

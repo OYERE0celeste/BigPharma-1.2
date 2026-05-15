@@ -16,7 +16,11 @@ class ActivityApiService {
         final decoded = json.decode(response.body);
         final data = decoded['data'] ?? [];
         if (data is List) {
-          return data.map((item) => ActivityModel.fromJson(item as Map<String, dynamic>)).toList();
+          return data
+              .map(
+                (item) => ActivityModel.fromJson(item as Map<String, dynamic>),
+              )
+              .toList();
         }
       }
       return [];
@@ -41,7 +45,11 @@ class ActivityApiService {
         final decoded = json.decode(response.body);
         final data = decoded['data'] ?? [];
         if (data is List) {
-          return data.map((item) => ActivityModel.fromJson(item as Map<String, dynamic>)).toList();
+          return data
+              .map(
+                (item) => ActivityModel.fromJson(item as Map<String, dynamic>),
+              )
+              .toList();
         }
       }
       return [];

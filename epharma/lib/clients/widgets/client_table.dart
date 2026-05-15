@@ -57,9 +57,13 @@ class ClientsTable extends StatelessWidget {
                     cells: [
                       DataCell(Text(client.fullName)),
                       DataCell(Text(client.phone)),
-                      DataCell(Text(client.email.isNotEmpty ? client.email : '—')),
+                      DataCell(
+                        Text(client.email.isNotEmpty ? client.email : '—'),
+                      ),
                       DataCell(Text(client.totalPurchases.toString())),
-                      DataCell(Text('${client.totalSpent.toStringAsFixed(0)} FCFA')),
+                      DataCell(
+                        Text('${client.totalSpent.toStringAsFixed(0)} FCFA'),
+                      ),
                       DataCell(Text(_formatDate(client.lastVisitDate))),
                       DataCell(Text(client.loyaltyStatus.name.toUpperCase())),
                       DataCell(

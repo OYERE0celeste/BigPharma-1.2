@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../models/order_model.dart';
 import '../providers/auth_provider.dart';
@@ -59,7 +60,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    AppScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           success
@@ -92,7 +93,8 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               const SizedBox(height: 24),
               const SizedBox(height: 16),
               SizedBox(
-                height: 500, // Fixed height for table container or use ConstrainedBox
+                height:
+                    500, // Fixed height for table container or use ConstrainedBox
                 child: orderProvider.isLoading && orderProvider.orders.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : _buildOrdersList(orderProvider),
@@ -179,9 +181,15 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String?>(
                       isExpanded: true,
-                      hint: const Text('Filtrer par statut', style: TextStyle(fontSize: 14)),
+                      hint: const Text(
+                        'Filtrer par statut',
+                        style: TextStyle(fontSize: 14),
+                      ),
                       value: _selectedStatus,
-                      style: const TextStyle(color: Colors.black87, fontSize: 14),
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                      ),
                       items: [
                         const DropdownMenuItem<String?>(
                           value: null,
@@ -240,8 +248,9 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
         int crossAxisCount = 5;
         if (width < 600) {
           crossAxisCount = 2;
-        // ignore: curly_braces_in_flow_control_structures
-        } else if (width < 1000) crossAxisCount = 3;
+        } else if (width < 1000) {
+          crossAxisCount = 3;
+        }
 
         return GridView.count(
           crossAxisCount: crossAxisCount,
@@ -485,16 +494,18 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               ),
               const SizedBox(width: 4),
               ...order.availableNextStatuses
-                  .where((s) =>
-                      !(order.status == OrderStatus.validee &&
-                          s == OrderStatus.annulee))
+                  .where(
+                    (s) =>
+                        !(order.status == OrderStatus.validee &&
+                            s == OrderStatus.annulee),
+                  )
                   .map(
-                (status) => IconButton(
-                  icon: Icon(_actionIcon(status), color: status.color),
-                  tooltip: status.label,
-                  onPressed: () => _applyStatusChange(order, status),
-                ),
-              ),
+                    (status) => IconButton(
+                      icon: Icon(_actionIcon(status), color: status.color),
+                      tooltip: status.label,
+                      onPressed: () => _applyStatusChange(order, status),
+                    ),
+                  ),
             ],
           ),
         ),

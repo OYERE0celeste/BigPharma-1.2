@@ -7,7 +7,6 @@ class Product {
   final int stockQuantity;
   final String image;
 
-
   const Product({
     required this.id,
     required this.name,
@@ -16,7 +15,6 @@ class Product {
     required this.description,
     required this.stockQuantity,
     this.image = 'assets/images/placeholder.png',
-
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -28,7 +26,6 @@ class Product {
       description: (json['description'] ?? '').toString(),
       stockQuantity: ((json['stockQuantity'] ?? 0) as num).toInt(),
       image: (json['image'] ?? 'assets/images/placeholder.png').toString(),
-
     );
   }
 
@@ -41,7 +38,6 @@ class Product {
       'description': description,
       'stockQuantity': stockQuantity,
       'image': image,
-
     };
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../models/order_model.dart';
 import '../providers/auth_provider.dart';
@@ -355,7 +356,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 }
 
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
+                AppScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
                       success

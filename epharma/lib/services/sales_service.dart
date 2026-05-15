@@ -23,7 +23,6 @@ class SalesService {
     required double taxAmount,
     required String paymentMethod,
     required double amountReceived,
-
   }) {
     final invoiceNumber = 'INV-${DateTime.now().year}-${_saleCounter++}';
     final subtotal = items.fold(0.0, (sum, item) => sum + item.subtotal);
@@ -44,7 +43,6 @@ class SalesService {
       amountReceived: amountReceived,
       changeAmount: changeAmount,
       pharmacist: 'Pharmacist Name',
-
     );
 
     _salesHistory.add(sale);

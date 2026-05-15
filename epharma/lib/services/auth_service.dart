@@ -10,7 +10,9 @@ import 'api_constants.dart';
 
 class UnauthorizedException implements Exception {
   final String message;
-  UnauthorizedException([this.message = 'Session expirée. Veuillez vous reconnecter.']);
+  UnauthorizedException([
+    this.message = 'Session expirée. Veuillez vous reconnecter.',
+  ]);
   @override
   String toString() => message;
 }
@@ -80,25 +82,25 @@ class AuthService {
     String defaultMessage = 'Erreur serveur inattendue',
   }) {
     final data = _safeDecode(response);
-    
+
     if (response.statusCode == 401) {
       String msg = 'Session expirée';
       String? code;
-      
+
       if (data is Map<String, dynamic>) {
         msg = data['message']?.toString() ?? msg;
         code = data['code']?.toString();
       }
-      
+
       // Only logout for token issues, not for wrong password or other 401s
       if (code == 'INVALID_PASSWORD') {
         return msg;
       }
-      
+
       throw UnauthorizedException(msg);
     }
     if (data is Map<String, dynamic>) {
-      final message = data['message']?.toString() ?? '';
+      final message = _readErrorValue(data['message']);
       final details = data['data']?['details'];
       if (details is List) {
         final detailMessages = details
@@ -114,9 +116,39 @@ class AuthService {
         }
       }
       if (message.isNotEmpty) return message;
-      if (data['error'] != null) return data['error'].toString();
+      final error = _readErrorValue(data['error']);
+      if (error.isNotEmpty) return error;
+      final nested = data['data'];
+      if (nested is Map<String, dynamic>) {
+        final nestedMessage = _readErrorValue(
+          nested['message'] ?? nested['error'],
+        );
+        if (nestedMessage.isNotEmpty) {
+          return nestedMessage;
+        }
+      }
     }
     return '$defaultMessage (${response.statusCode})';
+  }
+
+  String _readErrorValue(dynamic value) {
+    if (value == null) {
+      return '';
+    }
+    if (value is String) {
+      return value.trim();
+    }
+    if (value is Map<String, dynamic>) {
+      final message = value['message']?.toString().trim() ?? '';
+      if (message.isNotEmpty) {
+        return message;
+      }
+      final error = value['error']?.toString().trim() ?? '';
+      if (error.isNotEmpty) {
+        return error;
+      }
+    }
+    return value.toString().trim();
   }
 
   Future<http.Response> _sendRequest(
@@ -144,12 +176,12 @@ class AuthService {
     };
   }
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String identifier, String password) async {
     final response = await _sendRequest(
       () => http.post(
         Uri.parse(ApiConstants.login),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
+        body: jsonEncode({'identifier': identifier, 'password': password}),
       ),
     );
 
@@ -257,18 +289,25 @@ class AuthService {
     required String email,
     required String phone,
     required String address,
+    String? username,
   }) async {
     final headers = await getHeaders();
+    final body = <String, dynamic>{
+      'fullName': fullName.trim(),
+      'email': email.trim().toLowerCase(),
+      'phone': phone.trim(),
+      'phoneNumber': phone.trim(),
+      'address': address.trim(),
+    };
+    if (username != null && username.trim().isNotEmpty) {
+      body['username'] = username.trim().toLowerCase();
+    }
+
     final response = await _sendRequest(
       () => http.put(
         Uri.parse(ApiConstants.me),
         headers: headers,
-        body: jsonEncode({
-          'fullName': fullName,
-          'email': email,
-          'phone': phone,
-          'address': address,
-        }),
+        body: jsonEncode(body),
       ),
     );
 
@@ -285,12 +324,12 @@ class AuthService {
     );
   }
 
-  Future<void> requestPasswordReset(String email) async {
+  Future<void> requestPasswordReset(String identifier) async {
     final response = await _sendRequest(
       () => http.post(
         Uri.parse(ApiConstants.forgotPassword),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email}),
+        body: jsonEncode({'identifier': identifier}),
       ),
     );
 
@@ -305,12 +344,12 @@ class AuthService {
     }
   }
 
-  Future<void> resetPassword(String token, String newPassword) async {
+  Future<void> resetPassword(String otp, String newPassword) async {
     final response = await _sendRequest(
       () => http.post(
         Uri.parse(ApiConstants.resetPassword),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'token': token, 'password': newPassword}),
+        body: jsonEncode({'otp': otp, 'password': newPassword}),
       ),
     );
 

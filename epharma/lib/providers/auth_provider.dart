@@ -24,10 +24,22 @@ class AuthProvider with ChangeNotifier {
       logout();
       return error.message;
     }
-    final message = error.toString();
+    var message = error.toString().trim();
     if (message.startsWith('Exception: ')) {
-      return message.substring('Exception: '.length);
+      message = message.substring('Exception: '.length).trim();
     }
+
+    final structuredMessage = RegExp(
+      r'message:\s*([^,}]+)',
+      caseSensitive: false,
+    ).firstMatch(message);
+
+    if (message.startsWith('{') &&
+        message.endsWith('}') &&
+        structuredMessage != null) {
+      return structuredMessage.group(1)?.trim() ?? message;
+    }
+
     return message;
   }
 
@@ -51,6 +63,24 @@ class AuthProvider with ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> refreshCurrentUser() async {
+    try {
+      final data = await _authService.getCurrentUser();
+      if (data != null) {
+        _user = UserModel.fromJson(data);
+        if (_company != null) {
+          await _authService.saveSessionData(
+            user: data,
+            company: _company!.toJson(),
+          );
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = _readableError(e);
     }
   }
 
@@ -131,10 +161,10 @@ class AuthProvider with ChangeNotifier {
 
     try {
       final responseData = await _authService.updateProfile(
-        fullName: fullName,
-        email: email,
-        phone: phoneNumber,
-        address: address,
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phoneNumber.trim(),
+        address: address.trim(),
       );
 
       _user = UserModel.fromJson(responseData);
@@ -148,35 +178,29 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> requestPasswordReset(String email) async {
-    _isLoading = true;
+  Future<void> requestPasswordReset(String identifier) async {
     _errorMessage = null;
     notifyListeners();
 
     try {
-      await _authService.requestPasswordReset(email);
+      await _authService.requestPasswordReset(identifier);
     } catch (e) {
       _errorMessage = _readableError(e);
-      rethrow;
-    } finally {
-      _isLoading = false;
       notifyListeners();
+      rethrow;
     }
   }
 
-  Future<void> resetPassword(String token, String newPassword) async {
-    _isLoading = true;
+  Future<void> resetPassword(String otp, String newPassword) async {
     _errorMessage = null;
     notifyListeners();
 
     try {
-      await _authService.resetPassword(token, newPassword);
+      await _authService.resetPassword(otp, newPassword);
     } catch (e) {
       _errorMessage = _readableError(e);
-      rethrow;
-    } finally {
-      _isLoading = false;
       notifyListeners();
+      rethrow;
     }
   }
 

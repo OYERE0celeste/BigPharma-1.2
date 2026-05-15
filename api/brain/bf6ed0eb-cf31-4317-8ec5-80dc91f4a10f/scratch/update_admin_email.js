@@ -9,7 +9,7 @@ async function updateAdminEmail() {
     await mongoose.connect(uri);
     
     const oldEmail = "admin@bigpharma.com";
-    const newEmail = "laflorale@gmail.com";
+    const newEmail = "laflorale8@gmail.com";
 
     const user = await User.findOne({ email: oldEmail.toLowerCase() });
     if (!user) {

@@ -131,7 +131,11 @@ function normalizePermissions(role, rawPermissions = {}) {
     return normalized;
   }
 
-  for (const [rawKey, rawValue] of Object.entries(rawPermissions)) {
+  const permissionsObject = rawPermissions instanceof Map
+    ? Object.fromEntries(rawPermissions)
+    : rawPermissions;
+
+  for (const [rawKey, rawValue] of Object.entries(permissionsObject)) {
     const enabled = rawValue === true;
     const mappedKeys = LEGACY_PERMISSION_ALIASES[rawKey] || [rawKey];
 
@@ -155,7 +159,12 @@ function sanitizePermissionInput(role, rawPermissions = {}) {
 
 function resolveUserPermissions(user) {
   if (!user) return createPermissionMap();
-  return normalizePermissions(user.role, user.permissions || {});
+
+  const rawPermissions = user.permissions instanceof Map
+    ? Object.fromEntries(user.permissions)
+    : (user.permissions || {});
+
+  return normalizePermissions(user.role, rawPermissions);
 }
 
 function hasPermission(user, permission) {

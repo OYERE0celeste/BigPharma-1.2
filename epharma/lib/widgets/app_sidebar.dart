@@ -23,10 +23,12 @@ class AppSidebar extends StatelessWidget {
     }).toList();
 
     final adminKeys = {'Finances', 'Rights', 'Users', 'Activity'};
-    final primaryEntries =
-        visibleEntries.where((entry) => !adminKeys.contains(entry.key)).toList();
-    final adminEntries =
-        visibleEntries.where((entry) => adminKeys.contains(entry.key)).toList();
+    final primaryEntries = visibleEntries
+        .where((entry) => !adminKeys.contains(entry.key))
+        .toList();
+    final adminEntries = visibleEntries
+        .where((entry) => adminKeys.contains(entry.key))
+        .toList();
 
     return Container(
       width: 240,
@@ -81,11 +83,8 @@ class AppSidebar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
                 ...primaryEntries.map(
-                  (entry) => _sidebarItem(
-                    entry.key,
-                    entry.icon,
-                    label: entry.label,
-                  ),
+                  (entry) =>
+                      _sidebarItem(entry.key, entry.icon, label: entry.label),
                 ),
                 if (adminEntries.isNotEmpty) ...[
                   const Padding(
@@ -101,30 +100,11 @@ class AppSidebar extends StatelessWidget {
                     ),
                   ),
                   ...adminEntries.map(
-                    (entry) => _sidebarItem(
-                      entry.key,
-                      entry.icon,
-                      label: entry.label,
-                    ),
+                    (entry) =>
+                        _sidebarItem(entry.key, entry.icon, label: entry.label),
                   ),
                 ],
-                const Divider(
-                  height: 40,
-                  color: Colors.black12,
-                  indent: 8,
-                  endIndent: 8,
-                ),
-                _sidebarItem('Settings', Icons.settings_outlined, label: 'Parametres'),
               ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: AppSidebarItem(
-              icon: Icons.logout_rounded,
-              label: 'Deconnexion',
-              color: Colors.redAccent.withOpacity(0.8),
-              onTap: () => authProvider.logout(),
             ),
           ),
         ],
@@ -176,7 +156,9 @@ class AppSidebarItem extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  color: selected ? activeColor : (color ?? const Color(0xFF475569)),
+                  color: selected
+                      ? activeColor
+                      : (color ?? const Color(0xFF475569)),
                   size: 22,
                 ),
                 const SizedBox(width: 12),
@@ -186,7 +168,9 @@ class AppSidebarItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                      color: selected ? activeColor : (color ?? const Color(0xFF475569)),
+                      color: selected
+                          ? activeColor
+                          : (color ?? const Color(0xFF475569)),
                     ),
                   ),
                 ),

@@ -5,6 +5,7 @@ const {
   sanitizePermissionInput,
   resolveUserPermissions,
 } = require("../utils/rolePermissions");
+const { sendStaffWelcomeEmail } = require("../utils/mailService");
 
 exports.getAllStaff = async (req, res, next) => {
   try {
@@ -28,13 +29,25 @@ exports.getAllStaff = async (req, res, next) => {
 exports.createStaff = async (req, res, next) => {
   try {
     const { fullName, email, password, role, phone, address, permissions } = req.body;
-    const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (!password || typeof password !== "string" || password.length < 8) {
+      return failure(res, {
+        status: 400,
+        message: "Password must be at least 8 characters long",
+        code: "VALIDATION_ERROR",
+      });
+    }
+
+    // Check for existing email (case-insensitive)
+    const existingUser = await User.findOne({
+      email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+    });
     if (existingUser) {
       return failure(res, {
         status: 400,
         message: "Un utilisateur avec cet email existe deja",
+        code: "EMAIL_ALREADY_IN_USE",
       });
     }
 
@@ -55,18 +68,24 @@ exports.createStaff = async (req, res, next) => {
     }
 
     const newUser = await User.create({
-      fullName,
+      fullName: fullName.trim(),
       email: normalizedEmail,
       passwordHash: password,
       role,
       companyId: req.user.companyId,
-      phone,
-      address,
+      phone: (phone || "").trim(),
+      address: (address || "").trim(),
       isActive: true,
       permissions: sanitizePermissionInput(
         role,
         permissions || getRoleDefaults(role)
       ),
+    });
+
+    await sendStaffWelcomeEmail({
+      email: normalizedEmail,
+      fullName: fullName.trim(),
+      companyName: "votre pharmacie",
     });
 
     const payload = newUser.toJSON();
@@ -85,7 +104,7 @@ exports.createStaff = async (req, res, next) => {
 exports.updateStaff = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { fullName, role, phone, address, isActive, permissions } = req.body;
+    const { fullName, email, role, phone, address, isActive, permissions } = req.body;
 
     const existingUser = await User.findOne({ _id: id, companyId: req.user.companyId });
     if (!existingUser) {
@@ -93,6 +112,26 @@ exports.updateStaff = async (req, res, next) => {
         status: 404,
         message: "Utilisateur non trouve",
       });
+    }
+
+    // Handle email update with uniqueness check
+    if (email) {
+      const normalizedEmail = email.trim().toLowerCase();
+      const currentEmail = (existingUser.email || "").toLowerCase().trim();
+
+      if (normalizedEmail !== currentEmail) {
+        const emailConflict = await User.findOne({
+          email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+          _id: { $ne: id },
+        });
+        if (emailConflict) {
+          return failure(res, {
+            status: 409,
+            message: "Un utilisateur avec cet email existe deja",
+            code: "EMAIL_ALREADY_IN_USE",
+          });
+        }
+      }
     }
 
     if (role === "assistante de gestion" || isActive === true) {
@@ -121,10 +160,17 @@ exports.updateStaff = async (req, res, next) => {
       }
     }
 
-    const updateData = { fullName, role, phone, address, isActive };
+    const updateData = {};
+    if (fullName !== undefined) updateData.fullName = fullName.trim();
+    if (email !== undefined) updateData.email = email.trim().toLowerCase();
+    if (role !== undefined) updateData.role = role;
+    if (phone !== undefined) updateData.phone = phone.trim();
+    if (address !== undefined) updateData.address = address.trim();
+    if (isActive !== undefined) updateData.isActive = isActive;
+
     const nextRole = role || existingUser.role;
 
-    if (permissions) {
+    if (permissions !== undefined) {
       updateData.permissions = sanitizePermissionInput(nextRole, permissions);
     } else if (role && role !== existingUser.role) {
       updateData.permissions = getRoleDefaults(nextRole);
@@ -145,6 +191,20 @@ exports.updateStaff = async (req, res, next) => {
 
     const payload = user.toJSON();
     payload.permissions = resolveUserPermissions(user);
+
+    if (global.io) {
+      const companyId = user.companyId?.toString?.() || req.user.companyId.toString();
+      const userId = user._id.toString();
+
+      global.io.to(companyId).emit("staff-updated", {
+        user: payload,
+        message: "Un utilisateur a ete mis a jour",
+      });
+      global.io.to(userId).emit("user-updated", {
+        user: payload,
+        message: "Vos permissions ont ete mises a jour",
+      });
+    }
 
     return success(res, { data: payload });
   } catch (error) {

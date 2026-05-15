@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:client_app/services/order_provider.dart';
+import 'complaints_page.dart';
 import 'invoice_page.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -45,16 +46,14 @@ class _OrdersPageState extends State<OrdersPage> {
     switch (status) {
       case 'en_attente':
         return Colors.orange;
-      case 'validee':
-        return Colors.blue;
       case 'en_preparation':
         return Colors.deepPurple;
-      case 'en_livraison':
+      case 'pret_pour_recuperation':
         return Colors.teal;
-      case 'livree':
-        return Colors.green;
       case 'annulee':
         return Colors.red;
+      case 'validee':
+        return Colors.green;
       default:
         return Colors.grey;
     }
@@ -184,7 +183,16 @@ class _OrdersPageState extends State<OrdersPage> {
                           ),
                         ],
                       ),
-                      if (order.status != 'annulee') ...[
+                      if (order.pickupMode.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          order.pickupMode == 'livraison'
+                              ? 'Mode: Livraison'
+                              : 'Mode: Retrait sur place',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                      if (order.hasInvoice) ...[
                         const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,
@@ -193,12 +201,13 @@ class _OrdersPageState extends State<OrdersPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => InvoicePage(order: order),
+                                  builder: (context) =>
+                                      InvoicePage(order: order),
                                 ),
                               );
                             },
                             icon: const Icon(Icons.receipt_long_rounded),
-                            label: const Text('Voir la facture / Code de retrait'),
+                            label: const Text('Voir la facture'),
                             style: FilledButton.styleFrom(
                               backgroundColor: Colors.blue[700],
                               shape: RoundedRectangleBorder(
@@ -208,6 +217,23 @@ class _OrdersPageState extends State<OrdersPage> {
                           ),
                         ),
                       ],
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ComplaintsPage(initialOrderId: order.id),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.report_problem_outlined),
+                          label: const Text('Faire une réclamation'),
+                        ),
+                      ),
                     ],
                   ),
                 );

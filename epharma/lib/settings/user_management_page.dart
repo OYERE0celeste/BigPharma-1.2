@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:epharma/widgets/app_notification.dart';
 import 'settings_theme.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -32,7 +33,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,
@@ -47,11 +48,13 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
     try {
       final newStatus = !user.isActive;
       await _authService.updateUser(user.id, {'isActive': newStatus});
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Utilisateur ${newStatus ? 'réactivé' : 'désactivé'} avec succès'),
+            content: Text(
+              'Utilisateur ${newStatus ? 'réactivé' : 'désactivé'} avec succès',
+            ),
             backgroundColor: newStatus ? kPrimaryGreen : Colors.orange,
             behavior: SnackBarBehavior.floating,
           ),
@@ -60,7 +63,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: kDangerRed,
@@ -94,19 +97,30 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   const SizedBox(height: 4),
                   Text(
                     "Gérez votre équipe et leurs comptes d'accès",
-                    style: TextStyle(color: SettingsTheme.textSecondary.withOpacity(0.8), fontSize: 14),
+                    style: TextStyle(
+                      color: SettingsTheme.textSecondary.withOpacity(0.8),
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
               ElevatedButton.icon(
                 onPressed: () => _showAddUserDialog(),
                 icon: const Icon(Icons.person_add_rounded, size: 18),
-                label: const Text("AJOUTER", style: TextStyle(fontWeight: FontWeight.bold)),
+                label: const Text(
+                  "AJOUTER",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: SettingsTheme.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -115,10 +129,14 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           const SizedBox(height: 24),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator(color: SettingsTheme.primary))
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: SettingsTheme.primary,
+                    ),
+                  )
                 : _users.isEmpty
-                    ? _buildEmptyState()
-                    : _buildUserList(),
+                ? _buildEmptyState()
+                : _buildUserList(),
           ),
         ],
       ),
@@ -134,7 +152,11 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           const SizedBox(height: 16),
           Text(
             "Aucun collaborateur",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[600],
+            ),
           ),
           const SizedBox(height: 8),
           const Text("Commencez par ajouter votre premier employé"),
@@ -163,7 +185,10 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
             ],
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 8,
+            ),
             leading: Stack(
               alignment: Alignment.bottomRight,
               children: [
@@ -171,7 +196,9 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   radius: 24,
                   backgroundColor: SettingsTheme.primary.withOpacity(0.1),
                   child: Text(
-                    user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : '?',
+                    user.fullName.isNotEmpty
+                        ? user.fullName[0].toUpperCase()
+                        : '?',
                     style: const TextStyle(
                       color: SettingsTheme.primary,
                       fontWeight: FontWeight.bold,
@@ -201,7 +228,10 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                 Expanded(
                   child: Text(
                     user.email,
-                    style: const TextStyle(fontSize: 13, color: SettingsTheme.textSecondary),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: SettingsTheme.textSecondary,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -228,7 +258,11 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       ),
       child: Text(
         role.toUpperCase(),
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: color,
+        ),
       ),
     );
   }
@@ -250,14 +284,18 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           child: Row(
             children: [
               Icon(
-                user.isActive ? Icons.block_flipped : Icons.check_circle_outline,
+                user.isActive
+                    ? Icons.block_flipped
+                    : Icons.check_circle_outline,
                 size: 18,
                 color: user.isActive ? kDangerRed : kPrimaryGreen,
               ),
               const SizedBox(width: 12),
               Text(
                 user.isActive ? "Désactiver" : "Réactiver",
-                style: TextStyle(color: user.isActive ? kDangerRed : kPrimaryGreen),
+                style: TextStyle(
+                  color: user.isActive ? kDangerRed : kPrimaryGreen,
+                ),
               ),
             ],
           ),
@@ -287,10 +325,14 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) {
           final isAssistant = role == 'assistante de gestion';
-          final hasAssistant = _users.any((u) => u.role == 'assistante de gestion' && u.isActive);
+          final hasAssistant = _users.any(
+            (u) => u.role == 'assistante de gestion' && u.isActive,
+          );
 
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             title: const Text("Nouveau collaborateur"),
             content: SingleChildScrollView(
               child: Column(
@@ -300,17 +342,27 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   const SizedBox(height: 12),
                   _buildField(emailCtrl, "Email", Icons.email_outlined),
                   const SizedBox(height: 12),
-                  _buildField(passCtrl, "Mot de passe", Icons.lock_outline, obscure: true),
+                  _buildField(
+                    passCtrl,
+                    "Mot de passe",
+                    Icons.lock_outline,
+                    obscure: true,
+                  ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value: role,
                     decoration: _inputDecoration("Rôle", Icons.badge_outlined),
-                    items: [
-                      'pharmacien',
-                      'caissier',
-                      'gestionnaire de stock',
-                      'assistante de gestion',
-                    ].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
+                    items:
+                        [
+                              'pharmacien',
+                              'caissier',
+                              'gestionnaire de stock',
+                              'assistante de gestion',
+                            ]
+                            .map(
+                              (r) => DropdownMenuItem(value: r, child: Text(r)),
+                            )
+                            .toList(),
                     onChanged: (val) => setDialogState(() => role = val!),
                   ),
                   if (isAssistant && hasAssistant)
@@ -324,12 +376,19 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 20),
+                          const Icon(
+                            Icons.warning_amber_rounded,
+                            color: Colors.red,
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               "Une assistante de gestion est déjà active.",
-                              style: TextStyle(color: Colors.red[900], fontSize: 12),
+                              style: TextStyle(
+                                color: Colors.red[900],
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ],
@@ -341,31 +400,43 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("ANNULER", style: TextStyle(color: SettingsTheme.textSecondary)),
+                child: const Text(
+                  "ANNULER",
+                  style: TextStyle(color: SettingsTheme.textSecondary),
+                ),
               ),
               ElevatedButton(
-                onPressed: (isAssistant && hasAssistant) ? null : () async {
-                  try {
-                    await _authService.createUser({
-                      'fullName': nameCtrl.text.trim(),
-                      'email': emailCtrl.text.trim(),
-                      'password': passCtrl.text,
-                      'role': role,
-                    });
-                    if (mounted) {
-                      Navigator.pop(context);
-                      _fetchUsers();
-                    }
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString().replaceAll('Exception: ', '')), backgroundColor: kDangerRed),
-                    );
-                  }
-                },
+                onPressed: (isAssistant && hasAssistant)
+                    ? null
+                    : () async {
+                        try {
+                          await _authService.createUser({
+                            'fullName': nameCtrl.text.trim(),
+                            'email': emailCtrl.text.trim(),
+                            'password': passCtrl.text,
+                            'role': role,
+                          });
+                          if (mounted) {
+                            Navigator.pop(context);
+                            _fetchUsers();
+                          }
+                        } catch (e) {
+                          AppScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e.toString().replaceAll('Exception: ', ''),
+                              ),
+                              backgroundColor: kDangerRed,
+                            ),
+                          );
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: SettingsTheme.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 child: const Text("AJOUTER"),
               ),
@@ -381,9 +452,14 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Supprimer l'utilisateur ?"),
-        content: Text("Êtes-vous sûr de vouloir supprimer ${user.fullName} ? Cette action est irréversible."),
+        content: Text(
+          "Êtes-vous sûr de vouloir supprimer ${user.fullName} ? Cette action est irréversible.",
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("ANNULER")),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("ANNULER"),
+          ),
           TextButton(
             onPressed: () async {
               try {
@@ -393,8 +469,11 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   _fetchUsers();
                 }
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(e.toString().replaceAll('Exception: ', '')), backgroundColor: kDangerRed),
+                AppScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(e.toString().replaceAll('Exception: ', '')),
+                    backgroundColor: kDangerRed,
+                  ),
                 );
               }
             },
@@ -405,7 +484,12 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
     );
   }
 
-  Widget _buildField(TextEditingController ctrl, String label, IconData icon, {bool obscure = false}) {
+  Widget _buildField(
+    TextEditingController ctrl,
+    String label,
+    IconData icon, {
+    bool obscure = false,
+  }) {
     return TextField(
       controller: ctrl,
       obscureText: obscure,
@@ -419,7 +503,10 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       prefixIcon: Icon(icon, size: 20),
       filled: true,
       fillColor: Colors.grey[50],
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }

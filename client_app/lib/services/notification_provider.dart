@@ -20,8 +20,10 @@ class NotificationProvider with ChangeNotifier {
   NotificationProvider();
 
   void update(AuthProvider auth) {
-    if (_authProvider?.token == auth.token && _authProvider?.user?.id == auth.user?.id) return;
-    
+    if (_authProvider?.token == auth.token &&
+        _authProvider?.user?.id == auth.user?.id)
+      return;
+
     _authProvider = auth;
     if (auth.isAuthenticated) {
       fetchNotifications();

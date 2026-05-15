@@ -1,23 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/services/cart_provider.dart';
-import 'package:client_app/models/product.dart';
 
-class ProductDetailPage extends StatelessWidget {
+import 'package:client_app/models/product.dart';
+import 'package:client_app/services/auth_provider.dart';
+import 'package:client_app/services/cart_provider.dart';
+import 'package:client_app/services/review_provider.dart';
+import 'package:client_app/widgets/app_notification.dart';
+import 'package:client_app/widgets/review_section.dart';
+
+class ProductDetailPage extends StatefulWidget {
   final Product product;
 
   const ProductDetailPage({super.key, required this.product});
 
   @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ReviewProvider>().loadProductReviews(widget.product.id);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final product = widget.product;
+    final reviewProvider = context.watch<ReviewProvider>();
+    final reviews = reviewProvider.reviewsForProduct(product.id);
+    final summary = reviewProvider.summaryForProduct(product.id);
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // Elegant Header with Image
           SliverAppBar(
             expandedHeight: 350,
             pinned: true,
@@ -37,22 +58,10 @@ class ProductDetailPage extends StatelessWidget {
                 ),
               ),
             ),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.favorite_border, color: Colors.red),
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
           ),
-
-          // Content
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -121,8 +130,7 @@ class ProductDetailPage extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  // Additional info cards
+                  const SizedBox(height: 24),
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -145,13 +153,19 @@ class ProductDetailPage extends StatelessWidget {
                         ),
                         _buildInfoItem(
                           Icons.local_shipping_outlined,
-                          'Livraison',
-                          '24h/48h',
+                          'Retrait',
+                          'Rapide',
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 100), // Space for bottom button
+                  const SizedBox(height: 32),
+                  ReviewSection(
+                    summary: summary,
+                    reviews: reviews,
+                    isLoading: reviewProvider.isLoading,
+                    onWriteReview: () => _showReviewDialog(context, product.id),
+                  ),
                 ],
               ),
             ),
@@ -177,7 +191,7 @@ class ProductDetailPage extends StatelessWidget {
                 onPressed: () {
                   context.read<CartProvider>().addItem(product);
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  AppScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${product.name} ajouté au panier'),
                       behavior: SnackBarBehavior.floating,
@@ -205,6 +219,145 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  Future<void> _showReviewDialog(BuildContext context, String productId) async {
+    if (!context.read<AuthProvider>().isAuthenticated) {
+      AppScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Connectez-vous pour laisser un avis après achat.'),
+        ),
+      );
+      return;
+    }
+
+    final commentController = TextEditingController();
+    final serviceController = TextEditingController();
+    int rating = 5;
+    int serviceRating = 5;
+    bool lightDissatisfaction = false;
+    bool wouldRecommend = true;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          ),
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Donner mon avis',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Note du produit'),
+                    _StarSelector(
+                      value: rating,
+                      onChanged: (value) => setModalState(() => rating = value),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text('Note du service'),
+                    _StarSelector(
+                      value: serviceRating,
+                      onChanged: (value) =>
+                          setModalState(() => serviceRating = value),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: commentController,
+                      minLines: 3,
+                      maxLines: 4,
+                      decoration: const InputDecoration(
+                        labelText: 'Commentaire sur le produit',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: serviceController,
+                      minLines: 2,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: 'Retour sur la qualité du service',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: lightDissatisfaction,
+                      title: const Text('Signaler une insatisfaction légère'),
+                      onChanged: (value) =>
+                          setModalState(() => lightDissatisfaction = value),
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: wouldRecommend,
+                      title: const Text('Je recommanderais ce produit'),
+                      onChanged: (value) =>
+                          setModalState(() => wouldRecommend = value),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: () async {
+                          try {
+                            await context.read<ReviewProvider>().submitReview(
+                              productId: productId,
+                              rating: rating,
+                              comment: commentController.text.trim(),
+                              serviceRating: serviceRating,
+                              serviceComment: serviceController.text.trim(),
+                              dissatisfactionLevel: lightDissatisfaction
+                                  ? 'legere'
+                                  : 'aucune',
+                              wouldRecommend: wouldRecommend,
+                            );
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            AppScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Merci, votre avis a été envoyé.',
+                                ),
+                              ),
+                            );
+                          } catch (e) {
+                            if (!mounted) return;
+                            AppScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        },
+                        child: const Text('Envoyer mon avis'),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildInfoItem(IconData icon, String label, String value) {
     return Column(
       children: [
@@ -213,6 +366,29 @@ class ProductDetailPage extends StatelessWidget {
         Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
       ],
+    );
+  }
+}
+
+class _StarSelector extends StatelessWidget {
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  const _StarSelector({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: List.generate(
+        5,
+        (index) => IconButton(
+          onPressed: () => onChanged(index + 1),
+          icon: Icon(
+            index < value ? Icons.star_rounded : Icons.star_border_rounded,
+            color: Colors.amber,
+          ),
+        ),
+      ),
     );
   }
 }

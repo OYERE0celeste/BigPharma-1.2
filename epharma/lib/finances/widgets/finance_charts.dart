@@ -58,8 +58,9 @@ class FinanceCharts extends StatelessWidget {
                               getTitlesWidget: (value, meta) {
                                 if (value.toInt() >= 0 &&
                                     value.toInt() < chartData.length) {
-                                  final date = chartData[value.toInt()]['date']
-                                      as DateTime;
+                                  final date =
+                                      chartData[value.toInt()]['date']
+                                          as DateTime;
                                   return Text(DateFormat('dd/MM').format(date));
                                 }
                                 return const Text('');
@@ -70,9 +71,7 @@ class FinanceCharts extends StatelessWidget {
                             sideTitles: SideTitles(
                               showTitles: true,
                               getTitlesWidget: (value, meta) {
-                                return Text(
-                                  FinanceService.formatAmount(value),
-                                );
+                                return Text(FinanceService.formatAmount(value));
                               },
                             ),
                           ),

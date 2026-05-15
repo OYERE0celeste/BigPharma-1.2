@@ -22,7 +22,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["order", "support", "stock", "system"],
+      enum: ["order", "support", "stock", "system", "invoice", "review", "complaint"],
       default: "system",
     },
     data: {
@@ -38,4 +38,3 @@ const notificationSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.models.Notification || mongoose.model("Notification", notificationSchema);
-

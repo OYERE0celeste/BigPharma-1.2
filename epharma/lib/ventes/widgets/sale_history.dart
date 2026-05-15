@@ -116,9 +116,7 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
                       DataCell(Text(sale.invoiceNumber)),
                       DataCell(
                         Text(
-                          DateFormat(
-                            'dd/MM/yyyy HH:mm',
-                          ).format(sale.dateTime),
+                          DateFormat('dd/MM/yyyy HH:mm').format(sale.dateTime),
                         ),
                       ),
                       DataCell(
