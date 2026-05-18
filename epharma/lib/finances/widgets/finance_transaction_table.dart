@@ -51,12 +51,26 @@ class FinanceTransactionTable extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              sortColumnIndex: sortColumnIndex,
-              sortAscending: sortAscending,
-              columns: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: DataTable(
+                    sortColumnIndex: sortColumnIndex,
+                    sortAscending: sortAscending,
+                    headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                    columnSpacing: 24,
+                    horizontalMargin: 24,
+                    dataRowMinHeight: 56,
+                    dataRowMaxHeight: 64,
+                    headingRowHeight: 56,
+                    headingTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    columns: [
                 DataColumn(label: const Text('Date'), onSort: onSort),
                 DataColumn(label: const Text('Type'), onSort: onSort),
                 DataColumn(label: const Text('Référence'), onSort: onSort),
@@ -121,7 +135,10 @@ class FinanceTransactionTable extends StatelessWidget {
               }).toList(),
             ),
           ),
-          _PaginationControls(
+        );
+      },
+    ),
+    _PaginationControls(
             totalCount: transactions.length,
             currentPage: currentPage,
             rowsPerPage: rowsPerPage,

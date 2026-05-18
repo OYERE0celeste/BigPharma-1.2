@@ -22,6 +22,23 @@ const OrderProductSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
+    allowSubstitution: {
+      type: Boolean,
+      default: false,
+    },
+    substitutedWith: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      default: null,
+    },
+    substitutedName: {
+      type: String,
+      default: null,
+    },
+    originalPrice: {
+      type: Number,
+      default: null,
+    },
   },
   { _id: false }
 );

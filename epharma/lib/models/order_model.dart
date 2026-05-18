@@ -66,15 +66,24 @@ class OrderItem {
   final String name;
   final double price;
   final int quantity;
+  final bool allowSubstitution;
+  final String? substitutedWith;
+  final String? substitutedName;
+  final double? originalPrice;
 
   const OrderItem({
     required this.productId,
     required this.name,
     required this.price,
     required this.quantity,
+    this.allowSubstitution = false,
+    this.substitutedWith,
+    this.substitutedName,
+    this.originalPrice,
   });
 
   double get subtotal => price * quantity;
+  bool get wasSubstituted => substitutedWith != null;
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     final product = json['productId'] ?? json['product'];
@@ -87,6 +96,12 @@ class OrderItem {
       name: (json['name'] ?? '').toString(),
       price: (json['price'] ?? 0).toDouble(),
       quantity: ((json['quantity'] ?? 0) as num).toInt(),
+      allowSubstitution: json['allowSubstitution'] == true,
+      substitutedWith: json['substitutedWith']?.toString(),
+      substitutedName: json['substitutedName']?.toString(),
+      originalPrice: json['originalPrice'] != null
+          ? (json['originalPrice'] as num).toDouble()
+          : null,
     );
   }
 }

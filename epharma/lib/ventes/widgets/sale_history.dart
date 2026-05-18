@@ -2,6 +2,9 @@ import 'package:epharma/models/sale_model.dart';
 import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
+import '../../ventes/services/sales_api_service.dart';
+import 'package:epharma/widgets/app_notification.dart';
 
 class SaleHistoryTable extends StatefulWidget {
   final List<Sale> sales;
@@ -94,52 +97,127 @@ class _SaleHistoryTableState extends State<SaleHistoryTable> {
             ],
           ),
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(8),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade200),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(Colors.grey.shade100),
-                columns: const [
-                  DataColumn(label: Text('Facture')),
-                  DataColumn(label: Text('Date & Heure')),
-                  DataColumn(label: Text('Total'), numeric: true),
-                  DataColumn(label: Text('Mode de paiement')),
-                  DataColumn(label: Text('Pharmacien')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: _filteredSales.map((sale) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(sale.invoiceNumber)),
-                      DataCell(
-                        Text(
-                          DateFormat('dd/MM/yyyy HH:mm').format(sale.dateTime),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                      child: DataTable(
+                        headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                        columnSpacing: 24,
+                        horizontalMargin: 24,
+                        dataRowMinHeight: 56,
+                        dataRowMaxHeight: 64,
+                        headingRowHeight: 56,
+                        headingTextStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
+                        columns: const [
+                          DataColumn(label: Text('Facture')),
+                          DataColumn(label: Text('Date & Heure')),
+                          DataColumn(label: Text('Total'), numeric: true),
+                          DataColumn(label: Text('Mode de paiement')),
+                          DataColumn(label: Text('Pharmacien')),
+                          DataColumn(label: Text('Actions')),
+                        ],
+                        rows: _filteredSales.map((sale) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(sale.invoiceNumber, style: const TextStyle(fontWeight: FontWeight.bold))),
+                              DataCell(
+                                Text(
+                                  DateFormat('dd/MM/yyyy HH:mm').format(sale.dateTime),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  '${sale.totalAmount.toStringAsFixed(0)} FCFA',
+                                  style: const TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              DataCell(Text(sale.paymentMethod)),
+                              DataCell(Text(sale.pharmacist)),
+                              DataCell(
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Tooltip(
+                                      message: 'Imprimer le ticket',
+                                      child: IconButton(
+                                        icon: const Icon(Icons.print, size: 20),
+                                        color: kPrimaryGreen,
+                                        onPressed: () async {
+                                          try {
+                                            final bytes = await SalesApiService.fetchReceiptPdf(sale.id);
+                                            if (bytes != null) {
+                                              await Printing.layoutPdf(onLayout: (_) async => bytes);
+                                            } else {
+                                              if (context.mounted) {
+                                                AppScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Impossible de récupérer le reçu.')),
+                                                );
+                                              }
+                                            }
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              AppScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Erreur lors de l\'impression.')),
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    Tooltip(
+                                      message: 'Télécharger',
+                                      child: IconButton(
+                                        icon: const Icon(Icons.download, size: 20),
+                                        color: kSoftBlue,
+                                        onPressed: () async {
+                                          try {
+                                            final bytes = await SalesApiService.fetchReceiptPdf(sale.id);
+                                            if (bytes != null) {
+                                              await Printing.sharePdf(
+                                                bytes: bytes,
+                                                filename: '${sale.invoiceNumber}.pdf',
+                                              );
+                                            } else {
+                                              if (context.mounted) {
+                                                AppScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Impossible de télécharger le reçu.')),
+                                                );
+                                              }
+                                            }
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              AppScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Erreur lors du téléchargement.')),
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ),
-                      DataCell(
-                        Text(
-                          '${sale.totalAmount.toStringAsFixed(0)} FCFA',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      DataCell(Text(sale.paymentMethod)),
-                      DataCell(Text(sale.pharmacist)),
-                      DataCell(
-                        Tooltip(
-                          message: 'Voir les détails',
-                          child: Icon(
-                            Icons.visibility,
-                            size: 16,
-                            color: kPrimaryGreen,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   );
-                }).toList(),
+                },
               ),
             ),
           ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:provider/provider.dart';
 import 'package:client_app/services/cart_provider.dart';
@@ -5,18 +7,16 @@ import 'package:client_app/widgets/app_notification.dart';
 import 'package:client_app/widgets/index.dart';
 import 'package:client_app/services/product_service.dart';
 import 'package:client_app/models/product.dart';
-import 'product_detail_page.dart';
 import 'cart_page.dart';
 import 'package:client_app/pages/login_page.dart';
 import 'package:client_app/services/auth_provider.dart';
-import 'support_page.dart';
 import 'package:client_app/widgets/settings_dialog.dart';
 import 'package:client_app/services/notification_provider.dart';
 import 'package:client_app/widgets/notification_panel.dart';
-import 'profile_page.dart';
-import 'complaints_page.dart';
 import 'invoices_page.dart';
-import 'reviews_page.dart';
+import 'relation_client_page.dart';
+import 'package:client_app/widgets/telegram_page_route.dart';
+import 'package:client_app/widgets/product_details_bottom_sheet.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +29,23 @@ class _HomePageState extends State<HomePage> {
   final ProductService _productService = ProductService();
   late Future<List<Product>> _popularProductsFuture;
   late Future<List<Product>> _newProductsFuture;
+  final List<String> _categories = [
+    'Tout',
+    'Dermo-cosmétique (Soins du visage)',
+    'Hygiène Corporelle',
+    'Soins Capillaires',
+    'Santé Bucco-dentaire',
+    'Maternité et Bébé',
+    'Compléments Alimentaires et Vitamines',
+    'Premiers Secours et Bobologie',
+    'Protection Solaire',
+    'Diététique et Phytothérapie',
+    'Orthopédie et Contention Légère',
+  ];
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _searchDebounce;
+  String _searchQuery = '';
+  String _selectedCategory = 'Tout';
 
   @override
   void initState() {
@@ -37,10 +54,41 @@ class _HomePageState extends State<HomePage> {
     _newProductsFuture = _productService.getNewProducts();
   }
 
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _scheduleFilterUpdate() {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 300), _updateFilters);
+  }
+
+  void _updateFilters() {
+    setState(() {
+      _popularProductsFuture = _productService.getPopularProducts(
+        search: _searchQuery,
+        category: _selectedCategory,
+      );
+      _newProductsFuture = _productService.getNewProducts(
+        search: _searchQuery,
+        category: _selectedCategory,
+      );
+    });
+  }
+
   void _refreshData() {
     setState(() {
-      _popularProductsFuture = _productService.getPopularProducts();
-      _newProductsFuture = _productService.getNewProducts();
+      _popularProductsFuture = _productService.getPopularProducts(
+        search: _searchQuery,
+        category: _selectedCategory,
+      );
+      _newProductsFuture = _productService.getNewProducts(
+        search: _searchQuery,
+        category: _selectedCategory,
+      );
     });
   }
 
@@ -63,6 +111,38 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(width: 10),
             const Text('BigPharma'),
+            const SizedBox(width: 8),
+            Consumer<NotificationProvider>(
+              builder: (context, notifProv, _) {
+                final isConnected = notifProv.isSocketConnected;
+                return Tooltip(
+                  message: isConnected
+                      ? 'Live Sync Connecté'
+                      : 'Mode Offline Actif',
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: isConnected
+                          ? const Color(0xFF00E676)
+                          : const Color(0xFFFF1744),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              (isConnected
+                                      ? const Color(0xFF00E676)
+                                      : const Color(0xFFFF1744))
+                                  .withOpacity(0.5),
+                          blurRadius: isConnected ? 6 : 2,
+                          spreadRadius: isConnected ? 2 : 0,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
         actions: [
@@ -114,43 +194,8 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 onSelected: (value) async {
-                  if (value == 'profile') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProfilePage(),
-                      ),
-                    );
-                  } else if (value == 'settings') {
+                  if (value == 'settings') {
                     SettingsDialog.show(context);
-                  } else if (value == 'support') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ClientSupportPage(),
-                      ),
-                    );
-                  } else if (value == 'invoices') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const InvoicesPage(),
-                      ),
-                    );
-                  } else if (value == 'reviews') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ReviewsPage(),
-                      ),
-                    );
-                  } else if (value == 'complaints') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ComplaintsPage(),
-                      ),
-                    );
                   } else if (value == 'logout') {
                     final logout = await showDialog<bool>(
                       context: context,
@@ -178,24 +223,12 @@ class _HomePageState extends State<HomePage> {
                   } else if (value == 'login') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
+                      TelegramPageRoute(child: const LoginPage()),
                     );
                   }
                 },
                 itemBuilder: (context) => auth.isAuthenticated
                     ? [
-                        PopupMenuItem(
-                          value: 'profile',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.person_outline_rounded, size: 20),
-                              SizedBox(width: 12),
-                              Text('Mon profil'),
-                            ],
-                          ),
-                        ),
                         PopupMenuItem(
                           value: 'settings',
                           child: Row(
@@ -203,46 +236,6 @@ class _HomePageState extends State<HomePage> {
                               Icon(Icons.settings_outlined, size: 20),
                               SizedBox(width: 12),
                               Text('Paramètres'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'invoices',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.receipt_long_outlined, size: 20),
-                              SizedBox(width: 12),
-                              Text('Mes factures'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'reviews',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.star_outline_rounded, size: 20),
-                              SizedBox(width: 12),
-                              Text('Mes avis'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'complaints',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.report_problem_outlined, size: 20),
-                              SizedBox(width: 12),
-                              Text('Mes réclamations'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'support',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.chat_bubble_outline_rounded, size: 20),
-                              SizedBox(width: 12),
-                              Text('Poser une question'),
                             ],
                           ),
                         ),
@@ -367,7 +360,49 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchBar(primary: primary),
+                      Consumer<AuthProvider>(
+                        builder: (context, auth, _) {
+                          final name =
+                              auth.user?.fullName.split(' ').first ??
+                              'Pharmacien';
+                          final hour = DateTime.now().hour;
+                          final greeting = hour < 12
+                              ? 'Bonjour'
+                              : hour < 18
+                              ? 'Bon après-midi'
+                              : 'Bonsoir';
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$greeting, $name !',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'Recherchez un médicament ou parcourez vos favoris.',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 18),
+                            ],
+                          );
+                        },
+                      ),
+                      SearchBar(
+                        primary: primary,
+                        controller: _searchController,
+                        onChanged: (value) {
+                          _searchQuery = value;
+                          _scheduleFilterUpdate();
+                        },
+                      ),
                       const SizedBox(height: 24),
                       SectionTitle(
                         title: 'Catégories',
@@ -377,24 +412,22 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 12),
                       SizedBox(
                         height: 50,
-                        child: ListView(
+                        child: ListView.separated(
                           scrollDirection: Axis.horizontal,
-                          children: [
-                            CategoryChip(label: 'Tout', onTap: () {}),
-                            const SizedBox(width: 8),
-                            CategoryChip(label: 'Analgésique', onTap: () {}),
-                            const SizedBox(width: 8),
-                            CategoryChip(label: 'Antibiotique', onTap: () {}),
-                            const SizedBox(width: 8),
-                            CategoryChip(
-                              label: 'Anti-inflammatoire',
-                              onTap: () {},
-                            ),
-                            const SizedBox(width: 8),
-                            CategoryChip(label: 'Sirop', onTap: () {}),
-                            const SizedBox(width: 8),
-                            CategoryChip(label: 'Vitamines', onTap: () {}),
-                          ],
+                          itemCount: _categories.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 8),
+                          itemBuilder: (context, index) {
+                            final category = _categories[index];
+                            return CategoryChip(
+                              label: category,
+                              isSelected: _selectedCategory == category,
+                              onTap: () {
+                                setState(() => _selectedCategory = category);
+                                _updateFilters();
+                              },
+                            );
+                          },
                         ),
                       ),
 
@@ -434,7 +467,11 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisCount: crossAxisCount,
                                   mainAxisSpacing: 12,
                                   crossAxisSpacing: 12,
-                                  childAspectRatio: isDesktop ? 0.86 : 0.8,
+                                  childAspectRatio: isDesktop
+                                      ? 0.86
+                                      : isTablet
+                                      ? 0.82
+                                      : 0.74,
                                 ),
                             itemBuilder: (_, int index) {
                               return ProductCard(
@@ -450,17 +487,14 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       duration: const Duration(seconds: 1),
                                       behavior: SnackBarBehavior.floating,
+                                      backgroundColor: primary,
                                     ),
                                   );
                                 },
                                 onDetailsTap: () {
-                                  Navigator.push(
+                                  ProductDetailsBottomSheet.show(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProductDetailPage(
-                                        product: products[index],
-                                      ),
-                                    ),
+                                    products[index],
                                   );
                                 },
                               );
@@ -476,7 +510,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
-                        height: 280,
+                        height: isDesktop ? 280 : 300,
                         child: FutureBuilder<List<Product>>(
                           future: _newProductsFuture,
                           builder: (context, snapshot) {
@@ -516,14 +550,9 @@ class _HomePageState extends State<HomePage> {
                                       );
                                     },
                                     onDetailsTap: () {
-                                      Navigator.push(
+                                      ProductDetailsBottomSheet.show(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ProductDetailPage(
-                                                product: products[index],
-                                              ),
-                                        ),
+                                        products[index],
                                       );
                                     },
                                   ),
@@ -555,44 +584,6 @@ class _HomePageState extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 28),
-                      SectionTitle(title: 'Support & Questions'),
-                      const SizedBox(height: 12),
-                      Card(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          side: BorderSide(color: Colors.grey[200]!),
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ClientSupportPage(),
-                              ),
-                            );
-                          },
-                          leading: CircleAvatar(
-                            backgroundColor: primary.withOpacity(0.1),
-                            child: Icon(
-                              Icons.chat_bubble_outline_rounded,
-                              color: primary,
-                            ),
-                          ),
-                          title: const Text(
-                            'Poser une question',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: const Text(
-                            'Discutez avec nos pharmaciens pour vos besoins',
-                          ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
                           ),
                         ),
                       ),
@@ -640,29 +631,24 @@ class _HomePageState extends State<HomePage> {
                   if (type == 'support') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const ClientSupportPage(),
+                      TelegramPageRoute(
+                        child: const RelationClientPage(initialIndex: 0),
                       ),
                     );
                   } else if (type == 'invoice') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const InvoicesPage(),
-                      ),
-                    );
+                    InvoicesDialog.show(context);
                   } else if (type == 'review') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const ReviewsPage(),
+                      TelegramPageRoute(
+                        child: const RelationClientPage(initialIndex: 1),
                       ),
                     );
                   } else if (type == 'complaint') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const ComplaintsPage(),
+                      TelegramPageRoute(
+                        child: const RelationClientPage(initialIndex: 2),
                       ),
                     );
                   } else if (type == 'order') {

@@ -196,66 +196,130 @@ function toInvoicePayload(invoice) {
 
 function buildInvoicePdfBuffer(invoice) {
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ margin: 40 });
+    // Thermal receipt size: ~80mm wide (approx 226 points), height can be long
+    const doc = new PDFDocument({ size: [250, 800], margin: 15 });
     const chunks = [];
 
     doc.on("data", (chunk) => chunks.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
-    doc.fontSize(22).text("Facture client", { align: "center" });
-    doc.moveDown();
-    doc.fontSize(11).text(`Numero: ${invoice.invoiceNumber}`);
-    doc.text(`Commande: ${invoice.orderNumber}`);
-    doc.text(`Date: ${new Date(invoice.invoiceDate).toLocaleString("fr-FR")}`);
-    doc.text(`Paiement: ${PAYMENT_STATUS_LABELS[invoice.paymentStatus] || invoice.paymentStatus}`);
-    doc.text(`Statut commande: ${ORDER_STATUS_LABELS[invoice.orderStatus] || invoice.orderStatus}`);
-    doc.text(`Retrait: ${invoice.pickupMode === "livraison" ? "Livraison" : "Sur place"}`);
+    doc.font("Courier");
+    const phName = invoice.pharmacySnapshot?.name || "PHARMACIE LA FLORALE";
+    const phPhone = invoice.pharmacySnapshot?.phone || "06 857 57 84";
 
-    if (invoice.collectionCode) {
-      doc.text(`Code de retrait: ${invoice.collectionCode}`);
-    }
-
-    doc.moveDown();
-    doc.fontSize(14).text("Pharmacie");
-    doc.fontSize(11).text(invoice.pharmacySnapshot?.name || "");
-    doc.text(invoice.pharmacySnapshot?.address || "");
-    if (invoice.pharmacySnapshot?.city || invoice.pharmacySnapshot?.country) {
-      doc.text(
-        [invoice.pharmacySnapshot?.city, invoice.pharmacySnapshot?.country].filter(Boolean).join(", ")
-      );
-    }
-    doc.text(invoice.pharmacySnapshot?.phone || "");
-    doc.text(invoice.pharmacySnapshot?.email || "");
-
-    doc.moveDown();
-    doc.fontSize(14).text("Client");
-    doc.fontSize(11).text(invoice.clientSnapshot?.fullName || "");
-    doc.text(invoice.clientSnapshot?.address || "");
-    doc.text(invoice.clientSnapshot?.phone || "");
-    doc.text(invoice.clientSnapshot?.email || "");
-
-    doc.moveDown();
-    doc.fontSize(14).text("Articles");
+    doc.fontSize(10).font("Courier-Bold").text(phName, { align: "center" });
+    doc.fontSize(9).font("Courier").text(`TEL : ${phPhone}`, { align: "center" });
+    doc.text("Dr Flora ONDELE", { align: "center" });
     doc.moveDown(0.5);
+
+    const invoiceDate = new Date(invoice.invoiceDate);
+    const dateOptions = { day: '2-digit', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' };
+    let dateStr = invoiceDate.toLocaleDateString("fr-FR", dateOptions).replace(',', '');
+    
+    const clientName = invoice.clientSnapshot?.fullName || "CLIENT";
+    doc.text(`OP: ${clientName.substring(0, 10).toUpperCase()} le ${dateStr}`);
+    doc.text(`Bon de livraison  Caisse 1`);
+    doc.text("------------------------------------");
+    doc.text(`Facture N ${invoice.invoiceNumber} du ${invoiceDate.toLocaleDateString("fr-FR")}`);
+    doc.moveDown(0.5);
+
+    doc.text("Désign.    Prix  Qte %rem. Montant");
     (invoice.items || []).forEach((item) => {
-      doc
-        .fontSize(11)
-        .text(
-          `${item.name} - ${item.quantity} x ${item.unitPrice.toFixed(0)} FCFA = ${item.totalPrice.toFixed(0)} FCFA`
-        );
+      doc.text(item.name.substring(0, 36));
+      const price = item.unitPrice.toFixed(0);
+      const qty = item.quantity.toString().padStart(2, '0');
+      const total = item.totalPrice.toFixed(0);
+      const lineStr = `           ${price} x ${qty}       ${total}`;
+      doc.text(lineStr);
     });
 
+    doc.moveDown(0.5);
+    const totalAmount = invoice.totalAmount.toFixed(0);
+    doc.text(`Total:     ${totalAmount} Assur :          0 F`);
+    doc.text("------------------------------------");
+    const eur = (invoice.totalAmount / 655.957).toFixed(2);
+    doc.text(`Total ticket: ${totalAmount} FCFA (${eur} Euros)`);
+    doc.text(`Encaiss :          0 F`);
+    doc.text(`A recevoir:     ${totalAmount} F`);
+    doc.text("===");
+    doc.text("|||||| |||||||||| |||||||| ||| |||||", { align: "center" });
+    doc.text(`*${invoice.invoiceNumber}*`, { align: "center" });
+
     doc.moveDown();
-    doc.fontSize(14).text(`Total: ${invoice.totalAmount.toFixed(0)} FCFA`, { align: "right" });
+    doc.text("MERCI ET PROMPTE GUERISON", { align: "center" });
+    doc.text("Les produits achetés ne sont ni repris ni", { align: "center" });
+    doc.text("echanges", { align: "center" });
+
+    doc.end();
+  });
+}
+
+function buildReceiptPdfBuffer(sale, company) {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ size: [250, 800], margin: 15 });
+    const chunks = [];
+
+    doc.on("data", (chunk) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+
+    doc.font("Courier");
+    const phName = company?.name || "PHARMACIE LA FLORALE";
+    const phPhone = company?.phone || "06 857 57 84";
+
+    doc.fontSize(10).font("Courier-Bold").text(phName, { align: "center" });
+    doc.fontSize(9).font("Courier").text(`TEL : ${phPhone}`, { align: "center" });
+    doc.text("Dr Flora ONDELE", { align: "center" });
+    doc.moveDown(0.5);
+
+    const saleDate = new Date(sale.createdAt || Date.now());
+    const dateOptions = { day: '2-digit', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' };
+    let dateStr = saleDate.toLocaleDateString("fr-FR", dateOptions).replace(',', '');
+    
+    const opName = sale.pharmacist || "NELLE";
+    doc.text(`OP: ${opName.substring(0, 10).toUpperCase()} le ${dateStr}`);
+    doc.text(`Bon de livraison  Caisse 1`);
+    doc.text("------------------------------------");
+    doc.text(`Facture N ${sale.invoiceNumber} du ${saleDate.toLocaleDateString("fr-FR")}`);
+    doc.moveDown(0.5);
+
+    doc.text("Désign.    Prix  Qte %rem. Montant");
+    (sale.items || []).forEach((item) => {
+      const name = item.product?.name || item.productName || "Produit";
+      doc.text(name.substring(0, 36));
+      const price = (item.unitPrice || 0).toFixed(0);
+      const qty = (item.quantity || 1).toString().padStart(2, '0');
+      const total = (item.total || item.unitPrice * item.quantity || 0).toFixed(0);
+      const lineStr = `           ${price} x ${qty}       ${total}`;
+      doc.text(lineStr);
+    });
+
+    doc.moveDown(0.5);
+    const totalAmount = (sale.total || 0).toFixed(0);
+    doc.text(`Total:     ${totalAmount} Assur :          0 F`);
+    doc.text("------------------------------------");
+    const eur = ((sale.total || 0) / 655.957).toFixed(2);
+    doc.text(`Total ticket: ${totalAmount} FCFA (${eur} Euros)`);
+    const amountReceived = (sale.amountReceived || sale.total || 0).toFixed(0);
+    doc.text(`Encaiss :     ${amountReceived} F`);
+    doc.text(`A rendre:     ${(Math.max(0, (sale.amountReceived || sale.total) - sale.total)).toFixed(0)} F`);
+    doc.text("===");
+    doc.text("|||||| |||||||||| |||||||| ||| |||||", { align: "center" });
+    doc.text(`*${sale.invoiceNumber}*`, { align: "center" });
+
     doc.moveDown();
-    doc.fontSize(10).fillColor("gray").text("Document genere par BigPharma", { align: "center" });
+    doc.text("MERCI ET PROMPTE GUERISON", { align: "center" });
+    doc.text("Les produits achetés ne sont ni repris ni", { align: "center" });
+    doc.text("echanges", { align: "center" });
+
     doc.end();
   });
 }
 
 module.exports = {
   buildInvoicePdfBuffer,
+  buildReceiptPdfBuffer,
   createInvoiceFromOrder,
   generateInvoiceNumber,
   isOrderInvoiceable,

@@ -20,15 +20,24 @@ class OrderItem {
   final String name;
   final double price;
   final int quantity;
+  final bool allowSubstitution;
+  final String? substitutedWith;
+  final String? substitutedName;
+  final double? originalPrice;
 
   const OrderItem({
     required this.productId,
     required this.name,
     required this.price,
     required this.quantity,
+    this.allowSubstitution = false,
+    this.substitutedWith,
+    this.substitutedName,
+    this.originalPrice,
   });
 
   double get subtotal => price * quantity;
+  bool get wasSubstituted => substitutedWith != null;
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     final product = json['productId'] ?? json['product'];
@@ -41,11 +50,34 @@ class OrderItem {
       name: (json['name'] ?? '').toString(),
       price: ((json['price'] ?? 0) as num).toDouble(),
       quantity: ((json['quantity'] ?? 0) as num).toInt(),
+      allowSubstitution: json['allowSubstitution'] == true,
+      substitutedWith: json['substitutedWith']?.toString(),
+      substitutedName: json['substitutedName']?.toString(),
+      originalPrice: json['originalPrice'] != null
+          ? (json['originalPrice'] as num).toDouble()
+          : null,
+    );
+  }
+
+  OrderItem copyWith({bool? allowSubstitution}) {
+    return OrderItem(
+      productId: productId,
+      name: name,
+      price: price,
+      quantity: quantity,
+      allowSubstitution: allowSubstitution ?? this.allowSubstitution,
+      substitutedWith: substitutedWith,
+      substitutedName: substitutedName,
+      originalPrice: originalPrice,
     );
   }
 
   Map<String, dynamic> toRequestJson() {
-    return {'productId': productId, 'quantity': quantity};
+    return {
+      'productId': productId,
+      'quantity': quantity,
+      'allowSubstitution': allowSubstitution,
+    };
   }
 }
 
@@ -85,6 +117,7 @@ class Order {
   String get statusLabel => orderStatusLabel(status);
   bool get isTerminal => status == 'validee' || status == 'annulee';
   bool get hasInvoice => (invoiceNumber ?? '').trim().isNotEmpty;
+  bool get hasSubstitutions => items.any((i) => i.wasSubstituted);
 
   factory Order.fromJson(Map<String, dynamic> json) {
     final user = json['userId'];

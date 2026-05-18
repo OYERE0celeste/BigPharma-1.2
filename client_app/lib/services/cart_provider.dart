@@ -7,17 +7,20 @@ import '../models/product.dart';
 class CartItem {
   final Product product;
   int quantity;
+  bool allowSubstitution;
 
-  CartItem({required this.product, this.quantity = 1});
+  CartItem({required this.product, this.quantity = 1, this.allowSubstitution = false});
 
   Map<String, dynamic> toJson() => {
     'product': product.toJson(),
     'quantity': quantity,
+    'allowSubstitution': allowSubstitution,
   };
 
   factory CartItem.fromJson(Map<String, dynamic> json) => CartItem(
     product: Product.fromJson(json['product'] as Map<String, dynamic>),
     quantity: json['quantity'] ?? 1,
+    allowSubstitution: json['allowSubstitution'] == true,
   );
 }
 
@@ -38,6 +41,7 @@ class CartProvider extends ChangeNotifier {
           name: item.product.name,
           price: item.product.sellingPrice,
           quantity: item.quantity,
+          allowSubstitution: item.allowSubstitution,
         ),
       )
       .toList();
@@ -83,6 +87,20 @@ class CartProvider extends ChangeNotifier {
       _items[index].quantity = quantity;
     }
 
+    _saveAndNotify();
+  }
+
+  void toggleSubstitution(String productId) {
+    final index = _items.indexWhere((item) => item.product.id == productId);
+    if (index == -1) return;
+    _items[index].allowSubstitution = !_items[index].allowSubstitution;
+    _saveAndNotify();
+  }
+
+  void setAllSubstitution(bool allow) {
+    for (final item in _items) {
+      item.allowSubstitution = allow;
+    }
     _saveAndNotify();
   }
 

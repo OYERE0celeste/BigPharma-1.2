@@ -5,15 +5,30 @@ import 'package:provider/provider.dart';
 import '../services/invoice_provider.dart';
 import '../models/invoice.dart';
 import 'invoice_page.dart';
+import '../widgets/telegram_page_route.dart';
+import '../widgets/settings_dialog.dart';
 
-class InvoicesPage extends StatefulWidget {
-  const InvoicesPage({super.key});
+class InvoicesDialog extends StatelessWidget {
+  const InvoicesDialog({super.key});
+
+  static void show(BuildContext context) {
+    SettingsDialog.show(context, initialView: 'invoices');
+  }
 
   @override
-  State<InvoicesPage> createState() => _InvoicesPageState();
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
+  }
 }
 
-class _InvoicesPageState extends State<InvoicesPage> {
+class InvoicesView extends StatefulWidget {
+  const InvoicesView({super.key});
+
+  @override
+  State<InvoicesView> createState() => _InvoicesViewState();
+}
+
+class _InvoicesViewState extends State<InvoicesView> {
   String? _paymentStatus;
   DateTime? _startDate;
   DateTime? _endDate;
@@ -58,36 +73,69 @@ class _InvoicesPageState extends State<InvoicesPage> {
   Widget build(BuildContext context) {
     final provider = context.watch<InvoiceProvider>();
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('Historique des factures'),
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _reload,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            _buildFilters(),
-            const SizedBox(height: 16),
-            if (provider.isLoading && provider.invoices.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 120),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (provider.invoices.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 120),
-                child: Center(
-                  child: Text('Aucune facture disponible pour le moment.'),
+    return RefreshIndicator(
+      onRefresh: _reload,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+        children: [
+          // Visual Invoices Header
+          Center(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E7D62).withOpacity(0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.receipt_long_rounded,
+                    color: Color(0xFF2E7D62),
+                    size: 40,
+                  ),
                 ),
-              )
-            else
-              ...provider.invoices.map(_buildInvoiceCard),
-          ],
-        ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Historique des factures",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2C3E50),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  "Consultez vos reçus d'achat et suivez l'état de vos règlements.",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          _buildFilters(),
+          const SizedBox(height: 16),
+          if (provider.isLoading && provider.invoices.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 80),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (provider.invoices.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 80),
+              child: Center(
+                child: Text(
+                  'Aucune facture disponible pour le moment.',
+                  style: TextStyle(color: Colors.grey, fontSize: 15),
+                ),
+              ),
+            )
+          else
+            ...provider.invoices.map(_buildInvoiceCard),
+        ],
       ),
     );
   }
@@ -97,7 +145,11 @@ class _InvoicesPageState extends State<InvoicesPage> {
 
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE5E7EB)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Wrap(
@@ -106,12 +158,15 @@ class _InvoicesPageState extends State<InvoicesPage> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             SizedBox(
-              width: 220,
+              width: 180,
               child: DropdownButtonFormField<String?>(
                 value: _paymentStatus,
                 decoration: const InputDecoration(
                   labelText: 'Paiement',
-                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
                 ),
                 items: const [
                   DropdownMenuItem<String?>(
@@ -133,18 +188,28 @@ class _InvoicesPageState extends State<InvoicesPage> {
             ),
             OutlinedButton.icon(
               onPressed: () => _pickDate(true),
-              icon: const Icon(Icons.date_range_outlined),
+              icon: const Icon(Icons.date_range_rounded, size: 18),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
               label: Text(
                 _startDate == null
                     ? 'Date début'
                     : formatter.format(_startDate!),
+                style: const TextStyle(fontSize: 13),
               ),
             ),
             OutlinedButton.icon(
               onPressed: () => _pickDate(false),
-              icon: const Icon(Icons.event_outlined),
+              icon: const Icon(Icons.event_rounded, size: 18),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
               label: Text(
                 _endDate == null ? 'Date fin' : formatter.format(_endDate!),
+                style: const TextStyle(fontSize: 13),
               ),
             ),
             if (_startDate != null ||
@@ -173,7 +238,11 @@ class _InvoicesPageState extends State<InvoicesPage> {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE5E7EB)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -189,13 +258,14 @@ class _InvoicesPageState extends State<InvoicesPage> {
                         invoice.invoiceNumber,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 15,
+                          color: Color(0xFF2C3E50),
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Commande ${invoice.orderNumber}',
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 13),
                       ),
                     ],
                   ),
@@ -204,35 +274,55 @@ class _InvoicesPageState extends State<InvoicesPage> {
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              formatter.format(invoice.invoiceDate),
-              style: TextStyle(color: Colors.grey[700]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  formatter.format(invoice.invoiceDate),
+                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                ),
+                Text(
+                  invoice.isPickup ? 'Retrait sur place' : 'Livraison',
+                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              '${invoice.totalAmount.toStringAsFixed(0)} ${invoice.currency}',
-              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              invoice.isPickup ? 'Retrait sur place' : 'Livraison',
-              style: TextStyle(color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => InvoicePage(initialInvoice: invoice),
+            const SizedBox(height: 12),
+            const Divider(color: Color(0xFFEEEEEE), height: 1),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${invoice.totalAmount.toStringAsFixed(0)} ${invoice.currency}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 17,
+                    color: Color(0xFF2E7D62),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      TelegramPageRoute(
+                        child: InvoicePage(initialInvoice: invoice),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.receipt_long_outlined, size: 16),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2E7D62),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  );
-                },
-                icon: const Icon(Icons.receipt_long_outlined),
-                label: const Text('Détail de facture'),
-              ),
+                  ),
+                  label: const Text('Détail', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                ),
+              ],
             ),
           ],
         ),
@@ -254,16 +344,16 @@ class _InvoicesPageState extends State<InvoicesPage> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         invoice.paymentStatusLabel.isNotEmpty
             ? invoice.paymentStatusLabel
             : invoice.paymentStatus,
-        style: TextStyle(color: color, fontWeight: FontWeight.w700),
+        style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 12),
       ),
     );
   }

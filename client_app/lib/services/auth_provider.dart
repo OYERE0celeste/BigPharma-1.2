@@ -8,11 +8,13 @@ class AuthProvider extends ChangeNotifier {
   User? _user;
   String? _token;
   bool _isLoading = false;
+  bool _isInitialized = false;
 
   User? get user => _user;
   String? get token => _token;
   bool get isAuthenticated => _token != null;
   bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
 
   final AuthService _authService = AuthService();
 
@@ -23,6 +25,8 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _initialize() async {
     await _loadSession();
     await refreshUser();
+    _isInitialized = true;
+    notifyListeners();
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -107,7 +111,10 @@ class AuthProvider extends ChangeNotifier {
     return await _authService.requestPasswordReset(identifier);
   }
 
-  Future<Map<String, dynamic>> resetPassword(String otp, String newPassword) async {
+  Future<Map<String, dynamic>> resetPassword(
+    String otp,
+    String newPassword,
+  ) async {
     return await _authService.resetPassword(otp, newPassword);
   }
 
@@ -135,9 +142,12 @@ class AuthProvider extends ChangeNotifier {
       if (data != null) {
         _user = User.fromJson(data);
         await _saveSession();
+      } else {
+        await logout();
       }
     } catch (e) {
       debugPrint('Error refreshing user: $e');
+      await logout();
     } finally {
       _isLoading = false;
       notifyListeners();

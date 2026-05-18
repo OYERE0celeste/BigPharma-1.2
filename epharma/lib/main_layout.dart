@@ -54,6 +54,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isSidebarOpen = false;
   late AnimationController _sidebarAnimationController;
 
@@ -182,55 +183,81 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MainLayoutScope(
-        navigateToSection: _navigateToSection,
-        child: Stack(
-          children: [
-            Column(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 768;
+
+        return Scaffold(
+          key: _scaffoldKey,
+          drawer: isMobile
+              ? Drawer(
+                  child: SafeArea(
+                    child: AppSidebar(
+                      selectedLabel: _pageTitle,
+                      callbacks: _buildNavigationCallbacks(),
+                    ),
+                  ),
+                )
+              : null,
+          body: MainLayoutScope(
+            navigateToSection: _navigateToSection,
+            child: Stack(
               children: [
-                GlobalNavbar(
-                  onMenuToggle: _toggleSidebar,
-                  isSidebarOpen: _isSidebarOpen,
-                  onProfileAction: (action) {
-                    if (action == 'activity') {
-                      _navigateToSection('Activity');
-                    }
-                  },
-                  onNotificationNavigate: (type, data) {
-                    switch (type) {
-                      case 'order':
-                        _navigateToSection('Orders');
-                        break;
-                      case 'support':
-                      case 'review':
-                      case 'complaint':
-                        _navigateToSection('Support');
-                        break;
-                      case 'invoice':
-                        _navigateToSection('Orders');
-                        break;
-                      case 'stock':
-                        _navigateToSection('Products');
-                        break;
-                      default:
-                        _navigateToSection(
-                          _resolveInitialSection(
-                            context.read<AuthProvider>().user,
-                          ),
-                        );
-                    }
-                  },
+                Column(
+                  children: [
+                    GlobalNavbar(
+                      onMenuToggle: () {
+                        if (isMobile) {
+                          _scaffoldKey.currentState?.openDrawer();
+                        } else {
+                          _toggleSidebar();
+                        }
+                      },
+                      isSidebarOpen: _isSidebarOpen,
+                      onProfileAction: (action) {
+                        if (action == 'activity') {
+                          _navigateToSection('Activity');
+                        }
+                      },
+                      onNotificationNavigate: (type, data) {
+                        switch (type) {
+                          case 'order':
+                            _navigateToSection('Orders');
+                            break;
+                          case 'support':
+                          case 'review':
+                          case 'complaint':
+                            _navigateToSection('Support');
+                            break;
+                          case 'invoice':
+                            _navigateToSection('Orders');
+                            break;
+                          case 'stock':
+                            _navigateToSection('Products');
+                            break;
+                          default:
+                            _navigateToSection(
+                              _resolveInitialSection(
+                                context.read<AuthProvider>().user,
+                              ),
+                            );
+                        }
+                      },
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.grey[50],
+                        child: _currentPage,
+                      ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Container(color: Colors.grey[50], child: _currentPage),
-                ),
+                if (!isMobile) _buildOverlaySidebarWithBlur(),
               ],
             ),
-            _buildOverlaySidebarWithBlur(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

@@ -6,6 +6,7 @@ const { logActivity } = require("../utils/activityLogger");
 const { runInTransaction } = require("../utils/dbUtils");
 const { success, failure } = require("../utils/response");
 const { notifyStaff } = require("../utils/notificationHelper");
+const { buildReceiptPdfBuffer } = require("../utils/invoiceService");
 
 
 /**
@@ -313,6 +314,32 @@ exports.getSales = async (req, res, next) => {
       .populate("client", "fullName")
       .sort({ createdAt: -1 });
     return success(res, { data: sales });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get sale receipt PDF
+ */
+exports.getSaleReceiptPdf = async (req, res, next) => {
+  try {
+    const sale = await Sale.findOne({
+      _id: req.params.id,
+      companyId: req.user.companyId,
+    }).populate("items.product", "name");
+
+    if (!sale) {
+      return failure(res, { status: 404, message: "Vente introuvable" });
+    }
+
+    const Company = require("../models/Company");
+    const company = await Company.findById(req.user.companyId);
+
+    const pdfBuffer = await buildReceiptPdfBuffer(sale, company);
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename=\"${sale.invoiceNumber}.pdf\"`);
+    return res.send(pdfBuffer);
   } catch (error) {
     next(error);
   }

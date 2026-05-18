@@ -19,16 +19,8 @@ class AppSidebar extends StatelessWidget {
 
     final visibleEntries = kSidebarEntries.where((entry) {
       if (user == null) return false;
-      return user.canAny(entry.permissions);
+      return entry.showInSidebar && user.canAny(entry.permissions);
     }).toList();
-
-    final adminKeys = {'Finances', 'Rights', 'Users', 'Activity'};
-    final primaryEntries = visibleEntries
-        .where((entry) => !adminKeys.contains(entry.key))
-        .toList();
-    final adminEntries = visibleEntries
-        .where((entry) => adminKeys.contains(entry.key))
-        .toList();
 
     return Container(
       width: 240,
@@ -82,28 +74,10 @@ class AppSidebar extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
-                ...primaryEntries.map(
+                ...visibleEntries.map(
                   (entry) =>
                       _sidebarItem(entry.key, entry.icon, label: entry.label),
                 ),
-                if (adminEntries.isNotEmpty) ...[
-                  const Padding(
-                    padding: EdgeInsets.only(left: 14, top: 20, bottom: 8),
-                    child: Text(
-                      'ADMINISTRATION',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black38,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                  ),
-                  ...adminEntries.map(
-                    (entry) =>
-                        _sidebarItem(entry.key, entry.icon, label: entry.label),
-                  ),
-                ],
               ],
             ),
           ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:client_app/pages/complaints_page.dart';
 import 'package:client_app/pages/invoices_page.dart';
 import 'package:client_app/pages/orders_page.dart';
-import 'package:client_app/pages/reviews_page.dart';
+import 'package:client_app/pages/relation_client_page.dart';
+import 'package:client_app/widgets/telegram_page_route.dart';
 
 class OrdersPanel extends StatelessWidget {
   const OrdersPanel({super.key, required this.primary});
@@ -11,7 +11,7 @@ class OrdersPanel extends StatelessWidget {
   final Color primary;
 
   void _open(BuildContext context, Widget page) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+    Navigator.push(context, TelegramPageRoute(child: page));
   }
 
   @override
@@ -43,7 +43,7 @@ class OrdersPanel extends StatelessWidget {
           SizedBox(
             width: 220,
             child: OutlinedButton.icon(
-              onPressed: () => _open(context, const InvoicesPage()),
+              onPressed: () => InvoicesDialog.show(context),
               icon: const Icon(Icons.receipt_long_outlined),
               label: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
@@ -55,24 +55,13 @@ class OrdersPanel extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 180,
+            width: 200,
             child: OutlinedButton.icon(
-              onPressed: () => _open(context, const ReviewsPage()),
-              icon: const Icon(Icons.star_outline_rounded),
+              onPressed: () => _open(context, const RelationClientPage(initialIndex: 0)),
+              icon: const Icon(Icons.support_agent_rounded),
               label: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text('Mes avis'),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 220,
-            child: OutlinedButton.icon(
-              onPressed: () => _open(context, const ComplaintsPage()),
-              icon: const Icon(Icons.report_problem_outlined),
-              label: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text('Mes réclamations'),
+                child: Text('Relation Client'),
               ),
             ),
           ),

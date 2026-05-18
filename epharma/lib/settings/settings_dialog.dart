@@ -29,6 +29,26 @@ class _SettingsDialogState extends State<SettingsDialog> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   String _currentView = 'main';
+  final List<String> _viewHistory = ['main'];
+  bool _isGoingBack = false;
+
+  void _navigateTo(String view) {
+    setState(() {
+      _viewHistory.add(view);
+      _currentView = view;
+      _isGoingBack = false;
+    });
+  }
+
+  void _navigateBack() {
+    if (_viewHistory.length > 1) {
+      setState(() {
+        _viewHistory.removeLast();
+        _currentView = _viewHistory.last;
+        _isGoingBack = true;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -85,7 +105,35 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: Column(
               children: [
                 _buildHeader(context),
-                Expanded(child: _buildBody()),
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    transitionBuilder: (child, animation) {
+                      final isEntering = child.key == ValueKey(_currentView);
+                      Offset beginOffset;
+                      if (_isGoingBack) {
+                        beginOffset = isEntering ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+                      } else {
+                        beginOffset = isEntering ? const Offset(1.0, 0.0) : const Offset(-1.0, 0.0);
+                      }
+
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: beginOffset,
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                    child: Container(
+                      key: ValueKey(_currentView),
+                      color: SettingsTheme.background,
+                      child: _buildBody(),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -138,7 +186,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
         children: [
           if (canGoBack)
             IconButton(
-              onPressed: () => setState(() => _currentView = 'main'),
+              onPressed: _navigateBack,
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
                 color: SettingsTheme.primary,
@@ -175,7 +223,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () => setState(() => _currentView = routeName),
+        onTap: () => _navigateTo(routeName),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(16),

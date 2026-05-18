@@ -15,6 +15,7 @@ class ProductTable extends StatefulWidget {
   final ValueChanged<Product> onView;
   final ValueChanged<Product>? onEdit;
   final ValueChanged<Product>? onDelete;
+  final ValueChanged<List<Product>>? onBulkDelete;
 
   const ProductTable({
     super.key,
@@ -29,6 +30,7 @@ class ProductTable extends StatefulWidget {
     required this.onView,
     required this.onEdit,
     required this.onDelete,
+    this.onBulkDelete,
   });
 
   @override
@@ -36,6 +38,8 @@ class ProductTable extends StatefulWidget {
 }
 
 class _ProductTableState extends State<ProductTable> {
+  final Set<String> _selectedIds = {};
+
   int get pageCount => (widget.products.length / widget.rowsPerPage).ceil();
 
   @override
@@ -50,11 +54,58 @@ class _ProductTableState extends State<ProductTable> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            if (_selectedIds.isNotEmpty && widget.onBulkDelete != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: Row(
+                  children: [
+                    Text(
+                      '${_selectedIds.length} produit(s) sélectionné(s)',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        final selectedProducts = widget.products
+                            .where((p) => _selectedIds.contains(p.id))
+                            .toList();
+                        widget.onBulkDelete!(selectedProducts);
+                        setState(() => _selectedIds.clear());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade50,
+                        foregroundColor: Colors.red,
+                        elevation: 0,
+                      ),
+                      icon: const Icon(Icons.delete),
+                      label: const Text('Supprimer la sélection'),
+                    ),
+                  ],
+                ),
+              ),
             Expanded(
-              child: SingleChildScrollView(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: _buildDataTable(items),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade200),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                            child: _buildDataTable(items),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -105,8 +156,27 @@ class _ProductTableState extends State<ProductTable> {
 
   Widget _buildDataTable(List<Product> items) {
     return DataTable(
+      onSelectAll: (isSelected) {
+        setState(() {
+          if (isSelected == true) {
+            _selectedIds.addAll(items.map((p) => p.id));
+          } else {
+            _selectedIds.clear();
+          }
+        });
+      },
       sortColumnIndex: _colIndex(widget.sortColumn),
       sortAscending: widget.sortAscending,
+      headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+      columnSpacing: 24,
+      horizontalMargin: 24,
+      dataRowMinHeight: 56,
+      dataRowMaxHeight: 64,
+      headingRowHeight: 56,
+      headingTextStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
       columns: [
         DataColumn(label: _colHeader('Nom du produit', 'name')),
         DataColumn(label: _colHeader('Catégorie', 'category')),
@@ -131,8 +201,19 @@ class _ProductTableState extends State<ProductTable> {
           rowColor = Colors.orange.withOpacity(0.08);
         }
 
+        final isSelected = _selectedIds.contains(p.id);
+
         return DataRow(
-          onSelectChanged: (_) => widget.onView(p),
+          selected: isSelected,
+          onSelectChanged: (selected) {
+            setState(() {
+              if (selected == true) {
+                _selectedIds.add(p.id);
+              } else {
+                _selectedIds.remove(p.id);
+              }
+            });
+          },
           color: WidgetStateProperty.resolveWith<Color?>((states) => rowColor),
           cells: [
             DataCell(
@@ -145,7 +226,21 @@ class _ProductTableState extends State<ProductTable> {
             DataCell(Text(nearest != null ? formatDate(nearest) : '-')),
             DataCell(Text('${p.lots.length}')),
 
-            DataCell(StatusBadge(status: status)),
+            DataCell(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  StatusBadge(status: status),
+                  if (p.expirationStatus == 'EXPIRÉ') ...[
+                    const SizedBox(width: 4),
+                    _buildExpirationBadge('Expiré', Colors.red),
+                  ] else if (p.expirationStatus == 'BIENTÔT EXPIRÉ') ...[
+                    const SizedBox(width: 4),
+                    _buildExpirationBadge('Bientôt', Colors.orange),
+                  ],
+                ],
+              ),
+            ),
             DataCell(
               Row(
                 children: [
@@ -155,24 +250,26 @@ class _ProductTableState extends State<ProductTable> {
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: widget.onEdit == null
-                        ? null
-                        : () => widget.onEdit!(p),
-                    icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: widget.onDelete == null
-                        ? null
-                        : () => widget.onDelete!(p),
-                    icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
+                  if (isSelected) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: widget.onEdit == null
+                          ? null
+                          : () => widget.onEdit!(p),
+                      icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: widget.onDelete == null
+                          ? null
+                          : () => widget.onDelete!(p),
+                      icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -221,10 +318,27 @@ class _ProductTableState extends State<ProductTable> {
   }
 
   StockStatus _productStatus(Product p) {
-    if (p.lots.any((l) => l.status == LotStatus.expired)) {
-      return StockStatus.outOfStock;
-    }
+    if (p.totalStock == 0) return StockStatus.outOfStock;
     if (p.totalStock <= p.lowStockThreshold) return StockStatus.lowStock;
     return StockStatus.available;
+  }
+
+  Widget _buildExpirationBadge(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.5)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+      ),
+    );
   }
 }

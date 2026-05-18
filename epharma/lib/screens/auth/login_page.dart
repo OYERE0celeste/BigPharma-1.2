@@ -99,8 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                   child: Container(
                     width: 450,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 60,
+                      horizontal: 28,
+                      vertical: 24,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.05),
@@ -115,32 +115,32 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         const Icon(
                           Icons.local_pharmacy_rounded,
-                          size: 64,
+                          size: 48,
                           color: Color(0xFF6366F1),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         const Text(
                           'BigPharma SaaS',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 28,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const Text(
                           'Solution E-Pharmacie Multi-Tenant',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                          style: TextStyle(color: Colors.white70, fontSize: 13),
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 18),
                         _buildTextField(
                           controller: _identifierController,
                           label: 'Email ou nom d\'utilisateur',
                           hint: 'ex: celeste.karma ou admin@pharmacie.com',
                           icon: Icons.person_outline_rounded,
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 14),
                         _buildTextField(
                           controller: _passwordController,
                           label: 'Mot de passe',
@@ -152,24 +152,29 @@ class _LoginPageState extends State<LoginPage> {
                             () => _obscurePassword = !_obscurePassword,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 6),
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: _showPasswordResetSheet,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(50, 20),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
                             child: const Text(
                               'Mot de passe oublié ?',
                               style: TextStyle(color: Colors.white60),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 14),
                         ElevatedButton(
                           onPressed: isLoading ? null : _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF6366F1),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -194,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 10),
                         Wrap(
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,

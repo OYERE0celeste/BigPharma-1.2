@@ -13,9 +13,13 @@ class NotificationPanel extends StatelessWidget {
     final notificationProvider = context.watch<NotificationProvider>();
     final notifications = notificationProvider.notifications;
 
+    final size = MediaQuery.of(context).size;
+    final panelWidth = size.width < 400 ? size.width * 0.92 : 350.0;
+    final panelHeight = size.height < 500 ? size.height * 0.75 : 450.0;
+
     return Container(
-      width: 350,
-      height: 450,
+      width: panelWidth,
+      height: panelHeight,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),

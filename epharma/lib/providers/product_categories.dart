@@ -9,25 +9,17 @@ class ProductCategory {
 }
 
 const List<ProductCategory> productCategories = [
-  ProductCategory('analgesique', 'Analgesique (Pain relief)'),
-  ProductCategory('antibiotique', 'Antibiotique'),
-  ProductCategory('antipyretics', 'Antipyretics (Fever reducers)'),
-  ProductCategory('anti_inflammatory', 'Anti-inflammatory drugs'),
-  ProductCategory('antiseptics', 'Antiseptics and disinfectants'),
-  ProductCategory('antimalarial', 'Antimalarial drugs'),
-  ProductCategory('antidiabetics', 'Antidiabetics'),
-  ProductCategory('antihypertensives', 'Antihypertensives'),
-  ProductCategory('antihistamines', 'Antihistamines'),
+  ProductCategory('Dermo-cosmétique', 'Dermo-cosmétique (Soins du visage)'),
+  ProductCategory('Hygiène Corporelle', 'Hygiène Corporelle'),
+  ProductCategory('Soins Capillaires', 'Soins Capillaires'),
+  ProductCategory('Santé Bucco-dentaire', 'Santé Bucco-dentaire'),
+  ProductCategory('Maternité et Bébé', 'Maternité et Bébé'),
+  ProductCategory('Compléments Alimentaires et Vitamines', 'Compléments Alimentaires et Vitamines'),
+  ProductCategory('Premiers Secours et Bobologie', 'Premiers Secours et Bobologie'),
+  ProductCategory('Protection Solaire', 'Protection Solaire'),
+  ProductCategory('Diététique et Phytothérapie', 'Diététique et Phytothérapie'),
   ProductCategory('vitamine', 'Vitamine and supplements'),
-  ProductCategory('vaccin', 'Vaccin'),
-  ProductCategory('medical_supplies', 'Medical supplies'),
-  ProductCategory('dermatological', 'Dermatological products'),
-  ProductCategory('gastrointestinal', 'Gastrointestinal medicines'),
-  ProductCategory('respiratory', 'Respiratory medicines'),
-  ProductCategory('ophthalmic', 'Ophthalmic products (eye medicines)'),
-  ProductCategory('injectable', 'Injectable medicines'),
-  ProductCategory('pediatric', 'Pediatric medicines'),
-  ProductCategory('herbal', 'Herbal medicines'),
+  ProductCategory('Orthopédie et Contention Légère', 'Orthopédie et Contention Légère'),
 ];
 
 ProductCategory? getCategoryByValue(String value) {

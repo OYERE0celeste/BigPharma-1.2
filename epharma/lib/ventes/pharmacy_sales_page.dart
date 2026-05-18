@@ -731,38 +731,34 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                 ],
               ),
             ),
-            // Cart Items
+            // Cart Items & Payment Footer in a single scrollable view to prevent overflow on small screens
             Expanded(
               child: _cart.isEmpty
                   ? _buildEmptyCart()
-                  : ListView.builder(
-                      itemCount: _cart.length,
-                      itemBuilder: (context, index) {
-                        final item = _cart[index];
-                        return Column(
-                          children: [
-                            CartItemTile(
-                              cartItem: item,
-                              onIncrement: () => setState(() {
-                                if (item.quantity <
-                                    item.selectedLot.quantityAvailable) {
-                                  item.quantity++;
-                                }
-                              }),
-                              onDecrement: () => setState(() {
-                                if (item.quantity > 1) {
-                                  item.quantity--;
-                                }
-                              }),
-                              onRemove: () => _removeFromCart(item),
-                            ),
-                          ],
-                        );
-                      },
+                  : ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        ..._cart.map((item) {
+                          return CartItemTile(
+                            cartItem: item,
+                            onIncrement: () => setState(() {
+                              if (item.quantity <
+                                  item.selectedLot.quantityAvailable) {
+                                item.quantity++;
+                              }
+                            }),
+                            onDecrement: () => setState(() {
+                              if (item.quantity > 1) {
+                                item.quantity--;
+                              }
+                            }),
+                            onRemove: () => _removeFromCart(item),
+                          );
+                        }),
+                        _buildCartFooter(),
+                      ],
                     ),
             ),
-            // Footer (Total & Payment)
-            if (_cart.isNotEmpty) _buildCartFooter(),
           ],
         ),
       ),

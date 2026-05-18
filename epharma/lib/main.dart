@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
       ],
 
       child: MaterialApp(
-        title: 'BigPharma SaaS',
+        title: 'BigPharma',
         navigatorKey: AppNotificationService.navigatorKey,
         builder: (context, child) =>
             AppNotificationHost(child: child ?? const SizedBox.shrink()),

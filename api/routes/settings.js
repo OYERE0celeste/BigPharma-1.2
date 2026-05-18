@@ -12,4 +12,7 @@ router.get("/", requirePermission(PERMISSIONS.MANAGE_SETTINGS), settingsControll
 router.patch("/system", requirePermission(PERMISSIONS.MANAGE_SETTINGS), settingsController.updateSystemSettings);
 router.patch("/pharmacy", requirePermission(PERMISSIONS.MANAGE_SETTINGS), settingsController.updatePharmacyInfo);
 
+router.get("/export", requirePermission(PERMISSIONS.MANAGE_SETTINGS), settingsController.exportData);
+router.post("/import", requirePermission(PERMISSIONS.MANAGE_SETTINGS), settingsController.importData);
+
 module.exports = router;

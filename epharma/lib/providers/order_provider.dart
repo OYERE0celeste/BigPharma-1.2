@@ -177,4 +177,64 @@ class OrderProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchProductSubstitutes(
+    String productId,
+    String token,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConstants.baseUrl}/orders/products/$productId/substitutes'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      final jsonData = json.decode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 200 && jsonData['success'] == true) {
+        final List<dynamic> data = jsonData['data'] ?? [];
+        return data.map((item) => item as Map<String, dynamic>).toList();
+      }
+      return [];
+    } catch (e) {
+      debugPrint('Error fetching product substitutes: $e');
+      return [];
+    }
+  }
+
+  Future<bool> substituteOrderItem({
+    required String orderId,
+    required int itemIndex,
+    required String substituteProductId,
+    required String token,
+  }) async {
+    try {
+      _errorMessage = null;
+      final response = await http.post(
+        Uri.parse('${ApiConstants.baseUrl}/orders/$orderId/substitute'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'itemIndex': itemIndex,
+          'substituteProductId': substituteProductId,
+        }),
+      );
+
+      final jsonData = json.decode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 200 && jsonData['success'] == true) {
+        return true;
+      }
+
+      _errorMessage = (jsonData['error']?['message'] ??
+              jsonData['message'] ??
+              'Impossible de substituer l\'article')
+          .toString();
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _errorMessage = 'Impossible de substituer l\'article : $e';
+      notifyListeners();
+      return false;
+    }
+  }
 }

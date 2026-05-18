@@ -10,12 +10,13 @@ import '../services/api_constants.dart';
 
 class NotificationProvider with ChangeNotifier {
   AuthProvider? _authProvider;
-  AuthProvider get authProvider => _authProvider!;
+  AuthProvider? get authProvider => _authProvider;
 
   List<NotificationModel> _notifications = [];
   int _unreadCount = 0;
   bool _isLoading = false;
   io.Socket? _socket;
+  bool _isSocketConnected = false;
 
   NotificationProvider();
 
@@ -29,6 +30,7 @@ class NotificationProvider with ChangeNotifier {
       fetchNotifications();
       _initSocket();
     } else {
+      _isSocketConnected = false;
       _socket?.disconnect();
       _socket = null;
       _notifications = [];
@@ -40,9 +42,12 @@ class NotificationProvider with ChangeNotifier {
   List<NotificationModel> get notifications => _notifications;
   int get unreadCount => _unreadCount;
   bool get isLoading => _isLoading;
+  bool get isSocketConnected => _isSocketConnected;
 
   void _initSocket() {
     if (_socket != null) return;
+    final auth = _authProvider;
+    if (auth == null) return;
 
     final String baseUrl = ApiConstants.baseUrl;
     String socketUrl = baseUrl;
@@ -59,9 +64,10 @@ class NotificationProvider with ChangeNotifier {
 
     _socket!.onConnect((_) {
       print('Client App: Connected to Socket.io');
-      if (authProvider.user != null) {
-        _socket!.emit('join-user', authProvider.user!.id);
-        // Clients don't necessarily join company room unless they need company-wide broadcasts
+      _isSocketConnected = true;
+      notifyListeners();
+      if (auth.user != null) {
+        _socket!.emit('join-user', auth.user!.id);
       }
     });
 
@@ -72,13 +78,26 @@ class NotificationProvider with ChangeNotifier {
       notifyListeners();
     });
 
-    _socket!.onDisconnect(
-      (_) => print('Client App: Disconnected from Socket.io'),
-    );
+    _socket!.onDisconnect((_) {
+      print('Client App: Disconnected from Socket.io');
+      _isSocketConnected = false;
+      notifyListeners();
+    });
+
+    _socket!.onConnectError((_) {
+      _isSocketConnected = false;
+      notifyListeners();
+    });
+
+    _socket!.onError((_) {
+      _isSocketConnected = false;
+      notifyListeners();
+    });
   }
 
   Future<void> fetchNotifications() async {
-    if (!authProvider.isAuthenticated) return;
+    final auth = _authProvider;
+    if (auth == null || !auth.isAuthenticated) return;
 
     _isLoading = true;
     notifyListeners();
@@ -87,7 +106,7 @@ class NotificationProvider with ChangeNotifier {
       final response = await http.get(
         Uri.parse('${ApiConstants.baseUrl}/notifications'),
         headers: {
-          'Authorization': 'Bearer ${authProvider.token}',
+          'Authorization': 'Bearer ${auth.token}',
           'Content-Type': 'application/json',
         },
       );
@@ -109,11 +128,14 @@ class NotificationProvider with ChangeNotifier {
   }
 
   Future<void> markAsRead(String id) async {
+    final auth = _authProvider;
+    if (auth == null || !auth.isAuthenticated) return;
+
     try {
       final response = await http.put(
         Uri.parse('${ApiConstants.baseUrl}/notifications/$id/read'),
         headers: {
-          'Authorization': 'Bearer ${authProvider.token}',
+          'Authorization': 'Bearer ${auth.token}',
           'Content-Type': 'application/json',
         },
       );
@@ -132,11 +154,14 @@ class NotificationProvider with ChangeNotifier {
   }
 
   Future<void> markAllAsRead() async {
+    final auth = _authProvider;
+    if (auth == null || !auth.isAuthenticated) return;
+
     try {
       final response = await http.put(
         Uri.parse('${ApiConstants.baseUrl}/notifications/mark-all-read'),
         headers: {
-          'Authorization': 'Bearer ${authProvider.token}',
+          'Authorization': 'Bearer ${auth.token}',
           'Content-Type': 'application/json',
         },
       );

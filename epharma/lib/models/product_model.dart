@@ -15,7 +15,6 @@ class Product {
   final double sellingPrice;
   final int lowStockThreshold;
   final List<Lot> lots;
-  final String expirationStatus;
 
   Product({
     required this.id,
@@ -28,7 +27,6 @@ class Product {
     required this.sellingPrice,
     required this.lowStockThreshold,
     required this.lots,
-    this.expirationStatus = 'OK',
   });
 
   int get totalStock =>
@@ -42,6 +40,24 @@ class Product {
     if (availableLots.isEmpty) return null;
     availableLots.sort((a, b) => a.expirationDate.compareTo(b.expirationDate));
     return availableLots.first;
+  }
+
+  String get expirationStatus {
+    if (lots.isEmpty) return 'OK';
+    final now = DateTime.now();
+    bool hasExpired = false;
+    bool hasNearExpiration = false;
+    for (var lot in lots) {
+      // Count expiration regardless of quantityAvailable so expired lots remain visible
+      if (lot.expirationDate.isBefore(now)) {
+        hasExpired = true;
+      } else if (lot.expirationDate.difference(now).inDays <= 30) {
+        hasNearExpiration = true;
+      }
+    }
+    if (hasExpired) return 'EXPIRÉ';
+    if (hasNearExpiration) return 'BIENTÔT EXPIRÉ';
+    return 'OK';
   }
 
   StockStatus get stockStatus {
@@ -65,7 +81,6 @@ class Product {
     double? sellingPrice,
     int? lowStockThreshold,
     List<Lot>? lots,
-    String? expirationStatus,
   }) {
     return Product(
       id: id ?? this.id,
@@ -78,7 +93,6 @@ class Product {
       sellingPrice: sellingPrice ?? this.sellingPrice,
       lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
       lots: lots ?? this.lots,
-      expirationStatus: expirationStatus ?? this.expirationStatus,
     );
   }
 
@@ -94,7 +108,6 @@ class Product {
       'sellingPrice': sellingPrice,
       'lowStockThreshold': lowStockThreshold,
       'lots': lots.map((lot) => lot.toJson()).toList(),
-      'expirationStatus': expirationStatus,
     };
   }
 
@@ -119,7 +132,6 @@ class Product {
               ?.map((e) => Lot.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      expirationStatus: json['expirationStatus']?.toString() ?? 'OK',
     );
   }
 }

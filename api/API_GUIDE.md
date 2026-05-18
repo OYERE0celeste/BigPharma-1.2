@@ -203,6 +203,24 @@ Content-Type: application/json
 }
 ```
 
+#### Admin: Trigger Stock/Expiration Scan (Admin only)
+```
+POST /api/admin/scan
+Authorization: Bearer <token>
+
+Déclenche manuellement le scan des lots expirés, proches d'expiration et des alertes de stock. Retourne un résumé des comptes trouvés.
+
+Response example:
+```
+{
+  "data": {
+    "expiredCount": 2,
+    "nearExpirationCount": 3,
+    "lowStockCount": 1
+  }
+}
+```
+
 ### Clients
 
 #### Get Clients

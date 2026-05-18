@@ -369,6 +369,48 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                           _showDeleteConfirmation(client);
                         }
                       : null,
+                  onBulkDelete: canDelete
+                      ? (clients) async {
+                          final ok = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text('Confirmer la suppression'),
+                              content: Text(
+                                'Voulez-vous vraiment supprimer ces ${clients.length} client(s) ?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('Annuler'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, true),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  child: const Text('Supprimer tout'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (ok == true) {
+                            for (final c in clients) {
+                              try {
+                                await context.read<ClientProvider>().deleteClient(c.id);
+                              } catch (error) {
+                                if (mounted) {
+                                  AppScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Erreur suppression lot: $error')),
+                                  );
+                                }
+                              }
+                            }
+                          }
+                        }
+                      : null,
                   onPageChanged: (page) {
                     setState(() {
                       _currentPage = page;

@@ -18,6 +18,7 @@ class SearchAndFilterClient extends StatefulWidget {
 
 class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
   late TextEditingController _searchController;
+  String _selectedFilter = 'all';
 
   @override
   void initState() {
@@ -91,7 +92,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        value: 'all',
+                        value: _selectedFilter,
                         icon: const Icon(Icons.arrow_drop_down),
                         style: const TextStyle(
                           color: Colors.black87,
@@ -113,7 +114,10 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                           ),
                         ],
                         onChanged: (value) {
-                          if (value != null) widget.onFilterChanged(value);
+                          if (value != null) {
+                            setState(() => _selectedFilter = value);
+                            widget.onFilterChanged(value);
+                          }
                         },
                       ),
                     ),
@@ -231,7 +235,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
-                          value: 'all',
+                          value: _selectedFilter,
                           icon: const Icon(Icons.arrow_drop_down),
                           style: const TextStyle(
                             color: Colors.black87,
@@ -257,6 +261,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                           ],
                           onChanged: (value) {
                             if (value != null) {
+                              setState(() => _selectedFilter = value);
                               widget.onFilterChanged(value);
                             }
                           },

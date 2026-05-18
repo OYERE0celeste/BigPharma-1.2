@@ -6,6 +6,7 @@ import '../widgets/app_colors.dart';
 import '../models/activity_model.dart';
 import '../providers/activity_provider.dart';
 import '../services/activity_service.dart';
+import '../utils/pdf_export_helper.dart';
 
 // =====================================================================
 // MAIN PAGE
@@ -85,7 +86,7 @@ class _PharmacyActivityRegisterPageState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header
-              const HeaderSection(),
+              HeaderSection(transactions: filteredTransactions),
               const SizedBox(height: 20),
 
               // Statistics Cards
@@ -180,7 +181,8 @@ class _PharmacyActivityRegisterPageState
 // =====================================================================
 
 class HeaderSection extends StatelessWidget {
-  const HeaderSection({super.key});
+  final List<ActivityModel> transactions;
+  const HeaderSection({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
@@ -250,21 +252,37 @@ class HeaderSection extends StatelessWidget {
                   icon: Icons.file_download,
                   label: 'PDF',
                   color: kPrimaryGreen,
-                  onPressed: () => _showSnackBar(
-                    context,
-                    'Export PDF - Fonctionnalité future',
-                  ),
+                  onPressed: () async {
+                    if (transactions.isEmpty) {
+                      _showSnackBar(context, 'Aucune donnée à exporter');
+                      return;
+                    }
+                    _showSnackBar(context, 'Génération du PDF en cours...');
+                    try {
+                      await PdfExportHelper.exportActivities(transactions, 'Registre des Activités');
+                    } catch (e) {
+                      _showSnackBar(context, 'Erreur lors de la génération du PDF');
+                    }
+                  },
                 ),
                 const SizedBox(width: 8),
                 _buildActionBtn(
                   context,
-                  icon: Icons.table_chart,
-                  label: 'Excel',
+                  icon: Icons.print,
+                  label: 'Imprimer',
                   color: kAccentBlue,
-                  onPressed: () => _showSnackBar(
-                    context,
-                    'Export Excel - Fonctionnalité future',
-                  ),
+                  onPressed: () async {
+                    if (transactions.isEmpty) {
+                      _showSnackBar(context, 'Aucune donnée à exporter');
+                      return;
+                    }
+                    _showSnackBar(context, 'Génération du PDF en cours...');
+                    try {
+                      await PdfExportHelper.exportActivities(transactions, 'Registre des Activités');
+                    } catch (e) {
+                      _showSnackBar(context, 'Erreur lors de la génération du PDF');
+                    }
+                  },
                 ),
               ],
             ),
@@ -723,10 +741,24 @@ class TransactionsTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columns: const [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: DataTable(
+                  headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                  columnSpacing: 24,
+                  horizontalMargin: 24,
+                  dataRowMinHeight: 56,
+                  dataRowMaxHeight: 64,
+                  headingRowHeight: 56,
+                  headingTextStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  columns: const [
               DataColumn(label: Text('Date & Heure')),
               DataColumn(label: Text('Type')),
               DataColumn(label: Text('Référence')),
@@ -773,6 +805,9 @@ class TransactionsTable extends StatelessWidget {
             }).toList(),
           ),
         ),
+      );
+    },
+  ),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1086,14 +1121,18 @@ class TransactionDetailsDialog extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         ElevatedButton.icon(
-                          onPressed: () {
-                            AppScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Impression du reçu - Fonctionnalité future',
-                                ),
-                              ),
-                            );
+                          onPressed: () async {
+                            try {
+                              await PdfExportHelper.printSingleActivity(transaction);
+                            } catch (e) {
+                              if (context.mounted) {
+                                AppScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Erreur lors de l\'impression'),
+                                  ),
+                                );
+                              }
+                            }
                           },
                           icon: const Icon(Icons.print),
                           label: const Text('Imprimer Reçu'),

@@ -75,12 +75,12 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(),
-          const SizedBox(height: 32),
+          const SizedBox(height: 20),
 
           _buildSectionTitle("SAUVEGARDE"),
           _buildInfoCard([
@@ -171,26 +171,41 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
   }
 
   Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Gestion des Données",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: SettingsTheme.textPrimary,
+    return Center(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: SettingsTheme.primary.withOpacity(0.08),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.storage_rounded,
+              color: SettingsTheme.primary,
+              size: 40,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          "Exportez vos données ou restaurez vos sauvegardes",
-          style: TextStyle(
-            fontSize: 14,
-            color: SettingsTheme.textSecondary.withOpacity(0.8),
+          const SizedBox(height: 10),
+          const Text(
+            "Gestion des données",
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: SettingsTheme.textPrimary,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          const Text(
+            "Exportez vos données de pharmacie ou gérez vos fichiers de sauvegarde.",
+            style: TextStyle(
+              fontSize: 12,
+              color: SettingsTheme.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 

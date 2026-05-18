@@ -4,15 +4,17 @@ import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import 'profile_view.dart';
 import 'settings_theme.dart';
+import '../pages/invoices_page.dart';
 
 class SettingsDialog extends StatefulWidget {
-  const SettingsDialog({super.key});
+  final String initialView;
+  const SettingsDialog({super.key, this.initialView = 'main'});
 
-  static void show(BuildContext context) {
+  static void show(BuildContext context, {String initialView = 'main'}) {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => const SettingsDialog(),
+      builder: (context) => SettingsDialog(initialView: initialView),
     );
   }
 
@@ -21,11 +23,33 @@ class SettingsDialog extends StatefulWidget {
 }
 
 class _SettingsDialogState extends State<SettingsDialog> {
-  String _currentView = 'main';
+  late String _currentView;
+  late final List<String> _history;
+  bool _isGoingBack = false;
+
+  void _navigateTo(String view) {
+    setState(() {
+      _isGoingBack = false;
+      _history.add(view);
+      _currentView = view;
+    });
+  }
+
+  void _goBack() {
+    if (_history.length > 1) {
+      setState(() {
+        _isGoingBack = true;
+        _history.removeLast();
+        _currentView = _history.last;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _currentView = widget.initialView;
+    _history = [widget.initialView];
     Future.microtask(() {
       context.read<AuthProvider>().refreshUser();
     });
@@ -57,11 +81,45 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   Widget _buildBody() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        final isEntering = child.key == ValueKey(_currentView);
+        Offset beginOffset;
+        if (_isGoingBack) {
+          beginOffset = isEntering ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+        } else {
+          beginOffset = isEntering ? const Offset(1.0, 0.0) : const Offset(-1.0, 0.0);
+        }
+
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: beginOffset,
+            end: Offset.zero,
+          ).animate(animation),
+          child: FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        key: ValueKey(_currentView),
+        child: _buildCurrentViewContent(),
+      ),
+    );
+  }
+
+  Widget _buildCurrentViewContent() {
     switch (_currentView) {
       case 'profile':
         return const ProfileView(isInsideDialog: true);
       case 'security':
         return const ClientSecurityView();
+      case 'invoices':
+        return const InvoicesView();
       default:
         return _buildMainList(context);
     }
@@ -80,7 +138,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
         children: [
           if (canGoBack)
             IconButton(
-              onPressed: () => setState(() => _currentView = 'main'),
+              onPressed: _goBack,
               icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
             ),
           const SizedBox(width: 8),
@@ -89,6 +147,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ? 'Mon Profil'
                 : _currentView == 'security'
                 ? 'Sécurité'
+                : _currentView == 'invoices'
+                ? 'Historique factures'
                 : 'Paramètres',
             style: SettingsTheme.headerTitle,
           ),
@@ -131,6 +191,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
             title: "Sécurité",
             subtitle: "Mot de passe et authentification",
             routeName: 'security',
+          ),
+          _buildNavTile(
+            icon: Icons.receipt_long_outlined,
+            title: "Historique factures",
+            subtitle: "Consulter vos factures d'achat",
+            routeName: 'invoices',
           ),
         ],
       ),
@@ -215,12 +281,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
     required IconData icon,
     required String title,
     required String subtitle,
-    required String routeName,
+    String? routeName,
+    VoidCallback? onTap,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () => setState(() => _currentView = routeName),
+        onTap: onTap ?? () => _navigateTo(routeName!),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -266,25 +333,73 @@ class ClientSecurityView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Sécurité", style: SettingsTheme.sectionTitle),
-          const SizedBox(height: 24),
-          _buildSecurityTile(
-            icon: Icons.lock_outline_rounded,
-            title: "Changer le mot de passe",
-            subtitle: "Mettez à jour votre mot de passe régulièrement",
-            onTap: () {
-              _showChangePasswordDialog(context);
-            },
+          // Visual Shield Header
+          Center(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: SettingsTheme.primary.withOpacity(0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.verified_user_rounded,
+                    color: SettingsTheme.primary,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Sécurité du compte",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: SettingsTheme.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  "Gérez vos informations d'accès et protégez vos transactions.",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: SettingsTheme.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
-          _buildSecurityTile(
-            icon: Icons.phonelink_lock_rounded,
-            title: "Double authentification (2FA)",
-            subtitle: "Ajoutez une couche de sécurité supplémentaire",
-            onTap: () {},
+          const SizedBox(height: 20),
+          
+          // Grouped security tiles in a single premium card
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: SettingsTheme.divider),
+            ),
+            child: Column(
+              children: [
+                _buildSecurityTile(
+                  icon: Icons.lock_outline_rounded,
+                  title: "Changer le mot de passe",
+                  subtitle: "Mettez à jour votre mot de passe régulièrement",
+                  onTap: () => _showChangePasswordDialog(context),
+                ),
+                const Divider(height: 1, color: SettingsTheme.divider, indent: 64),
+                _buildSecurityTile(
+                  icon: Icons.phonelink_lock_rounded,
+                  title: "Double authentification (2FA)",
+                  subtitle: "Ajoutez une couche de sécurité supplémentaire",
+                  onTap: () {},
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -297,19 +412,35 @@ class ClientSecurityView extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: SettingsTheme.divider),
+    return ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: SettingsTheme.accent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: SettingsTheme.primary, size: 22),
       ),
-      child: ListTile(
-        onTap: onTap,
-        leading: Icon(icon, color: SettingsTheme.primary),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: SettingsTheme.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(
+          fontSize: 12,
+          color: SettingsTheme.textSecondary,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        color: SettingsTheme.textSecondary,
       ),
     );
   }

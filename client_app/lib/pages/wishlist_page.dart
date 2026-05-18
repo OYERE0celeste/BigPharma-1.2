@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/wishlist_provider.dart';
 import '../widgets/index.dart';
-import 'product_detail_page.dart';
+import '../widgets/product_details_bottom_sheet.dart';
 
 class WishlistPage extends StatelessWidget {
   const WishlistPage({super.key});
@@ -40,7 +40,7 @@ class WishlistPage extends StatelessWidget {
                 crossAxisCount: 2,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
-                childAspectRatio: 0.8,
+                childAspectRatio: 0.74,
               ),
               itemBuilder: (context, index) {
                 final product = wishlist.items[index];
@@ -50,13 +50,7 @@ class WishlistPage extends StatelessWidget {
                     // Logic to add to cart
                   },
                   onDetailsTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProductDetailPage(product: product),
-                      ),
-                    );
+                    ProductDetailsBottomSheet.show(context, product);
                   },
                 );
               },

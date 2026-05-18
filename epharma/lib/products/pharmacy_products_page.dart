@@ -241,6 +241,53 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                               }
                             }
                           : null,
+                      onBulkDelete: canDelete
+                          ? (products) async {
+                              final ok = await showDialog<bool>(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text('Confirmer la suppression'),
+                                  content: Text(
+                                    'Voulez-vous vraiment supprimer ces ${products.length} produit(s) ?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: const Text('Annuler'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: const Text('Supprimer tout'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (ok == true) {
+                                try {
+                                  for (final p in products) {
+                                    await provider.deleteProduct(p.id);
+                                  }
+                                  await provider.loadProducts();
+                                } catch (e) {
+                                  if (mounted) {
+                                    AppScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Erreur lors de la suppression par lot : $e',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            }
+                          : null,
                     ),
                   ),
               ],

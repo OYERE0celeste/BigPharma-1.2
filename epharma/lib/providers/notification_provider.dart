@@ -16,8 +16,10 @@ class NotificationProvider with ChangeNotifier {
   bool _isLoading = false;
   io.Socket? _socket;
   DateTime? _lastStaffUpdate;
+  bool _isConnected = false;
 
   DateTime? get lastStaffUpdate => _lastStaffUpdate;
+  bool get isConnected => _isConnected;
 
   NotificationProvider();
 
@@ -32,6 +34,7 @@ class NotificationProvider with ChangeNotifier {
       fetchNotifications();
       _initSocket();
     } else {
+      _isConnected = false;
       _socket?.disconnect();
       _socket = null;
       _notifications = [];
@@ -69,6 +72,8 @@ class NotificationProvider with ChangeNotifier {
 
       _socket!.onConnect((_) {
         print('✅ Connected to Socket.io');
+        _isConnected = true;
+        notifyListeners();
         if (authProvider.user != null) {
           _socket!.emit('join-company', authProvider.user!.companyId);
           _socket!.emit('join-user', authProvider.user!.id);
@@ -114,22 +119,32 @@ class NotificationProvider with ChangeNotifier {
 
       _socket!.onConnectError((data) {
         print('❌ Socket connection error: $data');
+        _isConnected = false;
+        notifyListeners();
       });
 
       _socket!.onError((data) {
         print('❌ Socket error: $data');
+        _isConnected = false;
+        notifyListeners();
       });
 
       _socket!.onDisconnect((_) {
         print('⚠️ Disconnected from Socket.io');
+        _isConnected = false;
+        notifyListeners();
       });
 
       _socket!.on('disconnect', (data) {
         print('⚠️ Disconnect event: $data');
+        _isConnected = false;
+        notifyListeners();
       });
 
       _socket!.on('connect_error', (error) {
         print('❌ Connect error: $error');
+        _isConnected = false;
+        notifyListeners();
       });
     } catch (e) {
       print('❌ Error initializing Socket.io: $e');

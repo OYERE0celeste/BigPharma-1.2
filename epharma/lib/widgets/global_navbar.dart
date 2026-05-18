@@ -99,15 +99,46 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              context.watch<AuthProvider>().company?.name ??
-                                  'PharmaGest',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: isMobile ? 14 : 16,
-                                fontWeight: FontWeight.bold,
-                                color: kPrimaryGreen,
-                              ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    context.watch<AuthProvider>().company?.name ??
+                                        'PharmaGest',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: isMobile ? 14 : 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: kPrimaryGreen,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Consumer<NotificationProvider>(
+                                  builder: (context, notifProv, _) {
+                                    final isConnected = notifProv.isConnected;
+                                    return Tooltip(
+                                      message: isConnected ? 'Live Sync Connecté' : 'Mode Offline Actif',
+                                      child: Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          color: isConnected ? const Color(0xFF00E676) : const Color(0xFFFF1744),
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: (isConnected ? const Color(0xFF00E676) : const Color(0xFFFF1744)).withOpacity(0.5),
+                                              blurRadius: isConnected ? 6 : 2,
+                                              spreadRadius: isConnected ? 2 : 0,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             if (!isMobile)
                               Text(

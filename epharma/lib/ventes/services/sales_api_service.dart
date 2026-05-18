@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:epharma/models/sale_model.dart';
 import 'package:http/http.dart' as http;
 import '../../services/auth_service.dart';
@@ -7,6 +8,9 @@ import '../../services/api_constants.dart';
 class SalesApiService {
   static String get baseUrl => '${ApiConstants.baseUrl}/sales';
   static final AuthService _authService = AuthService();
+  static Future<Map<String, String>> _getHeaders() async {
+    return await _authService.getHeaders();
+  }
 
   static dynamic _safeDecode(String body) {
     try {
@@ -29,7 +33,7 @@ class SalesApiService {
 
   static Future<List<Sale>> getSales({int page = 1, int limit = 50}) async {
     try {
-      final headers = await _authService.getHeaders();
+      final headers = await _getHeaders();
       final response = await http.get(
         Uri.parse('$baseUrl?page=$page&limit=$limit'),
         headers: headers,
@@ -60,7 +64,7 @@ class SalesApiService {
     required double amountReceived,
   }) async {
     try {
-      final headers = await _authService.getHeaders();
+      final headers = await _getHeaders();
       final subtotal = cartItems.fold<double>(
         0,
         (sum, item) => sum + item.subtotal,
@@ -95,6 +99,23 @@ class SalesApiService {
             decoded['data'] is Map<String, dynamic>) {
           return Sale.fromJson(decoded['data']);
         }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<Uint8List?> fetchReceiptPdf(String saleId) async {
+    try {
+      final headers = await _getHeaders();
+      headers['Accept'] = 'application/pdf';
+      final response = await http.get(
+        Uri.parse('$baseUrl/$saleId/receipt'),
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
       }
       return null;
     } catch (e) {

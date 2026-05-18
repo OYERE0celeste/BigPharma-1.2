@@ -3,7 +3,7 @@ import '../models/product.dart';
 import '../services/product_service.dart';
 import '../widgets/index.dart';
 import '../widgets/skeleton_loader.dart';
-import 'product_detail_page.dart';
+import '../widgets/product_details_bottom_sheet.dart';
 
 class ProductListPage extends StatefulWidget {
   final String? category;
@@ -77,7 +77,7 @@ class _ProductListPageState extends State<ProductListPage> {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: 0.8,
+          childAspectRatio: 0.74,
         ),
         itemCount: _products.length + (_hasMore ? 2 : 0),
         itemBuilder: (context, index) {
@@ -85,12 +85,7 @@ class _ProductListPageState extends State<ProductListPage> {
             final product = _products[index];
             return ProductCard(
               product: product,
-              onDetailsTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ProductDetailPage(product: product),
-                ),
-              ),
+              onDetailsTap: () => ProductDetailsBottomSheet.show(context, product),
             );
           } else {
             return const SkeletonProductCard();

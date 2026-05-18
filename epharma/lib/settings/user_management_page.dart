@@ -76,37 +76,64 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Visual People Header
+          Center(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: SettingsTheme.primary.withOpacity(0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.people_alt_rounded,
+                    color: SettingsTheme.primary,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Gestion des collaborateurs",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: SettingsTheme.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  "Gérez votre équipe pharmaceutique et configurez leurs accès.",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: SettingsTheme.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Actions Row (List Count and ADD button)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Gestion des Collaborateurs",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: SettingsTheme.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Gérez votre équipe et leurs comptes d'accès",
-                    style: TextStyle(
-                      color: SettingsTheme.textSecondary.withOpacity(0.8),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
+              Text(
+                "${_users.length} collaborateur(s)",
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: SettingsTheme.textSecondary,
+                ),
               ),
               ElevatedButton.icon(
                 onPressed: () => _showAddUserDialog(),
-                icon: const Icon(Icons.person_add_rounded, size: 18),
+                icon: const Icon(Icons.person_add_rounded, size: 16),
                 label: const Text(
                   "AJOUTER",
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -115,18 +142,18 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   backgroundColor: SettingsTheme.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 16,
+                    horizontal: 16,
+                    vertical: 12,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   elevation: 0,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Expanded(
             child: _isLoading
                 ? const Center(

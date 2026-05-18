@@ -7,6 +7,7 @@ const User = require("../models/User");
 const Product = require("../models/product");
 const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
+const { runInTransaction } = require("../utils/dbUtils");
 const { success, failure } = require("../utils/response");
 const { sendNotification, notifyStaff } = require("../utils/notificationHelper");
 const {
@@ -480,193 +481,190 @@ exports.updateOrderStatus = async (req, res, next) => {
       });
     }
 
-    const order = await Order.findOne({
-      _id: req.params.id,
-      companyId: req.user.companyId,
-    });
-
-    if (!order) {
-      return failure(res, {
-        status: 404,
-        message: "Commande non trouvée",
-      });
-    }
-
-    if (order.status === status) {
-      return failure(res, {
-        status: 400,
-        message: `La commande est déjà ${ORDER_STATUS_LABELS[status]}`,
-      });
-    }
-
-    const allowedTransitions = ORDER_TRANSITIONS[order.status] || [];
-
-    if (!allowedTransitions.includes(status)) {
-      return failure(res, {
-        status: 400,
-        message: `Transition invalide de ${ORDER_STATUS_LABELS[order.status]} vers ${ORDER_STATUS_LABELS[status]}`,
-      });
-    }
-
-    // Allocation de stock si on passe à un état actif (non attente, non annulée)
-    // et que le stock n'est pas encore alloué
-    const isActiveStatus = ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
-    const wasAllocated = order.stockAllocations && order.stockAllocations.length > 0;
-
-    if (isActiveStatus && !wasAllocated) {
-      const allocations = [];
-
-      const productIds = order.products.map((product) => product.productId);
-      const products = await Product.find({
-        _id: { $in: productIds },
-        companyId: req.user.companyId,
-      });
-      const productsById = new Map(products.map((product) => [String(product._id), product]));
-
-      for (const orderedProduct of order.products) {
-        const product = productsById.get(String(orderedProduct.productId));
-        if (!product) {
-          return failure(res, {
-            status: 404,
-            message: `Produit introuvable : ${orderedProduct.name}`,
-          });
-        }
-
-        if (availableOrderableStockForProduct(product) < orderedProduct.quantity) {
-          return failure(res, {
-            status: 400,
-            message: `Stock insuffisant pour ${orderedProduct.name}`,
-          });
-        }
-      }
-
-      for (const orderedProduct of order.products) {
-        const product = productsById.get(String(orderedProduct.productId));
-        const lotAllocations = allocateStock(product, orderedProduct.quantity);
-        product.markModified("lots");
-        await product.save();
-
-        // Check for low stock alert
-        if (product.stockQuantity <= (product.minStockLevel || 0)) {
-          await notifyStaff({
-            companyId: req.user.companyId,
-            title: "Alerte Stock Faible",
-            message: `Le stock de ${product.name} est bas (${product.stockQuantity} restants).`,
-            type: "stock",
-            data: { productId: product._id },
-          });
-        }
-
-        allocations.push({
-
-          productId: product._id,
-          lotAllocations,
-        });
-      }
-
-      order.stockAllocations = allocations;
-    }
-
-    // Restauration de stock si on annule une commande qui avait du stock alloué
-    if (status === "annulee" && wasAllocated) {
-      for (const allocation of order.stockAllocations || []) {
-        const product = await Product.findOne({
-          _id: allocation.productId,
+    let transactionResult;
+    try {
+      transactionResult = await runInTransaction(async (session) => {
+        const order = await Order.findOne({
+          _id: req.params.id,
           companyId: req.user.companyId,
-        });
+        }).session(session);
 
-        if (!product) {
-          continue;
+        if (!order) {
+          throw new Error("Commande non trouvée");
         }
 
-        restoreStock(product, allocation.lotAllocations);
-        product.markModified("lots");
-        await product.save();
-      }
+        if (order.status === status) {
+          throw new Error(`La commande est déjà ${ORDER_STATUS_LABELS[status]}`);
+        }
 
-      order.stockAllocations = [];
-    }
+        const allowedTransitions = ORDER_TRANSITIONS[order.status] || [];
 
-    const previousStatus = order.status;
-    const shouldNotifyInvoiceAvailability =
-      !order.invoiceNumber && ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
+        if (!allowedTransitions.includes(status)) {
+          throw new Error(`Transition invalide de ${ORDER_STATUS_LABELS[order.status]} vers ${ORDER_STATUS_LABELS[status]}`);
+        }
 
-    order.status = status;
-    await order.save();
+        // Allocation de stock si on passe à un état actif (non attente, non annulée)
+        // et que le stock n'est pas encore alloué
+        const isActiveStatus = ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
+        const wasAllocated = order.stockAllocations && order.stockAllocations.length > 0;
 
-    let invoice = null;
-    if (["en_preparation", "pret_pour_recuperation", "validee"].includes(status)) {
-      const [clientProfile, company] = await Promise.all([
-        Client.findById(order.clientId),
-        Company.findById(order.companyId),
-      ]);
-      invoice = await createInvoiceFromOrder(order, {
-        client: clientProfile,
-        company,
+        if (isActiveStatus && !wasAllocated) {
+          const allocations = [];
+
+          const productIds = order.products.map((product) => product.productId);
+          const products = await Product.find({
+            _id: { $in: productIds },
+            companyId: req.user.companyId,
+          }).session(session);
+          const productsById = new Map(products.map((product) => [String(product._id), product]));
+
+          for (const orderedProduct of order.products) {
+            const product = productsById.get(String(orderedProduct.productId));
+            if (!product) {
+              throw new Error(`Produit introuvable : ${orderedProduct.name}`);
+            }
+
+            if (availableOrderableStockForProduct(product) < orderedProduct.quantity) {
+              throw new Error(`Stock insuffisant pour ${orderedProduct.name}`);
+            }
+          }
+
+          for (const orderedProduct of order.products) {
+            const product = productsById.get(String(orderedProduct.productId));
+            const lotAllocations = allocateStock(product, orderedProduct.quantity);
+            product.markModified("lots");
+            await product.save({ session });
+
+            // Check for low stock alert
+            if (product.stockQuantity <= (product.minStockLevel || 0)) {
+              await notifyStaff({
+                companyId: req.user.companyId,
+                title: "Alerte Stock Faible",
+                message: `Le stock de ${product.name} est bas (${product.stockQuantity} restants).`,
+                type: "stock",
+                data: { productId: product._id },
+              });
+            }
+
+            allocations.push({
+              productId: product._id,
+              lotAllocations,
+            });
+          }
+
+          order.stockAllocations = allocations;
+        }
+
+        // Restauration de stock si on annule une commande qui avait du stock alloué
+        if (status === "annulee" && wasAllocated) {
+          for (const allocation of order.stockAllocations || []) {
+            const product = await Product.findOne({
+              _id: allocation.productId,
+              companyId: req.user.companyId,
+            }).session(session);
+
+            if (!product) {
+              continue;
+            }
+
+            restoreStock(product, allocation.lotAllocations);
+            product.markModified("lots");
+            await product.save({ session });
+          }
+
+          order.stockAllocations = [];
+        }
+
+        const previousStatus = order.status;
+        const shouldNotifyInvoiceAvailability =
+          !order.invoiceNumber && ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
+
+        order.status = status;
+        await order.save({ session });
+
+        let invoice = null;
+        if (["en_preparation", "pret_pour_recuperation", "validee"].includes(status)) {
+          const [clientProfile, company] = await Promise.all([
+            Client.findById(order.clientId).session(session),
+            Company.findById(order.companyId).session(session),
+          ]);
+          invoice = await createInvoiceFromOrder(order, {
+            client: clientProfile,
+            company,
+          });
+        }
+        invoice = await syncInvoiceForOrder(order);
+
+        // Record in Finance if validated
+        if (status === "validee") {
+          await new Finance({
+            dateTime: new Date(),
+            type: "sale",
+            sourceModule: "Commandes",
+            reference: order.orderNumber,
+            description: `Commande ${order.orderNumber} récupérée par le client`,
+            amount: order.totalPrice,
+            isIncome: true,
+            paymentMethod: "other", // Default for orders
+            employeeName: req.user.fullName,
+            orderId: order._id,
+            companyId: req.user.companyId,
+          }).save({ session });
+        }
+
+        await new OrderTimeline({
+          orderId: order._id,
+          status,
+          userId: req.user._id,
+          note:
+            note ||
+            `Statut changé de ${ORDER_STATUS_LABELS[previousStatus]} vers ${ORDER_STATUS_LABELS[status]}`,
+          companyId: req.user.companyId,
+        }).save({ session });
+
+        await logActivity({
+          actionType: "update",
+          entityType: "order",
+          entityId: order._id.toString(),
+          entityName: order.orderNumber,
+          description: `Commande ${order.orderNumber} mise à jour : ${ORDER_STATUS_LABELS[status]}`,
+          companyId: req.user.companyId,
+          user: req.user.fullName,
+          clientOrSupplierName: order.clientId?.fullName || "Client",
+          totalAmount: order.totalPrice,
+          quantity: order.products.reduce((sum, p) => sum + p.quantity, 0),
+          status: status === "validee" ? "completed" : status === "annulee" ? "cancelled" : "pending",
+          listOfItems: order.products.map((p) => ({
+            productName: p.name,
+            quantity: p.quantity,
+            unitPrice: p.price,
+            totalPrice: p.price * p.quantity,
+          })),
+        }, req);
+
+        const updatedOrder = await buildOrderQuery({ _id: order._id }).session(session);
+        return { updatedOrder, invoice, shouldNotifyInvoiceAvailability };
+      });
+    } catch (txError) {
+      return failure(res, {
+        status: 400,
+        message: txError.message,
       });
     }
-    invoice = await syncInvoiceForOrder(order);
 
-    // Record in Finance if validated
-    if (status === "validee") {
-      await new Finance({
-        dateTime: new Date(),
-        type: "sale",
-        sourceModule: "Commandes",
-        reference: order.orderNumber,
-        description: `Commande ${order.orderNumber} récupérée par le client`,
-        amount: order.totalPrice,
-        isIncome: true,
-        paymentMethod: "other", // Default for orders
-        employeeName: req.user.fullName,
-        orderId: order._id,
-        companyId: req.user.companyId,
-      }).save();
-    }
-
-    await OrderTimeline.create({
-      orderId: order._id,
-      status,
-      userId: req.user._id,
-      note:
-        note ||
-        `Statut changé de ${ORDER_STATUS_LABELS[previousStatus]} vers ${ORDER_STATUS_LABELS[status]}`,
-      companyId: req.user.companyId,
-    });
-
-    await logActivity({
-      actionType: "update",
-      entityType: "order",
-      entityId: order._id.toString(),
-      entityName: order.orderNumber,
-      description: `Commande ${order.orderNumber} mise à jour : ${ORDER_STATUS_LABELS[status]}`,
-      companyId: req.user.companyId,
-      user: req.user.fullName,
-      clientOrSupplierName: order.clientId?.fullName || "Client",
-      totalAmount: order.totalPrice,
-      quantity: order.products.reduce((sum, p) => sum + p.quantity, 0),
-      status: status === "validee" ? "completed" : status === "annulee" ? "cancelled" : "pending",
-      listOfItems: order.products.map((p) => ({
-        productName: p.name,
-        quantity: p.quantity,
-        unitPrice: p.price,
-        totalPrice: p.price * p.quantity,
-      })),
-    }, req);
-
-    const updatedOrder = await buildOrderQuery({ _id: order._id });
+    const { updatedOrder, invoice, shouldNotifyInvoiceAvailability } = transactionResult;
 
     if (global.io) {
       // Notify staff
       global.io.to(req.user.companyId.toString()).emit("order-status-update", updatedOrder);
     }
 
-    const clientUser = await User.findById(order.userId).select("email fullName").lean();
+    const clientUser = await User.findById(updatedOrder.userId).select("email fullName").lean();
     if (clientUser) {
       await sendOrderStatusUpdateEmail({
         email: clientUser.email,
         fullName: clientUser.fullName,
-        orderNumber: order.orderNumber,
+        orderNumber: updatedOrder.orderNumber,
         statusLabel: ORDER_STATUS_LABELS[status],
         companyName: "BigPharma",
       });
@@ -674,12 +672,12 @@ exports.updateOrderStatus = async (req, res, next) => {
 
     // Notify the specific client via persistent notification
     await sendNotification({
-      userId: order.userId,
+      userId: updatedOrder.userId,
       companyId: req.user.companyId,
       title: "Mise à jour de votre commande",
-      message: `Votre commande ${order.orderNumber} est maintenant ${ORDER_STATUS_LABELS[status]}.`,
+      message: `Votre commande ${updatedOrder.orderNumber} est maintenant ${ORDER_STATUS_LABELS[status]}.`,
       type: "order",
-      data: { orderId: order._id, orderNumber: order.orderNumber, status },
+      data: { orderId: updatedOrder._id, orderNumber: updatedOrder.orderNumber, status },
     });
 
     if (invoice && shouldNotifyInvoiceAvailability) {
@@ -688,22 +686,22 @@ exports.updateOrderStatus = async (req, res, next) => {
           email: clientUser.email,
           fullName: clientUser.fullName,
           invoiceNumber: invoice.invoiceNumber,
-          orderNumber: order.orderNumber,
+          orderNumber: updatedOrder.orderNumber,
           companyName: "BigPharma",
         });
       }
 
       await sendNotification({
-        userId: order.userId,
+        userId: updatedOrder.userId,
         companyId: req.user.companyId,
         title: "Votre facture est disponible",
-        message: `La facture ${invoice.invoiceNumber} de la commande ${order.orderNumber} est maintenant disponible.`,
+        message: `La facture ${invoice.invoiceNumber} de la commande ${updatedOrder.orderNumber} est maintenant disponible.`,
         type: "invoice",
         data: {
           invoiceId: invoice._id,
           invoiceNumber: invoice.invoiceNumber,
-          orderId: order._id,
-          orderNumber: order.orderNumber,
+          orderId: updatedOrder._id,
+          orderNumber: updatedOrder.orderNumber,
         },
       });
     }
@@ -781,6 +779,129 @@ exports.getOrderInvoice = async (req, res, next) => {
     }
 
     return success(res, { data: toInvoicePayload(invoice) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.substituteOrderItem = async (req, res, next) => {
+  try {
+    const { itemIndex, substituteProductId } = req.body;
+    const order = await Order.findOne({
+      _id: req.params.id,
+      companyId: req.user.companyId,
+    });
+
+    if (!order) {
+      return failure(res, { status: 404, message: "Commande non trouvée" });
+    }
+
+    if (!["en_attente", "en_preparation"].includes(order.status)) {
+      return failure(res, {
+        status: 400,
+        message: "La substitution n'est possible qu'avant la préparation finale",
+      });
+    }
+
+    const item = order.products[itemIndex];
+    if (!item) {
+      return failure(res, { status: 400, message: "Article introuvable dans la commande" });
+    }
+
+    if (!item.allowSubstitution) {
+      return failure(res, {
+        status: 400,
+        message: "Le client n'a pas autorisé la substitution pour cet article",
+      });
+    }
+
+    const substituteProduct = await Product.findOne({
+      _id: substituteProductId,
+      companyId: req.user.companyId,
+      isActive: true,
+    });
+
+    if (!substituteProduct) {
+      return failure(res, { status: 404, message: "Produit de substitution introuvable" });
+    }
+
+    const availableStock = availableOrderableStockForProduct(substituteProduct);
+    if (availableStock < item.quantity) {
+      return failure(res, {
+        status: 400,
+        message: `Stock insuffisant pour le substitut ${substituteProduct.name} (${availableStock} dispo)`,
+      });
+    }
+
+    // Track original values
+    item.originalPrice = item.price;
+    item.substitutedWith = substituteProduct._id;
+    item.substitutedName = substituteProduct.name;
+
+    // Update to substitute
+    item.productId = substituteProduct._id;
+    item.name = substituteProduct.name;
+    item.price = substituteProduct.sellingPrice;
+
+    // Recalculate total
+    order.totalPrice = order.products.reduce((sum, p) => sum + p.price * p.quantity, 0);
+    order.markModified("products");
+    await order.save();
+
+    await OrderTimeline.create({
+      orderId: order._id,
+      status: order.status,
+      userId: req.user._id,
+      note: `Substitution : ${item.substitutedName} remplace l'article original (prix original: ${item.originalPrice} FCFA -> nouveau prix: ${item.price} FCFA)`,
+      companyId: req.user.companyId,
+    });
+
+    await logActivity({
+      actionType: "update",
+      entityType: "order",
+      entityId: order._id.toString(),
+      entityName: order.orderNumber,
+      description: `Substitution dans commande ${order.orderNumber}: ${item.substitutedName}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
+      totalAmount: order.totalPrice,
+      status: "pending",
+    }, req);
+
+    const updatedOrder = await buildOrderQuery({ _id: order._id });
+
+    if (global.io) {
+      global.io.to(req.user.companyId.toString()).emit("order-status-update", updatedOrder);
+    }
+
+    return success(res, { data: updatedOrder });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getProductSubstitutes = async (req, res, next) => {
+  try {
+    const product = await Product.findOne({
+      _id: req.params.productId,
+      companyId: req.user.companyId,
+    }).populate("substitutes", "name sellingPrice stockQuantity category lots isActive");
+
+    if (!product) {
+      return failure(res, { status: 404, message: "Produit introuvable" });
+    }
+
+    const substitutes = (product.substitutes || [])
+      .filter((s) => s.isActive)
+      .map((s) => ({
+        _id: s._id,
+        name: s.name,
+        sellingPrice: s.sellingPrice,
+        category: s.category,
+        availableStock: availableOrderableStockForProduct(s),
+      }));
+
+    return success(res, { data: substitutes });
   } catch (error) {
     next(error);
   }

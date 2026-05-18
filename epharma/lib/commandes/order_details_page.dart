@@ -171,6 +171,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Widget _buildItemsList() {
+    final canSubstitute = [_order!.status == OrderStatus.enAttente || _order!.status == OrderStatus.enPreparation];
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -186,20 +188,129 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(),
-          ListView.builder(
+          ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _order!.items.length,
+            separatorBuilder: (context, index) => const Divider(),
             itemBuilder: (context, index) {
               final item = _order!.items[index];
-              return ListTile(
-                title: Text(item.name),
-                subtitle: Text(
-                  '${item.quantity} x ${_formatMoney(item.price)}',
-                ),
-                trailing: Text(
-                  _formatMoney(item.subtotal),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+              final isPendingOrPrep = _order!.status == OrderStatus.enAttente ||
+                  _order!.status == OrderStatus.enPreparation;
+              final isAllowed = item.allowSubstitution;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                item.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              if (item.wasSubstituted) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange[50],
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: Colors.orange[200]!),
+                                  ),
+                                  child: Text(
+                                    'Substitué',
+                                    style: TextStyle(
+                                      color: Colors.orange[800],
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${item.quantity} x ${_formatMoney(item.price)}',
+                            style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                          ),
+                          if (item.wasSubstituted && item.originalPrice != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Text(
+                                'Prix d\'origine : ${_formatMoney(item.originalPrice!)}',
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontSize: 12,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            ),
+                          if (!item.wasSubstituted && isAllowed && isPendingOrPrep)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.swap_horiz, size: 16, color: Colors.blue[700]),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Substitution autorisée par le client',
+                                    style: TextStyle(
+                                      color: Colors.blue[700],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          _formatMoney(item.subtotal),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        if (!item.wasSubstituted && isAllowed && isPendingOrPrep) ...[
+                          const SizedBox(height: 6),
+                          OutlinedButton.icon(
+                            onPressed: () => _showSubstitutionDialog(index, item),
+                            icon: const Icon(Icons.swap_horiz, size: 14),
+                            label: const Text('Remplacer'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              side: BorderSide(color: Colors.blue[300]!),
+                              foregroundColor: Colors.blue[700],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ),
               );
             },
@@ -378,4 +489,266 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       },
     );
   }
+
+  void _showSubstitutionDialog(int index, OrderItem item) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        List<Map<String, dynamic>> substitutes = [];
+        bool loadingSubstitutes = true;
+        String? dialogError;
+
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            if (loadingSubstitutes) {
+              final auth = context.read<AuthProvider>();
+              context
+                  .read<OrderProvider>()
+                  .fetchProductSubstitutes(item.productId, auth.token!)
+                  .then((value) {
+                if (context.mounted) {
+                  setStateDialog(() {
+                    substitutes = value;
+                    loadingSubstitutes = false;
+                  });
+                }
+              }).catchError((e) {
+                if (context.mounted) {
+                  setStateDialog(() {
+                    dialogError = 'Erreur de chargement: $e';
+                    loadingSubstitutes = false;
+                  });
+                }
+              });
+            }
+
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: Row(
+                children: [
+                  const Icon(Icons.swap_horiz, color: Color(0xFF2563EB)),
+                  const SizedBox(width: 8),
+                  const Text('Substituer l\'article'),
+                ],
+              ),
+              content: SizedBox(
+                width: 600,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Article original à remplacer :',
+                                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  item.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                Text(
+                                  'Quantité commandée : ${item.quantity}',
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            _formatMoney(item.subtotal),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Alternatives de substitution (Génériques) :',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    if (loadingSubstitutes)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else if (dialogError != null)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Text(
+                            dialogError!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      )
+                    else if (substitutes.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: Column(
+                            children: [
+                              Icon(Icons.info_outline, size: 48, color: Colors.grey[300]),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Aucun produit générique/substitut trouvé pour cet article.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        constraints: const BoxConstraints(maxHeight: 250),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: substitutes.length,
+                          separatorBuilder: (context, index) => const Divider(),
+                          itemBuilder: (context, index) {
+                            final sub = substitutes[index];
+                            final subId = sub['_id'] as String;
+                            final subName = sub['name'] as String;
+                            final subPrice = (sub['sellingPrice'] as num).toDouble();
+                            final subStock = (sub['availableStock'] as num).toInt();
+                            final isStockSufficient = subStock >= item.quantity;
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          subName,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Prix: ${_formatMoney(subPrice)}',
+                                              style: TextStyle(
+                                                color: Colors.blue[800],
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 6,
+                                                vertical: 2,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: isStockSufficient
+                                                    ? Colors.green[50]
+                                                    : Colors.red[50],
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                'Stock: $subStock dispo',
+                                                style: TextStyle(
+                                                  color: isStockSufficient
+                                                      ? Colors.green[800]
+                                                      : Colors.red[800],
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  FilledButton(
+                                    onPressed: !isStockSufficient
+                                        ? null
+                                        : () async {
+                                            final auth = context.read<AuthProvider>();
+                                            final provider = context.read<OrderProvider>();
+                                            final success = await provider.substituteOrderItem(
+                                              orderId: _order!.id,
+                                              itemIndex: index,
+                                              substituteProductId: subId,
+                                              token: auth.token!,
+                                            );
+
+                                            if (!context.mounted) return;
+                                            Navigator.pop(context);
+
+                                            AppScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  success
+                                                      ? 'Article substitué avec succès par $subName.'
+                                                      : (provider.errorMessage ??
+                                                          'Échec de la substitution.'),
+                                                ),
+                                              ),
+                                            );
+
+                                            if (success) {
+                                              _loadDetails();
+                                            }
+                                          },
+                                    style: FilledButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
+                                      ),
+                                      minimumSize: Size.zero,
+                                    ),
+                                    child: const Text('Choisir'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Fermer'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 }
+

@@ -9,6 +9,7 @@ router.use(authMiddleware);
 
 router.post("/", requirePermission(PERMISSIONS.MAKE_SALE), saleController.createSale);
 router.get("/", requirePermission(PERMISSIONS.VIEW_SALES_HISTORY), saleController.getSales);
+router.get("/:id/receipt", requirePermission(PERMISSIONS.VIEW_SALES_HISTORY), saleController.getSaleReceiptPdf);
 router.patch("/:id/cancel", requirePermission(PERMISSIONS.CANCEL_SALE), saleController.cancelSale);
 
 module.exports = router;

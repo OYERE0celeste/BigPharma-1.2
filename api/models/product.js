@@ -30,7 +30,9 @@ const ProductSchema = new mongoose.Schema(
     lowStockThreshold: { type: Number, required: true, min: 0, default: 10 },
     minStockLevel: { type: Number, required: true, min: 0, default: 10 },
     stockQuantity: { type: Number, required: true, min: 0, default: 0 },
+    expirationAlertThreshold: { type: Number, required: true, min: 0, default: 90 }, // seuil d'alerte en jours
     lots: { type: [LotSchema], default: [] },
+    substitutes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     isActive: { type: Boolean, default: true },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -63,21 +65,20 @@ ProductSchema.virtual("expirationStatus").get(function () {
   if (!this.lots || this.lots.length === 0) return "OK";
 
   const now = new Date();
-  const thirtyDaysFromNow = new Date();
-  thirtyDaysFromNow.setDate(now.getDate() + 30);
+  const thresholdDays = this.expirationAlertThreshold || 90;
+  const alertThresholdDate = new Date();
+  alertThresholdDate.setDate(now.getDate() + thresholdDays);
 
   let hasExpired = false;
   let hasNearExpiration = false;
 
   for (const lot of this.lots) {
-    if ((lot.quantityAvailable || 0) > 0) {
-      if (new Date(lot.expirationDate) < now) {
-        hasExpired = true;
-        break;
-      }
-      if (new Date(lot.expirationDate) <= thirtyDaysFromNow) {
-        hasNearExpiration = true;
-      }
+    if (new Date(lot.expirationDate) < now) {
+      hasExpired = true;
+      break;
+    }
+    if (new Date(lot.expirationDate) <= alertThresholdDate) {
+      hasNearExpiration = true;
     }
   }
 

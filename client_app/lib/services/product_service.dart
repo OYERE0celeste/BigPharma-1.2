@@ -6,9 +6,15 @@ import 'api_service.dart';
 class ProductService {
   final ApiService _apiService = ApiService();
 
-  Future<List<Product>> getPopularProducts() async {
+  Future<List<Product>> getPopularProducts({String? search, String? category}) async {
     try {
-      final url = '${ApiConstants.products}?limit=4';
+      var url = '${ApiConstants.products}?limit=4';
+      if (search != null && search.isNotEmpty) {
+        url += '&search=${Uri.encodeComponent(search)}';
+      }
+      if (category != null && category.isNotEmpty && category != 'Tout') {
+        url += '&category=${Uri.encodeComponent(category)}';
+      }
       print('Fetching popular products from: $url');
       final response = await _apiService.get(url);
 
@@ -29,9 +35,15 @@ class ProductService {
     }
   }
 
-  Future<List<Product>> getNewProducts() async {
+  Future<List<Product>> getNewProducts({String? search, String? category}) async {
     try {
-      final url = '${ApiConstants.products}?limit=10&page=1';
+      var url = '${ApiConstants.products}?limit=10&page=1';
+      if (search != null && search.isNotEmpty) {
+        url += '&search=${Uri.encodeComponent(search)}';
+      }
+      if (category != null && category.isNotEmpty && category != 'Tout') {
+        url += '&category=${Uri.encodeComponent(category)}';
+      }
       print('Fetching new products from: $url');
       final response = await _apiService.get(url);
 

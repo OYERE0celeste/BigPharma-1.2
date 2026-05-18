@@ -11,6 +11,7 @@ import 'widgets/finance_filter_section.dart';
 import 'widgets/finance_transaction_table.dart';
 import 'widgets/finance_charts.dart';
 import 'widgets/finance_add_transaction_dialog.dart';
+import '../utils/pdf_export_helper.dart';
 
 /// Page principale de Finance & Comptabilité
 class PharmacyFinancePage extends StatelessWidget {
@@ -544,30 +545,32 @@ class _FinancePageContentState extends State<FinancePageContent> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.picture_as_pdf),
-                          tooltip: 'Export PDF',
-                          onPressed: () =>
+                          tooltip: 'Exporter en PDF',
+                          onPressed: () async {
+                            if (_filteredTransactions.isEmpty) {
                               AppScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Export PDF - Fonctionnalité à implémenter',
-                                  ),
-                                ),
-                              ),
-                        ),
-                        const SizedBox(width: 4),
-                        IconButton(
-                          icon: const Icon(Icons.table_chart),
-                          tooltip: 'Export Excel',
-                          onPressed: () {
+                                const SnackBar(content: Text('Aucune donnée à exporter.')),
+                              );
+                              return;
+                            }
                             AppScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Export Excel - Fonctionnalité à implémenter',
-                                ),
-                              ),
+                              const SnackBar(content: Text('Génération du PDF en cours...')),
                             );
+                            try {
+                              await PdfExportHelper.exportFinances(
+                                _filteredTransactions,
+                                'Rapport des Finances',
+                              );
+                            } catch (e) {
+                              if (context.mounted) {
+                                AppScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Erreur lors de la génération du PDF.')),
+                                );
+                              }
+                            }
                           },
                         ),
+                        const SizedBox(width: 4),
                         const SizedBox(width: 4),
                         IconButton(
                           icon: const Icon(Icons.refresh),

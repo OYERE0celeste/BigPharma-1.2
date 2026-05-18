@@ -127,4 +127,21 @@ class FinanceTransactionModel {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  String get paymentMethodLabel {
+    switch (paymentMethod) {
+      case 'cash':
+        return 'Espèces';
+      case 'mobile_money':
+        return 'Mobile Money';
+      case 'card':
+        return 'Carte Bancaire';
+      case 'insurance':
+        return 'Assurance';
+      case 'bank_transfer':
+        return 'Virement';
+      default:
+        return 'Autre';
+    }
+  }
 }

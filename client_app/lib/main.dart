@@ -120,6 +120,11 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) {
+          if (!auth.isInitialized) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
           return auth.isAuthenticated ? const HomePage() : const LoginPage();
         },
       ),

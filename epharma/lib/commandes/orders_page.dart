@@ -449,21 +449,36 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            headingRowColor: MaterialStateProperty.all(Colors.grey[50]),
-            columns: const [
-              DataColumn(label: Text('N° Commande')),
-              DataColumn(label: Text('Client')),
-              DataColumn(label: Text('Date')),
-              DataColumn(label: Text('Total')),
-              DataColumn(label: Text('Statut')),
-
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: provider.orders.map(_buildOrderRow).toList(),
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: DataTable(
+                  headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                  columnSpacing: 24,
+                  horizontalMargin: 24,
+                  dataRowMinHeight: 56,
+                  dataRowMaxHeight: 64,
+                  headingRowHeight: 56,
+                  headingTextStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  columns: const [
+                    DataColumn(label: Text('N° Commande')),
+                    DataColumn(label: Text('Client')),
+                    DataColumn(label: Text('Date')),
+                    DataColumn(label: Text('Total')),
+                    DataColumn(label: Text('Statut')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: provider.orders.map(_buildOrderRow).toList(),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

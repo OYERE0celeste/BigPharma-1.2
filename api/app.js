@@ -169,6 +169,7 @@ apiV1.use("/dashboard", require("./routes/dashboard"));
 apiV1.use("/mouvements", require("./routes/mouvements"));
 apiV1.use("/settings", require("./routes/settings"));
 apiV1.use("/notifications", require("./routes/notifications"));
+apiV1.use("/admin", require("./routes/admin"));
 
 
 app.use("/api/v1", apiV1);

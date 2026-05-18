@@ -267,12 +267,14 @@ class SidebarEntry {
   final String label;
   final IconData icon;
   final List<String> permissions;
+  final bool showInSidebar;
 
   const SidebarEntry({
     required this.key,
     required this.label,
     required this.icon,
     required this.permissions,
+    this.showInSidebar = true,
   });
 }
 
@@ -333,17 +335,20 @@ const List<SidebarEntry> kSidebarEntries = [
     label: 'Roles & permissions',
     icon: Icons.admin_panel_settings_outlined,
     permissions: [AppPermission.managePermissions],
+    showInSidebar: false,
   ),
   SidebarEntry(
     key: 'Users',
     label: 'Gestion utilisateurs',
     icon: Icons.manage_accounts_outlined,
     permissions: [AppPermission.manageUsers],
+    showInSidebar: false,
   ),
   SidebarEntry(
     key: 'Activity',
     label: 'Logs systeme',
     icon: Icons.history_rounded,
     permissions: [AppPermission.viewSystemLogs],
+    showInSidebar: false,
   ),
 ];
