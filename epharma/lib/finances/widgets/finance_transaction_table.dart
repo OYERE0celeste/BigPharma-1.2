@@ -3,6 +3,7 @@ import 'package:epharma/models/finance_model.dart';
 import 'package:epharma/services/finance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:epharma/widgets/app_notification.dart';
+import '../../widgets/bp_theme.dart';
 //import '../models/finance_model.dart';
 //import '../services/finance_service.dart';
 
@@ -32,15 +33,18 @@ class FinanceTransactionTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final startIndex = currentPage * rowsPerPage;
-    final endIndex = (currentPage + 1) * rowsPerPage;
-    final displayedTransactions = transactions.sublist(
-      startIndex,
-      endIndex > transactions.length ? transactions.length : endIndex,
-    );
+    // Clamp indices to avoid RangeError when data shrinks or page is out of bounds
+    final startIndex = (currentPage * rowsPerPage).clamp(0, transactions.length);
+    final endIndex = (startIndex + rowsPerPage).clamp(0, transactions.length);
+    final displayedTransactions = transactions.sublist(startIndex, endIndex);
 
     return Card(
       elevation: 4,
+      color: BpColors.cardBg,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: BpColors.borderStrong),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,7 +52,7 @@ class FinanceTransactionTable extends StatelessWidget {
             padding: EdgeInsets.all(16.0),
             child: Text(
               'Flux Financiers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
             ),
           ),
           LayoutBuilder(
@@ -56,11 +60,13 @@ class FinanceTransactionTable extends StatelessWidget {
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  constraints: BoxConstraints(
+                    minWidth: constraints.maxWidth.isFinite ? constraints.maxWidth : 0.0,
+                  ),
                   child: DataTable(
                     sortColumnIndex: sortColumnIndex,
                     sortAscending: sortAscending,
-                    headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                    headingRowColor: WidgetStateProperty.all(BpColors.surface),
                     columnSpacing: 24,
                     horizontalMargin: 24,
                     dataRowMinHeight: 56,
@@ -68,36 +74,36 @@ class FinanceTransactionTable extends StatelessWidget {
                     headingRowHeight: 56,
                     headingTextStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: BpColors.textPrimary,
                     ),
                     columns: [
-                DataColumn(label: const Text('Date'), onSort: onSort),
-                DataColumn(label: const Text('Type'), onSort: onSort),
-                DataColumn(label: const Text('Référence'), onSort: onSort),
-                DataColumn(label: const Text('Source'), onSort: onSort),
-                DataColumn(label: const Text('Description'), onSort: onSort),
+                DataColumn(label: const Text('Date', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                DataColumn(label: const Text('Type', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                DataColumn(label: const Text('Référence', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                DataColumn(label: const Text('Source', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                DataColumn(label: const Text('Description', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
                 DataColumn(
-                  label: const Text('Montant'),
+                  label: const Text('Montant', style: TextStyle(color: BpColors.textPrimary)),
                   numeric: true,
                   onSort: onSort,
                 ),
-                DataColumn(label: const Text('Entrée/Sortie'), onSort: onSort),
-                DataColumn(label: const Text('Mode paiement'), onSort: onSort),
-                DataColumn(label: const Text('Employé'), onSort: onSort),
-                const DataColumn(label: Text('Action')),
+                DataColumn(label: const Text('Entrée/Sortie', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                DataColumn(label: const Text('Mode paiement', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                DataColumn(label: const Text('Employé', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
+                const DataColumn(label: Text('Action', style: TextStyle(color: BpColors.textPrimary))),
               ],
               rows: displayedTransactions.map((transaction) {
                 return DataRow(
                   cells: [
                     DataCell(
-                      Text(FinanceService.formatDate(transaction.dateTime)),
+                      Text(FinanceService.formatDate(transaction.dateTime), style: const TextStyle(color: BpColors.textSecondary)),
                     ),
-                    DataCell(Text(transaction.type)),
-                    DataCell(Text(transaction.reference)),
-                    DataCell(Text(transaction.sourceModule)),
-                    DataCell(Text(transaction.description)),
+                    DataCell(Text(transaction.type, style: const TextStyle(color: BpColors.textSecondary))),
+                    DataCell(Text(transaction.reference, style: const TextStyle(color: BpColors.textSecondary))),
+                    DataCell(Text(transaction.sourceModule, style: const TextStyle(color: BpColors.textSecondary))),
+                    DataCell(Text(transaction.description, style: const TextStyle(color: BpColors.textSecondary))),
                     DataCell(
-                      Text(FinanceService.formatAmount(transaction.amount)),
+                      Text(FinanceService.formatAmount(transaction.amount), style: const TextStyle(color: BpColors.textSecondary)),
                     ),
                     DataCell(
                       Text(
@@ -110,11 +116,11 @@ class FinanceTransactionTable extends StatelessWidget {
                         ),
                       ),
                     ),
-                    DataCell(Text(transaction.paymentMethod)),
-                    DataCell(Text(transaction.employeeName)),
+                    DataCell(Text(transaction.paymentMethod, style: const TextStyle(color: BpColors.textSecondary))),
+                    DataCell(Text(transaction.employeeName, style: const TextStyle(color: BpColors.textSecondary))),
                     DataCell(
                       IconButton(
-                        icon: const Icon(Icons.visibility),
+                        icon: const Icon(Icons.visibility, color: BpColors.textPrimary),
                         onPressed: () {
                           if (onViewDetails != null) {
                             onViewDetails!(transaction);
@@ -173,16 +179,16 @@ class _PaginationControls extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('$totalCount transactions'),
+          Text('$totalCount transactions', style: const TextStyle(color: BpColors.textSecondary)),
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_left),
+                icon: const Icon(Icons.chevron_left, color: BpColors.textPrimary),
                 onPressed: currentPage > 0 ? onPrevious : null,
               ),
-              Text('${currentPage + 1}'),
+              Text('${currentPage + 1}', style: const TextStyle(color: BpColors.textPrimary, fontWeight: FontWeight.bold)),
               IconButton(
-                icon: const Icon(Icons.chevron_right),
+                icon: const Icon(Icons.chevron_right, color: BpColors.textPrimary),
                 onPressed: (currentPage + 1) * rowsPerPage < totalCount
                     ? onNext
                     : null,

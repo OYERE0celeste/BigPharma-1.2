@@ -1,10 +1,18 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
+
+import '../models/order_invoice_model.dart';
 import '../models/order_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
+import '../services/order_invoice_service.dart';
+import '../services/receipt_export_service.dart';
+import '../widgets/app_notification.dart';
+import '../widgets/bp_theme.dart';
+import '../widgets/detail_widgets.dart';
+import '../widgets/receipt_ticket.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final String orderId;
@@ -16,16 +24,21 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  static const Duration _autoRefreshInterval = Duration(seconds: 30);
+
   OrderModel? _order;
+  OrderInvoiceModel? _invoice;
   List<OrderTimelineEntry> _timeline = [];
   bool _isLoading = true;
+  bool _isDownloading = false;
+  String? _invoiceErrorMessage;
   Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _loadDetails();
-    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+    _refreshTimer = Timer.periodic(_autoRefreshInterval, (_) {
       if (mounted) {
         _loadDetails();
       }
@@ -40,18 +53,33 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   Future<void> _loadDetails() async {
     final authProvider = context.read<AuthProvider>();
-    final data = await context.read<OrderProvider>().fetchOrderDetails(
+    final token = authProvider.token;
+    if (token == null) {
+      return;
+    }
+
+    final details = await context.read<OrderProvider>().fetchOrderDetails(
       widget.orderId,
-      authProvider.token!,
+      token,
     );
+
+    OrderInvoiceModel? invoice;
+    String? invoiceError;
+    try {
+      invoice = await OrderInvoiceService.fetchOrderInvoice(widget.orderId);
+    } catch (error) {
+      invoiceError = error.toString();
+    }
 
     if (!mounted) {
       return;
     }
 
     setState(() {
-      _order = data?['order'] as OrderModel?;
-      _timeline = (data?['timeline'] as List<OrderTimelineEntry>?) ?? [];
+      _order = details?['order'] as OrderModel?;
+      _timeline = (details?['timeline'] as List<OrderTimelineEntry>?) ?? [];
+      _invoice = invoice;
+      _invoiceErrorMessage = invoiceError;
       _isLoading = false;
     });
   }
@@ -61,70 +89,239 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   String _formatTimestamp(DateTime dt) {
     final hour = dt.hour.toString().padLeft(2, '0');
     final minute = dt.minute.toString().padLeft(2, '0');
-    return '${dt.day}/${dt.month}/${dt.year} à $hour:$minute';
+    return '${dt.day}/${dt.month}/${dt.year} a $hour:$minute';
+  }
+
+  Future<void> _downloadInvoice() async {
+    final order = _order;
+    if (order == null || _isDownloading) {
+      return;
+    }
+
+    final receipt = _invoice != null
+        ? ReceiptTicketFactory.fromOrderInvoice(
+            _invoice!,
+            operatorName: order.userName,
+          )
+        : ReceiptTicketFactory.fromOrder(order);
+
+    setState(() => _isDownloading = true);
+    try {
+      await ReceiptExportService.downloadReceipt(
+        receipt,
+        filename: '${receipt.invoiceNumber}.pdf',
+      );
+      if (!mounted) {
+        return;
+      }
+      AppScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Facture prete pour telechargement.')),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      AppScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Impossible de telecharger la facture: $error')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isDownloading = false);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator(color: BpColors.accent)),
+      );
     }
 
     if (_order == null) {
-      return const Scaffold(body: Center(child: Text('Commande non trouvée.')));
+      return const Scaffold(body: Center(child: Text('Commande non trouvee.')));
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Commande ${_order!.orderNumber}'),
         actions: [
+          IconButton(
+            icon: _isDownloading
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.download_outlined),
+            onPressed: _isDownloading ? null : _downloadInvoice,
+            tooltip: 'Telecharger la facture',
+          ),
           if (_order!.availableNextStatuses.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.edit_note),
               onPressed: _showStatusUpdateDialog,
-              tooltip: 'Mettre à jour le statut',
+              tooltip: 'Mettre a jour le statut',
             ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildOrderInfoCards(),
-            const SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(flex: 2, child: _buildItemsList()),
-                const SizedBox(width: 24),
-                Expanded(flex: 1, child: _buildTimeline()),
-              ],
-            ),
-          ],
+      body: Container(
+        color: BpColors.scaffoldSecondary,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildInvoicePreviewSection(),
+              const SizedBox(height: 24),
+              _buildOrderInfoCards(),
+              const SizedBox(height: 24),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth < 1100) {
+                    return Column(
+                      children: [
+                        _buildItemsList(),
+                        const SizedBox(height: 24),
+                        _buildTimeline(),
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 2, child: _buildItemsList()),
+                      const SizedBox(width: 24),
+                      Expanded(child: _buildTimeline()),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Widget _buildInvoicePreviewSection() {
+    final receipt = _invoice != null
+        ? ReceiptTicketFactory.fromOrderInvoice(
+            _invoice!,
+            operatorName: _order!.userName,
+          )
+        : ReceiptTicketFactory.fromOrder(_order!);
+
+    final previewLabel = _invoice != null
+        ? 'Facture disponible'
+        : 'Apercu facture / commande';
+    final helperText = _invoice != null
+        ? 'Le ticket reprend le format caisse pour consultation ou telechargement.'
+        : 'La facture definitive n est pas encore synchronisee. Un apercu de commande est affiche.';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: BpColors.surfaceStrong,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: BpColors.borderStrong),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      previewLabel,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: BpColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      helperText,
+                      style: const TextStyle(color: BpColors.textSecondary),
+                    ),
+                    if (_invoiceErrorMessage != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        _invoiceErrorMessage!,
+                        style: const TextStyle(color: BpColors.warning),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              OutlinedButton.icon(
+                onPressed: _isDownloading ? null : _downloadInvoice,
+                icon: const Icon(Icons.download_outlined, size: 18),
+                label: const Text('Telecharger'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Center(child: ReceiptTicket(data: receipt)),
+        ],
+      ),
+    );
+  }
+
   Widget _buildOrderInfoCards() {
-    return Row(
-      children: [
-        _buildInfoCard('Client', _order!.clientName, Icons.person_outline),
-        const SizedBox(width: 16),
-        _buildInfoCard(
-          'Statut',
-          _order!.status.label,
-          Icons.info_outline,
-          color: _order!.status.color,
-        ),
-        const SizedBox(width: 16),
-        _buildInfoCard(
-          'Total',
-          _formatMoney(_order!.totalPrice),
-          Icons.account_balance_wallet_outlined,
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cards = [
+          DetailMetricCard(
+            icon: Icons.person_outline,
+            label: 'Client',
+            value: _order!.clientName,
+            tone: BpColors.surface.withOpacity(0.65),
+          ),
+          DetailMetricCard(
+            icon: Icons.info_outline,
+            label: 'Statut',
+            value: _order!.status.label,
+            tone: _order!.status.color.withOpacity(0.16),
+          ),
+          DetailMetricCard(
+            icon: Icons.account_balance_wallet_outlined,
+            label: 'Total',
+            value: _formatMoney(_order!.totalPrice),
+            tone: BpColors.accent,
+          ),
+        ];
+
+        if (constraints.maxWidth < 900) {
+          return Column(
+            children: [
+              for (var index = 0; index < cards.length; index++) ...[
+                cards[index],
+                if (index < cards.length - 1) const SizedBox(height: 12),
+              ],
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(child: cards[0]),
+            const SizedBox(width: 16),
+            Expanded(child: cards[1]),
+            const SizedBox(width: 16),
+            Expanded(child: cards[2]),
+          ],
+        );
+      },
     );
   }
 
@@ -134,68 +331,76 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     IconData icon, {
     Color? color,
   }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color ?? Colors.grey[600]),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: BpColors.surfaceStrong,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: BpColors.borderStrong),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color ?? BpColors.textSecondary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: BpColors.textSecondary,
+                    fontSize: 12,
                   ),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: BpColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildItemsList() {
-    final canSubstitute = [_order!.status == OrderStatus.enAttente || _order!.status == OrderStatus.enPreparation];
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        color: BpColors.surfaceStrong,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: BpColors.borderStrong),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Produits commandés',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'Produits commandes',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: BpColors.textPrimary,
+            ),
           ),
-          const Divider(),
+          const SizedBox(height: 12),
+          const Divider(color: BpColors.border),
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _order!.items.length,
-            separatorBuilder: (context, index) => const Divider(),
+            separatorBuilder: (context, index) =>
+                const Divider(color: BpColors.border),
             itemBuilder: (context, index) {
               final item = _order!.items[index];
-              final isPendingOrPrep = _order!.status == OrderStatus.enAttente ||
+              final isPendingOrPrep =
+                  _order!.status == OrderStatus.enAttente ||
                   _order!.status == OrderStatus.enPreparation;
               final isAllowed = item.allowSubstitution;
 
@@ -208,69 +413,84 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
                                 item.name,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
+                                  color: BpColors.textPrimary,
                                 ),
                               ),
-                              if (item.wasSubstituted) ...[
-                                const SizedBox(width: 8),
+                              if (item.wasSubstituted)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
-                                    vertical: 2,
+                                    vertical: 3,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.orange[50],
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(color: Colors.orange[200]!),
+                                    color: BpColors.warning.withOpacity(0.12),
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(
+                                      color: BpColors.warning.withOpacity(0.45),
+                                    ),
                                   ),
-                                  child: Text(
-                                    'Substitué',
+                                  child: const Text(
+                                    'Substitue',
                                     style: TextStyle(
-                                      color: Colors.orange[800],
+                                      color: BpColors.warning,
                                       fontSize: 11,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                 ),
-                              ],
                             ],
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${item.quantity} x ${_formatMoney(item.price)}',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                            style: const TextStyle(
+                              color: BpColors.textSecondary,
+                              fontSize: 13,
+                            ),
                           ),
                           if (item.wasSubstituted && item.originalPrice != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 2),
                               child: Text(
-                                'Prix d\'origine : ${_formatMoney(item.originalPrice!)}',
-                                style: TextStyle(
-                                  color: Colors.grey[500],
+                                'Prix d origine : ${_formatMoney(item.originalPrice!)}',
+                                style: const TextStyle(
+                                  color: BpColors.textHint,
                                   fontSize: 12,
                                   decoration: TextDecoration.lineThrough,
                                 ),
                               ),
                             ),
-                          if (!item.wasSubstituted && isAllowed && isPendingOrPrep)
+                          if (!item.wasSubstituted &&
+                              isAllowed &&
+                              isPendingOrPrep)
                             Padding(
                               padding: const EdgeInsets.only(top: 6),
                               child: Row(
-                                children: [
-                                  Icon(Icons.swap_horiz, size: 16, color: Colors.blue[700]),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    'Substitution autorisée par le client',
-                                    style: TextStyle(
-                                      color: Colors.blue[700],
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
+                                children: const [
+                                  Icon(
+                                    Icons.swap_horiz,
+                                    size: 16,
+                                    color: BpColors.accent,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      'Substitution autorisee par le client',
+                                      style: TextStyle(
+                                        color: BpColors.accent,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -288,12 +508,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: BpColors.textPrimary,
                           ),
                         ),
-                        if (!item.wasSubstituted && isAllowed && isPendingOrPrep) ...[
+                        if (!item.wasSubstituted &&
+                            isAllowed &&
+                            isPendingOrPrep) ...[
                           const SizedBox(height: 6),
                           OutlinedButton.icon(
-                            onPressed: () => _showSubstitutionDialog(index, item),
+                            onPressed: () =>
+                                _showSubstitutionDialog(index, item),
                             icon: const Icon(Icons.swap_horiz, size: 14),
                             label: const Text('Remplacer'),
                             style: OutlinedButton.styleFrom(
@@ -303,8 +527,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               ),
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              side: BorderSide(color: Colors.blue[300]!),
-                              foregroundColor: Colors.blue[700],
                             ),
                           ),
                         ],
@@ -315,7 +537,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               );
             },
           ),
-          const Divider(),
+          const Divider(color: BpColors.border),
           Align(
             alignment: Alignment.centerRight,
             child: Text(
@@ -323,7 +545,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2563EB),
+                color: BpColors.accent,
               ),
             ),
           ),
@@ -336,16 +558,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        color: BpColors.surfaceStrong,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: BpColors.borderStrong),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Historique',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: BpColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 16),
           ..._timeline.map(_buildTimelineItem),
@@ -368,7 +594,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 shape: BoxShape.circle,
               ),
             ),
-            Container(width: 2, height: 40, color: Colors.grey[200]),
+            Container(width: 2, height: 40, color: BpColors.borderStrong),
           ],
         ),
         const SizedBox(width: 12),
@@ -378,11 +604,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             children: [
               Text(
                 entry.status.label,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: BpColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 '${entry.userName} - ${_formatTimestamp(entry.timestamp)}',
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                style: const TextStyle(
+                  color: BpColors.textSecondary,
+                  fontSize: 12,
+                ),
               ),
               if (entry.note != null && entry.note!.isNotEmpty)
                 Padding(
@@ -390,6 +622,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   child: Text(
                     entry.note!,
                     style: const TextStyle(
+                      color: BpColors.textSecondary,
                       fontStyle: FontStyle.italic,
                       fontSize: 13,
                     ),
@@ -413,7 +646,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Mettre à jour le statut'),
+          title: const Text('Mettre a jour le statut'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -434,7 +667,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               TextField(
                 controller: noteController,
                 decoration: const InputDecoration(
-                  labelText: 'Note (optionnel)',
+                  labelText: 'Note optionnelle',
                 ),
                 maxLines: 3,
               ),
@@ -471,9 +704,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   SnackBar(
                     content: Text(
                       success
-                          ? 'Statut mis à jour.'
+                          ? 'Statut mis a jour.'
                           : (provider.errorMessage ??
-                                'Échec de la mise à jour.'),
+                                'Echec de la mise a jour.'),
                     ),
                   ),
                 );
@@ -490,7 +723,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
-  void _showSubstitutionDialog(int index, OrderItem item) {
+  void _showSubstitutionDialog(int orderItemIndex, OrderItem item) {
     showDialog<void>(
       context: context,
       builder: (context) {
@@ -506,29 +739,32 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   .read<OrderProvider>()
                   .fetchProductSubstitutes(item.productId, auth.token!)
                   .then((value) {
-                if (context.mounted) {
-                  setStateDialog(() {
-                    substitutes = value;
-                    loadingSubstitutes = false;
+                    if (context.mounted) {
+                      setStateDialog(() {
+                        substitutes = value;
+                        loadingSubstitutes = false;
+                      });
+                    }
+                  })
+                  .catchError((e) {
+                    if (context.mounted) {
+                      setStateDialog(() {
+                        dialogError = 'Erreur de chargement: $e';
+                        loadingSubstitutes = false;
+                      });
+                    }
                   });
-                }
-              }).catchError((e) {
-                if (context.mounted) {
-                  setStateDialog(() {
-                    dialogError = 'Erreur de chargement: $e';
-                    loadingSubstitutes = false;
-                  });
-                }
-              });
             }
 
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               title: Row(
-                children: [
-                  const Icon(Icons.swap_horiz, color: Color(0xFF2563EB)),
-                  const SizedBox(width: 8),
-                  const Text('Substituer l\'article'),
+                children: const [
+                  Icon(Icons.swap_horiz, color: BpColors.accent),
+                  SizedBox(width: 8),
+                  Text('Substituer l article'),
                 ],
               ),
               content: SizedBox(
@@ -540,9 +776,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey[200]!),
+                        color: BpColors.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: BpColors.borderStrong),
                       ),
                       child: Row(
                         children: [
@@ -551,8 +787,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Article original à remplacer :',
-                                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  'Article original a remplacer :',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: BpColors.textSecondary,
+                                  ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -560,10 +799,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
+                                    color: BpColors.textPrimary,
                                   ),
                                 ),
                                 Text(
-                                  'Quantité commandée : ${item.quantity}',
+                                  'Quantite commandee : ${item.quantity}',
                                   style: const TextStyle(fontSize: 13),
                                 ),
                               ],
@@ -574,6 +814,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
+                              color: BpColors.textPrimary,
                             ),
                           ),
                         ],
@@ -581,15 +822,21 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Alternatives de substitution (Génériques) :',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      'Alternatives de substitution :',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: BpColors.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     if (loadingSubstitutes)
                       const Center(
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 24),
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            color: BpColors.accent,
+                          ),
                         ),
                       )
                     else if (dialogError != null)
@@ -598,7 +845,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Text(
                             dialogError!,
-                            style: const TextStyle(color: Colors.red),
+                            style: const TextStyle(color: BpColors.error),
                           ),
                         ),
                       )
@@ -607,31 +854,38 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Column(
-                            children: [
-                              Icon(Icons.info_outline, size: 48, color: Colors.grey[300]),
-                              const SizedBox(height: 8),
-                              const Text(
-                                'Aucun produit générique/substitut trouvé pour cet article.',
+                            children: const [
+                              Icon(
+                                Icons.info_outline,
+                                size: 48,
+                                color: BpColors.textHint,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Aucun substitut trouve pour cet article.',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.grey),
+                                style: TextStyle(color: BpColors.textSecondary),
                               ),
                             ],
                           ),
                         ),
                       )
                     else
-                      Container(
+                      ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 250),
                         child: ListView.separated(
                           shrinkWrap: true,
                           itemCount: substitutes.length,
-                          separatorBuilder: (context, index) => const Divider(),
+                          separatorBuilder: (context, index) =>
+                              const Divider(color: BpColors.border),
                           itemBuilder: (context, index) {
                             final sub = substitutes[index];
                             final subId = sub['_id'] as String;
                             final subName = sub['name'] as String;
-                            final subPrice = (sub['sellingPrice'] as num).toDouble();
-                            final subStock = (sub['availableStock'] as num).toInt();
+                            final subPrice = (sub['sellingPrice'] as num)
+                                .toDouble();
+                            final subStock = (sub['availableStock'] as num)
+                                .toInt();
                             final isStockSufficient = subStock >= item.quantity;
 
                             return Padding(
@@ -640,44 +894,51 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           subName,
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
+                                            color: BpColors.textPrimary,
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        Row(
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
                                           children: [
                                             Text(
                                               'Prix: ${_formatMoney(subPrice)}',
-                                              style: TextStyle(
-                                                color: Colors.blue[800],
+                                              style: const TextStyle(
+                                                color: BpColors.accent,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
-                                            const SizedBox(width: 8),
                                             Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                horizontal: 6,
-                                                vertical: 2,
-                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
                                               decoration: BoxDecoration(
                                                 color: isStockSufficient
-                                                    ? Colors.green[50]
-                                                    : Colors.red[50],
-                                                borderRadius: BorderRadius.circular(4),
+                                                    ? BpColors.success
+                                                          .withOpacity(0.12)
+                                                    : BpColors.error
+                                                          .withOpacity(0.12),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
                                               ),
                                               child: Text(
                                                 'Stock: $subStock dispo',
                                                 style: TextStyle(
                                                   color: isStockSufficient
-                                                      ? Colors.green[800]
-                                                      : Colors.red[800],
+                                                      ? BpColors.success
+                                                      : BpColors.error,
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -693,25 +954,33 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                     onPressed: !isStockSufficient
                                         ? null
                                         : () async {
-                                            final auth = context.read<AuthProvider>();
-                                            final provider = context.read<OrderProvider>();
-                                            final success = await provider.substituteOrderItem(
-                                              orderId: _order!.id,
-                                              itemIndex: index,
-                                              substituteProductId: subId,
-                                              token: auth.token!,
-                                            );
+                                            final auth = context
+                                                .read<AuthProvider>();
+                                            final provider = context
+                                                .read<OrderProvider>();
+                                            final success = await provider
+                                                .substituteOrderItem(
+                                                  orderId: _order!.id,
+                                                  itemIndex: orderItemIndex,
+                                                  substituteProductId: subId,
+                                                  token: auth.token!,
+                                                );
 
-                                            if (!context.mounted) return;
+                                            if (!context.mounted) {
+                                              return;
+                                            }
                                             Navigator.pop(context);
 
-                                            AppScaffoldMessenger.of(context).showSnackBar(
+                                            AppScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   success
-                                                      ? 'Article substitué avec succès par $subName.'
-                                                      : (provider.errorMessage ??
-                                                          'Échec de la substitution.'),
+                                                      ? 'Article substitue par $subName.'
+                                                      : (provider
+                                                                .errorMessage ??
+                                                            'Echec de la substitution.'),
                                                 ),
                                               ),
                                             );
@@ -751,4 +1020,3 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 }
-

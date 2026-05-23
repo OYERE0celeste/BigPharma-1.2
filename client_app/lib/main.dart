@@ -3,6 +3,8 @@ import 'package:client_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'constants/strings.dart';
+import 'widgets/bp_theme.dart';
 import 'services/cart_provider.dart';
 import 'services/auth_provider.dart';
 import 'services/profile_provider.dart';
@@ -39,22 +41,26 @@ void main() {
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return Material(
       child: Container(
-        color: Colors.white,
+        color: BpColors.scaffold,
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const Icon(Icons.error_outline, color: BpColors.error, size: 48),
             const SizedBox(height: 16),
             const Text(
               'Oups ! Une erreur est survenue.',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: BpColors.textPrimary,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               details.exception.toString(),
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600]),
+              style: const TextStyle(color: BpColors.textSecondary),
             ),
           ],
         ),
@@ -92,38 +98,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BigPharma',
+      title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       navigatorKey: AppNotificationService.navigatorKey,
-      builder: (context, child) =>
-          AppNotificationHost(child: child ?? const SizedBox.shrink()),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2E7D62),
-          primary: const Color(0xFF2E7D62),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-        fontFamily: 'sans-serif',
-        scaffoldBackgroundColor: Colors.grey[50],
+      builder: (context, child) => AppNotificationHost(
+        child: BpDecoratedBackground(child: child ?? const SizedBox.shrink()),
       ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2E7D62),
-          primary: const Color(0xFF2E7D62),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-        fontFamily: 'sans-serif',
-        scaffoldBackgroundColor: const Color(0xFF121212),
-      ),
-      themeMode: ThemeMode.system,
+      theme: BpTheme.materialTheme(),
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) {
           if (!auth.isInitialized) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
+            return const BpAuthLoadingScreen();
           }
           return auth.isAuthenticated ? const HomePage() : const LoginPage();
         },

@@ -6,6 +6,7 @@ import '../providers/auth_provider.dart';
 import '../providers/finance_provider.dart';
 import '../security/rbac.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
 import 'widgets/finance_summary_cards.dart';
 import 'widgets/finance_filter_section.dart';
 import 'widgets/finance_transaction_table.dart';
@@ -61,7 +62,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
   }
 
   Future<void> _reloadTransactions() async {
-    await context.read<FinanceProvider>().loadTransactions();
+    await context.read<FinanceProvider>().loadTransactions(forceRefresh: true);
     if (!mounted) return;
     _applyFilters();
   }
@@ -314,13 +315,14 @@ class _FinancePageContentState extends State<FinancePageContent> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
+                            color: BpColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Suivi des revenus, dépenses et trésorerie',
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: BpColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -336,11 +338,13 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               _searchQuery = value;
                               _applyFilters();
                             },
+                            style: const TextStyle(color: BpColors.textPrimary),
                             decoration: InputDecoration(
                               hintText: 'Recherche...',
-                              prefixIcon: const Icon(Icons.search, size: 20),
+                              hintStyle: const TextStyle(color: BpColors.textHint),
+                              prefixIcon: const Icon(Icons.search, size: 20, color: BpColors.textSecondary),
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: BpColors.cardBg,
                               isDense: true,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -348,8 +352,14 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade300,
+                                borderSide: const BorderSide(
+                                  color: BpColors.borderStrong,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: BpColors.border,
                                 ),
                               ),
                             ),
@@ -359,19 +369,20 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: BpColors.cardBg,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey.shade300),
+                            border: Border.all(color: BpColors.borderStrong),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               hint: const Text(
                                 'Type',
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(fontSize: 14, color: BpColors.textSecondary),
                               ),
                               value: _selectedType,
+                              dropdownColor: BpColors.surface,
                               style: const TextStyle(
-                                color: Colors.black87,
+                                color: BpColors.textPrimary,
                                 fontSize: 14,
                               ),
                               items: ['Vente', 'Retour', 'Approvisionnement']
@@ -443,13 +454,14 @@ class _FinancePageContentState extends State<FinancePageContent> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
+                            color: BpColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Suivi des revenus, dépenses et trésorerie',
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: BpColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -471,11 +483,13 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 _searchQuery = value;
                                 _applyFilters();
                               },
+                              style: const TextStyle(color: BpColors.textPrimary),
                               decoration: InputDecoration(
                                 hintText: 'Recherche globale...',
-                                prefixIcon: const Icon(Icons.search, size: 20),
+                                hintStyle: const TextStyle(color: BpColors.textHint),
+                                prefixIcon: const Icon(Icons.search, size: 20, color: BpColors.textSecondary),
                                 filled: true,
-                                fillColor: Colors.white,
+                                fillColor: BpColors.cardBg,
                                 isDense: true,
                                 contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 12,
@@ -483,14 +497,14 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                    color: Colors.grey.shade300,
+                                  borderSide: const BorderSide(
+                                    color: BpColors.borderStrong,
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                    color: Colors.grey.shade300,
+                                  borderSide: const BorderSide(
+                                    color: BpColors.border,
                                   ),
                                 ),
                               ),
@@ -501,19 +515,20 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: BpColors.cardBg,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey.shade300),
+                            border: Border.all(color: BpColors.borderStrong),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               hint: const Text(
                                 'Type',
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(fontSize: 14, color: BpColors.textSecondary),
                               ),
                               value: _selectedType,
+                              dropdownColor: BpColors.surface,
                               style: const TextStyle(
-                                color: Colors.black87,
+                                color: BpColors.textPrimary,
                                 fontSize: 14,
                               ),
                               items: ['Vente', 'Retour', 'Approvisionnement']

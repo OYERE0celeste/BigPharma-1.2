@@ -23,7 +23,8 @@ const ProductSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 200 },
     category: { type: String, required: true, trim: true },
     description: { type: String, trim: true, maxlength: 500 },
-    barcode: { type: String, trim: true, maxlength: 50 },
+    barcode: { type: String, trim: true, maxlength: 50, sparse: true },
+    qrCode: { type: String, trim: true, maxlength: 500, sparse: true },
 
     purchasePrice: { type: Number, required: true, min: 0 },
     sellingPrice: { type: Number, required: true, min: 0 },
@@ -103,4 +104,4 @@ ProductSchema.index({ name: 1 });
 ProductSchema.index({ category: 1 });
 ProductSchema.index({ "lots.expirationDate": 1 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = mongoose.models.Product || mongoose.model("Product", ProductSchema);

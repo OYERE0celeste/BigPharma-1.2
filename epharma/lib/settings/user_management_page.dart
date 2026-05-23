@@ -531,7 +531,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       filled: true,
       fillColor: Colors.grey[50],
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

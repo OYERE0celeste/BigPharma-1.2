@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'bp_theme.dart';
+
 class SettingsTheme {
   // Dimensions
   static const double dialogMaxWidth = 850.0;
@@ -8,12 +10,12 @@ class SettingsTheme {
   static const double sidePadding = 24.0;
 
   // Colors (Curated for premium look)
-  static const Color primary = Color(0xFF2E7D62);
-  static const Color accent = Color(0xFFE3F2FD);
-  static const Color background = Colors.white;
-  static const Color textPrimary = Color(0xFF1E293B);
-  static const Color textSecondary = Color(0xFF64748B);
-  static const Color divider = Color(0xFFE2E8F0);
+  static const Color primary = BpColors.accent;
+  static const Color accent = BpColors.surfaceMuted;
+  static const Color background = BpColors.surfaceStrong;
+  static const Color textPrimary = BpColors.textPrimary;
+  static const Color textSecondary = BpColors.textSecondary;
+  static const Color divider = BpColors.border;
 
   // Transitions
   static const Duration animationDuration = Duration(milliseconds: 400);

@@ -2,6 +2,7 @@ import 'package:epharma/providers/finance_provider.dart';
 import 'package:epharma/services/finance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../widgets/bp_theme.dart';
 //import '../providers/finance_provider.dart';
 //import '../services/finance_service.dart';
 
@@ -45,7 +46,7 @@ class FinanceSummaryCards extends StatelessWidget {
       children: [
         const Text(
           'Résumé des Entrées',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
         ),
         const SizedBox(height: 16),
         Row(
@@ -90,8 +91,19 @@ class FinanceSummaryCards extends StatelessWidget {
     IconData icon,
   ) {
     return Expanded(
-      child: Card(
-        elevation: 4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: BpColors.cardBg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: BpColors.borderStrong),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -104,7 +116,7 @@ class FinanceSummaryCards extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                      style: const TextStyle(fontSize: 14, color: BpColors.textSecondary),
                     ),
                   ),
                 ],

@@ -8,8 +8,12 @@ import '../models/activity_model.dart';
 //import '../models/finance_model.dart';
 
 class SalesProvider with ChangeNotifier {
+  static const Duration _cacheDuration = Duration(minutes: 2);
+
   List<Sale> _sales = [];
   bool _isLoading = false;
+  DateTime? _lastLoadedAt;
+  Future<void>? _pendingLoad;
 
   List<Sale> get sales => _sales;
   bool get isLoading => _isLoading;
@@ -22,13 +26,41 @@ class SalesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadSales() async {
-    _isLoading = true;
-    notifyListeners();
+  bool get hasFreshData =>
+      _sales.isNotEmpty &&
+      _lastLoadedAt != null &&
+      DateTime.now().difference(_lastLoadedAt!) < _cacheDuration;
+
+  Future<void> loadSales({bool forceRefresh = false}) async {
+    if (_pendingLoad != null) {
+      return _pendingLoad!;
+    }
+
+    if (!forceRefresh && hasFreshData) {
+      return;
+    }
+
+    final shouldShowLoader = _sales.isEmpty || forceRefresh;
+    if (shouldShowLoader) {
+      _isLoading = true;
+      notifyListeners();
+    }
+
+    _pendingLoad = _loadSalesInternal(shouldShowLoader: shouldShowLoader);
+    return _pendingLoad!;
+  }
+
+  Future<void> _loadSalesInternal({required bool shouldShowLoader}) async {
     try {
       _sales = await SalesApiService.getSales();
+      _lastLoadedAt = DateTime.now();
+    } catch (e) {
+      debugPrint('SalesProvider Error: $e');
     } finally {
-      _isLoading = false;
+      _pendingLoad = null;
+      if (shouldShowLoader) {
+        _isLoading = false;
+      }
       notifyListeners();
     }
   }
@@ -55,6 +87,7 @@ class SalesProvider with ChangeNotifier {
 
     if (sale != null) {
       _sales.insert(0, sale);
+      _lastLoadedAt = DateTime.now();
 
       // Add activity
       final activity = ActivityModel(

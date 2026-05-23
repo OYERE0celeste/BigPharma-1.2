@@ -1,4 +1,5 @@
 import 'package:epharma/models/product_model.dart';
+import 'package:epharma/widgets/bp_theme.dart';
 import 'package:flutter/material.dart';
 import '../../products/widgets/status_badge.dart';
 import '../../widgets/app_colors.dart';
@@ -25,11 +26,11 @@ class ProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: isSelected ? kAccentBlue : Colors.grey.withOpacity(0.1),
+          color: isSelected ? BpColors.accent : BpColors.borderStrong,
           width: isSelected ? 2 : 1,
         ),
       ),
-      color: isSelected ? kSoftBlue : Colors.white,
+      color: isSelected ? BpColors.cardHighlight : BpColors.cardBg,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: availableStock > 0 ? onAddToCart : null,
@@ -50,6 +51,7 @@ class ProductCard extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         height: 1.2,
+                        color: BpColors.textPrimary,
                       ),
                     ),
                   ),
@@ -60,7 +62,10 @@ class ProductCard extends StatelessWidget {
                 product.category,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: BpColors.textSecondary,
+                ),
               ),
               const Spacer(),
               Row(
@@ -69,9 +74,9 @@ class ProductCard extends StatelessWidget {
                   StatusBadge(status: status),
                   Text(
                     'Stock: $availableStock',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 10,
-                      color: Colors.grey[700],
+                      color: BpColors.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -98,7 +103,9 @@ class ProductCard extends StatelessWidget {
                   Icon(
                     availableStock > 0 ? Icons.add_circle : Icons.block,
                     size: 20,
-                    color: availableStock > 0 ? kAccentBlue : Colors.grey[300],
+                    color: availableStock > 0
+                        ? BpColors.accent
+                        : BpColors.textHint,
                   ),
                 ],
               ),

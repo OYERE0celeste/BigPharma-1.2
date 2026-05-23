@@ -6,9 +6,12 @@ import '../models/activity_model.dart';
 
 class ProductProvider with ChangeNotifier {
   final ProductService _productService = ProductService();
+  static const Duration _cacheDuration = Duration(minutes: 2);
 
   List<Product> _products = [];
   bool _isLoading = false;
+  DateTime? _lastLoadedAt;
+  Future<void>? _pendingLoad;
 
   List<Product> get products => _products;
   bool get isLoading => _isLoading;
@@ -23,20 +26,49 @@ class ProductProvider with ChangeNotifier {
       _products.where((p) => p.expirationStatus == 'BIENTÔT EXPIRÉ').length;
   int get totalProducts => _products.length;
 
-  Future<void> loadProducts() async {
-    _isLoading = true;
-    notifyListeners();
+  bool get hasFreshData =>
+      _products.isNotEmpty &&
+      _lastLoadedAt != null &&
+      DateTime.now().difference(_lastLoadedAt!) < _cacheDuration;
+
+  Future<void> loadProducts({bool forceRefresh = false}) async {
+    if (_pendingLoad != null) {
+      return _pendingLoad!;
+    }
+
+    if (!forceRefresh && hasFreshData) {
+      return;
+    }
+
+    final shouldShowLoader = _products.isEmpty;
+    if (shouldShowLoader) {
+      _isLoading = true;
+      notifyListeners();
+    }
+
+    _pendingLoad = _loadProductsInternal(shouldShowLoader: shouldShowLoader);
+    return _pendingLoad!;
+  }
+
+  Future<void> _loadProductsInternal({required bool shouldShowLoader}) async {
     try {
       _products = await _productService.getProducts();
+      _lastLoadedAt = DateTime.now();
+    } catch (e) {
+      debugPrint('ProductProvider Error: $e');
     } finally {
-      _isLoading = false;
+      _pendingLoad = null;
+      if (shouldShowLoader) {
+        _isLoading = false;
+      }
       notifyListeners();
     }
   }
 
   Future<void> addProduct(Product product) async {
     await _productService.addProduct(product);
-    await loadProducts();
+    _lastLoadedAt = null;
+    await loadProducts(forceRefresh: true);
 
     // Add activity
     final activity = ActivityModel(
@@ -67,13 +99,15 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> updateProduct(Product product) async {
     await _productService.updateProduct(product);
-    await loadProducts();
+    _lastLoadedAt = null;
+    await loadProducts(forceRefresh: true);
   }
 
   Future<void> deleteProduct(String id) async {
     final product = _products.firstWhere((p) => p.id == id);
     await _productService.deleteProduct(id);
-    await loadProducts();
+    _lastLoadedAt = null;
+    await loadProducts(forceRefresh: true);
 
     // Add activity
     final activity = ActivityModel(
@@ -101,7 +135,8 @@ class ProductProvider with ChangeNotifier {
     int quantityChange,
   ) async {
     await _productService.updateStock(productId, lotNumber, quantityChange);
-    await loadProducts();
+    _lastLoadedAt = null;
+    await loadProducts(forceRefresh: true);
   }
 
   Future<void> adjustStockQuantity(
@@ -110,6 +145,7 @@ class ProductProvider with ChangeNotifier {
     String operation,
   ) async {
     await _productService.updateStockQuantity(productId, quantity, operation);
-    await loadProducts();
+    _lastLoadedAt = null;
+    await loadProducts(forceRefresh: true);
   }
 }

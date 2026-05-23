@@ -4,12 +4,21 @@ enum LotStatus { active, expired, nearExpiration }
 
 enum ProductStatus { active, discontinued }
 
+String? _normalizeOptionalString(dynamic value) {
+  final normalized = value?.toString().trim();
+  if (normalized == null || normalized.isEmpty || normalized == 'null') {
+    return null;
+  }
+  return normalized;
+}
+
 class Product {
   final String id;
   final String name;
   final String category;
   final String description;
   final String barcode;
+  final String? qrCode;
 
   final double purchasePrice;
   final double sellingPrice;
@@ -22,6 +31,7 @@ class Product {
     required this.category,
     required this.description,
     required this.barcode,
+    this.qrCode,
 
     required this.purchasePrice,
     required this.sellingPrice,
@@ -76,6 +86,7 @@ class Product {
     String? category,
     String? description,
     String? barcode,
+    String? qrCode,
 
     double? purchasePrice,
     double? sellingPrice,
@@ -88,6 +99,7 @@ class Product {
       category: category ?? this.category,
       description: description ?? this.description,
       barcode: barcode ?? this.barcode,
+      qrCode: qrCode ?? this.qrCode,
 
       purchasePrice: purchasePrice ?? this.purchasePrice,
       sellingPrice: sellingPrice ?? this.sellingPrice,
@@ -103,7 +115,7 @@ class Product {
       'category': category,
       'description': description,
       'barcode': barcode,
-
+      'qrCode': _normalizeOptionalString(qrCode) ?? '',
       'purchasePrice': purchasePrice,
       'sellingPrice': sellingPrice,
       'lowStockThreshold': lowStockThreshold,
@@ -118,6 +130,7 @@ class Product {
       category: json['category']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       barcode: json['barcode']?.toString() ?? '',
+      qrCode: _normalizeOptionalString(json['qrCode']),
 
       purchasePrice: (json['purchasePrice'] is num)
           ? (json['purchasePrice'] as num).toDouble()

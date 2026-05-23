@@ -14,7 +14,7 @@ class AuthProvider with ChangeNotifier {
   CompanyModel? get company => _company;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  bool get isAuthenticated => _user != null;
+  bool get isAuthenticated => _user != null && _authService.token != null;
   String? get token => _authService.token;
 
   final AuthService _authService = AuthService();
@@ -49,14 +49,22 @@ class AuthProvider with ChangeNotifier {
 
     try {
       final local = await _authService.getStoredSession();
-      if (local != null) {
+      final token = await _authService.getToken();
+
+      if (local != null && token != null) {
         _user = UserModel.fromJson(local['user']);
         _company = CompanyModel.fromJson(local['company']);
+      } else {
+        _user = null;
+        _company = null;
       }
 
       final data = await _authService.getCurrentUser();
       if (data != null) {
         _user = UserModel.fromJson(data);
+      } else {
+        _user = null;
+        _company = null;
       }
     } catch (e) {
       _errorMessage = _readableError(e);

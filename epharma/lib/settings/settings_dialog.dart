@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:epharma/providers/settings_provider.dart';
 import 'package:epharma/providers/auth_provider.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
 import 'settings_theme.dart';
 import 'profil_dialog.dart';
 import 'user_management_page.dart';
@@ -179,7 +180,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
       height: SettingsTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: SettingsTheme.background,
         border: Border(bottom: BorderSide(color: SettingsTheme.divider)),
       ),
       child: Row(
@@ -318,7 +319,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             ),
             if (provider.isLoading)
               Container(
-                color: Colors.white.withOpacity(0.7),
+                color: BpColors.scaffold.withOpacity(0.42),
                 child: const Center(
                   child: CircularProgressIndicator(
                     color: SettingsTheme.primary,
@@ -343,9 +344,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: SettingsTheme.primary.withOpacity(0.05),
+        color: SettingsTheme.accent.withOpacity(0.55),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: SettingsTheme.primary.withOpacity(0.1)),
+        border: Border.all(color: SettingsTheme.divider),
       ),
       child: Row(
         children: [

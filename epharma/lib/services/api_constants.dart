@@ -22,6 +22,7 @@ class ApiConstants {
 
   static String get login => '$baseUrl/auth/login';
   static String get register => '$baseUrl/auth/register';
+  static String get refreshToken => '$baseUrl/auth/refresh-token';
   static String get me => '$baseUrl/auth/me';
   static String get forgotPassword => '$baseUrl/auth/forgot-password';
   static String get resetPassword => '$baseUrl/auth/reset-password';
@@ -42,6 +43,7 @@ class ApiConstants {
   static String get mouvements => '$baseUrl/mouvements';
 
   static const String tokenKey = 'auth_token';
+  static const String refreshTokenKey = 'auth_refresh_token';
   static const String userKey = 'auth_user';
   static const String companyKey = 'auth_company';
 }

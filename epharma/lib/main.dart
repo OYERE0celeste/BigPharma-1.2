@@ -13,9 +13,13 @@ import 'providers/order_provider.dart';
 import 'providers/complaint_provider.dart';
 import 'providers/review_provider.dart';
 import 'providers/support_provider.dart';
+import 'scanner/providers/scanner_provider.dart';
 import 'screens/auth/login_page.dart';
 import 'providers/notification_provider.dart';
 import 'widgets/app_notification.dart';
+import 'widgets/bp_theme.dart';
+import 'scanner/widgets/global_scanner_listener.dart';
+import 'scanner/widgets/scanner_status_overlay.dart';
 
 // Note: Client services and pages removed as they are currently missing in this module
 
@@ -29,22 +33,26 @@ void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return Material(
       child: Container(
-        color: Colors.white,
+        color: BpColors.scaffold,
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const Icon(Icons.error_outline, color: BpColors.error, size: 48),
             const SizedBox(height: 16),
             const Text(
               'Oups ! Une erreur est survenue.',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: BpColors.textPrimary,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               details.exception.toString(),
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600]),
+              style: const TextStyle(color: BpColors.textSecondary),
             ),
           ],
         ),
@@ -72,6 +80,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ClientProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => ScannerProvider()),
         ChangeNotifierProvider(create: (_) => SupportProvider()),
         ChangeNotifierProvider(create: (_) => ReviewProvider()),
         ChangeNotifierProvider(create: (_) => ComplaintProvider()),
@@ -85,16 +94,26 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'BigPharma',
         navigatorKey: AppNotificationService.navigatorKey,
-        builder: (context, child) =>
-            AppNotificationHost(child: child ?? const SizedBox.shrink()),
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF6366F1), // Indigo premium
-            brightness: Brightness.light,
+        builder: (context, child) => GlobalScannerListener(
+          child: Stack(
+            children: [
+              AppNotificationHost(
+                child: BpDecoratedBackground(
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              ),
+              // Scanner status overlay - always visible in top-right
+              const ScannerStatusOverlay(
+                alignment: Alignment.topRight,
+                showDebugInfo: false,
+                autoHideDuration: Duration(seconds: 8),
+              ),
+            ],
           ),
-          fontFamily: 'sans-serif',
-          // fontFamily: 'Inter', // Standardized to system font as Inter assets are missing
+        ),
+        theme: BpTheme.materialTheme(),
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          physics: BouncingScrollPhysics(),
         ),
         home: const AuthWrapper(),
         debugShowCheckedModeBanner: false,
@@ -111,7 +130,7 @@ class AuthWrapper extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
 
     if (authProvider.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const BpAuthLoadingScreen();
     }
 
     if (authProvider.isAuthenticated) {

@@ -1,4 +1,5 @@
 import 'package:epharma/models/sale_model.dart';
+import 'package:epharma/widgets/bp_theme.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/app_colors.dart';
 
@@ -21,7 +22,7 @@ class CartItemTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        border: const Border(bottom: BorderSide(color: BpColors.border)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,16 +38,23 @@ class CartItemTile extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
+                        color: BpColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       'Lot: ${cartItem.selectedLot.lotNumber}',
-                      style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: BpColors.textSecondary,
+                      ),
                     ),
                     Text(
                       'P.U: ${cartItem.product.sellingPrice.toStringAsFixed(0)} FCFA',
-                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: BpColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -78,6 +86,7 @@ class CartItemTile extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
+                            color: BpColors.textPrimary,
                           ),
                         ),
                       ),
@@ -115,13 +124,15 @@ class CartItemTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: enabled ? kPrimaryGreen.withOpacity(0.1) : Colors.grey[100],
+          color: enabled
+              ? BpColors.accent.withOpacity(0.14)
+              : BpColors.surfaceMuted,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Icon(
           icon,
           size: 16,
-          color: enabled ? kPrimaryGreen : Colors.grey[400],
+          color: enabled ? BpColors.accent : BpColors.textHint,
         ),
       ),
     );

@@ -131,7 +131,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
       height: SettingsTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: SettingsTheme.background,
         border: Border(bottom: BorderSide(color: SettingsTheme.divider)),
       ),
       child: Row(
@@ -213,9 +213,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: SettingsTheme.primary.withOpacity(0.05),
+            color: SettingsTheme.accent.withOpacity(0.55),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: SettingsTheme.primary.withOpacity(0.1)),
+            border: Border.all(color: SettingsTheme.divider),
           ),
           child: Row(
             children: [
@@ -379,7 +379,7 @@ class ClientSecurityView extends StatelessWidget {
           // Grouped security tiles in a single premium card
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: SettingsTheme.accent.withOpacity(0.35),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: SettingsTheme.divider),
             ),

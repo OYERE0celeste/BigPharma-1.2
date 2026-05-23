@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'widgets/app_colors.dart';
+import 'widgets/bp_theme.dart';
 import 'providers/product_provider.dart';
 import 'providers/finance_provider.dart';
-import 'providers/client_provider.dart';
 import 'providers/sales_provider.dart';
 import 'providers/activity_provider.dart';
 import 'models/activity_model.dart';
@@ -52,15 +52,17 @@ class DashboardPageContent extends StatefulWidget {
 }
 
 class _DashboardPageContentState extends State<DashboardPageContent> {
+  void _refreshDashboard({bool forceRefresh = false}) {
+    context.read<ProductProvider>().loadProducts(forceRefresh: forceRefresh);
+    context.read<SalesProvider>().loadSales(forceRefresh: forceRefresh);
+    context.read<FinanceProvider>().initialize(forceRefresh: forceRefresh);
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductProvider>().loadProducts();
-      context.read<SalesProvider>().loadSales();
-      context.read<FinanceProvider>().initialize();
-      context.read<ClientProvider>().loadClients();
-      context.read<ActivityProvider>().loadActivities();
+      _refreshDashboard();
     });
   }
 
@@ -79,11 +81,7 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                 const SizedBox(height: 24),
                 const TopKPISection(),
                 const SizedBox(height: 24),
-                const AlertsAndActivityRow(),
-                const SizedBox(height: 24),
                 const QuickActionsSection(),
-                const SizedBox(height: 24),
-                const StockAndPerformanceRow(),
                 const SizedBox(height: 24),
                 const SystemInfoBar(),
               ],
@@ -119,9 +117,9 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: BpColors.cardBg,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(color: BpColors.borderStrong),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -129,39 +127,35 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                           const Icon(
                             Icons.calendar_today,
                             size: 16,
-                            color: Colors.blue,
+                            color: kAccentBlue,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            style: const TextStyle(fontWeight: FontWeight.w500, color: BpColors.textPrimary),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
-                  FilledButton.icon(
-                    onPressed: () {
-                      context.read<ProductProvider>().loadProducts();
-                      context.read<SalesProvider>().loadSales();
-                      context.read<FinanceProvider>().initialize();
-                      context.read<ClientProvider>().loadClients();
-                      context.read<ActivityProvider>().loadActivities();
-                    },
-                    icon: const Icon(Icons.refresh, size: 20),
-                    label: const Text('Actualiser'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black87,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: () => _refreshDashboard(forceRefresh: true),
+                      icon: const Icon(Icons.refresh, size: 20),
+                      label: const Text('Actualiser'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: BpColors.surfaceMuted,
+                        foregroundColor: BpColors.textPrimary,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(color: BpColors.border),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -200,9 +194,9 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: BpColors.cardBg,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: BpColors.borderStrong),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -210,12 +204,12 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                       const Icon(
                         Icons.calendar_today,
                         size: 16,
-                        color: Colors.blue,
+                        color: kAccentBlue,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                        style: const TextStyle(fontWeight: FontWeight.w500),
+                        style: const TextStyle(fontWeight: FontWeight.w500, color: BpColors.textPrimary),
                       ),
                     ],
                   ),
@@ -229,27 +223,23 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  FilledButton.icon(
-                    onPressed: () {
-                      context.read<ProductProvider>().loadProducts();
-                      context.read<SalesProvider>().loadSales();
-                      context.read<FinanceProvider>().initialize();
-                      context.read<ClientProvider>().loadClients();
-                      context.read<ActivityProvider>().loadActivities();
-                    },
-                    icon: const Icon(Icons.refresh, size: 20),
-                    label: const Text('Actualiser'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black87,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: () => _refreshDashboard(forceRefresh: true),
+                      icon: const Icon(Icons.refresh, size: 20),
+                      label: const Text('Actualiser'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: BpColors.surfaceMuted,
+                        foregroundColor: BpColors.textPrimary,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(color: BpColors.border),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -282,7 +272,7 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
         fontSize: 24,
         fontWeight: FontWeight.bold,
         letterSpacing: 0.5,
-        color: Color(0xFF1E293B),
+        color: Color(0xFFF2FBF6),
       ),
     );
   }
@@ -437,11 +427,12 @@ class KPICard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: BpColors.borderStrong),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -473,9 +464,9 @@ class KPICard extends StatelessWidget {
                           child: Icon(icon, color: color, size: 24),
                         ),
                         if (!isSmall)
-                          Icon(
+                          const Icon(
                             Icons.arrow_forward_ios,
-                            color: Colors.grey[300],
+                            color: BpColors.textHint,
                             size: 14,
                           ),
                       ],
@@ -488,10 +479,10 @@ class KPICard extends StatelessWidget {
                           title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
+                            color: BpColors.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -499,10 +490,10 @@ class KPICard extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             value,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey[900],
+                              color: BpColors.textPrimary,
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -585,11 +576,11 @@ class AlertsPanel extends StatelessWidget {
       ),
     ];
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: BpColors.borderStrong),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -613,7 +604,7 @@ class AlertsPanel extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Text(
                   'Alertes',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
                 ),
               ],
             ),
@@ -678,7 +669,7 @@ class AlertTile extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(data.title, style: const TextStyle(fontSize: 14)),
+                child: Text(data.title, style: const TextStyle(fontSize: 14, color: BpColors.textPrimary)),
               ),
               if (data.count > 0)
                 Container(
@@ -717,11 +708,11 @@ class RecentActivityPanel extends StatelessWidget {
         .take(10)
         .toList();
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: BpColors.borderStrong),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -745,7 +736,7 @@ class RecentActivityPanel extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Text(
                   'Activité récente',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
                 ),
               ],
             ),
@@ -756,7 +747,7 @@ class RecentActivityPanel extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: activities.length,
                 separatorBuilder: (_, _) =>
-                    Divider(height: 24, color: Colors.grey.withOpacity(0.1)),
+                    const Divider(height: 24, color: BpColors.border),
                 itemBuilder: (context, index) {
                   final a = activities[index];
                   return ActivityTile(
@@ -832,18 +823,18 @@ class ActivityTile extends StatelessWidget {
                 children: [
                   Text(
                     data.title,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
                   ),
                   Text(
                     data.subtitle,
-                    style: const TextStyle(color: Colors.black54, fontSize: 13),
+                    style: const TextStyle(color: BpColors.textSecondary, fontSize: 13),
                   ),
                 ],
               ),
             ),
             Text(
               data.time,
-              style: const TextStyle(color: Colors.black45, fontSize: 12),
+              style: const TextStyle(color: BpColors.textHint, fontSize: 12),
             ),
           ],
         ),
@@ -891,11 +882,11 @@ class QuickActionsSection extends StatelessWidget {
       ),
     ];
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: BpColors.borderStrong),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -919,7 +910,7 @@ class QuickActionsSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Text(
                   'Actions rapides',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
                 ),
               ],
             ),
@@ -981,11 +972,12 @@ class QuickActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: BpColors.borderStrong),
         boxShadow: [
           BoxShadow(
-            color: action.color.withOpacity(0.1),
+            color: action.color.withOpacity(0.12),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1015,13 +1007,13 @@ class QuickActionButton extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Colors.black87,
+                      color: BpColors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-                Icon(Icons.chevron_right, color: Colors.grey[300], size: 16),
+                const Icon(Icons.chevron_right, color: BpColors.textHint, size: 16),
               ],
             ),
           ),
@@ -1116,20 +1108,20 @@ class StockSummary extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Text(
                   'Stock Summary',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
                 ),
               ],
             ),
             const SizedBox(height: 20),
             const Text(
               'Top 5 Best-selling',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: BpColors.textPrimary),
             ),
             const SizedBox(height: 8),
             if (bestSelling.isEmpty)
               const Text(
                 'Aucun produit disponible',
-                style: TextStyle(color: Colors.grey, fontSize: 13),
+                style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
               )
             else
               ...bestSelling.map(
@@ -1143,7 +1135,7 @@ class StockSummary extends StatelessWidget {
                         color: kPrimaryGreen,
                       ),
                       const SizedBox(width: 8),
-                      Text(s, style: const TextStyle(fontSize: 13)),
+                      Text(s, style: const TextStyle(fontSize: 13, color: BpColors.textSecondary)),
                     ],
                   ),
                 ),
@@ -1151,13 +1143,13 @@ class StockSummary extends StatelessWidget {
             const SizedBox(height: 20),
             const Text(
               'Low stock products',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: BpColors.textPrimary),
             ),
             const SizedBox(height: 8),
             if (lowStock.isEmpty)
               const Text(
                 'Aucun produit en rupture',
-                style: TextStyle(color: Colors.grey, fontSize: 13),
+                style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
               )
             else
               ...lowStock.map(
@@ -1171,7 +1163,7 @@ class StockSummary extends StatelessWidget {
                         color: kWarningOrange,
                       ),
                       const SizedBox(width: 8),
-                      Text(s, style: const TextStyle(fontSize: 13)),
+                      Text(s, style: const TextStyle(fontSize: 13, color: BpColors.textSecondary)),
                     ],
                   ),
                 ),
@@ -1179,7 +1171,7 @@ class StockSummary extends StatelessWidget {
             const SizedBox(height: 20),
             const Text(
               'Category distribution',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: BpColors.textPrimary),
             ),
             const SizedBox(height: 16),
             AspectRatio(
@@ -1188,7 +1180,7 @@ class StockSummary extends StatelessWidget {
                   ? const Center(
                       child: Text(
                         'Aucune donnée',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: BpColors.textSecondary),
                       ),
                     )
                   : PieChart(
@@ -1299,20 +1291,20 @@ class PerformanceSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Text(
                   'Performance',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             const Text(
               'Sales overview (Derniers 7 jours)',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
             ),
             const SizedBox(height: 16),
             AspectRatio(
               aspectRatio: 1.5,
               child: sales.isEmpty
-                  ? const Center(child: Text('Aucune donnée de vente'))
+                  ? const Center(child: Text('Aucune donnée de vente', style: TextStyle(color: BpColors.textSecondary)))
                   : BarChart(
                       BarChartData(
                         titlesData: FlTitlesData(
@@ -1332,10 +1324,10 @@ class PerformanceSection extends StatelessWidget {
                                 );
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    '${date.day}/${date.month}',
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
+                                    child: Text(
+                                      '${date.day}/${date.month}',
+                                      style: const TextStyle(fontSize: 10, color: BpColors.textSecondary),
+                                    ),
                                 );
                               },
                             ),
@@ -1353,11 +1345,11 @@ class PerformanceSection extends StatelessWidget {
               children: [
                 Text(
                   'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
                 ),
                 Text(
                   'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
                 ),
               ],
             ),
@@ -1384,8 +1376,9 @@ class SystemInfoBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: BpColors.borderStrong),
       ),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
@@ -1407,8 +1400,8 @@ class SystemInfoBar extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Pharmacy: ${authProvider.company?.name ?? "..."}',
-                style: TextStyle(
-                  color: Colors.grey[700],
+                style: const TextStyle(
+                  color: BpColors.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -1417,14 +1410,14 @@ class SystemInfoBar extends StatelessWidget {
           ),
           Text(
             'User: ${authProvider.user?.fullName ?? "..."} (${authProvider.user?.role.toUpperCase() ?? "..."})',
-            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+            style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
           ),
           Text(
             _formatDateTime(now),
-            style: TextStyle(
-              color: Colors.grey[600],
+            style: const TextStyle(
+              color: BpColors.textSecondary,
               fontSize: 12,
-              fontFeatures: const [FontFeature.tabularFigures()],
+              fontFeatures: [FontFeature.tabularFigures()],
             ),
           ),
         ],

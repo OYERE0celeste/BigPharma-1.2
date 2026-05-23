@@ -489,7 +489,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         filled: true,
         fillColor: const Color(0xFFF8FAFC),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
         prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
@@ -655,11 +655,11 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   fillColor: Colors.grey[100],
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
                   ),
                 ),

@@ -3,6 +3,7 @@ const MouvementStock = require("../models/mouvementStock");
 const { logActivity } = require("../utils/activityLogger");
 const { runInTransaction } = require("../utils/dbUtils");
 const { success, failure } = require("../utils/response");
+const { lookupCode } = require("../utils/externalProductService");
 
 const buildProductPayload = (body = {}) => {
   const allowedFields = [
@@ -10,6 +11,7 @@ const buildProductPayload = (body = {}) => {
     "category",
     "description",
     "barcode",
+    "qrCode",
 
     "purchasePrice",
     "sellingPrice",
@@ -446,6 +448,271 @@ exports.exportInventory = async (req, res, next) => {
     res.header("Content-Type", "text/csv");
     res.attachment(`inventaire_bigpharma_${Date.now()}.csv`);
     return res.send(csv);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 🔍 Search product by barcode (EAN-13, EAN-8, UPC, Code128, Code39, etc.)
+ * GET /products/scan/barcode/:code
+ * Fast lookup using database index on {companyId, barcode}
+ */
+exports.getProductByBarcode = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    
+    // Sanitize and validate barcode
+    if (!code || typeof code !== 'string' || code.trim() === '') {
+      return failure(res, {
+        status: 400,
+        message: "Code-barres invalide",
+      });
+    }
+
+    const normalizedCode = code.trim();
+
+    // Get company ID from auth or use default
+    const companyId = req.user?.companyId || null;
+
+    // Build query - search with index
+    const query = { 
+      isActive: true,
+      barcode: normalizedCode 
+    };
+
+    // Filter by company if authenticated
+    if (companyId) {
+      query.companyId = companyId;
+    }
+
+    const product = await Product.findOne(query)
+      .populate("companyId", "name email")
+      .lean();
+
+    if (!product) {
+      return failure(res, {
+        status: 404,
+        message: `Produit avec code-barres "${normalizedCode}" non trouvé`,
+        data: {
+          scannedCode: normalizedCode,
+          type: 'barcode',
+          found: false
+        }
+      });
+    }
+
+    return success(res, {
+      data: product,
+      extra: {
+        scannedCode: normalizedCode,
+        type: 'barcode',
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 🔍 Search product by QR code
+ * GET /products/scan/qrcode/:code
+ * Fast lookup using database index on {companyId, qrCode}
+ */
+exports.getProductByQrCode = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    
+    // Sanitize and validate QR code
+    if (!code || typeof code !== 'string' || code.trim() === '') {
+      return failure(res, {
+        status: 400,
+        message: "Code QR invalide",
+      });
+    }
+
+    const normalizedCode = code.trim();
+
+    // Get company ID from auth or use default
+    const companyId = req.user?.companyId || null;
+
+    // Build query - search with index
+    const query = { 
+      isActive: true,
+      qrCode: normalizedCode 
+    };
+
+    // Filter by company if authenticated
+    if (companyId) {
+      query.companyId = companyId;
+    }
+
+    const product = await Product.findOne(query)
+      .populate("companyId", "name email")
+      .lean();
+
+    if (!product) {
+      return failure(res, {
+        status: 404,
+        message: `Produit avec code QR "${normalizedCode}" non trouvé`,
+        data: {
+          scannedCode: normalizedCode,
+          type: 'qrcode',
+          found: false
+        }
+      });
+    }
+
+    return success(res, {
+      data: product,
+      extra: {
+        scannedCode: normalizedCode,
+        type: 'qrcode',
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 🔍 Auto-detect and search by code (barcode or QR code)
+ * GET /products/scan/:code
+ * Tries barcode first, then QR code
+ * Useful for universal scanner endpoint
+ */
+exports.scanProduct = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    
+    // Sanitize and validate code
+    if (!code || typeof code !== 'string' || code.trim() === '') {
+      return failure(res, {
+        status: 400,
+        message: "Code invalide",
+      });
+    }
+
+    const normalizedCode = code.trim();
+
+    // Get company ID from auth or use default
+    const companyId = req.user?.companyId || null;
+
+    // Strategy: Try barcode first (more common), then QR code
+    let query = { 
+      isActive: true,
+      $or: [
+        { barcode: normalizedCode },
+        { qrCode: normalizedCode }
+      ]
+    };
+
+    // Filter by company if authenticated
+    if (companyId) {
+      query.companyId = companyId;
+    }
+
+    const product = await Product.findOne(query)
+      .populate("companyId", "name email")
+      .lean();
+
+    if (!product) {
+      return failure(res, {
+        status: 404,
+        message: `Produit avec code "${normalizedCode}" non trouvé`,
+        data: {
+          scannedCode: normalizedCode,
+          type: 'auto',
+          found: false
+        }
+      });
+    }
+
+    // Determine which type matched
+    const matchedType = product.barcode === normalizedCode ? 'barcode' : 'qrcode';
+
+    return success(res, {
+      data: product,
+      extra: {
+        scannedCode: normalizedCode,
+        type: matchedType,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * 🔍 Lookup product with external fallback
+ * GET /products/scan/lookup/:code
+ */
+exports.lookupProduct = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    if (!code || typeof code !== "string" || code.trim() === "") {
+      return failure(res, {
+        status: 400,
+        message: "Code invalide",
+      });
+    }
+
+    const normalizedCode = code.trim();
+    const companyId = req.user?.companyId || null;
+
+    const query = {
+      isActive: true,
+      $or: [
+        { barcode: normalizedCode },
+        { qrCode: normalizedCode },
+      ],
+    };
+
+    if (companyId) {
+      query.companyId = companyId;
+    }
+
+    const product = await Product.findOne(query)
+      .populate("companyId", "name email")
+      .lean();
+
+    if (product) {
+      return success(res, {
+        data: product,
+        extra: {
+          scannedCode: normalizedCode,
+          type: product.barcode === normalizedCode ? "barcode" : "qrcode",
+          found: true,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    }
+
+    const lookupResult = await lookupCode(normalizedCode);
+    if (!lookupResult) {
+      return failure(res, {
+        status: 404,
+        message: `Produit avec code "${normalizedCode}" non trouvé localement ni en ligne`,
+        data: {
+          scannedCode: normalizedCode,
+          type: "lookup",
+          found: false,
+        },
+      });
+    }
+
+    return success(res, {
+      data: lookupResult,
+      extra: {
+        scannedCode: normalizedCode,
+        type: "external",
+        source: lookupResult.source,
+        timestamp: new Date().toISOString(),
+      },
+    });
   } catch (error) {
     next(error);
   }

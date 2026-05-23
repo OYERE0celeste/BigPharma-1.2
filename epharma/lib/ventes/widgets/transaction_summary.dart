@@ -1,4 +1,5 @@
 import 'package:epharma/widgets/app_colors.dart';
+import 'package:epharma/widgets/bp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,8 +29,23 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
   void initState() {
     super.initState();
     _discountController = TextEditingController(
-      text: widget.discount.toStringAsFixed(2),
+      text: widget.discount > 0 ? widget.discount.toStringAsFixed(0) : '',
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant TransactionSummaryPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.discount != widget.discount) {
+      final nextValue =
+          widget.discount > 0 ? widget.discount.toStringAsFixed(0) : '';
+      if (_discountController.text != nextValue) {
+        _discountController.value = TextEditingValue(
+          text: nextValue,
+          selection: TextSelection.collapsed(offset: nextValue.length),
+        );
+      }
+    }
   }
 
   @override
@@ -38,80 +54,78 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
     super.dispose();
   }
 
+  Widget _buildAmountRow(String label, String value, {Color? valueColor}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: BpColors.textSecondary),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: valueColor ?? BpColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final total = widget.subtotal - widget.discount + widget.tax;
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        border: Border(top: BorderSide(color: Colors.grey.shade300)),
+      decoration: const BoxDecoration(
+        color: BpColors.surface,
+        border: Border(top: BorderSide(color: BpColors.border)),
       ),
       child: Column(
-        spacing: 12,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Sous-total',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              Text(
-                '${widget.subtotal.toStringAsFixed(0)} FCFA',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          _buildAmountRow(
+            'Sous-total',
+            '${widget.subtotal.toStringAsFixed(0)} FCFA',
           ),
+          const SizedBox(height: 12),
           Row(
             children: [
               const Text(
                 'Remise',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: 12, color: BpColors.textSecondary),
               ),
               const Spacer(),
               SizedBox(
-                width: 100,
+                width: 140,
                 child: TextField(
                   controller: _discountController,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  style: const TextStyle(color: BpColors.textPrimary),
                   onChanged: (value) =>
                       widget.onDiscountChanged(double.tryParse(value) ?? 0),
                   decoration: const InputDecoration(
                     suffixText: ' FCFA',
                     isDense: true,
                     contentPadding: EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 8,
+                      horizontal: 8,
+                      vertical: 12,
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Taxes',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              Text(
-                '${widget.tax.toStringAsFixed(0)} FCFA',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          const SizedBox(height: 12),
+          _buildAmountRow('Taxes', '${widget.tax.toStringAsFixed(0)} FCFA'),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 14),
+            child: Divider(color: BpColors.border, height: 1),
           ),
-          Divider(color: Colors.grey.shade300, height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -120,7 +134,7 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
+                  color: BpColors.textPrimary,
                 ),
               ),
               Text(

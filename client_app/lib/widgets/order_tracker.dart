@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'bp_theme.dart';
+
 class OrderTracker extends StatelessWidget {
   final String status;
 
@@ -29,16 +31,19 @@ class OrderTracker extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.red[50],
+          color: BpColors.error.withOpacity(0.12),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Row(
           children: [
-            Icon(Icons.cancel, color: Colors.red),
+            Icon(Icons.cancel, color: BpColors.error),
             SizedBox(width: 8),
             Text(
               'Commande annulée',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: BpColors.error,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -72,25 +77,33 @@ class OrderTracker extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: isActive
                               ? Theme.of(context).primaryColor
-                              : Colors.grey[300],
+                              : BpColors.borderStrong,
                         ),
                         child: Icon(
                           steps[index]['icon'] as IconData,
                           size: 16,
-                          color: isActive ? Colors.white : Colors.grey[600],
+                          color: isActive
+                              ? Colors.white
+                              : BpColors.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        steps[index]['label'] as String,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isActive
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey[600],
-                          fontWeight: isActive
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                      SizedBox(
+                        width: 54,
+                        child: Text(
+                          steps[index]['label'] as String,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: isActive
+                                ? Theme.of(context).primaryColor
+                                : BpColors.textSecondary,
+                            fontWeight: isActive
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -102,7 +115,7 @@ class OrderTracker extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 16),
                         color: index < currentStep
                             ? Theme.of(context).primaryColor
-                            : Colors.grey[300],
+                            : BpColors.borderStrong,
                       ),
                     ),
                 ],

@@ -1,6 +1,7 @@
 import 'package:epharma/products/pharmacy_products_page.dart';
 import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
+import '../../widgets/bp_theme.dart';
 import 'status_badge.dart';
 
 class ProductTable extends StatefulWidget {
@@ -49,7 +50,11 @@ class _ProductTableState extends State<ProductTable> {
 
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: BpColors.cardBg,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: BpColors.borderStrong),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -87,7 +92,7 @@ class _ProductTableState extends State<ProductTable> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: BpColors.borderStrong),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ClipRRect(
@@ -115,10 +120,12 @@ class _ProductTableState extends State<ProductTable> {
               children: [
                 Row(
                   children: [
-                    const Text('Lignes par page :'),
+                    const Text('Lignes par page :', style: TextStyle(color: BpColors.textSecondary)),
                     const SizedBox(width: 8),
                     DropdownButton<int>(
                       value: widget.rowsPerPage,
+                      dropdownColor: BpColors.surface,
+                      style: const TextStyle(color: BpColors.textPrimary),
                       items: const [10, 20, 50]
                           .map(
                             (e) =>
@@ -135,14 +142,14 @@ class _ProductTableState extends State<ProductTable> {
                       onPressed: widget.currentPage > 0
                           ? () => widget.onPageChanged(widget.currentPage - 1)
                           : null,
-                      icon: const Icon(Icons.chevron_left),
+                      icon: const Icon(Icons.chevron_left, color: BpColors.textPrimary),
                     ),
-                    Text('${widget.currentPage + 1} / $pageCount'),
+                    Text('${widget.currentPage + 1} / $pageCount', style: const TextStyle(color: BpColors.textPrimary)),
                     IconButton(
                       onPressed: widget.currentPage < pageCount - 1
                           ? () => widget.onPageChanged(widget.currentPage + 1)
                           : null,
-                      icon: const Icon(Icons.chevron_right),
+                      icon: const Icon(Icons.chevron_right, color: BpColors.textPrimary),
                     ),
                   ],
                 ),
@@ -167,7 +174,7 @@ class _ProductTableState extends State<ProductTable> {
       },
       sortColumnIndex: _colIndex(widget.sortColumn),
       sortAscending: widget.sortAscending,
-      headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+      headingRowColor: WidgetStateProperty.all(BpColors.surface),
       columnSpacing: 24,
       horizontalMargin: 24,
       dataRowMinHeight: 56,
@@ -175,7 +182,7 @@ class _ProductTableState extends State<ProductTable> {
       headingRowHeight: 56,
       headingTextStyle: const TextStyle(
         fontWeight: FontWeight.bold,
-        color: Colors.black87,
+        color: BpColors.textPrimary,
       ),
       columns: [
         DataColumn(label: _colHeader('Nom du produit', 'name')),
@@ -217,14 +224,14 @@ class _ProductTableState extends State<ProductTable> {
           color: WidgetStateProperty.resolveWith<Color?>((states) => rowColor),
           cells: [
             DataCell(
-              Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, color: BpColors.textPrimary)),
             ),
-            DataCell(Text(p.category)),
-            DataCell(Text('${p.purchasePrice.toStringAsFixed(0)} FCFA')),
-            DataCell(Text('${p.sellingPrice.toStringAsFixed(0)} FCFA')),
-            DataCell(Text('${p.totalStock}')),
-            DataCell(Text(nearest != null ? formatDate(nearest) : '-')),
-            DataCell(Text('${p.lots.length}')),
+            DataCell(Text(p.category, style: const TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.purchasePrice.toStringAsFixed(0)} FCFA', style: const TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.sellingPrice.toStringAsFixed(0)} FCFA', style: const TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.totalStock}', style: const TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text(nearest != null ? formatDate(nearest) : '-', style: const TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.lots.length}', style: const TextStyle(color: BpColors.textSecondary))),
 
             DataCell(
               Row(
@@ -300,11 +307,12 @@ class _ProductTableState extends State<ProductTable> {
       onTap: () => widget.onSort(col),
       child: Row(
         children: [
-          Text(label),
+          Text(label, style: const TextStyle(color: BpColors.textPrimary)),
           if (widget.sortColumn == col)
             Icon(
               widget.sortAscending ? Icons.arrow_upward : Icons.arrow_downward,
               size: 14,
+              color: BpColors.textPrimary,
             ),
         ],
       ),

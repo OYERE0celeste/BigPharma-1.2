@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../../models/client_model.dart';
 import '../../services/client_service.dart';
-import '../../widgets/app_colors.dart';
+import '../../widgets/bp_theme.dart';
+import '../../widgets/detail_widgets.dart';
 
 class ClientDetailsDialog extends StatelessWidget {
   final Client client;
@@ -10,141 +12,275 @@ class ClientDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final purchases = ClientService.getClientPurchases(client.id);
+
     return Dialog(
-      child: SingleChildScrollView(
-        child: SizedBox(
-          width: 600,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: 860,
+        constraints: const BoxConstraints(maxHeight: 760),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [BpColors.surfaceStrong, BpColors.cardBg],
+          ),
+          border: Border.all(color: BpColors.borderStrong),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.28),
+              blurRadius: 30,
+              offset: const Offset(0, 16),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: kPrimaryGreen,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 22,
+                  vertical: 20,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      BpColors.accent.withOpacity(0.16),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: const Border(
+                    bottom: BorderSide(color: BpColors.border),
                   ),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      client.fullName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(client.fullName, style: BpTextStyles.heading2),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Fiche détaillée du client',
+                            style: BpTextStyles.body,
+                          ),
+                        ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
+                      icon: const Icon(Icons.close_rounded),
+                      color: BpColors.textPrimary,
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Personal Information Section
-                    _buildSection('Informations personnelles', [
-                      _buildDetailRow('Nom complet', client.fullName),
-                      _buildDetailRow(
-                        'Date de naissance',
-                        _formatDate(client.dateOfBirth),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 14,
+                        runSpacing: 14,
+                        children: [
+                          DetailInfoTile(
+                            icon: Icons.cake_rounded,
+                            label: 'Date de naissance',
+                            value: _formatDate(client.dateOfBirth),
+                          ),
+                          DetailInfoTile(
+                            icon: Icons.people_rounded,
+                            label: 'Genre',
+                            value: client.genderDisplay,
+                          ),
+                          DetailInfoTile(
+                            icon: Icons.phone_rounded,
+                            label: 'Téléphone',
+                            value: client.phone,
+                          ),
+                          DetailInfoTile(
+                            icon: Icons.email_rounded,
+                            label: 'Email',
+                            value: client.email,
+                          ),
+                        ],
                       ),
-                      _buildDetailRow('Genre', client.genderDisplay),
-                      _buildDetailRow('Téléphone', client.phone),
-                      _buildDetailRow('Email', client.email),
-                      _buildDetailRow('Adresse', client.address),
-                      _buildDetailRow(
-                        'Date d\'inscription',
-                        _formatDate(client.registrationDate),
-                      ),
-                    ]),
-                    const SizedBox(height: 20),
-
-                    // Commercial Information Section
-                    _buildSection('Informations commerciales', [
-                      _buildDetailRow(
-                        'Total achats',
-                        '${client.totalPurchases}',
-                      ),
-                      _buildDetailRow(
-                        'Montant total dépensé',
-                        '${client.totalSpent.toStringAsFixed(0)} FCFA',
-                      ),
-                      _buildDetailRow(
-                        'Valeur moyenne du panier',
-                        '${client.averageBasketValue.toStringAsFixed(0)} FCFA',
-                      ),
-                      _buildDetailRow(
-                        'Niveau de fidélité',
-                        client.loyaltyStatus
-                            .toString()
-                            .split('.')
-                            .last
-                            .toUpperCase(),
-                      ),
-                      _buildDetailRow(
-                        'Dernière visite',
-                        _formatDate(client.lastVisitDate),
-                      ),
-                    ]),
-                    const SizedBox(height: 20),
-
-                    // Medical Information Section (if available)
-                    if (client.hasMedicalHistory) ...[
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.05),
-                          border: Border.all(color: kDangerRed, width: 1.5),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 18),
+                      DetailSectionCard(
+                        title: 'Informations personnelles',
+                        subtitle: 'Coordonnées et historique d’inscription',
+                        child: Wrap(
+                          spacing: 14,
+                          runSpacing: 14,
                           children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.security,
-                                  color: kDangerRed,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                const Text(
-                                  'ACCÈS PHARMACIEN UNIQUEMENT',
-                                  style: TextStyle(
-                                    color: kDangerRed,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
+                            DetailInfoTile(
+                              icon: Icons.home_rounded,
+                              label: 'Adresse',
+                              value: client.address,
                             ),
-                            const SizedBox(height: 12),
-                            _buildDetailRow(
-                              'Description',
-                              client.description.isEmpty
-                                  ? 'Aucune disponible'
-                                  : client.description,
+                            DetailInfoTile(
+                              icon: Icons.calendar_today_rounded,
+                              label: 'Inscription',
+                              value: _formatDate(client.registrationDate),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 18),
+                      DetailSectionCard(
+                        title: 'Informations commerciales',
+                        subtitle:
+                            'Vue d’ensemble du comportement d’achat et du profil client.',
+                        child: Wrap(
+                          spacing: 14,
+                          runSpacing: 14,
+                          children: [
+                            DetailMetricCard(
+                              icon: Icons.shopping_bag_rounded,
+                              label: 'Total achats',
+                              value: '${client.totalPurchases}',
+                              tone: BpColors.accent,
+                            ),
+                            DetailMetricCard(
+                              icon: Icons.attach_money_rounded,
+                              label: 'Montant total',
+                              value:
+                                  '${client.totalSpent.toStringAsFixed(0)} FCFA',
+                              tone: BpColors.warning,
+                            ),
+                            DetailMetricCard(
+                              icon: Icons.auto_graph_rounded,
+                              label: 'Panier moyen',
+                              value:
+                                  '${client.averageBasketValue.toStringAsFixed(0)} FCFA',
+                              tone: BpColors.primaryLight,
+                            ),
+                            DetailMetricCard(
+                              icon: Icons.star_rounded,
+                              label: 'Fidélité',
+                              value: client.loyaltyStatus
+                                  .toString()
+                                  .split('.')
+                                  .last
+                                  .toUpperCase(),
+                              tone: BpColors.success,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (client.hasMedicalHistory) ...[
+                        const SizedBox(height: 18),
+                        DetailSectionCard(
+                          title: 'Informations médicales',
+                          subtitle: 'Contenu réservé au personnel autorisé.',
+                          child: Text(
+                            client.description.isEmpty
+                                ? 'Aucune information médicale disponible.'
+                                : client.description,
+                            style: BpTextStyles.body,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 18),
+                      DetailSectionCard(
+                        title: 'Historique des achats',
+                        subtitle: 'Dernières commandes du client.',
+                        child: purchases.isEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                child: Text(
+                                  'Aucun historique disponible.',
+                                  style: BpTextStyles.body,
+                                ),
+                              )
+                            : Column(
+                                children: purchases.map((purchase) {
+                                  return Container(
+                                    margin: const EdgeInsets.only(bottom: 14),
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: BpColors.surface.withOpacity(0.85),
+                                      borderRadius: BorderRadius.circular(
+                                        BpSpacing.radiusMd,
+                                      ),
+                                      border: Border.all(
+                                        color: BpColors.border,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              purchase.invoiceNumber,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: BpColors.textPrimary,
+                                              ),
+                                            ),
+                                            Text(
+                                              _formatDate(purchase.date),
+                                              style: const TextStyle(
+                                                color: BpColors.textSecondary,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Wrap(
+                                          spacing: 10,
+                                          runSpacing: 8,
+                                          children: purchase.products
+                                              .map(
+                                                (productName) => DetailPill(
+                                                  icon: Icons
+                                                      .medical_services_rounded,
+                                                  label: productName,
+                                                  foreground:
+                                                      BpColors.textPrimary,
+                                                  background: BpColors.surface
+                                                      .withOpacity(0.5),
+                                                ),
+                                              )
+                                              .toList(),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          '${purchase.totalAmount.toStringAsFixed(0)} FCFA',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: BpColors.accent,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          'Paiement : ${purchase.paymentMethod}',
+                                          style: BpTextStyles.caption,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                      ),
                     ],
-
-                    // Purchase History Section
-                    _buildSection('Historique des achats', []),
-                    const SizedBox(height: 12),
-                    _buildPurchaseHistory(client),
-                    const SizedBox(height: 20),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -154,102 +290,7 @@ class ClientDetailsDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: kPrimaryGreen,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Divider(),
-        const SizedBox(height: 8),
-        ...children,
-      ],
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 150,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(value, style: const TextStyle(color: Colors.black87)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPurchaseHistory(Client client) {
-    final purchases = ClientService.getClientPurchases(client.id);
-    return SizedBox(
-      height: 180,
-      child: ListView.builder(
-        itemCount: purchases.length,
-        itemBuilder: (context, index) {
-          final purchase = purchases[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        purchase.invoiceNumber,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '${purchase.totalAmount.toStringAsFixed(0)} FCFA',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryGreen,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _formatDate(purchase.date),
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
-                  Text(
-                    '${purchase.products.join(', ')}',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[700]),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
   }
 }

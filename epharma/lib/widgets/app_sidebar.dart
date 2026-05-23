@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 import '../security/rbac.dart';
+import 'bp_theme.dart';
+import 'brand_title.dart';
 
 typedef SidebarCallbacks = Map<String, VoidCallback>;
 
@@ -24,64 +26,40 @@ class AppSidebar extends StatelessWidget {
 
     return Container(
       width: 240,
-      color: const Color(0xFFF8FAFC),
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        children: [
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Color(0xFF6366F1),
-                  child: Icon(
-                    Icons.local_pharmacy,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        authProvider.company?.name ?? 'BigPharma',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E293B),
-                        ),
-                      ),
-                      const Text(
-                        'SaaS Edition',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.indigoAccent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 32),
-          Expanded(
-            child: ListView(
+      color: Colors.transparent,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      child: BpSurfaceCard(
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+        radius: 28,
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              children: [
-                ...visibleEntries.map(
-                  (entry) =>
-                      _sidebarItem(entry.key, entry.icon, label: entry.label),
-                ),
-              ],
+              child: Row(
+                children: [
+                  Flexible(
+                    child: BrandTitle(
+                      title: 'BigPharma',
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 32),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                children: [
+                  ...visibleEntries.map(
+                    (entry) =>
+                        _sidebarItem(entry.key, entry.icon, label: entry.label),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -114,25 +92,30 @@ class AppSidebarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = color ?? const Color(0xFF6366F1);
+    final activeColor = color ?? BpColors.accent;
+    final inactiveColor = color ?? BpColors.textSecondary;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Material(
-        color: selected ? activeColor.withOpacity(0.12) : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        color: selected ? BpColors.accent.withOpacity(0.14) : Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: selected
+                  ? Border.all(color: BpColors.borderStrong)
+                  : null,
+            ),
             child: Row(
               children: [
                 Icon(
                   icon,
-                  color: selected
-                      ? activeColor
-                      : (color ?? const Color(0xFF475569)),
+                  color: selected ? activeColor : inactiveColor,
                   size: 22,
                 ),
                 const SizedBox(width: 12),
@@ -141,10 +124,8 @@ class AppSidebarItem extends StatelessWidget {
                     label,
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                      color: selected
-                          ? activeColor
-                          : (color ?? const Color(0xFF475569)),
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: selected ? activeColor : inactiveColor,
                     ),
                   ),
                 ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
 
 class SettingsTheme {
   // Dimensions
@@ -9,12 +9,12 @@ class SettingsTheme {
   static const double sidePadding = 24.0;
 
   // Colors (Shared with app_colors.dart but curated for settings)
-  static const Color primary = kPrimaryGreen;
-  static const Color accent = kSoftBlue;
-  static const Color background = Colors.white;
-  static const Color textPrimary = Color(0xFF1E293B);
-  static const Color textSecondary = Color(0xFF64748B);
-  static const Color divider = Color(0xFFE2E8F0);
+  static const Color primary = BpColors.accent;
+  static const Color accent = BpColors.surfaceMuted;
+  static const Color background = BpColors.surfaceStrong;
+  static const Color textPrimary = BpColors.textPrimary;
+  static const Color textSecondary = BpColors.textSecondary;
+  static const Color divider = BpColors.border;
 
   // Transitions
   static const Duration animationDuration = Duration(milliseconds: 400);

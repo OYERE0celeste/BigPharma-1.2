@@ -262,7 +262,7 @@ class _RelationClientPageState extends State<RelationClientPage> {
                     label: const Text('Démarrer une consultation'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                   ),
                 ],
@@ -417,7 +417,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                 decoration: InputDecoration(
                   labelText: 'Sujet / Motif de consultation',
                   prefixIcon: const Icon(Icons.subject_rounded),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -427,7 +428,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                 decoration: InputDecoration(
                   labelText: 'Décrivez précisément votre demande',
                   prefixIcon: const Icon(Icons.chat_bubble_outline_rounded),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                 ),
               ),
               const SizedBox(height: 24),
@@ -681,7 +683,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                 decoration: InputDecoration(
                   labelText: 'Filtrer par statut',
                   prefixIcon: const Icon(Icons.filter_list_rounded),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 ),
                 items: const [
@@ -919,7 +922,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                       decoration: InputDecoration(
                         labelText: 'Catégorie de réclamation',
                         prefixIcon: const Icon(Icons.category_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                       ),
                       items: const [
                         DropdownMenuItem(
@@ -959,7 +963,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                       decoration: InputDecoration(
                         labelText: 'Commande concernée',
                         prefixIcon: const Icon(Icons.receipt_long_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                       ),
                       items: [
                         const DropdownMenuItem<String?>(
@@ -983,7 +988,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                       decoration: InputDecoration(
                         labelText: 'Sujet succinct',
                         prefixIcon: const Icon(Icons.subject_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -994,7 +1000,8 @@ class _RelationClientPageState extends State<RelationClientPage> {
                       decoration: InputDecoration(
                         labelText: 'Décrivez en détail le problème rencontré',
                         prefixIcon: const Icon(Icons.description_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14)),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -1037,7 +1044,7 @@ class _RelationClientPageState extends State<RelationClientPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kAccentBlue,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
                         child: const Text('Envoyer la réclamation', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),

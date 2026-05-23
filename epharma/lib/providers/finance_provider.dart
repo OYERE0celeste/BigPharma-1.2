@@ -4,6 +4,8 @@ import '../services/finance_service.dart';
 import '../finances/services/finance_api_service.dart';
 
 class FinanceProvider with ChangeNotifier {
+  static const Duration _cacheDuration = Duration(minutes: 2);
+
   final FinanceService _financeService = FinanceService();
 
   List<FinanceTransactionModel> get transactions =>
@@ -22,29 +24,62 @@ class FinanceProvider with ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  DateTime? _lastLoadedAt;
+  Future<void>? _pendingLoad;
 
-  Future<void> loadTransactions() async {
-    _isLoading = true;
-    notifyListeners();
+  bool get hasFreshData =>
+      transactions.isNotEmpty &&
+      _lastLoadedAt != null &&
+      DateTime.now().difference(_lastLoadedAt!) < _cacheDuration;
+
+  Future<void> loadTransactions({bool forceRefresh = false}) async {
+    if (_pendingLoad != null) {
+      return _pendingLoad!;
+    }
+
+    if (!forceRefresh && hasFreshData) {
+      return;
+    }
+
+    final shouldShowLoader = transactions.isEmpty;
+    if (shouldShowLoader) {
+      _isLoading = true;
+      notifyListeners();
+    }
+
+    _pendingLoad = _loadTransactionsInternal(
+      shouldShowLoader: shouldShowLoader,
+    );
+    return _pendingLoad!;
+  }
+
+  Future<void> _loadTransactionsInternal({
+    required bool shouldShowLoader,
+  }) async {
     try {
       final fetched = await FinanceApiService.getAllTransactions();
       _financeService.setTransactions(fetched);
+      _lastLoadedAt = DateTime.now();
     } catch (e) {
       debugPrint('FinanceProvider Error: $e');
     } finally {
-      _isLoading = false;
+      _pendingLoad = null;
+      if (shouldShowLoader) {
+        _isLoading = false;
+      }
       notifyListeners();
     }
   }
 
-  void initialize() {
-    loadTransactions();
+  void initialize({bool forceRefresh = false}) {
+    loadTransactions(forceRefresh: forceRefresh);
   }
 
   Future<void> addTransaction(FinanceTransactionModel transaction) async {
     try {
       final saved = await FinanceApiService.createTransaction(transaction);
       _financeService.addTransaction(saved);
+      _lastLoadedAt = DateTime.now();
       notifyListeners();
     } catch (e) {
       debugPrint('Error adding transaction: $e');

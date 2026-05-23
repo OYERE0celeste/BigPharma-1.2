@@ -3,19 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/order_provider.dart';
 import '../providers/sales_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/finance_provider.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
 import '../widgets/page_stat_cards.dart';
+import '../widgets/receipt_ticket.dart';
 import '../models/product_model.dart';
+import '../models/order_model.dart';
 import '../models/sale_model.dart';
 import '../security/rbac.dart';
+import '../commandes/order_details_page.dart';
+import '../services/order_invoice_service.dart';
+import '../services/receipt_export_service.dart';
 import 'widgets/product_card.dart';
 import 'widgets/cart_item_tile.dart';
 import 'widgets/transaction_summary.dart';
+import '../scanner/widgets/scanner_button.dart';
 import 'widgets/payment_section.dart';
 import 'widgets/sale_history.dart';
+import 'services/auto_cart_manager.dart';
+import '../scanner/services/scanner_context_handler.dart';
 
 // ============================================================================
 // MAIN PAGE
@@ -31,7 +41,7 @@ class PharmacySalesPage extends StatefulWidget {
 class _PharmacySalesPageState extends State<PharmacySalesPage> {
   final List<CartItem> _cart = [];
   late TextEditingController _searchController;
-  late TextEditingController _filterController;
+  late AutoCartManager _autoCartManager;
 
   bool _showSalesHistory = false;
 
@@ -46,29 +56,138 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    _filterController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final productProvider = context.read<ProductProvider>();
-      final salesProvider = context.read<SalesProvider>();
 
-      if (productProvider.products.isEmpty) {
-        await productProvider.loadProducts();
-      }
-      if (salesProvider.sales.isEmpty) {
-        await salesProvider.loadSales();
-      }
+    // ========== INITIALIZE AUTO CART MANAGER ==========
+    // Listen to ProductFound events and auto-add to cart
+    _autoCartManager = AutoCartManager(
+      cartItems: _cart,
+      onCartChanged: () {
+        setState(() {}); // Rebuild when cart changes
+      },
+    );
+
+    // ========== SET SCANNER CONTEXT ==========
+    // Tell scanner system we're on Sales page
+    ScannerContextHandler.instance.setActivePage(
+      ScannerActivePageContext.sales,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _loadInitialData();
     });
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _filterController.dispose();
+    _autoCartManager.dispose(); // Clean up auto-cart manager
     super.dispose();
   }
 
   void _filterProducts(String query) {
     setState(() {}); // Trigger rebuild to apply filter in build method
+  }
+
+  Future<void> _loadInitialData() async {
+    final productProvider = context.read<ProductProvider>();
+    final salesProvider = context.read<SalesProvider>();
+
+    if (productProvider.products.isEmpty) {
+      await productProvider.loadProducts();
+    }
+    if (salesProvider.sales.isEmpty) {
+      await salesProvider.loadSales();
+    }
+
+    await _loadOrderHistory();
+  }
+
+  Future<void> _loadOrderHistory({bool forceRefresh = false}) async {
+    final authProvider = context.read<AuthProvider>();
+
+    if (authProvider.token == null) {
+      return;
+    }
+
+    await context.read<OrderProvider>().fetchOrders(
+      authProvider: authProvider,
+      forceRefresh: forceRefresh,
+    );
+  }
+
+  void _openSalesHistory() {
+    setState(() => _showSalesHistory = true);
+    _loadOrderHistory();
+  }
+
+  void _openOrderDetails(String orderId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => OrderDetailsPage(orderId: orderId)),
+    );
+  }
+
+  void _openSaleDetails(Sale sale) {
+    final receipt = ReceiptTicketFactory.fromSale(sale);
+
+    showDialog<void>(
+      context: context,
+      builder: (context) => ReceiptPreviewDialog(
+        title: 'Facture ${sale.invoiceNumber}',
+        data: receipt,
+        onDownload: () =>
+            _downloadReceipt(receipt, filename: '${sale.invoiceNumber}.pdf'),
+      ),
+    );
+  }
+
+  Future<void> _downloadSaleReceipt(Sale sale) async {
+    await _downloadReceipt(
+      ReceiptTicketFactory.fromSale(sale),
+      filename: '${sale.invoiceNumber}.pdf',
+    );
+  }
+
+  Future<void> _downloadOrderReceipt(OrderModel order) async {
+    try {
+      final invoice = await OrderInvoiceService.fetchOrderInvoice(order.id);
+      final receipt = invoice != null
+          ? ReceiptTicketFactory.fromOrderInvoice(
+              invoice,
+              operatorName: order.userName,
+            )
+          : ReceiptTicketFactory.fromOrder(order);
+
+      await _downloadReceipt(receipt, filename: '${receipt.invoiceNumber}.pdf');
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      AppScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Impossible de telecharger la facture: $error')),
+      );
+    }
+  }
+
+  Future<void> _downloadReceipt(
+    ReceiptTicketData receipt, {
+    required String filename,
+  }) async {
+    try {
+      await ReceiptExportService.downloadReceipt(receipt, filename: filename);
+      if (!mounted) {
+        return;
+      }
+      AppScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Facture prete pour telechargement.')),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      AppScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur lors du telechargement: $error')),
+      );
+    }
   }
 
   bool _isSameDay(DateTime a, DateTime b) {
@@ -126,38 +245,37 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   }
 
   void _addProductToCart(Product product) {
-    if (product.availableStock == 0) {
+    final lot = product.nearestExpirationLot;
+
+    if (product.availableStock == 0 || lot == null) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Produit est en rupture de stock')),
+        const SnackBar(content: Text('Aucun lot disponible pour ce produit.')),
       );
       return;
     }
 
-    final existingItem = _cart.firstWhere(
-      (item) => item.product.id == product.id,
-      orElse: () => CartItem(
-        product: product,
-        selectedLot: product.nearestExpirationLot!,
-        quantity: 1,
-      ),
+    final existingIndex = _cart.indexWhere(
+      (item) =>
+          item.product.id == product.id &&
+          item.selectedLot.lotNumber == lot.lotNumber,
     );
 
-    if (_cart.contains(existingItem)) {
+    if (existingIndex >= 0) {
+      final existingItem = _cart[existingIndex];
       setState(() {
-        if (existingItem.quantity <
-            existingItem.selectedLot.quantityAvailable) {
+        if (existingItem.quantity < lot.quantityAvailable) {
           existingItem.quantity++;
         }
       });
     } else {
       setState(() {
-        _cart.add(existingItem);
+        _cart.add(CartItem(product: product, selectedLot: lot, quantity: 1));
       });
     }
 
     AppScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${product.name} ajouté au panier'),
+        content: Text('${product.name} ajoute au panier'),
         duration: const Duration(milliseconds: 800),
       ),
     );
@@ -245,16 +363,16 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             child: const Text('Fermer'),
           ),
           ElevatedButton.icon(
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
-              AppScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Simulation d\'impression de la facture...'),
-                ),
-              );
+              await _downloadSaleReceipt(sale);
+              if (!mounted) {
+                return;
+              }
+              _openSaleDetails(sale);
             },
-            icon: const Icon(Icons.print),
-            label: const Text('Imprimer la Facture'),
+            icon: const Icon(Icons.download_outlined),
+            label: const Text('Voir / Telecharger'),
           ),
         ],
       ),
@@ -271,6 +389,13 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
     if (!canMakeSale && !canViewHistory) {
       return const Center(child: Text('Acces non autorise a ce module.'));
+    }
+
+    if ((productProvider.isLoading && productProvider.products.isEmpty) ||
+        (salesProvider.isLoading && salesProvider.sales.isEmpty)) {
+      return const Center(
+        child: CircularProgressIndicator(color: BpColors.accent),
+      );
     }
 
     return LayoutBuilder(
@@ -309,7 +434,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     required Widget child,
   }) {
     return Container(
-      color: Colors.grey.shade50,
+      color: BpColors.scaffoldSecondary,
       child: Column(
         children: [
           Padding(
@@ -332,7 +457,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   }) {
     if (_showSalesHistory || !canMakeSale) {
       return Container(
-        color: Colors.grey.shade50,
+        color: BpColors.scaffoldSecondary,
         child: Column(
           children: [
             Padding(
@@ -353,15 +478,32 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: BpColors.surfaceStrong,
+          foregroundColor: BpColors.textPrimary,
           title: const Text('Point de Vente', style: TextStyle(fontSize: 16)),
           actions: [
+            ScannerButton(
+              style: ScannerButtonStyle.icon,
+              tooltip: 'Scanner et ajouter au panier',
+              onProductScanned: (product) {
+                _addProductToCart(product);
+                AppScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Produit ajouté au panier : ${product.name}'),
+                  ),
+                );
+              },
+            ),
             if (canViewHistory)
               IconButton(
                 icon: const Icon(Icons.history),
-                onPressed: () => setState(() => _showSalesHistory = true),
+                onPressed: _openSalesHistory,
               ),
           ],
           bottom: const TabBar(
+            labelColor: BpColors.textPrimary,
+            unselectedLabelColor: BpColors.textSecondary,
+            indicatorColor: BpColors.accent,
             tabs: [
               Tab(text: 'Produits', icon: Icon(Icons.grid_view)),
               Tab(text: 'Panier', icon: Icon(Icons.shopping_cart)),
@@ -431,7 +573,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     return Expanded(
       flex: isMobile ? 1 : 2,
       child: Container(
-        color: Colors.grey.shade50,
+        color: BpColors.scaffoldSecondary,
         child: Column(
           children: [
             if (!isMobile) // Header only for desktop
@@ -441,9 +583,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                     return Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade200),
+                        color: BpColors.surfaceStrong,
+                        border: const Border(
+                          bottom: BorderSide(color: BpColors.border),
                         ),
                       ),
                       child: Column(
@@ -455,26 +597,18 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
+                              color: BpColors.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 12),
                           TextField(
                             controller: _searchController,
                             onChanged: _filterProducts,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.search, size: 20),
-                              hintText: 'Rechercher un produit...',
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade300,
-                                ),
-                              ),
+                            style: const TextStyle(color: BpColors.textPrimary),
+                            decoration: BpInputTheme.light(
+                              label: 'Rechercher un produit',
+                              hint: 'Nom, categorie ou ID...',
+                              prefixIcon: Icons.search,
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -499,9 +633,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                     label: 'Historique',
                                     icon: Icons.history,
                                     isActive: _showSalesHistory,
-                                    onPressed: () => setState(
-                                      () => _showSalesHistory = true,
-                                    ),
+                                    onPressed: _openSalesHistory,
                                   ),
                                 ),
                             ],
@@ -517,9 +649,9 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey.shade200),
+                      color: BpColors.surfaceStrong,
+                      border: const Border(
+                        bottom: BorderSide(color: BpColors.border),
                       ),
                     ),
                     child: Row(
@@ -537,13 +669,14 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 0.5,
+                                  color: BpColors.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Gérez vos ventes quotidiennes',
+                                'Gerez vos ventes quotidiennes',
                                 style: TextStyle(
-                                  color: Colors.grey[600],
+                                  color: BpColors.textSecondary,
                                   fontSize: 13,
                                 ),
                               ),
@@ -565,32 +698,13 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   child: TextField(
                                     controller: _searchController,
                                     onChanged: _filterProducts,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        Icons.search,
-                                        size: 20,
-                                      ),
-                                      hintText:
-                                          'Rechercher un produit, catégorie ou ID...',
-                                      hintStyle: const TextStyle(fontSize: 14),
-                                      isDense: true,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 12,
-                                          ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey.shade300,
-                                        ),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey.shade300,
-                                        ),
-                                      ),
+                                    style: const TextStyle(
+                                      color: BpColors.textPrimary,
+                                    ),
+                                    decoration: BpInputTheme.light(
+                                      label: 'Rechercher un produit',
+                                      hint: 'Nom, categorie ou ID...',
+                                      prefixIcon: Icons.search,
                                     ),
                                   ),
                                 ),
@@ -605,6 +719,21 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              ScannerButton(
+                                style: ScannerButtonStyle.filled,
+                                tooltip: 'Scanner et ajouter au panier',
+                                onProductScanned: (product) {
+                                  _addProductToCart(product);
+                                  AppScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Produit ajouté au panier : ${product.name}',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 8),
                               _buildHeaderBtn(
                                 label: 'Nouvelle Vente',
                                 icon: Icons.shopping_bag,
@@ -621,8 +750,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   label: 'Historique',
                                   icon: Icons.history,
                                   isActive: _showSalesHistory,
-                                  onPressed: () =>
-                                      setState(() => _showSalesHistory = true),
+                                  onPressed: _openSalesHistory,
                                 ),
                               ],
                             ],
@@ -653,6 +781,15 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                   } else {
                     crossCount = 4;
                     ratio = 0.75;
+                  }
+
+                  if (filteredProducts.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'Aucun produit ne correspond a votre recherche.',
+                        style: TextStyle(color: BpColors.textSecondary),
+                      ),
+                    );
                   }
 
                   return GridView.builder(
@@ -694,7 +831,15 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
       icon: Icon(icon, size: 16),
       label: Text(label),
       style: OutlinedButton.styleFrom(
-        backgroundColor: isActive ? kSoftBlue : Colors.transparent,
+        foregroundColor: isActive
+            ? BpColors.textPrimary
+            : BpColors.textSecondary,
+        backgroundColor: isActive
+            ? BpColors.accent.withOpacity(0.14)
+            : BpColors.surfaceStrong,
+        side: BorderSide(
+          color: isActive ? BpColors.accent : BpColors.borderStrong,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
     );
@@ -704,22 +849,27 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     return Expanded(
       flex: 1,
       child: Container(
-        color: Colors.white,
+        color: BpColors.surfaceStrong,
         child: Column(
           children: [
             // Cart Header
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+                color: BpColors.surfaceStrong,
+                border: const Border(
+                  bottom: BorderSide(color: BpColors.border),
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
                     'PANIER',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: BpColors.textPrimary,
+                    ),
                   ),
                   if (_cart.isNotEmpty)
                     TextButton.icon(
@@ -773,12 +923,12 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
           Icon(
             Icons.shopping_basket_outlined,
             size: 48,
-            color: Colors.grey[300],
+            color: BpColors.textHint,
           ),
           const SizedBox(height: 16),
           const Text(
             'Le panier est vide',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
         ],
       ),
@@ -789,7 +939,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.surfaceStrong,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -809,6 +959,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
           ),
           PaymentSection(
             totalAmount: _cartSubtotal - _customDiscount + _customTax,
+            selectedPaymentMethod: _selectedPaymentMethod,
             onPaymentMethodChanged: (m) =>
                 setState(() => _selectedPaymentMethod = m),
             onAmountReceivedChanged: (a) => setState(() => _amountReceived = a),
@@ -837,33 +988,53 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
   }
 
   Widget _buildSalesHistoryView({required bool canReturnToPos}) {
+    final orderProvider = context.watch<OrderProvider>();
+
     return Container(
-      color: Colors.white,
+      color: BpColors.scaffoldSecondary,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'HISTORIQUE DES VENTES',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              if (canReturnToPos)
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() => _showSalesHistory = false);
-                  },
-                  icon: const Icon(Icons.close, size: 16),
-                  label: const Text('Retour au POS'),
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'HISTORIQUE DES VENTES',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: BpColors.textPrimary,
+                    ),
+                  ),
                 ),
-            ],
+                if (canReturnToPos) ...[
+                  const SizedBox(width: 12),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() => _showSalesHistory = false);
+                    },
+                    icon: const Icon(Icons.close, size: 16),
+                    label: const Text('Retour au POS'),
+                  ),
+                ],
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           Expanded(
             child: SaleHistoryTable(
               sales: context.watch<SalesProvider>().sales,
+              orders: orderProvider.orders,
+              isLoadingOrders: orderProvider.isLoading,
+              ordersErrorMessage: orderProvider.errorMessage,
+              onRefreshOrders: () => _loadOrderHistory(forceRefresh: true),
+              onOpenSale: _openSaleDetails,
+              onDownloadSale: _downloadSaleReceipt,
+              onOpenOrder: (order) => _openOrderDetails(order.id),
+              onDownloadOrder: _downloadOrderReceipt,
             ),
           ),
         ],

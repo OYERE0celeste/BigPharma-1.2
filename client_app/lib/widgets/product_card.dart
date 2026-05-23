@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models/product.dart';
+import 'bp_theme.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -17,16 +19,19 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final stockColor = _stockColor(product.stockStatus);
+    final canAddToCart = !product.isOutOfStock;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: BpColors.cardBg,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: BpColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
+            color: Colors.black.withOpacity(0.14),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -45,9 +50,7 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Container(
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: primary.withOpacity(0.05),
-                      ),
+                      decoration: BoxDecoration(color: BpColors.surfaceStrong),
                       child: Hero(
                         tag: 'product_${product.id}',
                         child: product.image.startsWith('http')
@@ -78,7 +81,7 @@ class ProductCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
+                          color: BpColors.surface.withOpacity(0.92),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -97,74 +100,107 @@ class ProductCard extends StatelessWidget {
               // Content Container
               Expanded(
                 flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          height: 1.2,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        product.description,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const Spacer(),
-                      Row(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final compact = constraints.maxHeight < 155;
+                    final ultraCompact = constraints.maxHeight < 135;
+
+                    return Padding(
+                      padding: EdgeInsets.all(compact ? 10 : 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '${product.sellingPrice.toStringAsFixed(0)} FCFA',
+                                product.name,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 16,
-                                  color: primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: compact ? 14 : 15,
+                                  height: 1.15,
+                                  color: BpColors.textPrimary,
                                 ),
+                                maxLines: compact ? 1 : 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              if (product.stockQuantity <= 5)
+                              SizedBox(height: compact ? 2 : 4),
+                              if (!ultraCompact)
                                 Text(
-                                  'Reste: ${product.stockQuantity}',
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.red,
+                                  product.description,
+                                  style: TextStyle(
+                                    fontSize: compact ? 11 : 12,
+                                    color: BpColors.textSecondary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              SizedBox(height: compact ? 6 : 8),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: compact ? 8 : 10,
+                                  vertical: compact ? 4 : 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: stockColor.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(
+                                  product.stockStatusLabel,
+                                  style: TextStyle(
+                                    fontSize: compact ? 10 : 11,
+                                    color: stockColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                              ),
                             ],
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: primary,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: IconButton(
-                              onPressed: onAddTap,
-                              icon: const Icon(
-                                Icons.add_shopping_cart,
-                                color: Colors.white,
-                                size: 20,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${product.sellingPrice.toStringAsFixed(0)} FCFA',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: compact ? 15 : 16,
+                                    color: primary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              constraints: const BoxConstraints(),
-                              padding: const EdgeInsets.all(8),
-                            ),
+                              SizedBox(width: compact ? 6 : 8),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: canAddToCart
+                                      ? primary
+                                      : BpColors.textSecondary.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(
+                                    compact ? 10 : 12,
+                                  ),
+                                ),
+                                child: IconButton(
+                                  onPressed: canAddToCart ? onAddTap : null,
+                                  icon: Icon(
+                                    Icons.add_shopping_cart,
+                                    color: canAddToCart
+                                        ? Colors.white
+                                        : Colors.white70,
+                                    size: compact ? 18 : 20,
+                                  ),
+                                  constraints: const BoxConstraints(),
+                                  padding: EdgeInsets.all(compact ? 7 : 8),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -172,5 +208,16 @@ class ProductCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _stockColor(ProductStockStatus status) {
+    switch (status) {
+      case ProductStockStatus.inStock:
+        return Colors.green;
+      case ProductStockStatus.lowStock:
+        return Colors.orange;
+      case ProductStockStatus.outOfStock:
+        return BpColors.error;
+    }
   }
 }

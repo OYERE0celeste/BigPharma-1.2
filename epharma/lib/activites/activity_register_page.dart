@@ -3,6 +3,8 @@ import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
+import '../widgets/detail_widgets.dart';
 import '../models/activity_model.dart';
 import '../providers/activity_provider.dart';
 import '../services/activity_service.dart';
@@ -202,13 +204,13 @@ class HeaderSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: BpColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                const Text(
                   'Suivi centralisé de toutes les activités quotidiennes',
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                  style: TextStyle(fontSize: 13, color: BpColors.textSecondary),
                 ),
               ],
             ),
@@ -259,9 +261,15 @@ class HeaderSection extends StatelessWidget {
                     }
                     _showSnackBar(context, 'Génération du PDF en cours...');
                     try {
-                      await PdfExportHelper.exportActivities(transactions, 'Registre des Activités');
+                      await PdfExportHelper.exportActivities(
+                        transactions,
+                        'Registre des Activités',
+                      );
                     } catch (e) {
-                      _showSnackBar(context, 'Erreur lors de la génération du PDF');
+                      _showSnackBar(
+                        context,
+                        'Erreur lors de la génération du PDF',
+                      );
                     }
                   },
                 ),
@@ -278,9 +286,15 @@ class HeaderSection extends StatelessWidget {
                     }
                     _showSnackBar(context, 'Génération du PDF en cours...');
                     try {
-                      await PdfExportHelper.exportActivities(transactions, 'Registre des Activités');
+                      await PdfExportHelper.exportActivities(
+                        transactions,
+                        'Registre des Activités',
+                      );
                     } catch (e) {
-                      _showSnackBar(context, 'Erreur lors de la génération du PDF');
+                      _showSnackBar(
+                        context,
+                        'Erreur lors de la génération du PDF',
+                      );
                     }
                   },
                 ),
@@ -304,12 +318,12 @@ class HeaderSection extends StatelessWidget {
       icon: Icon(icon, size: 18),
       label: Text(label),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.grey.shade100,
-        foregroundColor: Colors.black87,
+        backgroundColor: BpColors.surfaceStrong,
+        foregroundColor: BpColors.textPrimary,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: Colors.grey.shade300),
+          side: const BorderSide(color: BpColors.border),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
@@ -344,7 +358,7 @@ class StatisticsSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: BpColors.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -435,9 +449,9 @@ class StatCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.grey[600],
+                        color: BpColors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -509,6 +523,43 @@ class _FiltersSectionState extends State<FiltersSection> {
     super.dispose();
   }
 
+  InputDecorationTheme _dropdownDecorationTheme() {
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: BpColors.cardBg,
+      labelStyle: const TextStyle(color: BpColors.textSecondary),
+      hintStyle: const TextStyle(color: BpColors.textHint),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
+        borderSide: const BorderSide(color: BpColors.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
+        borderSide: const BorderSide(color: BpColors.borderStrong),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
+        borderSide: const BorderSide(color: BpColors.accent, width: 1.4),
+      ),
+    );
+  }
+
+  MenuStyle _menuStyle() {
+    return MenuStyle(
+      backgroundColor: const WidgetStatePropertyAll(BpColors.surfaceStrong),
+      surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+      side: const WidgetStatePropertyAll(
+        BorderSide(color: BpColors.borderStrong),
+      ),
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final employees = ActivityService.getUniqueEmployees(widget.transactions);
@@ -516,9 +567,9 @@ class _FiltersSectionState extends State<FiltersSection> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: BpColors.border),
         borderRadius: BorderRadius.circular(8),
-        color: Colors.grey[50],
+        color: BpColors.cardBg,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,7 +582,7 @@ class _FiltersSectionState extends State<FiltersSection> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: BpColors.textPrimary,
                 ),
               ),
               TextButton.icon(
@@ -545,8 +596,8 @@ class _FiltersSectionState extends State<FiltersSection> {
                   });
                   widget.onReset();
                 },
-                icon: const Icon(Icons.refresh, size: 18),
-                label: const Text('Réinitialiser'),
+                icon: const Icon(Icons.refresh, size: 18, color: BpColors.accent),
+                label: const Text('Réinitialiser', style: TextStyle(color: BpColors.accent)),
               ),
             ],
           ),
@@ -576,6 +627,8 @@ class _FiltersSectionState extends State<FiltersSection> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownMenu<String>(
+                  inputDecorationTheme: _dropdownDecorationTheme(),
+                  menuStyle: _menuStyle(),
                   initialSelection: _selectedPeriod,
                   label: const Text('Période'),
                   onSelected: (value) {
@@ -596,6 +649,8 @@ class _FiltersSectionState extends State<FiltersSection> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownMenu<String>(
+                  inputDecorationTheme: _dropdownDecorationTheme(),
+                  menuStyle: _menuStyle(),
                   initialSelection: _selectedActivityType,
                   label: const Text('Type Activité'),
                   onSelected: (value) {
@@ -618,6 +673,8 @@ class _FiltersSectionState extends State<FiltersSection> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownMenu<String>(
+                  inputDecorationTheme: _dropdownDecorationTheme(),
+                  menuStyle: _menuStyle(),
                   initialSelection: _selectedEmployee,
                   label: const Text('Employé'),
                   onSelected: (value) {
@@ -637,6 +694,8 @@ class _FiltersSectionState extends State<FiltersSection> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownMenu<PaymentMethod>(
+                  inputDecorationTheme: _dropdownDecorationTheme(),
+                  menuStyle: _menuStyle(),
                   initialSelection: _selectedPaymentMethod,
                   label: const Text('Paiement'),
                   onSelected: (value) {
@@ -731,12 +790,10 @@ class TransactionsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final totalPages = (transactions.length / pageSize).ceil().clamp(1, 1000);
-    final start = currentPage * pageSize;
-    final end = start + pageSize;
-    final paginatedTransactions = transactions.sublist(
-      start,
-      end > transactions.length ? transactions.length : end,
-    );
+    // Clamp indices to avoid RangeError when data shrinks or page is out of bounds
+    final start = (currentPage * pageSize).clamp(0, transactions.length);
+    final end = (start + pageSize).clamp(0, transactions.length);
+    final paginatedTransactions = transactions.sublist(start, end);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -746,9 +803,13 @@ class TransactionsTable extends StatelessWidget {
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                constraints: BoxConstraints(
+                  minWidth: constraints.maxWidth.isFinite
+                      ? constraints.maxWidth
+                      : 0.0,
+                ),
                 child: DataTable(
-                  headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                  headingRowColor: WidgetStateProperty.all(BpColors.surfaceStrong),
                   columnSpacing: 24,
                   horizontalMargin: 24,
                   dataRowMinHeight: 56,
@@ -756,65 +817,68 @@ class TransactionsTable extends StatelessWidget {
                   headingRowHeight: 56,
                   headingTextStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: BpColors.textPrimary,
                   ),
                   columns: const [
-              DataColumn(label: Text('Date & Heure')),
-              DataColumn(label: Text('Type')),
-              DataColumn(label: Text('Référence')),
-              DataColumn(label: Text('Client')),
-              DataColumn(label: Text('Produit')),
-              DataColumn(label: Text('Quantité')),
-              DataColumn(label: Text('Montant')),
-              DataColumn(label: Text('Paiement')),
-              DataColumn(label: Text('Employé')),
-              DataColumn(label: Text('Statut')),
-              DataColumn(label: Text('')),
-            ],
-            rows: paginatedTransactions.map((transaction) {
-              return DataRow(
-                cells: [
-                  DataCell(Text(_formatDateTime(transaction.dateTime))),
-                  DataCell(_buildActivityBadge(transaction.type)),
-                  DataCell(Text(transaction.reference)),
-                  DataCell(Text(transaction.clientOrSupplierName)),
-                  DataCell(Text(transaction.productName)),
-                  DataCell(Text('${transaction.quantity}')),
-                  DataCell(
-                    Text(
-                      '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: transaction.totalAmount >= 0
-                            ? kPrimaryGreen
-                            : kDangerRed,
-                      ),
-                    ),
-                  ),
-                  DataCell(Text(transaction.paymentMethodLabel)),
-                  DataCell(Text(transaction.employeeName)),
-                  DataCell(_buildStatusBadge(transaction.status)),
-                  DataCell(
-                    IconButton(
-                      icon: const Icon(Icons.visibility_outlined, size: 18),
-                      onPressed: () => onViewDetails(transaction),
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
-          ),
+                    DataColumn(label: Text('Date & Heure')),
+                    DataColumn(label: Text('Type')),
+                    DataColumn(label: Text('Référence')),
+                    DataColumn(label: Text('Client')),
+                    DataColumn(label: Text('Produit')),
+                    DataColumn(label: Text('Quantité')),
+                    DataColumn(label: Text('Montant')),
+                    DataColumn(label: Text('Paiement')),
+                    DataColumn(label: Text('Employé')),
+                    DataColumn(label: Text('Statut')),
+                    DataColumn(label: Text('')),
+                  ],
+                  rows: paginatedTransactions.map((transaction) {
+                    return DataRow(
+                      cells: [
+                        DataCell(Text(_formatDateTime(transaction.dateTime))),
+                        DataCell(_buildActivityBadge(transaction.type)),
+                        DataCell(Text(transaction.reference)),
+                        DataCell(Text(transaction.clientOrSupplierName)),
+                        DataCell(Text(transaction.productName)),
+                        DataCell(Text('${transaction.quantity}')),
+                        DataCell(
+                          Text(
+                            '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: transaction.totalAmount >= 0
+                                  ? kPrimaryGreen
+                                  : kDangerRed,
+                            ),
+                          ),
+                        ),
+                        DataCell(Text(transaction.paymentMethodLabel)),
+                        DataCell(Text(transaction.employeeName)),
+                        DataCell(_buildStatusBadge(transaction.status)),
+                        DataCell(
+                          IconButton(
+                            icon: const Icon(
+                              Icons.visibility_outlined,
+                              size: 18,
+                            ),
+                            onPressed: () => onViewDetails(transaction),
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          },
         ),
-      );
-    },
-  ),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'Affichage ${start + 1} à ${end > transactions.length ? transactions.length : end} sur ${transactions.length} transactions',
-              style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
             ),
             Row(
               children: [
@@ -834,11 +898,11 @@ class TransactionsTable extends StatelessWidget {
                         onPressed: () => onPageChanged(index),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: currentPage == index
-                              ? kPrimaryGreen
-                              : Colors.grey[300],
+                              ? BpColors.accent
+                              : BpColors.surfaceStrong,
                           foregroundColor: currentPage == index
-                              ? Colors.white
-                              : Colors.black,
+                              ? BpColors.primaryDark
+                              : BpColors.textPrimary,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 4,
@@ -1016,134 +1080,286 @@ class TransactionDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: SingleChildScrollView(
-        child: SizedBox(
-          width: 600,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: 780,
+        constraints: const BoxConstraints(maxHeight: 760),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
+          gradient: const LinearGradient(
+            colors: [BpColors.surfaceStrong, BpColors.cardBg],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          border: Border.all(color: BpColors.borderStrong),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.28),
+              blurRadius: 28,
+              offset: const Offset(0, 18),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 22,
+                  vertical: 18,
+                ),
                 decoration: BoxDecoration(
-                  color: transaction.typeColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
+                  gradient: LinearGradient(
+                    colors: [
+                      transaction.typeColor.withOpacity(0.24),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: const Border(
+                    bottom: BorderSide(color: BpColors.border),
                   ),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Détails Transaction - ${transaction.reference}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Détails transaction',
+                            style: BpTextStyles.heading2,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(transaction.reference, style: BpTextStyles.body),
+                        ],
                       ),
                     ),
+                    DetailPill(
+                      icon: Icons.info_rounded,
+                      label: transaction.typeLabel,
+                      foreground: transaction.typeColor,
+                      background: transaction.typeColor.withOpacity(0.12),
+                    ),
+                    const SizedBox(width: 12),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
+                      icon: const Icon(Icons.close_rounded),
+                      color: BpColors.textPrimary,
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Basic Information
-                    _buildSection('Informations Générales', [
-                      _buildDetailRow('Référence', transaction.reference),
-                      _buildDetailRow(
-                        'Date & Heure',
-                        _formatDateTime(transaction.dateTime),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 14,
+                        runSpacing: 14,
+                        children: [
+                          DetailMetricCard(
+                            icon: Icons.calendar_today_rounded,
+                            label: 'Date & heure',
+                            value: _formatDateTime(transaction.dateTime),
+                            tone: BpColors.surface.withOpacity(0.55),
+                          ),
+                          DetailMetricCard(
+                            icon: Icons.account_balance_wallet_rounded,
+                            label: 'Total',
+                            value:
+                                '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
+                            tone: BpColors.accent,
+                          ),
+                          DetailMetricCard(
+                            icon: Icons.payment_rounded,
+                            label: 'Paiement',
+                            value: transaction.paymentMethodLabel,
+                            tone: BpColors.primaryLight,
+                          ),
+                        ],
                       ),
-                      _buildDetailRow('Type', transaction.typeLabel),
-                      _buildDetailRow('Statut', transaction.statusLabel),
-                    ]),
-                    const SizedBox(height: 16),
-
-                    // Party Information
-                    _buildSection('Tiers', [
-                      _buildDetailRow('Nom', transaction.clientOrSupplierName),
-                      _buildDetailRow('Employé', transaction.employeeName),
-                    ]),
-                    const SizedBox(height: 16),
-
-                    // Items
-                    if (transaction.listOfItems.isNotEmpty) ...[
-                      _buildSection('Articles', []),
-                      const SizedBox(height: 8),
-                      ..._buildItemsList(),
-                      const SizedBox(height: 16),
-                    ],
-
-                    // Financial Information
-                    _buildSection('Informations Financières', [
-                      _buildDetailRow(
-                        'Montant HT',
-                        '${(transaction.totalAmount - transaction.taxAmount).abs().toStringAsFixed(0)} FCFA',
-                      ),
-                      _buildDetailRow(
-                        'Taxes',
-                        '${transaction.taxAmount.toStringAsFixed(0)} FCFA',
-                      ),
-                      _buildDetailRow(
-                        'Total',
-                        '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
-                        isBold: true,
-                      ),
-                      _buildDetailRow(
-                        'Mode Paiement',
-                        transaction.paymentMethodLabel,
-                      ),
-                    ]),
-                    const SizedBox(height: 16),
-
-                    // Notes
-                    if (transaction.notes.isNotEmpty) ...[
-                      _buildSection('Notes', [
-                        _buildDetailRow('Remarques', transaction.notes),
-                      ]),
-                      const SizedBox(height: 16),
-                    ],
-
-                    // Action Buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Fermer'),
+                      const SizedBox(height: 18),
+                      DetailSectionCard(
+                        title: 'Informations générales',
+                        subtitle: 'Référence, statut et information de suivi.',
+                        child: Column(
+                          children: [
+                            DetailInfoTile(
+                              icon: Icons.tag_rounded,
+                              label: 'Référence',
+                              value: transaction.reference,
+                            ),
+                            const SizedBox(height: 12),
+                            DetailInfoTile(
+                              icon: Icons.verified_rounded,
+                              label: 'Statut',
+                              value: transaction.statusLabel,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        ElevatedButton.icon(
-                          onPressed: () async {
-                            try {
-                              await PdfExportHelper.printSingleActivity(transaction);
-                            } catch (e) {
-                              if (context.mounted) {
-                                AppScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Erreur lors de l\'impression'),
+                      ),
+                      const SizedBox(height: 18),
+                      DetailSectionCard(
+                        title: 'Tiers',
+                        subtitle:
+                            'Informations sur le client ou le fournisseur et l’employé responsable.',
+                        child: Column(
+                          children: [
+                            DetailInfoTile(
+                              icon: Icons.person_outline,
+                              label: 'Nom',
+                              value: transaction.clientOrSupplierName,
+                            ),
+                            const SizedBox(height: 12),
+                            DetailInfoTile(
+                              icon: Icons.badge_rounded,
+                              label: 'Employé',
+                              value: transaction.employeeName,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (transaction.listOfItems.isNotEmpty) ...[
+                        const SizedBox(height: 18),
+                        DetailSectionCard(
+                          title: 'Articles',
+                          subtitle: 'Contenu de la transaction.',
+                          child: Column(
+                            children: transaction.listOfItems.map((item) {
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: BpColors.surface.withOpacity(0.85),
+                                  borderRadius: BorderRadius.circular(
+                                    BpSpacing.radiusMd,
                                   ),
-                                );
-                              }
-                            }
-                          },
-                          icon: const Icon(Icons.print),
-                          label: const Text('Imprimer Reçu'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryGreen,
-                            foregroundColor: Colors.white,
+                                  border: Border.all(color: BpColors.border),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.productName,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: BpColors.textPrimary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            'Qté ${item.quantity} × ${item.unitPrice.toStringAsFixed(0)} FCFA',
+                                            style: BpTextStyles.body,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      '${item.totalPrice.toStringAsFixed(0)} FCFA',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: item.totalPrice >= 0
+                                            ? BpColors.accent
+                                            : BpColors.error,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
                       ],
-                    ),
-                  ],
+                      const SizedBox(height: 18),
+                      DetailSectionCard(
+                        title: 'Informations financières',
+                        subtitle: 'Résumé des montants et du paiement.',
+                        child: Column(
+                          children: [
+                            DetailInfoTile(
+                              icon: Icons.receipt_long_rounded,
+                              label: 'Montant HT',
+                              value:
+                                  '${(transaction.totalAmount - transaction.taxAmount).abs().toStringAsFixed(0)} FCFA',
+                            ),
+                            const SizedBox(height: 12),
+                            DetailInfoTile(
+                              icon: Icons.percent_rounded,
+                              label: 'Taxes',
+                              value:
+                                  '${transaction.taxAmount.toStringAsFixed(0)} FCFA',
+                            ),
+                            const SizedBox(height: 12),
+                            DetailInfoTile(
+                              icon: Icons.payments_rounded,
+                              label: 'Total',
+                              value:
+                                  '${transaction.totalAmount.toStringAsFixed(0)} FCFA',
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (transaction.notes.isNotEmpty) ...[
+                        const SizedBox(height: 18),
+                        DetailSectionCard(
+                          title: 'Notes',
+                          subtitle: 'Commentaires éventuels.',
+                          child: Text(
+                            transaction.notes,
+                            style: BpTextStyles.body,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 18),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Fermer'),
+                          ),
+                          const SizedBox(width: 10),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              try {
+                                await PdfExportHelper.printSingleActivity(
+                                  transaction,
+                                );
+                              } catch (e) {
+                                if (context.mounted) {
+                                  AppScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Erreur lors de l\'impression',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            icon: const Icon(Icons.print),
+                            label: const Text('Imprimer reçu'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: BpColors.accent,
+                              foregroundColor: BpColors.primaryDark,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -1151,102 +1367,11 @@ class TransactionDetailsDialog extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: kPrimaryGreen,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Divider(),
-        const SizedBox(height: 8),
-        ...children,
-      ],
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                color: Colors.black87,
-                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                fontSize: isBold ? 14 : 12,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _buildItemsList() {
-    return transaction.listOfItems.map((item) {
-      return Card(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.productName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Qté: ${item.quantity} × ${item.unitPrice.toStringAsFixed(0)} FCFA',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                '${item.totalPrice.toStringAsFixed(0)} FCFA',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: item.totalPrice >= 0 ? kPrimaryGreen : kDangerRed,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }).toList();
   }
 
   String _formatDateTime(DateTime dateTime) {
     final local = dateTime.toLocal();
-    return '${local.day}/${local.month}/${local.year} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+    return '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')}/${local.year} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
   }
 }
 

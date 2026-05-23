@@ -46,7 +46,7 @@ void main() {
       ),
     );
 
-    expect(find.text('BigPharma SaaS'), findsOneWidget);
+    expect(find.text('BigPharma'), findsOneWidget);
     expect(find.text('Se connecter'), findsOneWidget);
     expect(find.text('Mot de passe oublié ?'), findsOneWidget);
     await tester.binding.setSurfaceSize(null);

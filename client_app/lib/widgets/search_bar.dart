@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'bp_theme.dart';
+
 class SearchBar extends StatelessWidget {
   const SearchBar({
     super.key,
@@ -19,21 +21,21 @@ class SearchBar extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: 'Rechercher un médicament...',
-        hintStyle: const TextStyle(fontSize: 16),
+        hintStyle: const TextStyle(fontSize: 16, color: BpColors.textHint),
         prefixIcon: Icon(Icons.search_rounded, color: primary),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: BpColors.surfaceMuted,
         contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: const Color(0xFFD7E5DD), width: 1.2),
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(color: BpColors.border, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(color: primary, width: 1.6),
         ),
       ),

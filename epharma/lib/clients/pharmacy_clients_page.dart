@@ -49,7 +49,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
   String _searchQuery = '';
   String _filterType = 'all';
   int _currentPage = 0;
-  static const int _pageSize = 10;
+  static const int _pageSize = 50;
 
   @override
   void initState() {
@@ -114,13 +114,13 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
           icon: Icons.people_outline_rounded,
         ),
         PageStatCardData(
-          label: 'FrÃ©quents',
+          label: 'Frequents',
           value: '$frequentCount',
           color: Colors.blue,
           icon: Icons.repeat_rounded,
         ),
         PageStatCardData(
-          label: 'Profils mÃ©dicaux',
+          label: 'Profils medicaux',
           value: '$medicalCount',
           color: Colors.teal,
           icon: Icons.medical_information_outlined,
@@ -385,8 +385,7 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                                   child: const Text('Annuler'),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, true),
+                                  onPressed: () => Navigator.pop(context, true),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
                                     foregroundColor: Colors.white,
@@ -399,11 +398,17 @@ class _PharmacyClientsPageState extends State<PharmacyClientsPage> {
                           if (ok == true) {
                             for (final c in clients) {
                               try {
-                                await context.read<ClientProvider>().deleteClient(c.id);
+                                await context
+                                    .read<ClientProvider>()
+                                    .deleteClient(c.id);
                               } catch (error) {
                                 if (mounted) {
                                   AppScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Erreur suppression lot: $error')),
+                                    SnackBar(
+                                      content: Text(
+                                        'Erreur suppression lot: $error',
+                                      ),
+                                    ),
                                   );
                                 }
                               }

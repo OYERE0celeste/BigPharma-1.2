@@ -13,7 +13,8 @@ exports.createProductSchema = Joi.object({
   name: Joi.string().required(),
   category: Joi.string().required(),
   description: Joi.string().allow(""),
-  barcode: Joi.string().allow(""),
+  barcode: Joi.string().allow("").max(50),
+  qrCode: Joi.string().allow("").max(500),
 
   purchasePrice: Joi.number().min(0).required(),
   sellingPrice: Joi.number().min(0).required(),
@@ -25,7 +26,8 @@ exports.updateProductSchema = Joi.object({
   name: Joi.string(),
   category: Joi.string(),
   description: Joi.string().allow(""),
-  barcode: Joi.string().allow(""),
+  barcode: Joi.string().allow("").max(50),
+  qrCode: Joi.string().allow("").max(500),
 
   purchasePrice: Joi.number().min(0),
   sellingPrice: Joi.number().min(0),

@@ -7,9 +7,6 @@ import 'package:client_app/services/review_provider.dart';
 import 'package:client_app/widgets/app_notification.dart';
 import 'package:client_app/widgets/review_section.dart';
 
-/// A premium, Telegram-style Draggable Bottom Sheet for displaying product details.
-/// It integrates smoothly with touch gestures to allow dragging to full screen or swiping down to close,
-/// complete with physics-based animations, modern gradients, and a dedicated reviews section.
 class ProductDetailsBottomSheet extends StatefulWidget {
   final Product product;
   final ScrollController scrollController;
@@ -20,7 +17,6 @@ class ProductDetailsBottomSheet extends StatefulWidget {
     required this.scrollController,
   });
 
-  /// Displays the product details bottom sheet.
   static void show(BuildContext context, Product product) {
     showModalBottomSheet(
       context: context,
@@ -29,10 +25,10 @@ class ProductDetailsBottomSheet extends StatefulWidget {
       barrierColor: Colors.black.withOpacity(0.55),
       builder: (context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.65, // Starts at 65% of screen height
-          minChildSize: 0.35, // Can be dragged down to close
-          maxChildSize: 0.96, // Expands to near full-screen
-          snap: true, // Snaps dynamically
+          initialChildSize: 0.65,
+          minChildSize: 0.35,
+          maxChildSize: 0.96,
+          snap: true,
           snapSizes: const [0.65, 0.96],
           builder: (context, scrollController) {
             return ProductDetailsBottomSheet(
@@ -46,14 +42,14 @@ class ProductDetailsBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<ProductDetailsBottomSheet> createState() => _ProductDetailsBottomSheetState();
+  State<ProductDetailsBottomSheet> createState() =>
+      _ProductDetailsBottomSheetState();
 }
 
 class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
   @override
   void initState() {
     super.initState();
-    // Load reviews on launch
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ReviewProvider>().loadProductReviews(widget.product.id);
     });
@@ -64,6 +60,8 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final product = widget.product;
+    final stockColor = _stockColor(product.stockStatus);
+    final canAddToCart = !product.isOutOfStock;
     final reviewProvider = context.watch<ReviewProvider>();
     final reviews = reviewProvider.reviewsForProduct(product.id);
     final summary = reviewProvider.summaryForProduct(product.id);
@@ -73,16 +71,11 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 20,
-            spreadRadius: 5,
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 5),
         ],
       ),
       child: Column(
         children: [
-          // Drag Handle
           Container(
             margin: const EdgeInsets.symmetric(vertical: 12),
             width: 44,
@@ -92,14 +85,11 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          
-          // Scrollable Content
           Expanded(
             child: ListView(
               controller: widget.scrollController,
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 110),
               children: [
-                // Product Image Container with modern shadow and rounded borders
                 Center(
                   child: Container(
                     height: 220,
@@ -125,13 +115,14 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                
-                // Badges Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
@@ -147,15 +138,12 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                     ),
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 5,
-                          backgroundColor: product.stockQuantity > 0 ? Colors.green : Colors.red,
-                        ),
+                        CircleAvatar(radius: 5, backgroundColor: stockColor),
                         const SizedBox(width: 6),
                         Text(
-                          product.stockQuantity > 0 ? 'En stock' : 'Rupture',
+                          product.stockStatusLabel,
                           style: TextStyle(
-                            color: product.stockQuantity > 0 ? Colors.green : Colors.red,
+                            color: stockColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
                           ),
@@ -165,8 +153,6 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
-                // Product Name
                 Text(
                   product.name,
                   style: const TextStyle(
@@ -176,8 +162,6 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                
-                // Selling Price
                 Text(
                   '${product.sellingPrice.toStringAsFixed(0)} FCFA',
                   style: TextStyle(
@@ -186,9 +170,18 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                     color: primary,
                   ),
                 ),
+                if (product.isLowStock) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Reste ${product.availableStock} en stock',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: stockColor,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 24),
-                
-                // Description Section
                 const Text(
                   'Description',
                   style: TextStyle(
@@ -209,10 +202,11 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                
-                // Features Metrics Box
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
                     borderRadius: BorderRadius.circular(16),
@@ -221,15 +215,25 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildInfoItem(Icons.inventory_2_outlined, 'Stock', '${product.stockQuantity}'),
-                      _buildInfoItem(Icons.verified_user_outlined, 'Qualité', 'Certifié'),
-                      _buildInfoItem(Icons.local_shipping_outlined, 'Retrait', 'Rapide'),
+                      _buildInfoItem(
+                        Icons.inventory_2_outlined,
+                        'Stock',
+                        '${product.availableStock}',
+                      ),
+                      _buildInfoItem(
+                        Icons.verified_user_outlined,
+                        'Qualite',
+                        'Certifie',
+                      ),
+                      _buildInfoItem(
+                        Icons.local_shipping_outlined,
+                        'Retrait',
+                        'Rapide',
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 32),
-                
-                // Reviews Section
                 ReviewSection(
                   summary: summary,
                   reviews: reviews,
@@ -239,8 +243,6 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
               ],
             ),
           ),
-          
-          // Sticky Bottom Checkout bar (Always fixed at the absolute bottom of the sheet)
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -258,18 +260,22 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
               children: [
                 Expanded(
                   child: FilledButton(
-                    onPressed: () {
-                      context.read<CartProvider>().addItem(product);
-                      Navigator.pop(context);
-                      AppScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${product.name} ajouté au panier'),
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: primary,
-                          duration: const Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onPressed: canAddToCart
+                        ? () {
+                            context.read<CartProvider>().addItem(product);
+                            Navigator.pop(context);
+                            AppScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${product.name} ajoute au panier',
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: primary,
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                        : null,
                     style: FilledButton.styleFrom(
                       backgroundColor: primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -277,9 +283,13 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text(
-                      'Ajouter au panier',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                    child: Text(
+                      canAddToCart ? 'Ajouter au panier' : 'Indisponible',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -297,7 +307,10 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
         Icon(icon, color: Colors.grey[600], size: 20),
         const SizedBox(height: 4),
         Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[600])),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+        ),
       ],
     );
   }
@@ -306,7 +319,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
     if (!context.read<AuthProvider>().isAuthenticated) {
       AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Connectez-vous pour laisser un avis après achat.'),
+          content: Text('Connectez-vous pour laisser un avis apres achat.'),
         ),
       );
       return;
@@ -376,7 +389,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                       minLines: 2,
                       maxLines: 3,
                       decoration: const InputDecoration(
-                        labelText: 'Retour sur la qualité du service',
+                        labelText: 'Retour sur la qualite du service',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -384,7 +397,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       value: lightDissatisfaction,
-                      title: const Text('Signaler une insatisfaction légère'),
+                      title: const Text('Signaler une insatisfaction legere'),
                       onChanged: (value) =>
                           setModalState(() => lightDissatisfaction = value),
                     ),
@@ -417,7 +430,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                             AppScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Merci, votre avis a été envoyé.',
+                                  'Merci, votre avis a ete envoye.',
                                 ),
                               ),
                             );
@@ -439,6 +452,17 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
         );
       },
     );
+  }
+
+  Color _stockColor(ProductStockStatus status) {
+    switch (status) {
+      case ProductStockStatus.inStock:
+        return Colors.green;
+      case ProductStockStatus.lowStock:
+        return Colors.orange;
+      case ProductStockStatus.outOfStock:
+        return Colors.red;
+    }
   }
 }
 

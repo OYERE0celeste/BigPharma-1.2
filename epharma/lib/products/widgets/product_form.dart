@@ -49,8 +49,20 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
       text: p != null ? p.lowStockThreshold.toString() : '10',
     );
     _selectedCategory = getCategoryByValue(p?.category ?? '');
-    _lotNumberController = TextEditingController();
-    _lotQtyController = TextEditingController();
+
+    // Charger le premier lot si le produit existe
+    if (p != null && p.lots.isNotEmpty) {
+      final firstLot = p.lots.first;
+      _lotNumberController = TextEditingController(text: firstLot.lotNumber);
+      _lotQtyController = TextEditingController(
+        text: firstLot.quantityAvailable.toString(),
+      );
+      _lotMfg = firstLot.manufacturingDate;
+      _lotExp = firstLot.expirationDate;
+    } else {
+      _lotNumberController = TextEditingController();
+      _lotQtyController = TextEditingController();
+    }
   }
 
   @override
@@ -76,6 +88,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
       category: _selectedCategory?.value ?? _categoryController.text.trim(),
       description: _descController.text.trim(),
       barcode: _barcodeController.text.trim(),
+      qrCode: widget.product?.qrCode,
 
       purchasePrice: double.tryParse(_purchaseController.text) ?? 0,
       sellingPrice: double.tryParse(_sellingController.text) ?? 0,
@@ -87,20 +100,48 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   }
 
   List<Lot> _buildInitialLots() {
-    if (_lotNumberController.text.isEmpty) return widget.product?.lots ?? [];
-    final qty = int.tryParse(_lotQtyController.text) ?? 0;
+    final newLotNumber = _lotNumberController.text.trim();
+    final newQty = int.tryParse(_lotQtyController.text) ?? 0;
     final mfg = _lotMfg ?? DateTime.now();
     final exp = _lotExp ?? DateTime.now().add(const Duration(days: 365));
-    return [
-      Lot(
-        lotNumber: _lotNumberController.text.trim(),
-        manufacturingDate: mfg,
-        expirationDate: exp,
-        quantity: qty,
-        quantityAvailable: qty,
-        costPrice: double.tryParse(_purchaseController.text) ?? 0.0,
-      ),
-    ];
+
+    // Si c'est une modification et qu'on change les données du lot
+    if (widget.product != null) {
+      if (newLotNumber.isNotEmpty) {
+        // L'utilisateur a modifié le lot existant
+        final updatedLot = Lot(
+          lotNumber: newLotNumber,
+          manufacturingDate: mfg,
+          expirationDate: exp,
+          quantity: newQty,
+          quantityAvailable: newQty,
+          costPrice: double.tryParse(_purchaseController.text) ?? 0.0,
+        );
+        // Garder les autres lots et remplacer le premier
+        if (widget.product!.lots.isNotEmpty) {
+          return [updatedLot, ...widget.product!.lots.skip(1)];
+        }
+        return [updatedLot];
+      } else {
+        // Aucune modification de lot, conserver les lots existants
+        return widget.product!.lots;
+      }
+    }
+
+    // Nouveau produit : créer un lot si des données sont fournies
+    if (newLotNumber.isNotEmpty) {
+      return [
+        Lot(
+          lotNumber: newLotNumber,
+          manufacturingDate: mfg,
+          expirationDate: exp,
+          quantity: newQty,
+          quantityAvailable: newQty,
+          costPrice: double.tryParse(_purchaseController.text) ?? 0.0,
+        ),
+      ];
+    }
+    return [];
   }
 
   @override
@@ -168,7 +209,11 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     maxLines: 2,
                   ),
                   const SizedBox(height: 8),
-
+                  TextFormField(
+                    controller: _barcodeController,
+                    decoration: const InputDecoration(labelText: 'Code-barres'),
+                  ),
+                  const SizedBox(height: 8),
                   const Divider(),
                   const SizedBox(height: 8),
                   Row(
@@ -271,7 +316,10 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                                 if (d != null) setState(() => _lotMfg = d);
                               },
                               icon: const Icon(Icons.input, size: 16),
-                              label: const Text('Date réception', style: TextStyle(fontSize: 12)),
+                              label: const Text(
+                                'Date réception',
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                           ],
                         ),
@@ -303,7 +351,10 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                                 if (d != null) setState(() => _lotExp = d);
                               },
                               icon: const Icon(Icons.event_busy, size: 16),
-                              label: const Text('Date expiration', style: TextStyle(fontSize: 12)),
+                              label: const Text(
+                                'Date expiration',
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                           ],
                         ),

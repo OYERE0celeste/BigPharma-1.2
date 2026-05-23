@@ -5,7 +5,9 @@ import '../models/product_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
 import '../security/rbac.dart';
+import '../widgets/bp_theme.dart';
 import '../widgets/page_stat_cards.dart';
+import '../scanner/widgets/scanner_button.dart';
 import 'widgets/product_table.dart';
 import 'widgets/product_detail.dart';
 import 'widgets/product_form.dart';
@@ -24,7 +26,7 @@ class PharmacyProductsPage extends StatefulWidget {
 class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   String _search = '';
   String _filter = 'Tous les produits';
-  int _rowsPerPage = 10;
+  int _rowsPerPage = 50;
   int _currentPage = 0;
   String _sortColumn = 'name';
   bool _sortAscending = true;
@@ -41,7 +43,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
 
   Future<void> _loadProducts() async {
     try {
-      await context.read<ProductProvider>().loadProducts();
+      await context.read<ProductProvider>().loadProducts(forceRefresh: true);
     } catch (e) {
       if (mounted) {
         AppScaffoldMessenger.of(context).showSnackBar(
@@ -79,6 +81,17 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
         }
       }
     }
+  }
+
+  void _handleScannedProduct(Product product) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => ProductDetailsPanel(product: product),
+    );
+
+    AppScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Produit scanné : ${product.name}')));
   }
 
   @override
@@ -183,7 +196,6 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                               if (updated != null) {
                                 try {
                                   await provider.updateProduct(updated);
-                                  await provider.loadProducts();
                                 } catch (e) {
                                   if (mounted) {
                                     AppScaffoldMessenger.of(
@@ -224,7 +236,6 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                               if (ok == true) {
                                 try {
                                   await provider.deleteProduct(p.id);
-                                  await provider.loadProducts();
                                 } catch (e) {
                                   if (mounted) {
                                     AppScaffoldMessenger.of(
@@ -273,10 +284,11 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                                   for (final p in products) {
                                     await provider.deleteProduct(p.id);
                                   }
-                                  await provider.loadProducts();
                                 } catch (e) {
                                   if (mounted) {
-                                    AppScaffoldMessenger.of(context).showSnackBar(
+                                    AppScaffoldMessenger.of(
+                                      context,
+                                    ).showSnackBar(
                                       SnackBar(
                                         content: Text(
                                           'Erreur lors de la suppression par lot : $e',
@@ -355,12 +367,16 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
+                      color: BpColors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
                     'Gérez les médicaments, le stock et les lots pharmaceutiques',
-                    style: TextStyle(color: Colors.black54, fontSize: 13),
+                    style: TextStyle(
+                      color: BpColors.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -371,18 +387,34 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                   Expanded(
                     child: TextField(
                       controller: _searchController,
+                      style: const TextStyle(color: BpColors.textPrimary),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.search, size: 20),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          size: 20,
+                          color: BpColors.textSecondary,
+                        ),
                         hintText: 'Rechercher...',
-                        hintStyle: const TextStyle(fontSize: 14),
+                        hintStyle: const TextStyle(
+                          color: BpColors.textHint,
+                          fontSize: 14,
+                        ),
                         isDense: true,
+                        fillColor: BpColors.cardBg,
+                        filled: true,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 12,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderSide: const BorderSide(
+                            color: BpColors.borderStrong,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: BpColors.border),
                         ),
                       ),
                       onChanged: (v) => setState(() => _search = v),
@@ -392,15 +424,20 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
+                      color: BpColors.cardBg,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: BpColors.borderStrong),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _filter,
-                        icon: const Icon(Icons.arrow_drop_down),
+                        dropdownColor: BpColors.surface,
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: BpColors.textSecondary,
+                        ),
                         style: const TextStyle(
-                          color: Colors.black87,
+                          color: BpColors.textPrimary,
                           fontSize: 14,
                         ),
                         items: const [
@@ -439,23 +476,31 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         icon: const Icon(Icons.add),
                         label: const Text('Ajouter un produit'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade100,
-                          foregroundColor: Colors.black,
+                          backgroundColor: BpColors.cardBg,
+                          foregroundColor: BpColors.textPrimary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(color: Colors.grey.shade300),
+                            side: const BorderSide(
+                              color: BpColors.borderStrong,
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  if (canAdd) const SizedBox(width: 8),
+                  ScannerButton(
+                    style: ScannerButtonStyle.icon,
+                    tooltip: 'Scanner un produit',
+                    onProductScanned: _handleScannedProduct,
+                  ),
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: _loadProducts,
                     icon: const Icon(Icons.refresh),
                     tooltip: 'Actualiser',
-                    color: Colors.black54,
+                    color: BpColors.textPrimary,
                   ),
                 ],
               ),
@@ -480,12 +525,16 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
+                        color: BpColors.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4),
                     Text(
                       'Gérez les médicaments, le stock et les lots pharmaceutiques',
-                      style: TextStyle(color: Colors.black54, fontSize: 13),
+                      style: TextStyle(
+                        color: BpColors.textSecondary,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -502,25 +551,35 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         constraints: const BoxConstraints(maxWidth: 400),
                         child: TextField(
                           controller: _searchController,
+                          style: const TextStyle(color: BpColors.textPrimary),
                           decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              size: 20,
+                              color: BpColors.textSecondary,
+                            ),
                             hintText: 'Rechercher par nom ou catégorie',
-                            hintStyle: const TextStyle(fontSize: 14),
+                            hintStyle: const TextStyle(
+                              color: BpColors.textHint,
+                              fontSize: 14,
+                            ),
                             isDense: true,
+                            fillColor: BpColors.cardBg,
+                            filled: true,
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 12,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
+                              borderSide: const BorderSide(
+                                color: BpColors.borderStrong,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
+                              borderSide: const BorderSide(
+                                color: BpColors.border,
                               ),
                             ),
                           ),
@@ -532,15 +591,20 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
+                        color: BpColors.cardBg,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(color: BpColors.borderStrong),
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: _filter,
-                          icon: const Icon(Icons.arrow_drop_down),
+                          dropdownColor: BpColors.surface,
+                          icon: const Icon(
+                            Icons.arrow_drop_down,
+                            color: BpColors.textSecondary,
+                          ),
                           style: const TextStyle(
-                            color: Colors.black87,
+                            color: BpColors.textPrimary,
                             fontSize: 14,
                           ),
                           items: const [
@@ -577,19 +641,25 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    ScannerButton(
+                      style: ScannerButtonStyle.icon,
+                      tooltip: 'Scanner un produit',
+                      onProductScanned: _handleScannedProduct,
+                    ),
+                    const SizedBox(width: 8),
                     IconButton(
                       onPressed: _loadProducts,
                       icon: const Icon(Icons.refresh),
                       tooltip: 'Actualiser les produits',
-                      color: Colors.black54,
+                      color: BpColors.textPrimary,
                     ),
                     const SizedBox(width: 8),
                     if (canAdd)
                       ElevatedButton(
                         onPressed: _openAddDialog,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade100,
-                          foregroundColor: Colors.black,
+                          backgroundColor: BpColors.cardBg,
+                          foregroundColor: BpColors.textPrimary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -597,7 +667,9 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(color: Colors.grey.shade300),
+                            side: const BorderSide(
+                              color: BpColors.borderStrong,
+                            ),
                           ),
                         ),
                         child: const Icon(Icons.add),

@@ -25,6 +25,8 @@ class AuthService {
   static const String unauthorizedMsg = 'UNAUTHORIZED';
 
   String? _token;
+  String? _refreshToken;
+  Future<String?>? _refreshRequest;
   String? get token => _token;
 
   Future<String?> getToken() async {
@@ -34,10 +36,33 @@ class AuthService {
     return _token;
   }
 
+  Future<String?> getRefreshToken() async {
+    if (_refreshToken != null) return _refreshToken;
+    final prefs = await SharedPreferences.getInstance();
+    _refreshToken = prefs.getString(ApiConstants.refreshTokenKey);
+    return _refreshToken;
+  }
+
   Future<void> saveToken(String token) async {
     _token = token;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(ApiConstants.tokenKey, token);
+  }
+
+  Future<void> saveRefreshToken(String refreshToken) async {
+    _refreshToken = refreshToken;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(ApiConstants.refreshTokenKey, refreshToken);
+  }
+
+  Future<void> saveAuthTokens({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    await saveToken(accessToken);
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      await saveRefreshToken(refreshToken);
+    }
   }
 
   Future<void> saveSessionData({
@@ -64,8 +89,10 @@ class AuthService {
 
   Future<void> clearToken() async {
     _token = null;
+    _refreshToken = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(ApiConstants.tokenKey);
+    await prefs.remove(ApiConstants.refreshTokenKey);
     await prefs.remove(ApiConstants.userKey);
     await prefs.remove(ApiConstants.companyKey);
   }
@@ -168,12 +195,106 @@ class AuthService {
   }
 
   Future<Map<String, String>> getHeaders() async {
-    final token = await getToken();
+    final token = await getValidToken();
     return {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
     };
+  }
+
+  Future<String?> getValidToken() async {
+    final token = await getToken();
+    if (token == null) return null;
+
+    if (!_isTokenExpired(token)) {
+      return token;
+    }
+
+    return await refreshAccessToken();
+  }
+
+  bool _isTokenExpired(String token, {int leewaySeconds = 30}) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return true;
+      final payload = parts[1];
+      final normalized = base64Url.normalize(payload);
+      final decoded = utf8.decode(base64Url.decode(normalized));
+      final payloadMap = jsonDecode(decoded) as Map<String, dynamic>;
+      final exp = payloadMap['exp'];
+      if (exp is! num) return true;
+      final expiry = DateTime.fromMillisecondsSinceEpoch(exp.toInt() * 1000);
+      return expiry.isBefore(
+        DateTime.now().add(Duration(seconds: leewaySeconds)),
+      );
+    } catch (_) {
+      return true;
+    }
+  }
+
+  Future<String?> refreshAccessToken() async {
+    if (_refreshRequest != null) {
+      return _refreshRequest!;
+    }
+
+    final completer = Completer<String?>();
+    _refreshRequest = completer.future;
+
+    () async {
+      try {
+        final refreshToken = await getRefreshToken();
+        if (refreshToken == null || refreshToken.isEmpty) {
+          await clearToken();
+          throw UnauthorizedException();
+        }
+
+        final response = await _sendRequest(
+          () => http.post(
+            Uri.parse(ApiConstants.refreshToken),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'token': refreshToken}),
+          ),
+        );
+
+        final data = _safeDecode(response);
+        if (response.statusCode == 200 && data['success'] == true) {
+          final newAccessToken =
+              data['data']?['token'] ??
+              data['data']?['accessToken'] ??
+              data['token'];
+          final newRefreshToken = data['data']?['refreshToken'];
+
+          if (newAccessToken is String && newAccessToken.isNotEmpty) {
+            await saveAuthTokens(
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken is String ? newRefreshToken : null,
+            );
+            completer.complete(newAccessToken);
+            return;
+          }
+        }
+
+        await clearToken();
+        throw UnauthorizedException(
+          'Session expiree. Veuillez vous reconnecter.',
+        );
+      } catch (error) {
+        if (error is UnauthorizedException) {
+          completer.completeError(error);
+        } else {
+          completer.completeError(
+            UnauthorizedException(
+              'Session expiree. Veuillez vous reconnecter.',
+            ),
+          );
+        }
+      } finally {
+        _refreshRequest = null;
+      }
+    }();
+
+    return completer.future;
   }
 
   Future<Map<String, dynamic>> login(String identifier, String password) async {
@@ -188,9 +309,16 @@ class AuthService {
     final data = _safeDecode(response);
 
     if (response.statusCode == 200 && data['success'] == true) {
-      final token = data['data']?['token'] ?? data['token'];
+      final token =
+          data['data']?['token'] ??
+          data['data']?['accessToken'] ??
+          data['token'];
+      final refreshToken = data['data']?['refreshToken'];
       if (token is String && token.isNotEmpty) {
-        await saveToken(token);
+        await saveAuthTokens(
+          accessToken: token,
+          refreshToken: refreshToken is String ? refreshToken : null,
+        );
       }
       if (data['data']?['user'] != null && data['data']?['company'] != null) {
         await saveSessionData(
@@ -241,9 +369,16 @@ class AuthService {
     final data = _safeDecode(response);
 
     if (response.statusCode == 201 && data['success'] == true) {
-      final token = data['data']?['token'] ?? data['token'];
+      final token =
+          data['data']?['token'] ??
+          data['data']?['accessToken'] ??
+          data['token'];
+      final refreshToken = data['data']?['refreshToken'];
       if (token is String && token.isNotEmpty) {
-        await saveToken(token);
+        await saveAuthTokens(
+          accessToken: token,
+          refreshToken: refreshToken is String ? refreshToken : null,
+        );
       }
       if (data['data']?['user'] != null && data['data']?['company'] != null) {
         await saveSessionData(

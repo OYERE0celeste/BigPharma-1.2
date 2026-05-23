@@ -195,10 +195,10 @@ class AppNotificationService {
 
     if (normalized.contains('email is already taken') ||
         normalized.contains('email already exists')) {
-      return 'Cet e-mail est déjà utilisé.';
+      return 'Cet e-mail est deja utilise.';
     }
     if (normalized.contains('email is required')) {
-      return 'L’e-mail est requis.';
+      return "L'e-mail est requis.";
     }
 
     return message;
@@ -686,7 +686,7 @@ class _NotificationPalette {
           softBackground: Color(0xFFEAF7EC),
           borderColor: Color(0xFFBFE2C1),
           foreground: Color(0xFF215B25),
-          symbol: '✔️',
+          symbol: '[OK]',
         );
       case AppNotificationType.error:
         return const _NotificationPalette(
@@ -694,7 +694,7 @@ class _NotificationPalette {
           softBackground: Color(0xFFFFECEA),
           borderColor: Color(0xFFF3B6B1),
           foreground: Color(0xFF8A1D15),
-          symbol: '❌',
+          symbol: '[X]',
         );
       case AppNotificationType.warning:
         return const _NotificationPalette(
@@ -702,7 +702,7 @@ class _NotificationPalette {
           softBackground: Color(0xFFFFF7E1),
           borderColor: Color(0xFFF2DB93),
           foreground: Color(0xFF6A5200),
-          symbol: '⚠️',
+          symbol: '[!]',
         );
       case AppNotificationType.info:
         return const _NotificationPalette(
@@ -710,7 +710,7 @@ class _NotificationPalette {
           softBackground: Color(0xFFEAF4FE),
           borderColor: Color(0xFFB8D8F4),
           foreground: Color(0xFF0E4C7A),
-          symbol: 'ℹ️',
+          symbol: '[i]',
         );
     }
   }
@@ -720,7 +720,7 @@ extension AppNotificationTypeLabels on AppNotificationType {
   String get label {
     switch (this) {
       case AppNotificationType.success:
-        return 'Succès';
+        return 'Succes';
       case AppNotificationType.error:
         return 'Erreur';
       case AppNotificationType.warning:
@@ -733,13 +733,13 @@ extension AppNotificationTypeLabels on AppNotificationType {
   String get accessibilityLabel {
     switch (this) {
       case AppNotificationType.success:
-        return "Notification de succès";
+        return 'Notification de succes';
       case AppNotificationType.error:
-        return "Notification d’erreur";
+        return "Notification d'erreur";
       case AppNotificationType.warning:
-        return "Notification d’avertissement";
+        return "Notification d'avertissement";
       case AppNotificationType.info:
-        return "Notification d’information";
+        return "Notification d'information";
     }
   }
 }

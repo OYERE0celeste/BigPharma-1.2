@@ -16,6 +16,7 @@ import 'settings/user_management_page.dart';
 import 'support/pharmacy_support_page.dart';
 import 'ventes/pharmacy_sales_page.dart';
 import 'widgets/app_sidebar.dart';
+import 'widgets/bp_theme.dart';
 import 'widgets/global_navbar.dart';
 
 typedef SectionNavigationCallback = void Function(String section);
@@ -58,8 +59,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   bool _isSidebarOpen = false;
   late AnimationController _sidebarAnimationController;
 
-  late String _pageTitle;
-  late Widget _currentPage;
+  late String _currentSection;
 
   @override
   void initState() {
@@ -70,11 +70,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         ? _resolveInitialSection(auth.user)
         : widget.pageTitle;
 
-    _pageTitle = _normalizeSection(initialSection);
-    _currentPage = widget.child is SizedBox
-        ? _pageForSection(initialSection)
-        : widget.child;
-
+    _currentSection = _normalizeSection(initialSection);
     _sidebarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -189,11 +185,12 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
 
         return Scaffold(
           key: _scaffoldKey,
+          backgroundColor: Colors.transparent,
           drawer: isMobile
               ? Drawer(
                   child: SafeArea(
                     child: AppSidebar(
-                      selectedLabel: _pageTitle,
+                      selectedLabel: _currentSection,
                       callbacks: _buildNavigationCallbacks(),
                     ),
                   ),
@@ -245,9 +242,32 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                       },
                     ),
                     Expanded(
-                      child: Container(
-                        color: Colors.grey[50],
-                        child: _currentPage,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 400),
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position:
+                                      Tween<Offset>(
+                                        begin: const Offset(0.1, 0),
+                                        end: Offset.zero,
+                                      ).animate(
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeOutCubic,
+                                        ),
+                                      ),
+                                  child: child,
+                                ),
+                              ),
+                          child: KeyedSubtree(
+                            key: ValueKey(_currentSection),
+                            child: _pageForSection(_currentSection),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -261,14 +281,14 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     );
   }
 
-  void _navigateTo(String title, Widget page) {
+  void _setCurrentSection(String section) {
+    final shouldCloseSidebar = _isSidebarOpen;
     setState(() {
-      _pageTitle = title;
-      _currentPage = page;
-      if (_isSidebarOpen) {
-        _toggleSidebar();
-      }
+      _currentSection = section;
     });
+    if (shouldCloseSidebar) {
+      _toggleSidebar();
+    }
   }
 
   void _navigateToSection(String section) {
@@ -279,7 +299,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         context.read<AuthProvider>().user,
       );
       if (normalizedSection != fallback) {
-        _navigateTo(fallback, _pageForSection(fallback));
+        _setCurrentSection(fallback);
       }
       return;
     }
@@ -290,7 +310,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
       return;
     }
 
-    _navigateTo(normalizedSection, _pageForSection(normalizedSection));
+    _setCurrentSection(normalizedSection);
   }
 
   Map<String, VoidCallback> _buildNavigationCallbacks() {
@@ -325,7 +345,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                 margin: const EdgeInsets.only(top: navbarHeight),
                 width: size.width,
                 height: size.height - navbarHeight,
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withOpacity(0.34),
               ),
             ),
             AnimatedPositioned(
@@ -337,9 +357,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
               child: SizedBox(
                 width: 240,
                 child: Material(
-                  elevation: 8,
+                  color: Colors.transparent,
                   child: AppSidebar(
-                    selectedLabel: _pageTitle,
+                    selectedLabel: _currentSection,
                     callbacks: _buildNavigationCallbacks(),
                   ),
                 ),
@@ -391,20 +411,20 @@ class FeatureNotAvailablePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.construction, size: 80, color: Colors.grey[400]),
+          const Icon(Icons.construction, size: 80, color: BpColors.textHint),
           const SizedBox(height: 16),
           Text(
             '$title en construction...',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+              color: BpColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Nous travaillons sur cette fonctionnalite.',
-            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+            style: const TextStyle(fontSize: 16, color: BpColors.textSecondary),
           ),
         ],
       ),

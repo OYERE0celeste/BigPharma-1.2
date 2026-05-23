@@ -10,6 +10,13 @@ const { PERMISSIONS } = require("../utils/rolePermissions");
 
 // Public routes (accessible to all with optional auth)
 router.get("/", optionalAuthMiddleware, productController.getProducts);
+
+// Scanner routes (fast lookup by code - must come before /:id)
+router.get("/scan/barcode/:code", optionalAuthMiddleware, productController.getProductByBarcode);
+router.get("/scan/qrcode/:code", optionalAuthMiddleware, productController.getProductByQrCode);
+router.get("/scan/lookup/:code", optionalAuthMiddleware, productController.lookupProduct);
+router.get("/scan/:code", optionalAuthMiddleware, productController.scanProduct);
+
 router.get("/:id", optionalAuthMiddleware, productController.getProductById);
 
 // Protected routes (requires authentication)

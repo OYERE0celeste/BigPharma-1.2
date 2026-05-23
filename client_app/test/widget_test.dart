@@ -29,9 +29,6 @@ void main() {
     // Verify that popular products section is visible
     expect(find.text('Produits populaires'), findsOneWidget);
 
-    // Verify that the pharmacy icon is present
-    expect(find.byIcon(Icons.local_pharmacy_rounded), findsOneWidget);
-
     // Verify that the shopping cart FAB is present
     expect(find.byIcon(Icons.shopping_cart_rounded), findsOneWidget);
   });

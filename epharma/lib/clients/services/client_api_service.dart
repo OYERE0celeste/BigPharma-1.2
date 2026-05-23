@@ -61,7 +61,7 @@ class ClientApiService {
     String? gender,
     bool? hasMedicalHistory,
     int page = 1,
-    int limit = 50,
+    int limit = 1000,
   }) async {
     final headers = await _authService.getHeaders();
     final query = <String, String>{

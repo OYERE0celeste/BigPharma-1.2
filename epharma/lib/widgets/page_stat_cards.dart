@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'bp_theme.dart';
 
 class PageStatCardData {
   final String label;
@@ -61,11 +62,12 @@ class _PageStatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.cardBg,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: BpColors.borderStrong),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.12),
             blurRadius: 14,
             offset: const Offset(0, 4),
           ),
@@ -91,8 +93,8 @@ class _PageStatCard extends StatelessWidget {
                   item.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey[600],
+                  style: const TextStyle(
+                    color: BpColors.textSecondary,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -105,7 +107,7 @@ class _PageStatCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF191D23),
+                      color: BpColors.textPrimary,
                     ),
                   ),
                 ),

@@ -31,6 +31,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final product = widget.product;
+    final stockColor = _stockColor(product.stockStatus);
+    final canAddToCart = !product.isOutOfStock;
     final reviewProvider = context.watch<ReviewProvider>();
     final reviews = reviewProvider.reviewsForProduct(product.id);
     final summary = reviewProvider.summaryForProduct(product.id);
@@ -87,11 +89,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                       ),
                       Text(
-                        product.stockQuantity > 0 ? 'En stock' : 'Rupture',
+                        product.stockStatusLabel,
                         style: TextStyle(
-                          color: product.stockQuantity > 0
-                              ? Colors.green
-                              : Colors.red,
+                          color: stockColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -114,6 +114,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       color: primary,
                     ),
                   ),
+                  if (product.isLowStock) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      'Reste ${product.availableStock} en stock',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: stockColor,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   const Text(
                     'Description',
@@ -144,12 +155,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         _buildInfoItem(
                           Icons.inventory_2_outlined,
                           'Stock',
-                          '${product.stockQuantity}',
+                          '${product.availableStock}',
                         ),
                         _buildInfoItem(
                           Icons.verified_user_outlined,
-                          'Qualité',
-                          'Certifié',
+                          'Qualite',
+                          'Certifie',
                         ),
                         _buildInfoItem(
                           Icons.local_shipping_outlined,
@@ -188,18 +199,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           children: [
             Expanded(
               child: FilledButton(
-                onPressed: () {
-                  context.read<CartProvider>().addItem(product);
-                  Navigator.pop(context);
-                  AppScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${product.name} ajouté au panier'),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: primary,
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                },
+                onPressed: canAddToCart
+                    ? () {
+                        context.read<CartProvider>().addItem(product);
+                        Navigator.pop(context);
+                        AppScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product.name} ajoute au panier'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: primary,
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      }
+                    : null,
                 style: FilledButton.styleFrom(
                   backgroundColor: primary,
                   padding: const EdgeInsets.symmetric(vertical: 18),
@@ -207,9 +220,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
-                  'Ajouter au panier',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                child: Text(
+                  canAddToCart ? 'Ajouter au panier' : 'Indisponible',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -223,7 +239,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     if (!context.read<AuthProvider>().isAuthenticated) {
       AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Connectez-vous pour laisser un avis après achat.'),
+          content: Text('Connectez-vous pour laisser un avis apres achat.'),
         ),
       );
       return;
@@ -293,7 +309,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       minLines: 2,
                       maxLines: 3,
                       decoration: const InputDecoration(
-                        labelText: 'Retour sur la qualité du service',
+                        labelText: 'Retour sur la qualite du service',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -301,7 +317,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       value: lightDissatisfaction,
-                      title: const Text('Signaler une insatisfaction légère'),
+                      title: const Text('Signaler une insatisfaction legere'),
                       onChanged: (value) =>
                           setModalState(() => lightDissatisfaction = value),
                     ),
@@ -334,7 +350,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             AppScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Merci, votre avis a été envoyé.',
+                                  'Merci, votre avis a ete envoye.',
                                 ),
                               ),
                             );
@@ -367,6 +383,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
       ],
     );
+  }
+
+  Color _stockColor(ProductStockStatus status) {
+    switch (status) {
+      case ProductStockStatus.inStock:
+        return Colors.green;
+      case ProductStockStatus.lowStock:
+        return Colors.orange;
+      case ProductStockStatus.outOfStock:
+        return Colors.red;
+    }
   }
 }
 

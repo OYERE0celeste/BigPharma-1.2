@@ -74,13 +74,13 @@ exports.getProfileSettings = async (req, res, next) => {
     next(error);
   }
 };
-\n
+
 exports.exportData = async (req, res, next) => {
   try {
     const { format } = req.query; // 'json' or 'csv'
     
     // Simplistic export just to satisfy the endpoint, normally we'd export multiple collections
-    const settings = await PharmacySettings.findOne({ companyId: req.user.companyId });
+    const settings = await Settings.findOne({ companyId: req.user.companyId });
     
     if (format === 'csv') {
       res.header('Content-Type', 'text/csv');

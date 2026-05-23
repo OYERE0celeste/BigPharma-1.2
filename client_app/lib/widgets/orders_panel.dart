@@ -5,6 +5,8 @@ import 'package:client_app/pages/orders_page.dart';
 import 'package:client_app/pages/relation_client_page.dart';
 import 'package:client_app/widgets/telegram_page_route.dart';
 
+import 'bp_theme.dart';
+
 class OrdersPanel extends StatelessWidget {
   const OrdersPanel({super.key, required this.primary});
 
@@ -20,9 +22,9 @@ class OrdersPanel extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFD5E4DB)),
+        color: BpColors.cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: BpColors.border),
       ),
       child: Wrap(
         runSpacing: 10,

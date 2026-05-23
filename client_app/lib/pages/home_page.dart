@@ -4,6 +4,8 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:provider/provider.dart';
 import 'package:client_app/services/cart_provider.dart';
 import 'package:client_app/widgets/app_notification.dart';
+import 'package:client_app/widgets/brand_title.dart';
+import 'package:client_app/widgets/bp_theme.dart';
 import 'package:client_app/widgets/index.dart';
 import 'package:client_app/services/product_service.dart';
 import 'package:client_app/models/product.dart';
@@ -97,54 +99,14 @@ class _HomePageState extends State<HomePage> {
     final Color primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        elevation: 0.5,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         titleSpacing: 20,
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: primary.withOpacity(0.14),
-              child: Icon(Icons.local_pharmacy_rounded, color: primary),
-            ),
-            const SizedBox(width: 10),
-            const Text('BigPharma'),
-            const SizedBox(width: 8),
-            Consumer<NotificationProvider>(
-              builder: (context, notifProv, _) {
-                final isConnected = notifProv.isSocketConnected;
-                return Tooltip(
-                  message: isConnected
-                      ? 'Live Sync Connecté'
-                      : 'Mode Offline Actif',
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: isConnected
-                          ? const Color(0xFF00E676)
-                          : const Color(0xFFFF1744),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              (isConnected
-                                      ? const Color(0xFF00E676)
-                                      : const Color(0xFFFF1744))
-                                  .withOpacity(0.5),
-                          blurRadius: isConnected ? 6 : 2,
-                          spreadRadius: isConnected ? 2 : 0,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+        title: const BrandTitle(title: 'BigPharma'),
+        centerTitle: false,
         actions: [
           Consumer<NotificationProvider>(
             builder: (context, notificationProvider, _) => Padding(
@@ -158,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         padding: const EdgeInsets.all(2),
                         decoration: const BoxDecoration(
-                          color: Colors.red,
+                          color: BpColors.error,
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -213,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () => Navigator.pop(context, true),
                             child: const Text(
                               'Déconnexion',
-                              style: TextStyle(color: Colors.red),
+                              style: TextStyle(color: BpColors.error),
                             ),
                           ),
                         ],
@@ -247,12 +209,12 @@ class _HomePageState extends State<HomePage> {
                               Icon(
                                 Icons.logout_rounded,
                                 size: 20,
-                                color: Colors.red,
+                                color: BpColors.error,
                               ),
                               SizedBox(width: 12),
                               Text(
                                 'Déconnexion',
-                                style: TextStyle(color: Colors.red),
+                                style: TextStyle(color: BpColors.error),
                               ),
                             ],
                           ),
@@ -273,14 +235,16 @@ class _HomePageState extends State<HomePage> {
                 child: CircleAvatar(
                   radius: 18,
                   backgroundColor: auth.isAuthenticated
-                      ? primary.withOpacity(0.14)
-                      : Colors.grey[200],
+                      ? primary.withOpacity(0.18)
+                      : BpColors.surfaceMuted,
                   child: Icon(
                     auth.isAuthenticated
                         ? Icons.person_rounded
                         : Icons.account_circle_rounded,
                     size: 24,
-                    color: auth.isAuthenticated ? primary : Colors.grey[600],
+                    color: auth.isAuthenticated
+                        ? primary
+                        : BpColors.textSecondary,
                   ),
                 ),
               ),
@@ -310,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: const BoxDecoration(
-                    color: Colors.red,
+                    color: BpColors.error,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(

@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const Company = require("../models/Company");
-const Product = require("../models/Product");
+const Product = require("../models/product");
 const logger = require("./logger");
 
 /**

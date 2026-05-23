@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:epharma/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import 'app_colors.dart';
+import 'bp_theme.dart';
 import '../settings/settings_dialog.dart';
 import '../providers/auth_provider.dart';
 import '../providers/notification_provider.dart';
+import 'brand_title.dart';
 import 'notification_panel.dart';
 
 // =====================================================================
@@ -49,12 +51,15 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
         return Container(
           height: 70,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: BpColors.glass,
+            border: Border(
+              bottom: BorderSide(color: BpColors.border.withOpacity(0.9)),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: Colors.black.withOpacity(0.12),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
@@ -66,7 +71,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                 child: IconButton(
                   icon: Icon(
                     widget.isSidebarOpen ? Icons.menu_open : Icons.menu,
-                    color: kPrimaryGreen,
+                    color: BpColors.accent,
                     size: 26,
                   ),
                   onPressed: widget.onMenuToggle,
@@ -80,76 +85,10 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                       ? MainAxisAlignment.start
                       : MainAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: kPrimaryGreen,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.local_pharmacy,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
                     if (!isVerySmall) ...[
-                      const SizedBox(width: 8),
                       Flexible(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    context.watch<AuthProvider>().company?.name ??
-                                        'PharmaGest',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: isMobile ? 14 : 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: kPrimaryGreen,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Consumer<NotificationProvider>(
-                                  builder: (context, notifProv, _) {
-                                    final isConnected = notifProv.isConnected;
-                                    return Tooltip(
-                                      message: isConnected ? 'Live Sync Connecté' : 'Mode Offline Actif',
-                                      child: Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          color: isConnected ? const Color(0xFF00E676) : const Color(0xFFFF1744),
-                                          shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: (isConnected ? const Color(0xFF00E676) : const Color(0xFFFF1744)).withOpacity(0.5),
-                                              blurRadius: isConnected ? 6 : 2,
-                                              spreadRadius: isConnected ? 2 : 0,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                            if (!isMobile)
-                              Text(
-                                'Gestionnaire de Pharmacie Professionnel',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[600],
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                          ],
+                        child: BrandTitle(
+                          title: 'BigPharma',
                         ),
                       ),
                     ],
@@ -174,7 +113,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                               children: [
                                 Icon(
                                   Icons.notifications_outlined,
-                                  color: Colors.grey[700],
+                                  color: BpColors.textSecondary,
                                   size: 22,
                                 ),
                                 if (unreadCount > 0)
@@ -225,7 +164,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Colors.grey[200]!,
+                            color: BpColors.borderStrong,
                             width: 1,
                           ),
                           borderRadius: BorderRadius.circular(24),
@@ -235,10 +174,10 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                           children: [
                             CircleAvatar(
                               radius: 16,
-                              backgroundColor: kPrimaryGreen.withOpacity(0.1),
+                              backgroundColor: BpColors.accent.withOpacity(0.15),
                               child: const Icon(
                                 Icons.person,
-                                color: kPrimaryGreen,
+                                color: BpColors.accent,
                                 size: 20,
                               ),
                             ),
@@ -257,6 +196,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                                     style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
+                                      color: BpColors.textPrimary,
                                     ),
                                   ),
                                   Text(
@@ -265,7 +205,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                                         .toUpperCase(),
                                     style: TextStyle(
                                       fontSize: 9,
-                                      color: Colors.grey[600],
+                                      color: BpColors.textSecondary,
                                     ),
                                   ),
                                 ],
@@ -273,7 +213,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                               const SizedBox(width: 4),
                               Icon(
                                 Icons.arrow_drop_down,
-                                color: Colors.grey[600],
+                                color: BpColors.textSecondary,
                                 size: 18,
                               ),
                             ],
@@ -309,7 +249,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
           children: const [
             Icon(Icons.history_rounded, color: kPrimaryGreen, size: 20),
             SizedBox(width: 12),
-            Text("Journal d'activité"),
+            Text("Journal d'activite"),
           ],
         ),
       ),
@@ -320,7 +260,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
             children: const [
               Icon(Icons.settings, color: kAccentBlue, size: 20),
               SizedBox(width: 12),
-              Text('Paramètres'),
+              Text('Parametres'),
             ],
           ),
         ),
@@ -341,7 +281,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
           children: const [
             Icon(Icons.logout, color: kDangerRed, size: 20),
             SizedBox(width: 12),
-            Text('Déconnexion', style: TextStyle(color: kDangerRed)),
+            Text('Deconnexion', style: TextStyle(color: kDangerRed)),
           ],
         ),
       ),
@@ -359,7 +299,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
 
       case 'activity':
         AppScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Ouverture du journal d'activité")),
+          const SnackBar(content: Text("Ouverture du journal d'activite")),
         );
         break;
       case 'settings':
@@ -405,7 +345,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                   Navigator.pop(context);
                   AppScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('✅ Notification de test envoyée!'),
+                      content: Text('[OK] Notification de test envoyee!'),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -414,7 +354,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                 if (context.mounted) {
                   AppScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('❌ Erreur: $e'),
+                      content: Text('[ERREUR] $e'),
                       backgroundColor: kDangerRed,
                     ),
                   );
@@ -432,8 +372,8 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Déconnexion'),
-        content: const Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+        title: const Text('Deconnexion'),
+        content: const Text('Etes-vous sur de vouloir vous deconnecter ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -445,7 +385,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
               context.read<AuthProvider>().logout();
             },
             child: const Text(
-              'Déconnecter',
+              'Deconnecter',
               style: TextStyle(color: kDangerRed),
             ),
           ),
