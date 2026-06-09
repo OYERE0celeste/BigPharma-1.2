@@ -1,7 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'bp_theme.dart';
+import 'common/app_ui.dart';
 
 class PageStatCardData {
   final String label;
@@ -31,8 +30,11 @@ class PageStatCards extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final maxColumns = math.max(1, width ~/ 240);
-        final crossAxisCount = math.min(items.length, maxColumns);
+        final crossAxisCount = items.isEmpty
+            ? 1
+            : items.length < AppResponsive.gridColumns(width)
+                ? items.length
+                : AppResponsive.gridColumns(width);
         final childAspectRatio = width < 600 ? 1.8 : 2.15;
 
         return GridView.builder(
@@ -59,20 +61,9 @@ class _PageStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return BpSurfaceCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: BpColors.borderStrong),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.12),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      radius: BpSpacing.radiusLg,
       child: Row(
         children: [
           Container(

@@ -92,13 +92,13 @@ class AppSidebarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = color ?? BpColors.accent;
+    final activeColor = color ?? Colors.white;
     final inactiveColor = color ?? BpColors.textSecondary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Material(
-        color: selected ? BpColors.accent.withOpacity(0.14) : Colors.transparent,
+        color: selected ? BpColors.accent : Colors.transparent,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),

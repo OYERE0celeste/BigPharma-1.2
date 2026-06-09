@@ -1,11 +1,11 @@
 // 🎯 Global Scanner Listener Widget
-// 
+//
 // Root-level widget that enables global always-listening keyboard scanning.
-// 
+//
 // Placement: At MaterialApp level via builder property
 // Lifecycle: Never disposed (app lifetime)
 // Scope: Global keyboard capture for entire application
-// 
+//
 // This widget:
 // 1. Provides RawKeyboardListener for ALL keyboard input
 // 2. Maintains invisible TextField with global FocusNode
@@ -19,7 +19,7 @@ import '../services/global_keyboard_scanner_service.dart';
 import '../services/scanner_focus_manager.dart';
 
 /// 🎯 Global scanner listener - attach at app root
-/// 
+///
 /// Usage in main.dart:
 /// ```dart
 /// MaterialApp(
@@ -54,7 +54,9 @@ class _GlobalScannerListenerState extends State<GlobalScannerListener> {
     _scannerService = GlobalKeyboardScannerService();
     _dummyController = TextEditingController();
 
-    debugPrint('✓ GlobalScannerListener initialized - scanner now always listening');
+    debugPrint(
+      '✓ GlobalScannerListener initialized - scanner now always listening',
+    );
   }
 
   @override
@@ -86,24 +88,26 @@ class _GlobalScannerListenerState extends State<GlobalScannerListener> {
             maintainState: true,
             maintainAnimation: true,
             maintainSize: false,
-            child: TextField(
-              controller: _dummyController,
-              focusNode: _getFocusNode(),
-              enabled: true,
-              autocorrect: false,
-              enableSuggestions: false,
-              inputFormatters: [],
-              // Accept all keyboard input
-              onChanged: (_) {
-                // Text changes handled by RawKeyboardListener above
-              },
+            // Wrap the hidden TextField in a Material to satisfy Material-dependent widgets
+            child: Material(
+              type: MaterialType.transparency,
+              child: TextField(
+                controller: _dummyController,
+                focusNode: _getFocusNode(),
+                enabled: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                inputFormatters: [],
+                // Accept all keyboard input
+                onChanged: (_) {
+                  // Text changes handled by RawKeyboardListener above
+                },
+              ),
             ),
           ),
 
           // ========== ACTUAL APP CONTENT ==========
-          Expanded(
-            child: widget.child,
-          ),
+          Expanded(child: widget.child),
 
           // ========== DEBUG INFO (Optional) ==========
           if (widget.debugMode)

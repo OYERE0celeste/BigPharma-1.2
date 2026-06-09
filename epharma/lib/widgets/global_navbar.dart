@@ -86,11 +86,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                       : MainAxisAlignment.center,
                   children: [
                     if (!isVerySmall) ...[
-                      Flexible(
-                        child: BrandTitle(
-                          title: 'BigPharma',
-                        ),
-                      ),
+                      Flexible(child: BrandTitle(title: 'BigPharma')),
                     ],
                   ],
                 ),
@@ -174,7 +170,9 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                           children: [
                             CircleAvatar(
                               radius: 16,
-                              backgroundColor: BpColors.accent.withOpacity(0.15),
+                              backgroundColor: BpColors.accent.withOpacity(
+                                0.15,
+                              ),
                               child: const Icon(
                                 Icons.person,
                                 color: BpColors.accent,
@@ -361,7 +359,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                 }
               }
             },
-            child: const Text('Envoyer', style: TextStyle(color: Colors.green)),
+            child: const Text('Envoyer', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

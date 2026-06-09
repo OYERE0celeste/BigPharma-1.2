@@ -1,11 +1,11 @@
-import 'package:epharma/models/finance_model.dart';
-//import 'package:epharma/products/pharmacy_products_page.dart' ;
-import 'package:epharma/services/finance_service.dart';
 import 'package:flutter/material.dart';
+
+import 'package:epharma/models/finance_model.dart';
+import 'package:epharma/services/finance_service.dart';
 import 'package:epharma/widgets/app_notification.dart';
+
 import '../../widgets/bp_theme.dart';
-//import '../models/finance_model.dart';
-//import '../services/finance_service.dart';
+import '../../widgets/common/app_table_controls.dart';
 
 class FinanceTransactionTable extends StatelessWidget {
   final List<FinanceTransactionModel> transactions;
@@ -33,26 +33,36 @@ class FinanceTransactionTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Clamp indices to avoid RangeError when data shrinks or page is out of bounds
-    final startIndex = (currentPage * rowsPerPage).clamp(0, transactions.length);
+    final startIndex = (currentPage * rowsPerPage).clamp(
+      0,
+      transactions.length,
+    );
     final endIndex = (startIndex + rowsPerPage).clamp(0, transactions.length);
     final displayedTransactions = transactions.sublist(startIndex, endIndex);
+    final totalPages = transactions.isEmpty
+        ? 1
+        : (transactions.length / rowsPerPage).ceil();
+    final visibleStart = displayedTransactions.isEmpty ? 0 : startIndex + 1;
+    final visibleEnd = displayedTransactions.isEmpty ? 0 : startIndex + displayedTransactions.length;
+    final summary = transactions.isEmpty
+        ? 'Aucune transaction à afficher'
+        : 'Affichage de $visibleStart à $visibleEnd sur ${transactions.length} transactions';
 
-    return Card(
-      elevation: 4,
-      color: BpColors.cardBg,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: BpColors.borderStrong),
-      ),
+    return BpSurfaceCard(
+      padding: EdgeInsets.zero,
+      radius: BpSpacing.radiusLg,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16),
             child: Text(
-              'Flux Financiers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
+              'Flux financiers',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: BpColors.textPrimary,
+              ),
             ),
           ),
           LayoutBuilder(
@@ -61,12 +71,16 @@ class FinanceTransactionTable extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minWidth: constraints.maxWidth.isFinite ? constraints.maxWidth : 0.0,
+                    minWidth: constraints.maxWidth.isFinite
+                        ? constraints.maxWidth
+                        : 0.0,
                   ),
                   child: DataTable(
                     sortColumnIndex: sortColumnIndex,
                     sortAscending: sortAscending,
-                    headingRowColor: WidgetStateProperty.all(BpColors.surface),
+                    headingRowColor: WidgetStateProperty.all(
+                      BpColors.surfaceMuted,
+                    ),
                     columnSpacing: 24,
                     horizontalMargin: 24,
                     dataRowMinHeight: 56,
@@ -77,123 +91,194 @@ class FinanceTransactionTable extends StatelessWidget {
                       color: BpColors.textPrimary,
                     ),
                     columns: [
-                DataColumn(label: const Text('Date', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(label: const Text('Type', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(label: const Text('Référence', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(label: const Text('Source', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(label: const Text('Description', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(
-                  label: const Text('Montant', style: TextStyle(color: BpColors.textPrimary)),
-                  numeric: true,
-                  onSort: onSort,
-                ),
-                DataColumn(label: const Text('Entrée/Sortie', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(label: const Text('Mode paiement', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                DataColumn(label: const Text('Employé', style: TextStyle(color: BpColors.textPrimary)), onSort: onSort),
-                const DataColumn(label: Text('Action', style: TextStyle(color: BpColors.textPrimary))),
-              ],
-              rows: displayedTransactions.map((transaction) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Text(FinanceService.formatDate(transaction.dateTime), style: const TextStyle(color: BpColors.textSecondary)),
-                    ),
-                    DataCell(Text(transaction.type, style: const TextStyle(color: BpColors.textSecondary))),
-                    DataCell(Text(transaction.reference, style: const TextStyle(color: BpColors.textSecondary))),
-                    DataCell(Text(transaction.sourceModule, style: const TextStyle(color: BpColors.textSecondary))),
-                    DataCell(Text(transaction.description, style: const TextStyle(color: BpColors.textSecondary))),
-                    DataCell(
-                      Text(FinanceService.formatAmount(transaction.amount), style: const TextStyle(color: BpColors.textSecondary)),
-                    ),
-                    DataCell(
-                      Text(
-                        transaction.isIncome ? 'Entrée' : 'Sortie',
-                        style: TextStyle(
-                          color: transaction.isIncome
-                              ? Colors.green
-                              : Colors.red,
-                          fontWeight: FontWeight.bold,
+                      DataColumn(
+                        label: const Text(
+                          'Date',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Type',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Référence',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Source',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Description',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Montant',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        numeric: true,
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Entrée/Sortie',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Mode paiement',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      DataColumn(
+                        label: const Text(
+                          'Employé',
+                          style: TextStyle(color: BpColors.textPrimary),
+                        ),
+                        onSort: onSort,
+                      ),
+                      const DataColumn(
+                        label: Text(
+                          'Action',
+                          style: TextStyle(color: BpColors.textPrimary),
                         ),
                       ),
-                    ),
-                    DataCell(Text(transaction.paymentMethod, style: const TextStyle(color: BpColors.textSecondary))),
-                    DataCell(Text(transaction.employeeName, style: const TextStyle(color: BpColors.textSecondary))),
-                    DataCell(
-                      IconButton(
-                        icon: const Icon(Icons.visibility, color: BpColors.textPrimary),
-                        onPressed: () {
-                          if (onViewDetails != null) {
-                            onViewDetails!(transaction);
-                          } else {
-                            AppScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Détails de ${transaction.reference}',
-                                ),
+                    ],
+                    rows: displayedTransactions.map((transaction) {
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              FinanceService.formatDate(transaction.dateTime),
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
                               ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }).toList(),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.type,
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.reference,
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.sourceModule,
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.description,
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              FinanceService.formatAmount(transaction.amount),
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.isIncome ? 'Entrée' : 'Sortie',
+                              style: TextStyle(
+                                color: transaction.isIncome
+                                    ? Colors.green
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.paymentMethod,
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              transaction.employeeName,
+                              style: const TextStyle(
+                                color: BpColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            IconButton(
+                              icon: const Icon(
+                                Icons.visibility,
+                                color: BpColors.textPrimary,
+                              ),
+                              onPressed: () {
+                                if (onViewDetails != null) {
+                                  onViewDetails!(transaction);
+                                } else {
+                                  AppScaffoldMessenger.of(
+                                    context,
+                                  ).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Détails de ${transaction.reference}',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+            },
+          ),
+          AppTableFooter(
+            summary: summary,
+            pager: AppTablePager(
+              currentPage: currentPage,
+              totalPages: totalPages,
+              onPrevious: onPreviousPage,
+              onNext: onNextPage,
             ),
-          ),
-        );
-      },
-    ),
-    _PaginationControls(
-            totalCount: transactions.length,
-            currentPage: currentPage,
-            rowsPerPage: rowsPerPage,
-            onPrevious: onPreviousPage,
-            onNext: onNextPage,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PaginationControls extends StatelessWidget {
-  final int totalCount;
-  final int currentPage;
-  final int rowsPerPage;
-  final VoidCallback? onPrevious;
-  final VoidCallback? onNext;
-
-  const _PaginationControls({
-    required this.totalCount,
-    required this.currentPage,
-    required this.rowsPerPage,
-    this.onPrevious,
-    this.onNext,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('$totalCount transactions', style: const TextStyle(color: BpColors.textSecondary)),
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.chevron_left, color: BpColors.textPrimary),
-                onPressed: currentPage > 0 ? onPrevious : null,
-              ),
-              Text('${currentPage + 1}', style: const TextStyle(color: BpColors.textPrimary, fontWeight: FontWeight.bold)),
-              IconButton(
-                icon: const Icon(Icons.chevron_right, color: BpColors.textPrimary),
-                onPressed: (currentPage + 1) * rowsPerPage < totalCount
-                    ? onNext
-                    : null,
-              ),
-            ],
           ),
         ],
       ),

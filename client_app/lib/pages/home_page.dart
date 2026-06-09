@@ -19,6 +19,7 @@ import 'invoices_page.dart';
 import 'relation_client_page.dart';
 import 'package:client_app/widgets/telegram_page_route.dart';
 import 'package:client_app/widgets/product_details_bottom_sheet.dart';
+import 'package:client_app/widgets/barcode_scanner_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -108,6 +109,16 @@ class _HomePageState extends State<HomePage> {
         title: const BrandTitle(title: 'BigPharma'),
         centerTitle: false,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.qr_code_scanner_rounded, size: 26),
+            tooltip: 'Scanner un produit',
+            onPressed: () async {
+              final product = await BarcodeScannerDialog.show(context);
+              if (product != null && mounted) {
+                ProductDetailsBottomSheet.show(context, product);
+              }
+            },
+          ),
           Consumer<NotificationProvider>(
             builder: (context, notificationProvider, _) => Padding(
               padding: const EdgeInsets.only(right: 4),

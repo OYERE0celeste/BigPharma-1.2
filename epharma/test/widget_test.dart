@@ -18,6 +18,9 @@ class _FakeAuthProvider extends AuthProvider {
 
   @override
   bool get isAuthenticated => authenticated;
+
+  @override
+  Future<void> checkAuthStatus() async {}
 }
 
 class _InteractiveAuthProvider extends AuthProvider {
@@ -33,6 +36,20 @@ class _InteractiveAuthProvider extends AuthProvider {
   Future<bool> login(String email, String password) async {
     loginCalls += 1;
     return loginResult;
+  }
+}
+
+class _FakeSettingsProvider extends SettingsProvider {
+  @override
+  Future<void> loadSettings() async {
+    updateLocalSettings(
+      fullName: 'Test User',
+      email: 'test@local',
+      phone: '000',
+      address: 'Nowhere',
+      role: 'assistant',
+    );
+    return;
   }
 }
 
@@ -91,42 +108,49 @@ void main() {
     await tester.binding.setSurfaceSize(null);
   });
 
-  testWidgets('Login page does not require a named route after successful login', (
-    WidgetTester tester,
-  ) async {
-    final provider = _InteractiveAuthProvider(loginResult: true);
+  testWidgets(
+    'Login page does not require a named route after successful login',
+    (WidgetTester tester) async {
+      final provider = _InteractiveAuthProvider(loginResult: true);
 
-    await tester.binding.setSurfaceSize(const Size(1600, 1200));
-    await tester.pumpWidget(
-      ChangeNotifierProvider<AuthProvider>.value(
-        value: provider,
-        child: const MaterialApp(home: LoginPage()),
-      ),
-    );
+      await tester.binding.setSurfaceSize(const Size(1600, 1200));
+      await tester.pumpWidget(
+        ChangeNotifierProvider<AuthProvider>.value(
+          value: provider,
+          child: const MaterialApp(home: LoginPage()),
+        ),
+      );
 
-    await tester.enterText(
-      find.byType(TextField).at(0),
-      'admin@pharmacie.com',
-    );
-    await tester.enterText(find.byType(TextField).at(1), 'Password123');
-    await tester.tap(find.text('Se connecter'));
-    await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byType(TextField).at(0),
+        'admin@pharmacie.com',
+      );
+      await tester.enterText(find.byType(TextField).at(1), 'Password123');
+      await tester.tap(find.text('Se connecter'));
+      await tester.pumpAndSettle();
 
-    expect(provider.loginCalls, 1);
-    expect(tester.takeException(), isNull);
-    await tester.binding.setSurfaceSize(null);
-  });
+      expect(provider.loginCalls, 1);
+      expect(tester.takeException(), isNull);
+      await tester.binding.setSurfaceSize(null);
+    },
+  );
 
   testWidgets('ProfilDialog renders without asset dependencies', (
     WidgetTester tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(1200, 900));
     await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) => SettingsProvider(),
-        child: const MaterialApp(
-          home: Scaffold(body: ProfilDialog()),
-        ),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SettingsProvider>(
+            create: (_) => _FakeSettingsProvider(),
+          ),
+          ChangeNotifierProvider<AuthProvider>(
+            create: (_) =>
+                _FakeAuthProvider(loading: false, authenticated: false),
+          ),
+        ],
+        child: const MaterialApp(home: Scaffold(body: ProfilDialog())),
       ),
     );
 

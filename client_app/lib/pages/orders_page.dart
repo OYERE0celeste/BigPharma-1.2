@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:client_app/services/order_provider.dart';
+import '../widgets/bp_theme.dart';
 import 'complaints_page.dart';
 import 'invoice_page.dart';
 
@@ -209,7 +210,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             icon: const Icon(Icons.receipt_long_rounded),
                             label: const Text('Voir la facture'),
                             style: FilledButton.styleFrom(
-                              backgroundColor: Colors.blue[700],
+                              backgroundColor: BpColors.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

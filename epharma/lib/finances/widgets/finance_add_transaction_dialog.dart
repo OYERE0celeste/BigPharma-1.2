@@ -1,7 +1,9 @@
-import 'package:epharma/models/finance_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import '../models/finance_model.dart';
+
+import '../../models/finance_model.dart';
+import '../../widgets/bp_theme.dart';
+import '../../widgets/common/app_ui.dart';
 
 class FinanceAddTransactionDialog extends StatefulWidget {
   final Function(FinanceTransactionModel) onTransactionAdded;
@@ -23,7 +25,7 @@ class _FinanceAddTransactionDialogState
   final _referenceController = TextEditingController();
   final _sourceController = TextEditingController();
   final _descriptionController = TextEditingController();
-  late final _amountController = TextEditingController();
+  final _amountController = TextEditingController();
   final _paymentMethodController = TextEditingController();
   final _employeeController = TextEditingController();
 
@@ -43,179 +45,208 @@ class _FinanceAddTransactionDialogState
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        width: 500,
-        constraints: const BoxConstraints(maxHeight: 600),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Ajouter une Transaction',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: Form(
-                  key: _formKey,
+    return AppDialogShell(
+      maxWidth: 720,
+      maxHeight: 760,
+      child: Form(
+        key: _formKey,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
+
+            Widget amountField() {
+              return TextFormField(
+                controller: _amountController,
+                decoration: BpInputTheme.light(
+                  label: 'Montant',
+                  prefixIcon: Icons.payments_outlined,
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer un montant';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Montant invalide';
+                  }
+                  return null;
+                },
+              );
+            }
+
+            Widget typeField() {
+              return DropdownButtonFormField<bool>(
+                value: _isIncome,
+                decoration: BpInputTheme.light(
+                  label: 'Type de transaction',
+                  prefixIcon: Icons.swap_horiz_outlined,
+                ),
+                items: const [
+                  DropdownMenuItem(
+                    value: true,
+                    child: Text('Entrée (Recette)'),
+                  ),
+                  DropdownMenuItem(
+                    value: false,
+                    child: Text('Sortie (Dépense)'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _isIncome = value ?? true;
+                  });
+                },
+              );
+            }
+
+            Widget textField({
+              required TextEditingController controller,
+              required String label,
+              required IconData icon,
+              int maxLines = 1,
+              String? helperText,
+            }) {
+              return TextFormField(
+                controller: controller,
+                decoration: BpInputTheme.light(
+                  label: label,
+                  prefixIcon: icon,
+                ).copyWith(helperText: helperText),
+                maxLines: maxLines,
+                validator: (value) {
+                  if ((label == 'Type' || label == 'Référence') &&
+                      (value == null || value.isEmpty)) {
+                    return 'Champ requis';
+                  }
+                  return null;
+                },
+              );
+            }
+
+            final topRow = isCompact
+                ? Column(
+                    children: [
+                      typeField(),
+                      const SizedBox(height: 12),
+                      amountField(),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(child: typeField()),
+                      const SizedBox(width: 12),
+                      Expanded(child: amountField()),
+                    ],
+                  );
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Ajouter une transaction',
+                        style: BpTextStyles.heading3,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Flexible(
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: DropdownButtonFormField<bool>(
-                                value: _isIncome,
-                                decoration: const InputDecoration(
-                                  labelText: 'Type de transaction',
-                                  border: OutlineInputBorder(),
-                                ),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: true,
-                                    child: Text('Entrée (Recette)'),
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isIncome = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: TextFormField(
-                                controller: _amountController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Montant',
-                                  border: OutlineInputBorder(),
-                                  prefixText: 'fcfa',
-                                ),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Veuillez entrer un montant';
-                                  }
-                                  if (int.tryParse(value) == null) {
-                                    return 'Montant invalide';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        topRow,
+                        const SizedBox(height: 12),
+                        textField(
                           controller: _typeController,
-                          decoration: const InputDecoration(
-                            labelText: 'Type',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer un type';
-                            }
-                            return null;
-                          },
+                          label: 'Type',
+                          icon: Icons.sell_outlined,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(height: 12),
+                        textField(
                           controller: _referenceController,
-                          decoration: const InputDecoration(
-                            labelText: 'Référence',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer une référence';
-                            }
-                            return null;
-                          },
+                          label: 'Référence',
+                          icon: Icons.tag_outlined,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(height: 12),
+                        textField(
                           controller: _sourceController,
-                          decoration: const InputDecoration(
-                            labelText: 'Source',
-                            border: OutlineInputBorder(),
-                          ),
+                          label: 'Source',
+                          icon: Icons.account_tree_outlined,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(height: 12),
+                        textField(
                           controller: _descriptionController,
-                          decoration: const InputDecoration(
-                            labelText: 'Description',
-                            border: OutlineInputBorder(),
-                          ),
+                          label: 'Description',
+                          icon: Icons.notes_outlined,
                           maxLines: 3,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(height: 12),
+                        textField(
                           controller: _paymentMethodController,
-                          decoration: const InputDecoration(
-                            labelText: 'Mode de paiement',
-                            border: OutlineInputBorder(),
-                          ),
+                          label: 'Mode de paiement',
+                          icon: Icons.credit_card_outlined,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(height: 12),
+                        textField(
                           controller: _employeeController,
-                          decoration: const InputDecoration(
-                            labelText: 'Employé',
-                            border: OutlineInputBorder(),
-                          ),
+                          label: 'Employé',
+                          icon: Icons.person_outline,
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Annuler'),
-                  ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: _submitForm,
-                    child: const Text('Ajouter'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Annuler'),
+                    ),
+                    const SizedBox(width: 12),
+                    FilledButton(
+                      onPressed: _submitForm,
+                      child: const Text('Ajouter'),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final transaction = FinanceTransactionModel(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        dateTime: DateTime.now(),
-        type: _typeController.text,
-        reference: _referenceController.text,
-        sourceModule: _sourceController.text,
-        description: _descriptionController.text,
-        amount: double.tryParse(_amountController.text) ?? 0.0,
-        isIncome: _isIncome,
-        paymentMethod: _paymentMethodController.text,
-        employeeName: _employeeController.text,
-      );
-
-      widget.onTransactionAdded(transaction);
-      Navigator.pop(context);
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
+
+    final transaction = FinanceTransactionModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      dateTime: DateTime.now(),
+      type: _typeController.text,
+      reference: _referenceController.text,
+      sourceModule: _sourceController.text,
+      description: _descriptionController.text,
+      amount: double.tryParse(_amountController.text) ?? 0.0,
+      isIncome: _isIncome,
+      paymentMethod: _paymentMethodController.text,
+      employeeName: _employeeController.text,
+    );
+
+    widget.onTransactionAdded(transaction);
+    Navigator.pop(context);
   }
 }

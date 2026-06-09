@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'brand_title.dart';
 
 class BpColors {
   BpColors._();
@@ -11,24 +12,24 @@ class BpColors {
   static const Color primaryDark = Color(0xFF082117);
   static const Color accent = Color(0xFF39C17E);
 
-  static const Color authBg1 = Color(0xFF04140E);
-  static const Color authBg2 = Color(0xFF0A241A);
-  static const Color authBg3 = Color(0xFF103126);
+  static const Color authBg1 = primaryDark;
+  static const Color authBg2 = primary;
+  static const Color authBg3 = primaryLight;
 
-  static const Color scaffold = Color(0xFF071912);
-  static const Color scaffoldSecondary = Color(0xFF0B2118);
-  static const Color surface = Color(0xFF193126);
-  static const Color surfaceStrong = Color(0xFF213A2F);
-  static const Color surfaceMuted = Color(0xFF2A4338);
-  static const Color cardBg = Color(0xFF233B30);
-  static const Color cardHighlight = Color(0xFF2C473B);
-  static const Color glass = Color(0x5C355046);
+  static const Color scaffold = primaryDark;
+  static const Color scaffoldSecondary = primary;
+  static const Color surface = primaryDark;
+  static const Color surfaceStrong = primary;
+  static const Color surfaceMuted = primaryLight;
+  static const Color cardBg = primary;
+  static const Color cardHighlight = primaryLight;
+  static const Color glass = Color(0x5C1E6E4C);
 
-  static const Color textPrimary = Color(0xFFF2FBF6);
-  static const Color textSecondary = Color(0xFFB5C8BD);
-  static const Color textHint = Color(0xFF8EA699);
+  static const Color textPrimary = Colors.white;
+  static const Color textSecondary = Colors.white;
+  static const Color textHint = Color(0xB3FFFFFF);
   static const Color textOnDark = Colors.white;
-  static const Color textOnDarkMuted = Color(0xFFB9CCC0);
+  static const Color textOnDarkMuted = Color(0xB3FFFFFF);
 
   static const Color error = Color(0xFFE86B6B);
   static const Color success = Color(0xFF4CD286);
@@ -175,18 +176,19 @@ class BpTheme {
       shadowColor: Colors.black,
       dividerColor: BpColors.border,
       splashFactory: InkSparkle.splashFactory,
-      textTheme: const TextTheme(
-        displayLarge: BpTextStyles.heading1,
-        displayMedium: BpTextStyles.heading2,
-        titleLarge: BpTextStyles.heading2,
-        titleMedium: BpTextStyles.heading3,
-        bodyLarge: BpTextStyles.body,
-        bodyMedium: BpTextStyles.body,
-        labelLarge: BpTextStyles.buttonText,
-      ).apply(
-        bodyColor: BpColors.textPrimary,
-        displayColor: BpColors.textPrimary,
-      ),
+      textTheme:
+          const TextTheme(
+            displayLarge: BpTextStyles.heading1,
+            displayMedium: BpTextStyles.heading2,
+            titleLarge: BpTextStyles.heading2,
+            titleMedium: BpTextStyles.heading3,
+            bodyLarge: BpTextStyles.body,
+            bodyMedium: BpTextStyles.body,
+            labelLarge: BpTextStyles.buttonText,
+          ).apply(
+            bodyColor: BpColors.textPrimary,
+            displayColor: BpColors.textPrimary,
+          ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: BpColors.textPrimary,
@@ -327,33 +329,34 @@ class BpTheme {
     );
   }
 
-  static const InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
-    filled: true,
-    fillColor: BpColors.surfaceMuted,
-    labelStyle: TextStyle(fontSize: 14, color: BpColors.textSecondary),
-    hintStyle: TextStyle(fontSize: 14, color: BpColors.textHint),
-    contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
-      borderSide: BorderSide(color: BpColors.border, width: 1.2),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
-      borderSide: BorderSide(color: BpColors.border, width: 1.2),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
-      borderSide: BorderSide(color: BpColors.accent, width: 1.8),
-    ),
-    errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
-      borderSide: BorderSide(color: BpColors.error, width: 1.4),
-    ),
-    focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
-      borderSide: BorderSide(color: BpColors.error, width: 1.8),
-    ),
-  );
+  static const InputDecorationTheme _inputDecorationTheme =
+      InputDecorationTheme(
+        filled: true,
+        fillColor: BpColors.surfaceMuted,
+        labelStyle: TextStyle(fontSize: 14, color: BpColors.textSecondary),
+        hintStyle: TextStyle(fontSize: 14, color: BpColors.textHint),
+        contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
+          borderSide: BorderSide(color: BpColors.border, width: 1.2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
+          borderSide: BorderSide(color: BpColors.border, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
+          borderSide: BorderSide(color: BpColors.accent, width: 1.8),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
+          borderSide: BorderSide(color: BpColors.error, width: 1.4),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(BpSpacing.radiusLg)),
+          borderSide: BorderSide(color: BpColors.error, width: 1.8),
+        ),
+      );
 }
 
 class BpDecoratedBackground extends StatelessWidget {
@@ -388,7 +391,7 @@ class BpDecoratedBackground extends StatelessWidget {
         Positioned(
           top: 180,
           left: -120,
-          child: _buildBlob(240, Colors.white.withOpacity(0.03)),
+          child: _buildBlob(240, BpColors.textPrimary.withOpacity(0.03)),
         ),
         Positioned.fill(
           child: DecoratedBox(
@@ -397,7 +400,7 @@ class BpDecoratedBackground extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.white.withOpacity(0.02),
+                  BpColors.textPrimary.withOpacity(0.02),
                   Colors.transparent,
                   Colors.black.withOpacity(0.10),
                 ],
@@ -444,7 +447,9 @@ class BpSurfaceCard extends StatelessWidget {
     final cardContent = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: color ?? (kIsWeb ? BpColors.glass.withOpacity(0.85) : BpColors.glass),
+        color:
+            color ??
+            (kIsWeb ? BpColors.glass.withOpacity(0.85) : BpColors.glass),
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: BpColors.borderStrong, width: 1),
         boxShadow: [
@@ -459,10 +464,7 @@ class BpSurfaceCard extends StatelessWidget {
     );
 
     if (kIsWeb) {
-      return Container(
-        margin: margin,
-        child: cardContent,
-      );
+      return Container(margin: margin, child: cardContent);
     }
 
     return Container(
@@ -479,11 +481,7 @@ class BpSurfaceCard extends StatelessWidget {
 }
 
 class BpBottomSheetContainer extends StatelessWidget {
-  const BpBottomSheetContainer({
-    super.key,
-    required this.child,
-    this.padding,
-  });
+  const BpBottomSheetContainer({super.key, required this.child, this.padding});
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -492,14 +490,15 @@ class BpBottomSheetContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BpSurfaceCard(
       radius: BpSpacing.radiusXl,
-      padding: padding ??
+      padding:
+          padding ??
           EdgeInsets.only(
             left: 28,
             right: 28,
             top: 28,
             bottom: MediaQuery.of(context).viewInsets.bottom + 28,
           ),
-      color: const Color(0xE6223A30),
+      color: const Color(0xE61E6E4C),
       child: child,
     );
   }
@@ -558,27 +557,28 @@ class BpInputTheme {
   }) {
     return InputDecoration(
       hintText: hint ?? label,
-      hintStyle: TextStyle(color: Colors.white.withOpacity(0.34), fontSize: 14),
+      hintStyle: TextStyle(
+        color: BpColors.textPrimary.withOpacity(0.34),
+        fontSize: 14,
+      ),
       prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, size: 20, color: Colors.white.withOpacity(0.58))
+          ? Icon(
+              prefixIcon,
+              size: 20,
+              color: BpColors.textPrimary.withOpacity(0.58),
+            )
           : null,
       suffixIcon: suffixIconWidget,
       filled: true,
-      fillColor: Colors.white.withOpacity(0.09),
+      fillColor: BpColors.cardBg.withOpacity(0.08),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: BorderSide(
-          color: Colors.white.withOpacity(0.08),
-          width: 1.2,
-        ),
+        borderSide: BorderSide(color: BpColors.border, width: 1.2),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: BorderSide(
-          color: Colors.white.withOpacity(0.12),
-          width: 1.2,
-        ),
+        borderSide: BorderSide(color: BpColors.border, width: 1.2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
@@ -652,25 +652,7 @@ class BpAuthLoadingScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 68,
-                    height: 68,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [BpColors.primary, BpColors.accent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: const Icon(
-                      Icons.local_pharmacy_rounded,
-                      color: Colors.white,
-                      size: 34,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text('BigPharma', style: BpTextStyles.authTitle),
+                  const BrandTitle(style: BpTextStyles.authTitle),
                   const SizedBox(height: 10),
                   const Text(
                     'Chargement en cours...',

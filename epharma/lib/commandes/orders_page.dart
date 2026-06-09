@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:epharma/widgets/app_notification.dart';
+import '../widgets/common/app_ui.dart';
+import '../widgets/page_stat_cards.dart';
 import '../widgets/bp_theme.dart';
 import '../widgets/animated_components.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +10,8 @@ import '../models/order_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
 import 'order_details_page.dart';
+
+// ignore_for_file: dead_code
 
 class PharmacyOrdersPage extends StatefulWidget {
   const PharmacyOrdersPage({super.key});
@@ -104,7 +108,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: AppResponsive.pagePadding(context),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -129,6 +133,8 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
   }
 
   Widget _buildHeader() {
+    return _buildResponsiveHeader();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -274,6 +280,8 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
   }
 
   Widget _buildDashboard(OrderProvider provider) {
+    return _buildResponsiveDashboard(provider);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
@@ -414,15 +422,15 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                   hintText: 'Rechercher par numéro ou client...',
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: BpColors.surfaceMuted,
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[200]!),
+                    borderSide: BorderSide(color: BpColors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[200]!),
+                    borderSide: BorderSide(color: BpColors.border),
                   ),
                 ),
                 onChanged: _onSearchChanged,
@@ -432,9 +440,9 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               width: isMobile ? double.infinity : 220,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: BpColors.surfaceMuted,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[200]!),
+                border: Border.all(color: BpColors.border),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String?>(
@@ -477,7 +485,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
       delayMs: 0,
       child: Container(
         decoration: BoxDecoration(
-          color: BpColors.cardBg,
+          color: BpColors.surfaceStrong,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: BpColors.borderStrong),
         ),
@@ -647,6 +655,8 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
   }
 
   Widget _buildPagination(OrderProvider provider) {
+    return _buildResponsivePagination(provider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
@@ -672,6 +682,266 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                 : null,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildResponsiveHeader() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
+
+        Widget searchField({bool fullWidth = false}) {
+          final field = SizedBox(
+            height: 54,
+            child: TextField(
+              style: const TextStyle(color: BpColors.textPrimary),
+              onChanged: _onSearchChanged,
+              decoration: BpInputTheme.light(
+                label: 'Recherche',
+                hint: 'Rechercher par numéro ou client...',
+                prefixIcon: Icons.search,
+                showLabel: false,
+              ),
+            ),
+          );
+
+          return fullWidth ? SizedBox(width: double.infinity, child: field) : field;
+        }
+
+        Widget statusFilter({bool fullWidth = false}) {
+          final field = SizedBox(
+            height: 54,
+            child: DropdownButtonFormField<String?>(
+              value: _selectedStatus,
+              isExpanded: true,
+              dropdownColor: BpColors.surface,
+              decoration: BpInputTheme.light(
+                label: 'Statut',
+                hint: 'Tous les statuts',
+                showLabel: false,
+              ),
+              style: const TextStyle(
+                color: BpColors.textPrimary,
+                fontSize: 14,
+              ),
+              items: [
+                const DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text('Tous les statuts'),
+                ),
+                ...OrderStatus.values.map(
+                  (status) => DropdownMenuItem<String?>(
+                    value: status.apiValue,
+                    child: Text(status.label),
+                  ),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() => _selectedStatus = value);
+                _loadOrders(page: 1, forceRefresh: true);
+              },
+            ),
+          );
+
+          return fullWidth ? SizedBox(width: double.infinity, child: field) : field;
+        }
+
+        Widget refreshButton({bool fullWidth = false}) {
+          final button = SizedBox(
+            height: 54,
+            child: FilledButton.icon(
+              onPressed: () => _loadOrders(page: 1, forceRefresh: true),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Rafraîchir'),
+              style: FilledButton.styleFrom(
+                backgroundColor: BpColors.surfaceMuted,
+                foregroundColor: BpColors.textPrimary,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(54),
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: BpColors.border),
+                ),
+              ),
+            ),
+          );
+
+          return fullWidth ? SizedBox(width: double.infinity, child: button) : button;
+        }
+
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: isCompact
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Gestion des commandes',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: BpColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Suivi en temps reel du cycle de commande.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: BpColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    searchField(fullWidth: true),
+                    const SizedBox(height: 12),
+                    statusFilter(fullWidth: true),
+                    const SizedBox(height: 12),
+                    refreshButton(fullWidth: true),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Gestion des commandes',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: BpColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Suivi en temps reel du cycle de commande.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: BpColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(flex: 5, child: searchField()),
+                          const SizedBox(width: 12),
+                          SizedBox(width: 260, child: statusFilter()),
+                          const SizedBox(width: 12),
+                          SizedBox(width: 180, child: refreshButton()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+        );
+      },
+    );
+  }
+
+  Widget _buildResponsiveDashboard(OrderProvider provider) {
+    return PageStatCards(
+      items: [
+        PageStatCardData(
+          label: 'En attente',
+          value: '${provider.stats['en_attente'] ?? 0}',
+          color: Colors.orange,
+          icon: Icons.timer_outlined,
+        ),
+        PageStatCardData(
+          label: 'Preparation',
+          value: '${provider.stats['en_preparation'] ?? 0}',
+          color: Colors.blue,
+          icon: Icons.inventory_2_outlined,
+        ),
+        PageStatCardData(
+          label: 'Pretes',
+          value: '${provider.stats['pret_pour_recuperation'] ?? 0}',
+          color: Colors.purple,
+          icon: Icons.shopping_bag_outlined,
+        ),
+        PageStatCardData(
+          label: 'Validees',
+          value: '${provider.stats['validee'] ?? 0}',
+          color: Colors.green,
+          icon: Icons.check_circle_outline,
+        ),
+        PageStatCardData(
+          label: 'Annulees',
+          value: '${provider.stats['annulee'] ?? 0}',
+          color: Colors.red,
+          icon: Icons.cancel_outlined,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildResponsivePagination(OrderProvider provider) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
+          final pager = Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back, color: BpColors.textPrimary),
+                onPressed: provider.currentPage > 1
+                    ? () => _loadOrders(page: provider.currentPage - 1)
+                    : null,
+              ),
+              Text(
+                'Page ${provider.currentPage} sur ${provider.totalPages}',
+                style: const TextStyle(
+                  color: BpColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward, color: BpColors.textPrimary),
+                onPressed: provider.currentPage < provider.totalPages
+                    ? () => _loadOrders(page: provider.currentPage + 1)
+                    : null,
+              ),
+            ],
+          );
+
+          if (isCompact) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Page ${provider.currentPage} sur ${provider.totalPages}',
+                  style: const TextStyle(
+                    color: BpColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: pager,
+                ),
+              ],
+            );
+          }
+
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [pager],
+          );
+        },
       ),
     );
   }

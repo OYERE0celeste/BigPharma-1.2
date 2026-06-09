@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/bp_theme.dart';
+import '../../widgets/common/app_ui.dart';
+
 class SearchAndFilterClient extends StatefulWidget {
   final Function(String) onSearchChanged;
   final Function(String) onFilterChanged;
@@ -17,7 +20,7 @@ class SearchAndFilterClient extends StatefulWidget {
 }
 
 class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
-  late TextEditingController _searchController;
+  late final TextEditingController _searchController;
   String _selectedFilter = 'all';
 
   @override
@@ -36,280 +39,193 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < 1100) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Title and Subtitle
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text(
-                    'GESTION DES CLIENTS',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Gérez les clients et leurs profils médicaux',
-                    style: TextStyle(color: Colors.black54, fontSize: 13),
-                  ),
-                ],
+        final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
+        Widget searchField({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 420,
+            height: 54,
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: BpColors.textPrimary),
+              decoration: BpInputTheme.light(
+                label: 'Recherche',
+                hint: 'Rechercher un client...',
+                prefixIcon: Icons.search,
+                showLabel: false,
               ),
-              const SizedBox(height: 16),
-              // Search and Filter
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Rechercher...',
-                        prefixIcon: const Icon(Icons.search, size: 20),
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                      ),
-                      onChanged: (query) => widget.onSearchChanged(query),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedFilter,
-                        icon: const Icon(Icons.arrow_drop_down),
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                        ),
-                        items: const [
-                          DropdownMenuItem(value: 'all', child: Text('Tous')),
-                          DropdownMenuItem(
-                            value: 'frequent',
-                            child: Text('Fréquents'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'medical',
-                            child: Text('Médical'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'inactive',
-                            child: Text('Inactifs'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() => _selectedFilter = value);
-                            widget.onFilterChanged(value);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+              onChanged: widget.onSearchChanged,
+            ),
+          );
+        }
+
+        Widget filterField({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 220,
+            height: 54,
+            child: DropdownButtonFormField<String>(
+              value: _selectedFilter,
+              isExpanded: true,
+              dropdownColor: BpColors.surface,
+              decoration: BpInputTheme.light(
+                label: 'Filtre',
+                hint: 'Tous',
+                showLabel: false,
               ),
-              const SizedBox(height: 12),
-              // Actions
-              Row(
-                children: [
-                  if (widget.onAddClient != null)
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: widget.onAddClient,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Ajouter un client'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade100,
-                          foregroundColor: Colors.black,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(color: Colors.grey.shade300),
-                          ),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: () =>
-                        widget.onSearchChanged(_searchController.text),
-                    icon: const Icon(Icons.refresh),
-                    tooltip: 'Rafraîchir',
-                    color: Colors.black54,
-                  ),
-                ],
+              style: const TextStyle(
+                color: BpColors.textPrimary,
+                fontSize: 14,
               ),
-            ],
+              items: const [
+                DropdownMenuItem(value: 'all', child: Text('Tous')),
+                DropdownMenuItem(
+                  value: 'frequent',
+                  child: Text('Frequents'),
+                ),
+                DropdownMenuItem(
+                  value: 'medical',
+                  child: Text('Medical'),
+                ),
+                DropdownMenuItem(
+                  value: 'inactive',
+                  child: Text('Inactifs'),
+                ),
+              ],
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => _selectedFilter = value);
+                widget.onFilterChanged(value);
+              },
+            ),
+          );
+        }
+
+        Widget addButton({required bool fullWidth}) {
+          if (widget.onAddClient == null) {
+            return const SizedBox.shrink();
+          }
+
+          return SizedBox(
+            width: fullWidth ? double.infinity : 200,
+            height: 54,
+            child: FilledButton.icon(
+              onPressed: widget.onAddClient,
+              icon: const Icon(Icons.add),
+              label: const Text('Ajouter'),
+              style: FilledButton.styleFrom(
+                backgroundColor: BpColors.surfaceStrong,
+                foregroundColor: BpColors.textPrimary,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(54),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: BpColors.border),
+                ),
+              ),
+            ),
+          );
+        }
+
+        Widget refreshButton({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 160,
+            height: 54,
+            child: FilledButton.icon(
+              onPressed: () => widget.onSearchChanged(_searchController.text),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Actualiser'),
+              style: FilledButton.styleFrom(
+                backgroundColor: BpColors.surfaceMuted,
+                foregroundColor: BpColors.textPrimary,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(54),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: BpColors.border),
+                ),
+              ),
+            ),
           );
         }
 
         return Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              // Left: Title and Subtitle
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text(
-                      'GESTION DES CLIENTS',
+          child: isCompact
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('GESTION DES CLIENTS', style: BpTextStyles.heading2),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Gerez les clients et leurs profils medicaux',
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
+                        color: BpColors.textSecondary,
+                        fontSize: 13,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Gérez les clients et leurs profils médicaux',
-                      style: TextStyle(color: Colors.black54, fontSize: 13),
-                    ),
+                    const SizedBox(height: 16),
+                    searchField(fullWidth: true),
+                    const SizedBox(height: 12),
+                    filterField(fullWidth: true),
+                    const SizedBox(height: 12),
+                    addButton(fullWidth: true),
+                    if (widget.onAddClient != null) const SizedBox(height: 12),
+                    refreshButton(fullWidth: true),
                   ],
-                ),
-              ),
-
-              // Middle: Search and Filter
-              Expanded(
-                flex: 4,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 400),
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Nom, téléphone ou email...',
-                            prefixIcon: const Icon(Icons.search, size: 20),
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'GESTION DES CLIENTS',
+                            style: BpTextStyles.heading2,
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Gerez les clients et leurs profils medicaux',
+                            style: TextStyle(
+                              color: BpColors.textSecondary,
+                              fontSize: 13,
                             ),
                           ),
-                          onChanged: (query) {
-                            widget.onSearchChanged(query);
-                          },
-                        ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: _selectedFilter,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          style: const TextStyle(
-                            color: Colors.black87,
-                            fontSize: 14,
+                    const SizedBox(width: 24),
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(flex: 5, child: searchField(fullWidth: false)),
+                          const SizedBox(width: 12),
+                          SizedBox(
+                            width: 220,
+                            child: filterField(fullWidth: false),
                           ),
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'all',
-                              child: Text('Tous les clients'),
+                          const SizedBox(width: 12),
+                          if (widget.onAddClient != null) ...[
+                            SizedBox(
+                              width: 200,
+                              child: addButton(fullWidth: false),
                             ),
-                            DropdownMenuItem(
-                              value: 'frequent',
-                              child: Text('Acheteurs fréquents'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'medical',
-                              child: Text('Profil médical'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'inactive',
-                              child: Text('Inactifs'),
-                            ),
+                            const SizedBox(width: 12),
                           ],
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() => _selectedFilter = value);
-                              widget.onFilterChanged(value);
-                            }
-                          },
-                        ),
+                          SizedBox(
+                            width: 160,
+                            child: refreshButton(fullWidth: false),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-
-              // Right: Actions
-              Expanded(
-                flex: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        widget.onSearchChanged(_searchController.text);
-                      },
-                      icon: const Icon(Icons.refresh),
-                      tooltip: 'Rafraîchir',
-                      color: Colors.black54,
-                    ),
-                    const SizedBox(width: 8),
-                    if (widget.onAddClient != null)
-                      ElevatedButton(
-                        onPressed: widget.onAddClient,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade100,
-                          foregroundColor: Colors.black,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(color: Colors.grey.shade300),
-                          ),
-                        ),
-                        child: const Icon(Icons.add),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         );
       },
     );

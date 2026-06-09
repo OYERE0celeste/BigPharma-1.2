@@ -1,9 +1,10 @@
-import 'package:epharma/providers/auth_provider.dart';
+﻿import 'package:epharma/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'widgets/app_colors.dart';
 import 'widgets/bp_theme.dart';
+import 'widgets/common/app_ui.dart';
 import 'providers/product_provider.dart';
 import 'providers/finance_provider.dart';
 import 'providers/sales_provider.dart';
@@ -95,81 +96,88 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
   Widget _buildHeader(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final now = DateTime.now();
+        final todayLabel = "Aujourd'hui, ${now.day}/${now.month}/${now.year}";
+
+        Widget buildDateBadge() {
+          return Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: BpColors.surfaceMuted,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: BpColors.borderStrong),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.calendar_today,
+                  size: 16,
+                  color: kAccentBlue,
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    todayLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: BpColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        Widget buildRefreshButton({bool stretch = false}) {
+          return SizedBox(
+            height: 48,
+            width: stretch ? double.infinity : null,
+            child: FilledButton.icon(
+              onPressed: () => _refreshDashboard(forceRefresh: true),
+              icon: const Icon(Icons.refresh, size: 20),
+              label: const Text('Actualiser'),
+              style: FilledButton.styleFrom(
+                backgroundColor: BpColors.surfaceMuted,
+                foregroundColor: BpColors.textPrimary,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: const BorderSide(color: BpColors.border),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+              ),
+            ),
+          );
+        }
+
         if (constraints.maxWidth < 900) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Greeting
               _buildGreeting(context),
               const SizedBox(height: 8),
               Text(
                 'Aperçu global de votre activité pharmaceutique',
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                style: TextStyle(color: BpColors.textSecondary, fontSize: 14),
               ),
               const SizedBox(height: 16),
-              // Date and Refresh in a row or column
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: BpColors.cardBg,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: BpColors.borderStrong),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.calendar_today,
-                            size: 16,
-                            color: kAccentBlue,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                            style: const TextStyle(fontWeight: FontWeight.w500, color: BpColors.textPrimary),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Flexible(
-                    child: FilledButton.icon(
-                      onPressed: () => _refreshDashboard(forceRefresh: true),
-                      icon: const Icon(Icons.refresh, size: 20),
-                      label: const Text('Actualiser'),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: BpColors.surfaceMuted,
-                        foregroundColor: BpColors.textPrimary,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: BpColors.border),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              buildDateBadge(),
+              const SizedBox(height: 12),
+              buildRefreshButton(stretch: true),
             ],
           );
         }
 
         return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Left: Title
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -178,80 +186,26 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                   const SizedBox(height: 4),
                   Text(
                     'Aperçu global de votre activité pharmaceutique',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
-
-            // Middle: Date/Time (Specific to Dashboard)
-            Expanded(
-              flex: 4,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: BpColors.cardBg,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: BpColors.borderStrong),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.calendar_today,
-                        size: 16,
-                        color: kAccentBlue,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Aujourd'hui, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                        style: const TextStyle(fontWeight: FontWeight.w500, color: BpColors.textPrimary),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            // Right: Refresh
-            Expanded(
-              flex: 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: FilledButton.icon(
-                      onPressed: () => _refreshDashboard(forceRefresh: true),
-                      icon: const Icon(Icons.refresh, size: 20),
-                      label: const Text('Actualiser'),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: BpColors.surfaceMuted,
-                        foregroundColor: BpColors.textPrimary,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: BpColors.border),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
+                    style: const TextStyle(
+                      color: BpColors.textSecondary,
+                      fontSize: 14,
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 16),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360, minWidth: 280),
+              child: buildDateBadge(),
+            ),
+            const SizedBox(width: 12),
+            SizedBox(width: 170, child: buildRefreshButton()),
           ],
         );
       },
     );
   }
-
   Widget _buildGreeting(BuildContext context) {
     final auth = context.watch<AuthProvider>();
     final hour = DateTime.now().hour;
@@ -273,6 +227,59 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
         fontWeight: FontWeight.bold,
         letterSpacing: 0.5,
         color: Color(0xFFF2FBF6),
+      ),
+    );
+  }
+}
+
+class _DashboardSectionCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color accentColor;
+  final Widget child;
+
+  const _DashboardSectionCard({
+    required this.title,
+    required this.icon,
+    required this.accentColor,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BpSurfaceCard(
+      padding: EdgeInsets.zero,
+      radius: BpSpacing.radiusXl,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: accentColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: accentColor, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: BpTextStyles.heading3.copyWith(
+                      color: BpColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            child,
+          ],
+        ),
       ),
     );
   }
@@ -343,24 +350,16 @@ class TopKPISection extends StatelessWidget {
             return LayoutBuilder(
               builder: (context, constraints) {
                 final width = constraints.maxWidth;
-
-                // Dynamic grid configuration
-                int crossAxisCount;
-                double childAspectRatio;
-
-                if (width < 600) {
-                  crossAxisCount = 2; // 2 columns on mobile
-                  childAspectRatio = 1.3; // More square on mobile
-                } else if (width < 900) {
-                  crossAxisCount = 3; // 3 columns on small tablets
-                  childAspectRatio = 1.4;
-                } else if (width < 1200) {
-                  crossAxisCount = 4; // 4 columns on large tablets
-                  childAspectRatio = 1.5;
-                } else {
-                  crossAxisCount = 4; // 4 columns on desktop
-                  childAspectRatio = 2.0;
-                }
+                final crossAxisCount = AppResponsive.gridColumns(
+                  width,
+                  minTileWidth: 220,
+                  maxColumns: 4,
+                );
+                final childAspectRatio = width < 600
+                    ? 1.35
+                    : width < 1100
+                        ? 1.5
+                        : 1.85;
 
                 return GridView.builder(
                   shrinkWrap: true,
@@ -425,23 +424,13 @@ class KPICard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: BpColors.borderStrong),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return BpSurfaceCard(
+      padding: EdgeInsets.zero,
+      radius: BpSpacing.radiusLg,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -457,7 +446,7 @@ class KPICard extends StatelessWidget {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: color.withOpacity(0.1),
+                            color: color.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           padding: const EdgeInsets.all(8),
@@ -576,42 +565,13 @@ class AlertsPanel extends StatelessWidget {
       ),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: BpColors.borderStrong),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: kDangerRed.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.report_problem,
-                    color: kDangerRed,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Alertes',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ...alerts.map((a) => AlertTile(data: a)),
-          ],
-        ),
+    return _DashboardSectionCard(
+      title: 'Alertes',
+      icon: Icons.report_problem,
+      accentColor: kDangerRed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: alerts.map((a) => AlertTile(data: a)).toList(),
       ),
     );
   }
@@ -669,7 +629,13 @@ class AlertTile extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(data.title, style: const TextStyle(fontSize: 14, color: BpColors.textPrimary)),
+                child: Text(
+                  data.title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: BpColors.textPrimary,
+                  ),
+                ),
               ),
               if (data.count > 0)
                 Container(
@@ -708,62 +674,30 @@ class RecentActivityPanel extends StatelessWidget {
         .take(10)
         .toList();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: BpColors.borderStrong),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: kAccentBlue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.history,
-                    color: kAccentBlue,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Activité récente',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 320, minHeight: 150),
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: activities.length,
-                separatorBuilder: (_, _) =>
-                    const Divider(height: 24, color: BpColors.border),
-                itemBuilder: (context, index) {
-                  final a = activities[index];
-                  return ActivityTile(
-                    data: ActivityData(
-                      title: a.typeLabel,
-                      subtitle: '${a.clientOrSupplierName} - ${a.productName}',
-                      time: _formatTime(a.dateTime),
-                      icon: a.typeIcon,
-                      color: a.typeColor,
-                      section: _resolveActivitySection(a.type),
-                    ),
-                  );
-                },
+    return _DashboardSectionCard(
+      title: 'Activité récente',
+      icon: Icons.history,
+      accentColor: kAccentBlue,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 320, minHeight: 150),
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: activities.length,
+          separatorBuilder: (_, _) =>
+              const Divider(height: 24, color: BpColors.border),
+          itemBuilder: (context, index) {
+            final a = activities[index];
+            return ActivityTile(
+              data: ActivityData(
+                title: a.typeLabel,
+                subtitle: '${a.clientOrSupplierName} - ${a.productName}',
+                time: _formatTime(a.dateTime),
+                icon: a.typeIcon,
+                color: a.typeColor,
+                section: _resolveActivitySection(a.type),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -823,11 +757,17 @@ class ActivityTile extends StatelessWidget {
                 children: [
                   Text(
                     data.title,
-                    style: const TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: BpColors.textPrimary,
+                    ),
                   ),
                   Text(
                     data.subtitle,
-                    style: const TextStyle(color: BpColors.textSecondary, fontSize: 13),
+                    style: const TextStyle(
+                      color: BpColors.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -882,68 +822,34 @@ class QuickActionsSection extends StatelessWidget {
       ),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: BpColors.borderStrong),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.flash_on,
-                    color: Colors.amber,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Actions rapides',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final width = constraints.maxWidth;
-                int cross = 3;
-                double ratio = 2.5;
+    return _DashboardSectionCard(
+      title: 'Actions rapides',
+      icon: Icons.flash_on,
+      accentColor: Colors.amber,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          int cross = 3;
+          double ratio = 2.5;
 
-                if (width < 500) {
-                  cross = 1;
-                  ratio = 4.5;
-                } else if (width < 800) {
-                  cross = 2;
-                  ratio = 2.8;
-                }
+          if (width < 500) {
+            cross = 1;
+            ratio = 4.5;
+          } else if (width < 800) {
+            cross = 2;
+            ratio = 2.8;
+          }
 
-                return GridView.count(
-                  crossAxisCount: cross,
-                  childAspectRatio: ratio,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  children: actions
-                      .map((a) => QuickActionButton(action: a))
-                      .toList(),
-                );
-              },
-            ),
-          ],
-        ),
+          return GridView.count(
+            crossAxisCount: cross,
+            childAspectRatio: ratio,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            children: actions.map((a) => QuickActionButton(action: a)).toList(),
+          );
+        },
       ),
     );
   }
@@ -970,23 +876,13 @@ class QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: BpColors.borderStrong),
-        boxShadow: [
-          BoxShadow(
-            color: action.color.withOpacity(0.12),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return BpSurfaceCard(
+      padding: EdgeInsets.zero,
+      radius: BpSpacing.radiusLg,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
           onTap: () => _navigateToDashboardSection(context, action.section),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -994,7 +890,7 @@ class QuickActionButton extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: action.color.withOpacity(0.1),
+                    color: action.color.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.all(8),
@@ -1013,7 +909,11 @@ class QuickActionButton extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: BpColors.textHint, size: 16),
+                const Icon(
+                  Icons.chevron_right,
+                  color: BpColors.textHint,
+                  size: 16,
+                ),
               ],
             ),
           ),
@@ -1080,139 +980,136 @@ class StockSummary extends StatelessWidget {
       Colors.red,
     ];
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: kPrimaryGreen.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.inventory_2,
-                    color: kPrimaryGreen,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Stock Summary',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
-                ),
-              ],
+    return _DashboardSectionCard(
+      title: 'Aperçu du stock',
+      icon: Icons.inventory_2,
+      accentColor: kPrimaryGreen,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Top 5 des meilleures ventes',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: BpColors.textPrimary,
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 8),
+          if (bestSelling.isEmpty)
             const Text(
-              'Top 5 Best-selling',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: BpColors.textPrimary),
-            ),
-            const SizedBox(height: 8),
-            if (bestSelling.isEmpty)
-              const Text(
-                'Aucun produit disponible',
-                style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
-              )
-            else
-              ...bestSelling.map(
-                (s) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle_outline,
-                        size: 14,
-                        color: kPrimaryGreen,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(s, style: const TextStyle(fontSize: 13, color: BpColors.textSecondary)),
-                    ],
-                  ),
-                ),
-              ),
-            const SizedBox(height: 20),
-            const Text(
-              'Low stock products',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: BpColors.textPrimary),
-            ),
-            const SizedBox(height: 8),
-            if (lowStock.isEmpty)
-              const Text(
-                'Aucun produit en rupture',
-                style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
-              )
-            else
-              ...lowStock.map(
-                (s) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.warning_amber_rounded,
-                        size: 14,
-                        color: kWarningOrange,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(s, style: const TextStyle(fontSize: 13, color: BpColors.textSecondary)),
-                    ],
-                  ),
-                ),
-              ),
-            const SizedBox(height: 20),
-            const Text(
-              'Category distribution',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: BpColors.textPrimary),
-            ),
-            const SizedBox(height: 16),
-            AspectRatio(
-              aspectRatio: 1.5,
-              child: categories.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'Aucune donnée',
-                        style: TextStyle(color: BpColors.textSecondary),
-                      ),
-                    )
-                  : PieChart(
-                      PieChartData(
-                        sectionsSpace: 2,
-                        centerSpaceRadius: 25,
-                        sections: categories.entries
-                            .toList()
-                            .asMap()
-                            .entries
-                            .map((entry) {
-                              final idx = entry.key;
-                              final mapEntry = entry.value;
-                              return PieChartSectionData(
-                                color:
-                                    categoryColors[idx % categoryColors.length],
-                                value: mapEntry.value.toDouble(),
-                                title: '${mapEntry.key}\n(${mapEntry.value})',
-                                radius: 50,
-                                titleStyle: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              );
-                            })
-                            .toList(),
+              'Aucun produit disponible',
+              style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
+            )
+          else
+            ...bestSelling.map(
+              (s) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle_outline,
+                      size: 14,
+                      color: kPrimaryGreen,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      s,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: BpColors.textSecondary,
                       ),
                     ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
+          const SizedBox(height: 20),
+          const Text(
+            'Produits à stock faible',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: BpColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (lowStock.isEmpty)
+            const Text(
+              'Aucun produit en rupture',
+              style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
+            )
+          else
+            ...lowStock.map(
+              (s) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      size: 14,
+                      color: kWarningOrange,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      s,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: BpColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 20),
+          const Text(
+            'Répartition par catégorie',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: BpColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.5,
+            child: categories.isEmpty
+                ? const Center(
+                    child: Text(
+                      'Aucune donnée',
+                      style: TextStyle(color: BpColors.textSecondary),
+                    ),
+                  )
+                : PieChart(
+                    PieChartData(
+                      sectionsSpace: 2,
+                      centerSpaceRadius: 25,
+                      sections: categories.entries
+                          .toList()
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                            final idx = entry.key;
+                            final mapEntry = entry.value;
+                            return PieChartSectionData(
+                              color:
+                                  categoryColors[idx % categoryColors.length],
+                              value: mapEntry.value.toDouble(),
+                              title: '${mapEntry.key}\n(${mapEntry.value})',
+                              radius: 50,
+                              titleStyle: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            );
+                          })
+                          .toList(),
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }
@@ -1263,98 +1160,115 @@ class PerformanceSection extends StatelessWidget {
       );
     }
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: kAccentBlue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.show_chart,
-                    color: kAccentBlue,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Performance',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
-                ),
-              ],
+    return _DashboardSectionCard(
+      title: 'Performance',
+      icon: Icons.show_chart,
+      accentColor: kAccentBlue,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Aperçu des ventes (7 derniers jours)',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: BpColors.textPrimary,
             ),
-            const SizedBox(height: 12),
-            const Text(
-              'Sales overview (Derniers 7 jours)',
-              style: TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
-            ),
-            const SizedBox(height: 16),
-            AspectRatio(
-              aspectRatio: 1.5,
-              child: sales.isEmpty
-                  ? const Center(child: Text('Aucune donnée de vente', style: TextStyle(color: BpColors.textSecondary)))
-                  : BarChart(
-                      BarChartData(
-                        titlesData: FlTitlesData(
-                          show: true,
-                          topTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          rightTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) {
-                                final date = now.subtract(
-                                  Duration(days: 6 - value.toInt()),
-                                );
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      '${date.day}/${date.month}',
-                                      style: const TextStyle(fontSize: 10, color: BpColors.textSecondary),
-                                    ),
-                                );
-                              },
-                            ),
+          ),
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.5,
+            child: sales.isEmpty
+                ? const Center(
+                    child: Text(
+                      'Aucune donnée de vente',
+                      style: TextStyle(color: BpColors.textSecondary),
+                    ),
+                  )
+                : BarChart(
+                    BarChartData(
+                      titlesData: FlTitlesData(
+                        show: true,
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              final date = now.subtract(
+                                Duration(days: 6 - value.toInt()),
+                              );
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  '${date.day}/${date.month}',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: BpColors.textSecondary,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
-                        borderData: FlBorderData(show: false),
-                        gridData: const FlGridData(show: false),
-                        barGroups: barGroups,
+                      ),
+                      borderData: FlBorderData(show: false),
+                      gridData: const FlGridData(show: false),
+                      barGroups: barGroups,
+                    ),
+                  ),
+          ),
+          const SizedBox(height: 16),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 420) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: BpColors.textPrimary,
                       ),
                     ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
-                  style: const TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
-                ),
-                Text(
-                  'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
-                  style: const TextStyle(fontWeight: FontWeight.w600, color: BpColors.textPrimary),
-                ),
-              ],
-            ),
-          ],
-        ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: BpColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: BpColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: BpColors.textPrimary,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -1373,13 +1287,9 @@ class SystemInfoBar extends StatelessWidget {
     final authProvider = context.watch<AuthProvider>();
     final now = DateTime.now();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      decoration: BoxDecoration(
-        color: BpColors.cardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: BpColors.borderStrong),
-      ),
+    return BpSurfaceCard(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      radius: BpSpacing.radiusLg,
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -1399,7 +1309,7 @@ class SystemInfoBar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Pharmacy: ${authProvider.company?.name ?? "..."}',
+                'Pharmacie : ${authProvider.company?.name ?? "..."}',
                 style: const TextStyle(
                   color: BpColors.textSecondary,
                   fontSize: 12,
@@ -1409,7 +1319,7 @@ class SystemInfoBar extends StatelessWidget {
             ],
           ),
           Text(
-            'User: ${authProvider.user?.fullName ?? "..."} (${authProvider.user?.role.toUpperCase() ?? "..."})',
+            'Utilisateur : ${authProvider.user?.fullName ?? "..."} (${authProvider.user?.role.toUpperCase() ?? "..."})',
             style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
           ),
           Text(
@@ -1425,3 +1335,4 @@ class SystemInfoBar extends StatelessWidget {
     );
   }
 }
+

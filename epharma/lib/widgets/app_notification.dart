@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import 'bp_theme.dart';
 import 'notification_accessibility.dart';
 
 enum AppNotificationType { success, error, warning, info }
@@ -549,7 +550,7 @@ class _AppNotificationCard extends StatelessWidget {
     final palette = _NotificationPalette.fromType(entry.type);
     final theme = Theme.of(context);
     final bodyStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: const Color(0xFF122033),
+      color: BpColors.textPrimary,
       fontWeight: FontWeight.w600,
       height: 1.35,
     );
@@ -584,12 +585,12 @@ class _AppNotificationCard extends StatelessWidget {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: BpColors.surfaceStrong,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: palette.borderColor),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: BpColors.primaryDark.withOpacity(0.16),
                     blurRadius: 28,
                     offset: const Offset(0, 12),
                   ),
@@ -656,7 +657,7 @@ class _AppNotificationCard extends StatelessWidget {
                       icon: Icon(
                         Icons.close_rounded,
                         size: isWideLayout ? 18 : 20,
-                        color: const Color(0xFF5A6573),
+                        color: BpColors.textSecondary,
                       ),
                     ),
                   ],

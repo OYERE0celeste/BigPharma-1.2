@@ -6,11 +6,16 @@ import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
 import '../security/rbac.dart';
 import '../widgets/bp_theme.dart';
+import '../widgets/common/app_ui.dart';
 import '../widgets/page_stat_cards.dart';
 import '../scanner/widgets/scanner_button.dart';
+import '../scanner/services/scanner_context_handler.dart';
+import '../scanner/services/scanner_event_bus.dart';
 import 'widgets/product_table.dart';
 import 'widgets/product_detail.dart';
 import 'widgets/product_form.dart';
+
+// ignore_for_file: dead_code
 
 String formatDate(DateTime dt) =>
     '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
@@ -36,9 +41,32 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
   @override
   void initState() {
     super.initState();
+    
+    // Set scanner page context for products catalog page
+    ScannerContextHandler.instance.setActivePage(
+      ScannerActivePageContext.products,
+    );
+    
+    // Register event handler for background keyboard scanner detection
+    ScannerContextHandler.instance.registerProductsPageHandler((ProductFound event) {
+      _handleScannedProduct(event.product);
+    });
+
     Future.microtask(() {
       context.read<ProductProvider>().loadProducts();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    // Reset scanner page context when leaving this page
+    if (ScannerContextHandler.instance.activePage == ScannerActivePageContext.products) {
+      ScannerContextHandler.instance.setActivePage(
+        ScannerActivePageContext.other,
+      );
+    }
+    super.dispose();
   }
 
   Future<void> _loadProducts() async {
@@ -347,9 +375,220 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
     );
   }
 
+  Widget _buildResponsiveHeader(BuildContext context, bool canAdd) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
+
+        Widget searchField({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 380,
+            height: 54,
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: BpColors.textPrimary),
+              decoration: BpInputTheme.light(
+                label: 'Recherche',
+                hint: 'Rechercher par nom ou catégorie',
+                prefixIcon: Icons.search,
+                showLabel: false,
+              ),
+              onChanged: (value) => setState(() => _search = value),
+            ),
+          );
+        }
+
+        Widget filterField({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 220,
+            height: 54,
+            child: DropdownButtonFormField<String>(
+              value: _filter,
+              isExpanded: true,
+              dropdownColor: BpColors.surface,
+              decoration: BpInputTheme.light(
+                label: 'Filtre',
+                hint: 'Tous les produits',
+                showLabel: false,
+              ),
+              style: const TextStyle(
+                color: BpColors.textPrimary,
+                fontSize: 14,
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: 'Tous les produits',
+                  child: Text('Tous'),
+                ),
+                DropdownMenuItem(
+                  value: 'Stock faible',
+                  child: Text('Faible'),
+                ),
+                DropdownMenuItem(
+                  value: 'Expirés',
+                  child: Text('Expirés'),
+                ),
+                DropdownMenuItem(
+                  value: 'Bientôt expirés',
+                  child: Text('Bientôt'),
+                ),
+              ],
+              onChanged: (value) =>
+                  setState(() => _filter = value ?? 'Tous les produits'),
+            ),
+          );
+        }
+
+        Widget scannerAction({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 170,
+            height: 54,
+            child: ScannerButton(
+              style: ScannerButtonStyle.filled,
+              tooltip: 'Scanner un produit',
+              onProductScanned: _handleScannedProduct,
+            ),
+          );
+        }
+
+        Widget refreshAction({required bool fullWidth}) {
+          return SizedBox(
+            width: fullWidth ? double.infinity : 170,
+            height: 54,
+            child: FilledButton.icon(
+              onPressed: _loadProducts,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Rafraîchir'),
+              style: FilledButton.styleFrom(
+                backgroundColor: BpColors.surfaceMuted,
+                foregroundColor: BpColors.textPrimary,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(54),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: BpColors.border),
+                ),
+              ),
+            ),
+          );
+        }
+
+        Widget addAction({required bool fullWidth}) {
+          if (!canAdd) {
+            return const SizedBox.shrink();
+          }
+
+          return SizedBox(
+            width: fullWidth ? double.infinity : 200,
+            height: 54,
+            child: FilledButton.icon(
+              onPressed: _openAddDialog,
+              icon: const Icon(Icons.add),
+              label: const Text('Ajouter'),
+              style: FilledButton.styleFrom(
+                backgroundColor: BpColors.cardBg,
+                foregroundColor: BpColors.textPrimary,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(54),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: BpColors.borderStrong),
+                ),
+              ),
+            ),
+          );
+        }
+
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: isCompact
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'GESTION DES PRODUITS',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                        color: BpColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Gérez les médicaments, le stock et les lots pharmaceutiques',
+                      style: TextStyle(
+                        color: BpColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    searchField(fullWidth: true),
+                    const SizedBox(height: 12),
+                    filterField(fullWidth: true),
+                    const SizedBox(height: 12),
+                    scannerAction(fullWidth: true),
+                    const SizedBox(height: 12),
+                    refreshAction(fullWidth: true),
+                    if (canAdd) const SizedBox(height: 12),
+                    if (canAdd) addAction(fullWidth: true),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'GESTION DES PRODUITS',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                              color: BpColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Gérez les médicaments, le stock et les lots pharmaceutiques',
+                            style: TextStyle(
+                              color: BpColors.textSecondary,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    Expanded(
+                      flex: 4,
+                      child: searchField(fullWidth: false),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(width: 220, child: filterField(fullWidth: false)),
+                    const SizedBox(width: 12),
+                    SizedBox(width: 170, child: scannerAction(fullWidth: false)),
+                    const SizedBox(width: 12),
+                    SizedBox(width: 170, child: refreshAction(fullWidth: false)),
+                    if (canAdd) ...[
+                      const SizedBox(width: 12),
+                      SizedBox(width: 200, child: addAction(fullWidth: false)),
+                    ],
+                  ],
+                ),
+        );
+      },
+    );
+  }
+
   Widget _buildHeader(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final canAdd = authProvider.user?.can(AppPermission.addProduct) ?? false;
+    return _buildResponsiveHeader(context, canAdd);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 1100) {

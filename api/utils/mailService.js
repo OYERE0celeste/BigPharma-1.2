@@ -83,6 +83,11 @@ const buildEmailText = ({ greeting, intro, bullets = [], actionText, actionUrl, 
 };
 
 const sendMail = async ({ to, subject, text, html }) => {
+  if (process.env.NODE_ENV === "test") {
+    logger.info(`MailService: test environment detected, skipping actual email sending to ${to} (mocked success)`);
+    return true;
+  }
+
   if (!to) {
     logger.warn("MailService: missing recipient address");
     return false;

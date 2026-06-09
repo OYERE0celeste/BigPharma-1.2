@@ -38,7 +38,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final summary = reviewProvider.summaryForProduct(product.id);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.background,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -50,13 +50,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 tag: 'product_${product.id}',
                 child: Container(
                   decoration: BoxDecoration(color: primary.withOpacity(0.1)),
-                  child: product.image.startsWith('http')
-                      ? Image.network(product.image, fit: BoxFit.cover)
-                      : Icon(
-                          Icons.medication_rounded,
-                          size: 80,
-                          color: primary.withOpacity(0.5),
-                        ),
+                  child: _buildProductImage(product.image, primary),
                 ),
               ),
             ),
@@ -137,7 +131,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         : product.description,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey[700],
+                      color: theme.colorScheme.onBackground,
                       height: 1.5,
                     ),
                   ),
@@ -145,24 +139,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: theme.colorScheme.surfaceVariant,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey[200]!),
+                      border: Border.all(color: theme.colorScheme.outline),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildInfoItem(
+                          context,
                           Icons.inventory_2_outlined,
                           'Stock',
                           '${product.availableStock}',
                         ),
                         _buildInfoItem(
+                          context,
                           Icons.verified_user_outlined,
                           'Qualite',
                           'Certifie',
                         ),
                         _buildInfoItem(
+                          context,
                           Icons.local_shipping_outlined,
                           'Retrait',
                           'Rapide',
@@ -186,7 +183,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       bottomSheet: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -255,7 +252,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -374,14 +371,50 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String label, String value) {
+  Widget _buildInfoItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
+
     return Column(
       children: [
-        Icon(icon, color: Colors.grey[600]),
+        Icon(icon, color: color),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+        Text(label, style: TextStyle(fontSize: 12, color: color)),
         Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
       ],
+    );
+  }
+
+  Widget _buildProductImage(String image, Color primary) {
+    if (image.startsWith('http')) {
+      return Image.network(
+        image,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _buildProductPlaceholder(primary),
+      );
+    }
+
+    return _buildProductPlaceholder(primary);
+  }
+
+  Widget _buildProductPlaceholder(Color primary) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: primary.withOpacity(0.10),
+      child: Center(
+        child: Text(
+          'Image indisponible',
+          style: TextStyle(
+            color: primary.withOpacity(0.85),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
     );
   }
 

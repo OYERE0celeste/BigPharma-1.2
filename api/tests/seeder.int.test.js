@@ -1,16 +1,13 @@
 const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server-core");
 
-let mongo;
 let Company;
 let User;
 let seedAdmin;
 
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = "test_secret";
-  process.env.MONGODB_URI = mongo.getUri();
+  process.env.MONGODB_URI = mongoose.connection.client.s.url || "mongodb://localhost:27017/test";
 
   Company = require("../models/Company");
   User = require("../models/User");
@@ -23,10 +20,6 @@ afterEach(async () => {
   await Promise.all([Company.deleteMany({}), User.deleteMany({})]);
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-  if (mongo) await mongo.stop();
-});
 
 describe("Default admin seeding", () => {
   it("creates the default company and admin when no admin exists", async () => {

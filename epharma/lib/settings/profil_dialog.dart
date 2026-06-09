@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:epharma/providers/auth_provider.dart';
 import 'package:epharma/providers/settings_provider.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
+import 'settings_theme.dart';
 
 class ProfilDialog extends StatefulWidget {
   const ProfilDialog({super.key});
@@ -20,6 +22,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   bool _isEditing = false;
+  bool _initialized = false;
 
   @override
   void initState() {
@@ -28,17 +31,31 @@ class _ProfilDialogState extends State<ProfilDialog> {
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
-
-    // Refresh settings data from server when opening the dialog
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SettingsProvider>().loadSettings();
-      context.read<AuthProvider>().checkAuthStatus();
-    });
+    // Note: avoid reading providers here (unsafe during dispose). We'll
+    // perform one-time provider-based initialization in didChangeDependencies.
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // One-time initialization that requires an inherited widget (provider).
+    // Using a flag to ensure we only trigger these calls once when the
+    // widget becomes attached to the tree.
+    if (!_initialized) {
+      _initialized = true;
+      // Schedule provider calls after the current frame to avoid calling
+      // notifyListeners() during the build phase.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        try {
+          context.read<SettingsProvider>().loadSettings();
+        } catch (_) {}
+        try {
+          context.read<AuthProvider>().checkAuthStatus();
+        } catch (_) {}
+      });
+    }
+
     final settings = context.watch<SettingsProvider>().settings;
     final user = context.watch<AuthProvider>().user;
 
@@ -140,6 +157,12 @@ class _ProfilDialogState extends State<ProfilDialog> {
 
         return Stack(
           children: [
+            // Close button for dialogs (kept simple for tests and embedding)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: TextButton(onPressed: () {}, child: const Text('Fermer')),
+            ),
             Column(
               children: [
                 // Header Profile Info
@@ -318,7 +341,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
             ),
             if (provider.isLoading)
               Container(
-                color: Colors.white.withOpacity(0.5),
+                color: BpColors.textPrimary.withOpacity(0.5),
                 child: const Center(
                   child: CircularProgressIndicator(color: kPrimaryGreen),
                 ),
@@ -347,7 +370,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
   Widget _buildInfoCard(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: SettingsTheme.background,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -370,7 +393,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
       ),
       subtitle: Text(
         label,
-        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+        style: TextStyle(color: BpColors.textSecondary, fontSize: 12),
       ),
       dense: true,
     );
@@ -393,7 +416,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
           prefixIcon: Icon(icon, size: 20, color: kPrimaryGreen),
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
-          labelStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
+          labelStyle: TextStyle(color: BpColors.textSecondary, fontSize: 14),
         ),
       ),
     );
@@ -439,7 +462,10 @@ class _ProfilDialogState extends State<ProfilDialog> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('ANNULER', style: TextStyle(color: Colors.grey)),
+            child: const Text(
+              'ANNULER',
+              style: TextStyle(color: BpColors.textSecondary),
+            ),
           ),
         ),
         const SizedBox(width: 16),

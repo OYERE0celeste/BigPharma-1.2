@@ -81,4 +81,22 @@ class ProductService {
       return null;
     }
   }
+
+  Future<Product?> getProductByCode(String code) async {
+    try {
+      final response = await _apiService.get(
+        '${ApiConstants.products}/scan/${Uri.encodeComponent(code)}',
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = json.decode(response.body);
+        if (body['success'] == true) {
+          return Product.fromJson(body['data']);
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 }

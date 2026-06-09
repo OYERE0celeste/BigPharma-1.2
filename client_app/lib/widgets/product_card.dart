@@ -53,22 +53,7 @@ class ProductCard extends StatelessWidget {
                       decoration: BoxDecoration(color: BpColors.surfaceStrong),
                       child: Hero(
                         tag: 'product_${product.id}',
-                        child: product.image.startsWith('http')
-                            ? Image.network(
-                                product.image,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(
-                                      Icons.medication_rounded,
-                                      size: 40,
-                                      color: primary.withOpacity(0.5),
-                                    ),
-                              )
-                            : Icon(
-                                Icons.medication_rounded,
-                                size: 40,
-                                color: primary.withOpacity(0.5),
-                              ),
+                        child: _buildProductImage(product.image, primary),
                       ),
                     ),
                     // Category Badge
@@ -219,5 +204,37 @@ class ProductCard extends StatelessWidget {
       case ProductStockStatus.outOfStock:
         return BpColors.error;
     }
+  }
+
+  Widget _buildProductImage(String image, Color primary) {
+    if (image.startsWith('http')) {
+      return Image.network(
+        image,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            _buildPlaceholderImage(primary),
+      );
+    }
+
+    return _buildPlaceholderImage(primary);
+  }
+
+  Widget _buildPlaceholderImage(Color primary) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: BpColors.surface.withOpacity(0.16),
+      child: Center(
+        child: Text(
+          'Image indisponible',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: primary.withOpacity(0.85),
+            fontWeight: FontWeight.w700,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
   }
 }

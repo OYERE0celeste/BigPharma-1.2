@@ -181,7 +181,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: SettingsTheme.background,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isExpanded ? SettingsTheme.primary : SettingsTheme.divider,
@@ -278,9 +278,9 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
 
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: SettingsTheme.background,
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
@@ -374,7 +374,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: SettingsTheme.background,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isLocked ? Colors.grey[200]! : SettingsTheme.divider,

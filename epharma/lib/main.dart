@@ -19,7 +19,7 @@ import 'providers/notification_provider.dart';
 import 'widgets/app_notification.dart';
 import 'widgets/bp_theme.dart';
 import 'scanner/widgets/global_scanner_listener.dart';
-import 'scanner/widgets/scanner_status_overlay.dart';
+// Scanner status overlay import removed (overlay disabled in production UI)
 
 // Note: Client services and pages removed as they are currently missing in this module
 
@@ -102,12 +102,9 @@ class MyApp extends StatelessWidget {
                   child: child ?? const SizedBox.shrink(),
                 ),
               ),
-              // Scanner status overlay - always visible in top-right
-              const ScannerStatusOverlay(
-                alignment: Alignment.topRight,
-                showDebugInfo: false,
-                autoHideDuration: Duration(seconds: 8),
-              ),
+              // Scanner status overlay removed for production UI (was showing
+              // as a small dark square in the corner). If you need the overlay
+              // for debugging, re-enable it here or toggle via a settings flag.
             ],
           ),
         ),

@@ -62,8 +62,8 @@
 }
 
 .ticket-item.active {
-  background: #eef2ff;
-  border-color: #6366f1;
+  background: #e6f4ea;
+  border-color: #10b981;
 }
 
 .ticket-item-header {
@@ -122,7 +122,7 @@
 }
 
 .detail-header h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
-.patient-tag { font-size: 0.85rem; color: #6366f1; font-weight: 600; }
+.patient-tag { font-size: 0.85rem; color: #10b981; font-weight: 600; }
 
 .conversation {
   flex: 1;
@@ -154,7 +154,7 @@
 
 .message.pharmacy {
   align-self: flex-end;
-  background: #6366f1;
+  background: #10b981;
   color: white;
 }
 

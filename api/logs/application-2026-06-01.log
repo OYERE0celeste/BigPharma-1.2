@@ -1,0 +1,580 @@
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 09:17:29"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 1.958 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 314.861 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.318 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.132 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.089 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.352 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"GET /api/notifications 200 - - 51.195 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 86.925 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 200 - - 80.377 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 80.380 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:11"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.144 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:15"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 16.956 ms","service":"bigpharma-api","timestamp":"2026-06-01 09:21:15"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 6.629 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:57"}
+{"level":"info","message":"POST /api/auth/login 200 - - 597.417 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:58"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.674 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:59"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.315 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:59"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 2.700 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:59"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 4.876 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:59"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 403.754 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:59"}
+{"level":"info","message":"GET /api/notifications 200 - - 208.744 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:11:59"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 961.436 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:00"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 200 - - 703.901 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:00"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.434 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:02"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 193.238 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:02"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.455 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:15"}
+{"level":"info","message":"GET /api/users/staff 200 - - 8657.630 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:24"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 62.567 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:58"}
+{"level":"info","message":"GET /api/users/staff 304 - - 1281.312 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:12:59"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.181 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:13:34"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.154 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:13:34"}
+{"level":"info","message":"GET /api/auth/me 200 936 - 107.840 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:13:34"}
+{"level":"info","message":"GET /api/settings/profile 304 - - 107.668 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:13:34"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.146 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:13:45"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 101.561 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:13:45"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.193 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:21"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.165 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:21"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.146 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:21"}
+{"level":"info","message":"GET /api/complaints 200 26 - 52.806 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:21"}
+{"level":"info","message":"GET /api/reviews 200 26 - 218.406 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:22"}
+{"level":"info","message":"GET /api/QuestionsClients 200 - - 236.431 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:22"}
+{"level":"info","message":"GET /api/complaints 304 - - 127.998 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:25"}
+{"level":"info","message":"GET /api/reviews 304 - - 453.898 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:25"}
+{"level":"info","message":"GET /api/QuestionsClients 304 - - 921.868 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:26"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.279 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:29"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 785.688 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:30"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.314 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:43"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 200 - - 945.730 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:14:44"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.751 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:16:34"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 183.196 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:16:34"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.417 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:16:48"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 131.097 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:16:48"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.180 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:17:31"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 304 - - 100.091 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:17:31"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:29:26"}
+{"level":"info","message":"Email sent to admin1780306167092@example.com | subject=Votre compte BigPharma a été créé | messageId=<9c10517b-b32f-ac59-8be3-04380ce181f4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:31"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4256.824 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 112.696 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:31"}
+{"level":"info","message":"Email sent to admin1780306171533@example.com | subject=Votre compte BigPharma a été créé | messageId=<e0567248-a935-eda3-0306-41ab7108ecaf@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:34"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2971.943 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:34"}
+{"level":"info","message":"POST /api/auth/login 200 - - 121.019 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:34"}
+{"level":"info","message":"Email sent to admin1780306171533@example.com | subject=175484 — Votre code de réinitialisation BigPharma | messageId=<76b75009-7d92-1470-4d35-defe1e812c05@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:37"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780306171533@example.com","service":"bigpharma-api","timestamp":"2026-06-01 10:29:37"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2857.327 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:37"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 4.016 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:37"}
+{"level":"info","message":"Email sent to admin1780306176549@example.com | subject=Votre compte BigPharma a été créé | messageId=<5b2cd899-19b4-77a3-9c9b-17172067e242@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:41"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4605.520 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:41"}
+{"level":"info","message":"POST /api/auth/login 200 - - 84.018 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:41"}
+{"level":"info","message":"Email sent to admin1780306176549@example.com | subject=107743 — Votre code de réinitialisation BigPharma | messageId=<2d50fab3-9dc2-cd1e-69a9-1590a6726bef@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:43"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780306176549@example.com","service":"bigpharma-api","timestamp":"2026-06-01 10:29:43"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2732.064 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:43"}
+{"level":"info","message":"Email sent to admin1780306181558@example.com | subject=Votre compte BigPharma a été créé | messageId=<be94afca-fa20-6c4c-5ed5-7f33a46a6f37@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:44"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3081.117 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:44"}
+{"level":"info","message":"POST /api/auth/login 200 - - 89.935 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:44"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 24.840 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:44"}
+{"level":"info","message":"Email sent to admin1780306184784@example.com | subject=Votre compte BigPharma a été créé | messageId=<6c0c86ab-a1f3-c22b-b1fb-0b2635c0476c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:47"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3021.137 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:47"}
+{"level":"info","message":"POST /api/auth/login 200 - - 86.755 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:47"}
+{"level":"info","message":"Email sent to updated1780306184752@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<dcacda5b-b239-745b-fa39-c2833721e385@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:48"}
+{"level":"info","message":"GET /api/sales 401 111 - 1.051 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:49"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.616 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:49"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.367 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:49"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.405 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:49"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.289 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:49"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.217 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:49"}
+{"level":"info","message":"Email sent to assistant1780306187907@example.com | subject=Votre compte BigPharma a été créé | messageId=<9b9da718-ad99-e5fa-bca2-4eb44afe0834@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:50"}
+{"level":"info","message":"POST /api/users 201 - - 2999.936 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:50"}
+{"level":"info","message":"POST /api/auth/login 200 - - 94.167 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:51"}
+{"level":"info","message":"POST /api/users 403 112 - 11.018 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:51"}
+{"level":"info","message":"Email sent to admin1780306189845@example.com | subject=Votre compte BigPharma a été créé | messageId=<060e92b0-6f49-3101-2811-3f379f4014ac@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:53"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3548.253 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:53"}
+{"level":"info","message":"POST /api/auth/login 200 - - 106.691 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:53"}
+{"level":"info","message":"GET /api/finance 200 114 - 11.309 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:53"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 15.474 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:53"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 8.563 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:53"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:29:55"}
+{"level":"info","message":"Email sent to admin1780306196140@test.com | subject=Votre compte BigPharma a été créé | messageId=<47a5f15d-8746-e3d6-a2b4-e571aebdfc91@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:29:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3534.547 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 89.295 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:29:59"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:30:02"}
+{"level":"info","message":"Email sent to john1780306196140@doe.com | subject=Bienvenue chez BigPharma | messageId=<b9107bec-7b27-0c87-c4e3-2d8d431ff4bb@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:30:03"}
+{"level":"error","message":"MongoNotConnectedError: Client must be connected before running operations","method":"POST","path":"/api/auth/register-client","requestId":"c4bcba58-cf5e-48f8-b594-b72a5b644e15","service":"bigpharma-api","stack":"MongoNotConnectedError: Client must be connected before running operations\n    at autoConnect (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:143:13)\n    at executeOperation (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:72:25)\n    at Collection.updateOne (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\collection.ts:410:34)\n    at NativeCollection.<computed> [as updateOne] (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:175:33)\n    at model.$__save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:473:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at model.save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:663:5)\n    at generateRefreshToken (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:55:3)\n    at Object.<anonymous>.exports.registerClient (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:228:26)","timestamp":"2026-06-01 10:30:03"}
+{"level":"info","message":"POST /api/auth/register-client 500 136 - 3998.068 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:03"}
+{"level":"info","message":"Email sent to admin1780306202965@test.com | subject=Votre compte BigPharma a été créé | messageId=<88be89ee-92ea-a813-495f-5c94b0e91e8f@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:30:06"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3512.262 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:06"}
+{"level":"info","message":"POST /api/auth/login 200 - - 93.988 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:06"}
+{"level":"info","message":"Email sent to john1780306202965@doe.com | subject=Bienvenue chez BigPharma | messageId=<9fa22a31-643b-b263-48ab-41fa134cc11c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:30:09"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3131.932 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:09"}
+{"level":"info","message":"POST /api/auth/login 200 - - 86.058 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:09"}
+{"level":"info","message":"Email sent to admin1780306207974@test.com | subject=Votre compte BigPharma a été créé | messageId=<a57eab38-3bd8-fa8c-6626-35ab943e13b2@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:30:10"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2906.342 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:10"}
+{"level":"info","message":"POST /api/auth/login 200 - - 111.736 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:11"}
+{"level":"info","message":"Email sent to john1780306202965@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<59ec180f-909e-77ff-8cee-922ca686cead@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:30:12"}
+{"level":"info","message":"POST /api/orders 201 - - 3014.364 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:12"}
+{"level":"info","message":"PUT /api/orders/6a1d51215dde84f0b41d3c58/status 400 107 - 28.091 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:12"}
+{"level":"info","message":"Email sent to john1780306207974@doe.com | subject=Bienvenue chez BigPharma | messageId=<16f2407f-255f-1b1f-b455-70b512f09a1d@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:30:15"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:30:15"}
+{"level":"error","message":"MongoNotConnectedError: Client must be connected before running operations","method":"POST","path":"/api/auth/register-client","requestId":"4dbaeb43-15c2-4508-bed7-abbf6323e7c8","service":"bigpharma-api","stack":"MongoNotConnectedError: Client must be connected before running operations\n    at autoConnect (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:143:13)\n    at executeOperation (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:72:25)\n    at Collection.updateOne (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\collection.ts:410:34)\n    at NativeCollection.<computed> [as updateOne] (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:175:33)\n    at model.$__save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:473:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at model.save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:663:5)\n    at generateRefreshToken (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:55:3)\n    at Object.<anonymous>.exports.registerClient (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:228:26)","timestamp":"2026-06-01 10:30:15"}
+{"level":"info","message":"POST /api/auth/register-client 500 136 - 4559.954 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:30:15"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 10:30:16"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:36:41"}
+{"level":"info","message":"Email sent to admin1780306601918@example.com | subject=Votre compte BigPharma a été créé | messageId=<3e0d935a-c0f2-0fbf-f4c1-3d1a9f374593@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:36:46"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4115.524 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:46"}
+{"level":"info","message":"POST /api/auth/login 200 - - 94.126 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:46"}
+{"level":"info","message":"Email sent to admin1780306606187@example.com | subject=Votre compte BigPharma a été créé | messageId=<916be7ba-e05c-0585-a8c8-f89841f5a3f6@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:36:49"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3717.115 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:49"}
+{"level":"info","message":"POST /api/auth/login 200 - - 87.113 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:50"}
+{"level":"info","message":"Email sent to admin1780306606187@example.com | subject=929149 — Votre code de réinitialisation BigPharma | messageId=<98574496-3705-bcf0-9224-d7171d481d91@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:36:53"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780306606187@example.com","service":"bigpharma-api","timestamp":"2026-06-01 10:36:53"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 3020.681 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:53"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 3.553 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:53"}
+{"level":"info","message":"Email sent to admin1780306611192@example.com | subject=Votre compte BigPharma a été créé | messageId=<1ef65c87-ea5a-51d6-0a98-e869cd2bcb52@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:36:54"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3768.632 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:54"}
+{"level":"info","message":"POST /api/auth/login 200 - - 104.188 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:55"}
+{"level":"info","message":"Email sent to admin1780306611192@example.com | subject=594535 — Votre code de réinitialisation BigPharma | messageId=<2e334ed1-87a4-f046-df71-a99351d9af48@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:36:58"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780306611192@example.com","service":"bigpharma-api","timestamp":"2026-06-01 10:36:58"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 3070.282 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:58"}
+{"level":"info","message":"Email sent to admin1780306616197@example.com | subject=Votre compte BigPharma a été créé | messageId=<f701f6a8-7696-a3ac-396a-230031db69b1@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:36:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3472.445 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 79.767 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:59"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 23.044 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:36:59"}
+{"level":"info","message":"Email sent to admin1780306619794@example.com | subject=Votre compte BigPharma a été créé | messageId=<337182a8-26e5-ee26-c9e7-9694dceceebf@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:02"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2956.895 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:02"}
+{"level":"info","message":"POST /api/auth/login 200 - - 101.490 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:02"}
+{"level":"info","message":"Email sent to updated1780306619765@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<1f39ac73-1fb2-b890-6546-1c10e58d45e6@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:02"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.643 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:04"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.431 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:04"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.248 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:04"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.393 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:04"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.353 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:04"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.462 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:04"}
+{"level":"info","message":"Email sent to assistant1780306622873@example.com | subject=Votre compte BigPharma a été créé | messageId=<96369805-77f4-2468-bb96-c58d2b97d645@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:05"}
+{"level":"info","message":"POST /api/users 201 - - 2899.747 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:05"}
+{"level":"info","message":"POST /api/auth/login 200 - - 85.294 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:05"}
+{"level":"info","message":"POST /api/users 403 112 - 7.288 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:05"}
+{"level":"info","message":"Email sent to admin1780306624853@example.com | subject=Votre compte BigPharma a été créé | messageId=<178a3db9-6434-36fe-7eec-a6dc4961e3d8@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:08"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3255.296 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:08"}
+{"level":"info","message":"POST /api/auth/login 200 - - 83.230 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:08"}
+{"level":"info","message":"GET /api/finance 200 114 - 9.887 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:08"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 10.395 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:08"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 6.881 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:08"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:37:10"}
+{"level":"info","message":"Email sent to admin1780306630837@test.com | subject=Votre compte BigPharma a été créé | messageId=<f39ca7d1-c348-1c60-4df1-1f345c6439f4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:14"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3870.918 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:14"}
+{"level":"info","message":"POST /api/auth/login 200 - - 100.037 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:14"}
+{"level":"info","message":"Email sent to john1780306630837@doe.com | subject=Bienvenue chez BigPharma | messageId=<b22283f2-1bc0-ea32-33c1-e8b08ee92d2c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:17"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 2912.304 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 98.632 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:17"}
+{"level":"info","message":"Email sent to admin1780306635854@test.com | subject=Votre compte BigPharma a été créé | messageId=<910dc157-b418-78c0-b40e-66eef5c5339f@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:18"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2884.957 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:18"}
+{"level":"info","message":"POST /api/auth/login 200 - - 110.884 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:18"}
+{"level":"info","message":"Email sent to john1780306630837@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<b18d736f-1746-4e60-9878-c457cb6684c0@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:21"}
+{"level":"error","message":"TypeError: require(...).decrypt is not a function","method":"POST","path":"/api/orders","requestId":"d26f7046-f02a-46ee-a2f2-5e86f2bc527b","service":"bigpharma-api","stack":"TypeError: require(...).decrypt is not a function\n    at model.get (D:\\Projets\\BigPharma 1.2\\api\\models\\User.js:49:46)\n    at SchemaString.Object.<anonymous>.SchemaType.applyGetters (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\schemaType.js:1311:20)\n    at applyGetters (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:4348:43)\n    at model.Object.<anonymous>.Document.$toObject (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:3991:5)\n    at model.Object.<anonymous>.Document.toJSON (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:4489:15)\n    at clone (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\helpers\\clone.js:87:17)\n    at cloneObject (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\helpers\\clone.js:186:17)\n    at clone (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\helpers\\clone.js:100:16)\n    at model.Object.<anonymous>.Document.$toObject (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:3982:11)\n    at model.Object.<anonymous>.Document.toJSON (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:4489:15)\n    at JSON.stringify (<anonymous>)\n    at stringify (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\express\\lib\\response.js:1034:12)\n    at ServerResponse.json (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\express\\lib\\response.js:245:14)\n    at success (D:\\Projets\\BigPharma 1.2\\api\\utils\\response.js:24:29)\n    at Object.<anonymous>.exports.createOrder (D:\\Projets\\BigPharma 1.2\\api\\controllers\\orderController.js:286:12)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2026-06-01 10:37:21"}
+{"level":"info","message":"POST /api/orders 500 124 - 3860.953 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:21"}
+{"level":"info","message":"Email sent to john1780306635854@doe.com | subject=Bienvenue chez BigPharma | messageId=<e5c2b10d-852f-cc9c-e95a-851a7691ec9d@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:22"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:37:22"}
+{"level":"error","message":"MongoNotConnectedError: Client must be connected before running operations","method":"POST","path":"/api/auth/register-client","requestId":"f24b91f3-22d0-4ab7-b702-bc7ce15aef01","service":"bigpharma-api","stack":"MongoNotConnectedError: Client must be connected before running operations\n    at autoConnect (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:143:13)\n    at executeOperation (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:72:25)\n    at Collection.updateOne (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\collection.ts:410:34)\n    at NativeCollection.<computed> [as updateOne] (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:175:33)\n    at model.$__save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:473:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at model.save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:663:5)\n    at generateRefreshToken (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:55:3)\n    at Object.<anonymous>.exports.registerClient (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:228:26)","timestamp":"2026-06-01 10:37:22"}
+{"level":"info","message":"POST /api/auth/register-client 500 136 - 3972.780 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:22"}
+{"level":"info","message":"Email sent to admin1780306642826@test.com | subject=Votre compte BigPharma a été créé | messageId=<a59e83ff-b846-1e38-759f-1c877fbfd6c0@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:27"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4322.024 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:27"}
+{"level":"info","message":"POST /api/auth/login 200 - - 96.724 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:27"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 10:37:30"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:37:31"}
+{"level":"info","message":"Email sent to john1780306642826@doe.com | subject=Bienvenue chez BigPharma | messageId=<4d3b8801-6ba5-9d68-60e3-612d32a187d4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:37:32"}
+{"level":"error","message":"MongoNotConnectedError: Client must be connected before running operations","method":"POST","path":"/api/auth/register-client","requestId":"df92bd73-4bfc-47b9-bcb4-7e9da49c4b7a","service":"bigpharma-api","stack":"MongoNotConnectedError: Client must be connected before running operations\n    at autoConnect (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:143:13)\n    at executeOperation (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:72:25)\n    at Collection.updateOne (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\collection.ts:410:34)\n    at NativeCollection.<computed> [as updateOne] (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:175:33)\n    at model.$__save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:473:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at model.save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:663:5)\n    at generateRefreshToken (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:55:3)\n    at Object.<anonymous>.exports.registerClient (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:228:26)","timestamp":"2026-06-01 10:37:32"}
+{"level":"info","message":"POST /api/auth/register-client 500 136 - 5096.712 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:37:32"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:39:04"}
+{"level":"info","message":"Email sent to admin1780306744916@example.com | subject=Votre compte BigPharma a été créé | messageId=<aa240029-0681-c5e8-135b-ba8e456d21d2@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:08"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3519.311 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:08"}
+{"level":"info","message":"POST /api/auth/login 200 - - 120.613 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:08"}
+{"level":"info","message":"Email sent to admin1780306748625@example.com | subject=Votre compte BigPharma a été créé | messageId=<6d981760-d823-a328-7a43-d965bdfee245@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:11"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3114.622 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 98.157 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:11"}
+{"level":"info","message":"Email sent to admin1780306748625@example.com | subject=283930 — Votre code de réinitialisation BigPharma | messageId=<73bfcd9f-963f-501a-0e40-43e97dca1429@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:14"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780306748625@example.com","service":"bigpharma-api","timestamp":"2026-06-01 10:39:14"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2797.146 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:14"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 3.145 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:14"}
+{"level":"info","message":"Email sent to admin1780306753638@example.com | subject=Votre compte BigPharma a été créé | messageId=<77448fc6-e587-2070-7a2a-daaa1abdc9c6@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:16"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3027.492 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:16"}
+{"level":"info","message":"POST /api/auth/login 200 - - 98.290 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:16"}
+{"level":"info","message":"Email sent to admin1780306753638@example.com | subject=160288 — Votre code de réinitialisation BigPharma | messageId=<f8bcf1b0-cd5b-1b05-2c66-6de2d89203c4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:19"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780306753638@example.com","service":"bigpharma-api","timestamp":"2026-06-01 10:39:19"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2776.436 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:19"}
+{"level":"info","message":"Email sent to admin1780306758640@example.com | subject=Votre compte BigPharma a été créé | messageId=<56a1ce68-fa62-e62b-6223-ddbfc28f24f8@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:21"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2945.693 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:21"}
+{"level":"info","message":"POST /api/auth/login 200 - - 97.887 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:21"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 21.284 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:21"}
+{"level":"info","message":"Email sent to updated1780306761699@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<02227ab4-2095-624e-504c-582e9774db53@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:24"}
+{"level":"info","message":"Email sent to admin1780306761729@example.com | subject=Votre compte BigPharma a été créé | messageId=<94412f21-b211-d59d-d903-4f11f23e1095@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:24"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3106.204 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:24"}
+{"level":"info","message":"POST /api/auth/login 200 - - 101.534 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:24"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.706 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:26"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.458 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:26"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.235 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:26"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.407 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:26"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.370 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:26"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.349 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:26"}
+{"level":"info","message":"Email sent to assistant1780306764955@example.com | subject=Votre compte BigPharma a été créé | messageId=<115158c5-f578-9206-4a77-e524e0eb4d87@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:28"}
+{"level":"info","message":"POST /api/users 201 - - 3380.993 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:28"}
+{"level":"info","message":"POST /api/auth/login 200 - - 95.099 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:28"}
+{"level":"info","message":"POST /api/users 403 112 - 12.755 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:28"}
+{"level":"info","message":"Email sent to admin1780306766778@example.com | subject=Votre compte BigPharma a été créé | messageId=<5755b286-4f51-e112-a650-37367d3a124c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3008.693 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 95.896 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:29"}
+{"level":"info","message":"GET /api/finance 200 114 - 10.743 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:29"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 9.374 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:29"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 8.919 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:29"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:39:32"}
+{"level":"info","message":"Email sent to admin1780306772747@test.com | subject=Votre compte BigPharma a été créé | messageId=<99f23f29-c4f7-3db8-bdc9-68f21c56b123@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:36"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3334.641 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:36"}
+{"level":"info","message":"POST /api/auth/login 200 - - 94.831 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:36"}
+{"level":"info","message":"Email sent to john1780306772747@doe.com | subject=Bienvenue chez BigPharma | messageId=<6a862ad1-4ad6-74e8-63f8-7b9b2d4b7081@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:39"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3251.785 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:39"}
+{"level":"info","message":"POST /api/auth/login 200 - - 107.142 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:39"}
+{"level":"info","message":"Email sent to admin1780306777752@test.com | subject=Votre compte BigPharma a été créé | messageId=<ab5d6e92-9e0e-9419-ef18-9f84bd769819@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:41"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3313.604 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:41"}
+{"level":"info","message":"POST /api/auth/login 200 - - 96.141 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:41"}
+{"level":"info","message":"Email sent to john1780306772747@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<74b87d0c-a05e-cb8c-a96b-11cd1ab1af86@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:42"}
+{"level":"info","message":"POST /api/orders 201 - - 3018.465 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:42"}
+{"level":"info","message":"PUT /api/orders/6a1d535b30fdd7ae74f91abe/status 400 107 - 22.253 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:42"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:39:44"}
+{"level":"info","message":"Email sent to john1780306777752@doe.com | subject=Bienvenue chez BigPharma | messageId=<7bddb3fe-803d-248b-bdb1-44eb86f91e2c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:44"}
+{"level":"error","message":"MongoNotConnectedError: Client must be connected before running operations","method":"POST","path":"/api/auth/register-client","requestId":"629fb4c1-ce09-4cac-be6f-d74b073e1d6f","service":"bigpharma-api","stack":"MongoNotConnectedError: Client must be connected before running operations\n    at autoConnect (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:143:13)\n    at executeOperation (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:72:25)\n    at Collection.updateOne (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\collection.ts:410:34)\n    at NativeCollection.<computed> [as updateOne] (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:175:33)\n    at model.$__save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:473:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at model.save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:663:5)\n    at generateRefreshToken (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:55:3)\n    at Object.<anonymous>.exports.registerClient (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:228:26)","timestamp":"2026-06-01 10:39:44"}
+{"level":"info","message":"POST /api/auth/register-client 500 136 - 3643.655 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:44"}
+{"level":"info","message":"Email sent to admin1780306784784@test.com | subject=Votre compte BigPharma a été créé | messageId=<f2f21bc9-1fe2-e74c-ad17-bd8dc4803c5a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:49"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4527.134 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:49"}
+{"level":"info","message":"POST /api/auth/login 200 - - 89.811 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:49"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 10:39:52"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 10:39:53"}
+{"level":"info","message":"Email sent to john1780306784784@doe.com | subject=Bienvenue chez BigPharma | messageId=<c45e4c5a-4970-f78f-492b-46fccb0922e1@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 10:39:55"}
+{"level":"error","message":"MongoNotConnectedError: Client must be connected before running operations","method":"POST","path":"/api/auth/register-client","requestId":"8c60856c-b1ab-446a-89bc-b9ef5a4c8bd1","service":"bigpharma-api","stack":"MongoNotConnectedError: Client must be connected before running operations\n    at autoConnect (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:143:13)\n    at executeOperation (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\operations\\execute_operation.ts:72:25)\n    at Collection.updateOne (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongodb\\src\\collection.ts:410:34)\n    at NativeCollection.<computed> [as updateOne] (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\drivers\\node-mongodb-native\\collection.js:175:33)\n    at model.$__save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:473:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at model.save (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\model.js:663:5)\n    at generateRefreshToken (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:55:3)\n    at Object.<anonymous>.exports.registerClient (D:\\Projets\\BigPharma 1.2\\api\\controllers\\authController.js:228:26)","timestamp":"2026-06-01 10:39:55"}
+{"level":"info","message":"POST /api/auth/register-client 500 136 - 6276.969 ms","service":"bigpharma-api","timestamp":"2026-06-01 10:39:55"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 11:49:38"}
+{"level":"info","message":"Email sent to admin1780310978475@example.com | subject=Votre compte BigPharma a été créé | messageId=<6ef32567-3514-4de9-caf2-3290ba80b36e@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:49:43"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4761.764 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:43"}
+{"level":"info","message":"POST /api/auth/login 200 - - 78.820 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:43"}
+{"level":"info","message":"Email sent to admin1780310983348@example.com | subject=Votre compte BigPharma a été créé | messageId=<ef78dd35-36d6-8990-445e-0b7351d020b2@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:49:46"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3044.119 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:46"}
+{"level":"info","message":"POST /api/auth/login 200 - - 68.641 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:46"}
+{"level":"info","message":"Email sent to admin1780310983348@example.com | subject=370765 — Votre code de réinitialisation BigPharma | messageId=<63c5d758-6fc9-053c-527e-02e4473d7ffb@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:49:49"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780310983348@example.com","service":"bigpharma-api","timestamp":"2026-06-01 11:49:49"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2643.781 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:49"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2.043 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:49"}
+{"level":"info","message":"Email sent to admin1780310989127@example.com | subject=Votre compte BigPharma a été créé | messageId=<8ac640d6-ad44-81b1-9cbc-692fa9bfb8b9@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:49:52"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2907.254 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:52"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.726 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:52"}
+{"level":"info","message":"Email sent to admin1780310989127@example.com | subject=544440 — Votre code de réinitialisation BigPharma | messageId=<0b70bbb5-e3e7-8bd6-14e0-15e66861c345@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:49:54"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780310989127@example.com","service":"bigpharma-api","timestamp":"2026-06-01 11:49:54"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2699.550 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:54"}
+{"level":"info","message":"Email sent to admin1780310994818@example.com | subject=Votre compte BigPharma a été créé | messageId=<f5017ae4-85f9-efdc-b778-95f1efe144a0@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:49:57"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2826.784 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:57"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.621 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:57"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 19.732 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:49:57"}
+{"level":"info","message":"Email sent to updated1780310997724@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<da1aafd0-772f-ebcc-0d63-c2edca7b23a7@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:00"}
+{"level":"info","message":"Email sent to admin1780310997748@example.com | subject=Votre compte BigPharma a été créé | messageId=<999fefdf-b208-15f0-8133-1ba53e5e1adc@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:00"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3117.990 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:00"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.294 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:00"}
+{"level":"info","message":"Email sent to assistant1780311000942@example.com | subject=Votre compte BigPharma a été créé | messageId=<d8e79643-3f33-dae6-ab0c-a56e79cc16c4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"POST /api/users 201 - - 2860.443 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.483 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"POST /api/users 403 112 - 6.790 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.215 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.292 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.340 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.231 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.186 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.214 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:03"}
+{"level":"info","message":"Email sent to admin1780311003911@example.com | subject=Votre compte BigPharma a été créé | messageId=<18551d23-138c-b28f-34ce-8558460a3cbe@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:07"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3204.815 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:07"}
+{"level":"info","message":"POST /api/auth/login 200 - - 79.918 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:07"}
+{"level":"info","message":"GET /api/finance 200 114 - 13.625 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:07"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 23.828 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:07"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 6.451 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:07"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 11:50:09"}
+{"level":"info","message":"Email sent to admin1780311009113@test.com | subject=Votre compte BigPharma a été créé | messageId=<b716cac2-c130-30a4-4308-62df87bb538a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:12"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3452.221 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 86.402 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:12"}
+{"level":"info","message":"Email sent to john1780311009113@doe.com | subject=Bienvenue chez BigPharma | messageId=<564b1b83-c07c-ccbe-72ad-0bb74bb7a916@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:15"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 2760.193 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:15"}
+{"level":"info","message":"POST /api/auth/login 200 - - 76.413 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:15"}
+{"level":"info","message":"Email sent to john1780311009113@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<f302cd0b-052c-5a55-57f4-bbfd7e72b1c4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:18"}
+{"level":"info","message":"POST /api/orders 201 - - 2709.366 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:18"}
+{"level":"info","message":"Email sent to john1780311009113@doe.com | subject=Commande CMD-2026-0001 : en préparation | messageId=<5efccc60-acf6-60a3-502f-3eb6dd0d2acb@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:21"}
+{"level":"info","message":"Email sent to john1780311009113@doe.com | subject=Facture FAC-2026-00001 disponible | messageId=<1e6ea998-4d02-28f3-08d0-3d50b8aae1b6@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:23"}
+{"level":"info","message":"PUT /api/orders/6a1d63e717d406f70a42a8f0/status 200 - - 5546.045 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:23"}
+{"level":"info","message":"Email sent to john1780311009113@doe.com | subject=Commande CMD-2026-0001 : validée (récupérée) | messageId=<2731cbdb-70ec-ab7b-ec2c-0fcb753a3cb8@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:26"}
+{"level":"info","message":"PUT /api/orders/6a1d63e717d406f70a42a8f0/status 200 - - 2821.977 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:26"}
+{"level":"info","message":"Email sent to admin1780311026624@test.com | subject=Votre compte BigPharma a été créé | messageId=<b68eebd2-281d-0890-4cd5-e2b998107108@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2736.151 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 69.458 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:29"}
+{"level":"info","message":"Email sent to john1780311026624@doe.com | subject=Bienvenue chez BigPharma | messageId=<46a3586f-e278-4517-50fd-4d9a84a4c678@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:32"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 2696.094 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:32"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.857 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:32"}
+{"level":"info","message":"POST /api/orders 400 120 - 10.061 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:32"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 11:50:33"}
+{"level":"info","message":"Email sent to admin1780311033762@test.com | subject=Votre compte BigPharma a été créé | messageId=<0bf4ebca-d7e1-0bdc-2253-2cd80afcc39d@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:38"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4339.157 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:38"}
+{"level":"info","message":"POST /api/auth/login 200 - - 69.874 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:38"}
+{"level":"info","message":"Email sent to john1780311033762@doe.com | subject=Bienvenue chez BigPharma | messageId=<ba08b322-33f1-73b4-a4d4-3039d4a42b67@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:41"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 2832.108 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:41"}
+{"level":"info","message":"POST /api/auth/login 200 - - 72.852 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:41"}
+{"level":"info","message":"Email sent to john1780311033762@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<13648cbb-4657-b2e5-7990-7c51d1edd5dc@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:43"}
+{"level":"info","message":"POST /api/orders 201 - - 2714.549 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:43"}
+{"level":"info","message":"Email sent to john1780311033762@doe.com | subject=Commande CMD-2026-0001 : en préparation | messageId=<336b5d15-958d-3a8a-50fc-076446cc181a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:46"}
+{"level":"info","message":"Email sent to john1780311033762@doe.com | subject=Facture FAC-2026-00001 disponible | messageId=<c3cf46f4-56a3-18c1-1a7f-d1ccb30c6da5@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:49"}
+{"level":"info","message":"PUT /api/orders/6a1d6401e4259cd48f9197f5/status 200 - - 5846.947 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:49"}
+{"level":"info","message":"GET /api/orders/6a1d6401e4259cd48f9197f5/invoice 200 817 - 28.674 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:49"}
+{"level":"info","message":"Email sent to john1780311033762@doe.com | subject=Commande CMD-2026-0001 : validée (récupérée) | messageId=<b66bfe46-34a4-86f0-627c-e5157327d685@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 11:50:52"}
+{"level":"info","message":"PUT /api/orders/6a1d6401e4259cd48f9197f5/status 200 - - 2778.426 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:52"}
+{"level":"info","message":"POST /api/reviews 201 563 - 25.710 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:52"}
+{"level":"info","message":"POST /api/complaints 201 927 - 20.366 ms","service":"bigpharma-api","timestamp":"2026-06-01 11:50:52"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 12:57:59"}
+{"level":"info","message":"Email sent to admin1780315079378@example.com | subject=Votre compte BigPharma a été créé | messageId=<bcacef6e-d410-6d86-7f2d-1f969531d780@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:03"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4186.552 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:03"}
+{"level":"info","message":"POST /api/auth/login 200 - - 80.236 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:03"}
+{"level":"info","message":"Email sent to admin1780315083679@example.com | subject=Votre compte BigPharma a été créé | messageId=<55bd81bb-37a2-9b46-64b7-5c2089eaeae0@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:06"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3111.398 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:06"}
+{"level":"info","message":"POST /api/auth/login 200 - - 67.682 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:06"}
+{"level":"info","message":"Email sent to admin1780315083679@example.com | subject=167485 — Votre code de réinitialisation BigPharma | messageId=<b8e6d0a3-df71-0d16-6086-c64a57952df8@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:09"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780315083679@example.com","service":"bigpharma-api","timestamp":"2026-06-01 12:58:09"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 3100.760 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:09"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2.384 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:09"}
+{"level":"info","message":"Email sent to admin1780315089984@example.com | subject=Votre compte BigPharma a été créé | messageId=<90142673-b4b6-582c-cc57-a9952a5bb2ff@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:12"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2900.919 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.797 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:12"}
+{"level":"info","message":"Email sent to admin1780315089984@example.com | subject=442515 — Votre code de réinitialisation BigPharma | messageId=<12bb7e33-ab9d-87d8-ed54-5b94daaad14f@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:15"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780315089984@example.com","service":"bigpharma-api","timestamp":"2026-06-01 12:58:15"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 2842.045 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:15"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 73.413 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:15"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.969 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:15"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 1.727 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:15"}
+{"level":"info","message":"Email sent to admin1780315089984@example.com | subject=Votre mot de passe BigPharma a été modifié | messageId=<cd1e22b2-b97d-e8cd-dc39-40c4ceb22312@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:18"}
+{"level":"info","message":"Email sent to admin1780315095965@example.com | subject=Votre compte BigPharma a été créé | messageId=<6b827109-e0b0-19e9-175b-67b02f2fba69@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:19"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3320.036 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:19"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.132 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:19"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 24.523 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:19"}
+{"level":"info","message":"Email sent to admin1780315099389@example.com | subject=Votre compte BigPharma a été créé | messageId=<877470b3-8404-3e82-3e10-ee9dc4b7bdff@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:22"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2819.289 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:22"}
+{"level":"info","message":"POST /api/auth/login 200 - - 62.953 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:22"}
+{"level":"info","message":"Email sent to updated1780315099359@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<a4db981e-3f20-1366-947f-a46eafd6ce02@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:22"}
+{"level":"info","message":"Email sent to assistant1780315102285@example.com | subject=Votre compte BigPharma a été créé | messageId=<b27b81c9-ff0d-9bc5-d9fd-41e2b2147289@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"POST /api/users 201 - - 3861.320 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.709 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"POST /api/users 403 112 - 7.791 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.233 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.334 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.178 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.574 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.439 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.391 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:26"}
+{"level":"info","message":"Email sent to admin1780315106266@example.com | subject=Votre compte BigPharma a été créé | messageId=<38dbd697-371e-c5f0-ee0e-d4c4456c9d7a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 12:58:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3310.748 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.546 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:29"}
+{"level":"info","message":"GET /api/finance 200 114 - 6.845 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:29"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 21.883 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:29"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 5.844 ms","service":"bigpharma-api","timestamp":"2026-06-01 12:58:29"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 13:00:02"}
+{"level":"info","message":"Email sent to admin1780315203085@example.com | subject=Votre compte BigPharma a été créé | messageId=<3827649a-6d27-c1b8-495c-48e20b53dcc0@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:07"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4005.645 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:07"}
+{"level":"info","message":"POST /api/auth/login 200 - - 85.761 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:07"}
+{"level":"info","message":"Email sent to admin1780315207225@example.com | subject=Votre compte BigPharma a été créé | messageId=<a23e676f-12ab-2947-2f28-9df9d4d5ec6b@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:10"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3165.802 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:10"}
+{"level":"info","message":"POST /api/auth/login 200 - - 108.759 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:10"}
+{"level":"info","message":"Email sent to admin1780315207225@example.com | subject=821119 — Votre code de réinitialisation BigPharma | messageId=<d2cef3a5-0008-ad47-bd61-516f070f77ea@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:13"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780315207225@example.com","service":"bigpharma-api","timestamp":"2026-06-01 13:00:13"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 3316.399 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:13"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 4.860 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:13"}
+{"level":"info","message":"Email sent to admin1780315213854@example.com | subject=Votre compte BigPharma a été créé | messageId=<e363fb17-00a3-0034-df7b-cfa262a9eec1@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:17"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3384.080 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 102.933 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:17"}
+{"level":"info","message":"Email sent to admin1780315213854@example.com | subject=344168 — Votre code de réinitialisation BigPharma | messageId=<a82b5b69-bc8e-355b-6060-c019b30ea46a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:21"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780315213854@example.com","service":"bigpharma-api","timestamp":"2026-06-01 13:00:21"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 4391.558 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:21"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 99.200 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:21"}
+{"level":"info","message":"POST /api/auth/login 200 - - 95.846 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:21"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 2.959 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:21"}
+{"level":"info","message":"Email sent to admin1780315213854@example.com | subject=Votre mot de passe BigPharma a été modifié | messageId=<6766d9a9-34a8-f62e-c81e-dccf80e953a5@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:25"}
+{"level":"info","message":"Email sent to admin1780315221983@example.com | subject=Votre compte BigPharma a été créé | messageId=<1ff45a57-3c4a-abc6-1e24-159aa7cef660@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:25"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3911.684 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:25"}
+{"level":"info","message":"POST /api/auth/login 200 - - 101.635 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:26"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 31.453 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:26"}
+{"level":"info","message":"Email sent to updated1780315226011@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<afdeb5f6-c572-bbbe-42c3-a813bfe66b69@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:29"}
+{"level":"info","message":"Email sent to admin1780315226054@example.com | subject=Votre compte BigPharma a été créé | messageId=<1e5a8390-e549-63bc-aa9f-71b989babd04@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3726.210 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 104.297 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:29"}
+{"level":"info","message":"Email sent to assistant1780315229901@example.com | subject=Votre compte BigPharma a été créé | messageId=<8e33d875-debd-f968-1bdb-1aa58ea53cb4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"POST /api/users 201 - - 3735.542 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"POST /api/auth/login 200 - - 116.372 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"POST /api/users 403 112 - 12.921 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.487 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.886 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.572 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.509 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.363 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.456 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:33"}
+{"level":"info","message":"Email sent to admin1780315233858@example.com | subject=Votre compte BigPharma a été créé | messageId=<e6dab6d7-7669-44d2-5bb0-aea725ae513c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:37"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3434.748 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:37"}
+{"level":"info","message":"POST /api/auth/login 200 - - 112.464 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:37"}
+{"level":"info","message":"GET /api/finance 200 114 - 13.177 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:37"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 11.484 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:37"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 8.209 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:37"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 13:00:39"}
+{"level":"info","message":"Email sent to admin1780315240217@test.com | subject=Votre compte BigPharma a été créé | messageId=<661dabd6-e375-69f6-2acd-60962df57e1c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:46"}
+{"level":"info","message":"POST /api/auth/register 201 - - 6274.237 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:46"}
+{"level":"info","message":"POST /api/auth/login 200 - - 105.455 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:46"}
+{"level":"info","message":"Email sent to john1780315240217@doe.com | subject=Bienvenue chez BigPharma | messageId=<f92d6387-e239-76ca-9c18-49ebcae12edb@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:50"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3589.172 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:50"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.015 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:50"}
+{"level":"info","message":"Email sent to john1780315240217@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<10679b79-e72e-022c-26c6-630c28819698@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:53"}
+{"level":"info","message":"POST /api/orders 201 - - 2968.499 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:00:53"}
+{"level":"info","message":"Email sent to john1780315240217@doe.com | subject=Commande CMD-2026-0001 : en préparation | messageId=<48626983-0b3b-85a9-9bae-73a3b5d96fd2@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:00:56"}
+{"level":"info","message":"Email sent to john1780315240217@doe.com | subject=Facture FAC-2026-00001 disponible | messageId=<e1d3c63c-b47f-ff69-b9a7-92c4f5b29950@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:01"}
+{"level":"info","message":"PUT /api/orders/6a1d7472e9f85b7f5d1eb542/status 200 - - 7868.612 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:01"}
+{"level":"info","message":"Email sent to john1780315240217@doe.com | subject=Commande CMD-2026-0001 : validée (récupérée) | messageId=<7de505c2-d60f-a3b1-03f8-70da6c02fcd8@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:07"}
+{"level":"info","message":"PUT /api/orders/6a1d7472e9f85b7f5d1eb542/status 200 - - 6545.093 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:07"}
+{"level":"info","message":"Email sent to admin1780315267748@test.com | subject=Votre compte BigPharma a été créé | messageId=<d85779fc-ea07-241d-96ce-499ddffef9e4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:10"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3215.366 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:10"}
+{"level":"info","message":"POST /api/auth/login 200 - - 99.211 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:11"}
+{"level":"info","message":"Email sent to john1780315267748@doe.com | subject=Bienvenue chez BigPharma | messageId=<b3e5cdb8-3bb7-4c95-2cca-c172274bd2d5@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:14"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3321.426 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:14"}
+{"level":"info","message":"POST /api/auth/login 200 - - 105.306 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:14"}
+{"level":"info","message":"POST /api/orders 400 120 - 12.701 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:14"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 13:01:16"}
+{"level":"info","message":"Email sent to admin1780315276681@test.com | subject=Votre compte BigPharma a été créé | messageId=<08bc820c-8fae-267a-6242-98c375b5e796@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:22"}
+{"level":"info","message":"POST /api/auth/register 201 - - 5763.002 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:22"}
+{"level":"info","message":"POST /api/auth/login 200 - - 123.483 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:22"}
+{"level":"info","message":"Email sent to john1780315276681@doe.com | subject=Bienvenue chez BigPharma | messageId=<74731c7a-d144-cd81-ea8b-4e71527a3bfb@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:25"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3373.958 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:25"}
+{"level":"info","message":"POST /api/auth/login 200 - - 87.287 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:26"}
+{"level":"info","message":"Email sent to john1780315276681@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<cfb29921-4e94-3b09-73a6-e4fa5633060a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:30"}
+{"level":"info","message":"POST /api/orders 201 - - 4586.093 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:30"}
+{"level":"info","message":"Email sent to john1780315276681@doe.com | subject=Commande CMD-2026-0001 : en préparation | messageId=<09d68407-82da-1143-bd43-497054ba90e4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:34"}
+{"level":"info","message":"Email sent to john1780315276681@doe.com | subject=Facture FAC-2026-00001 disponible | messageId=<12ae5e68-3f59-ede6-cab7-adb84611f68d@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:37"}
+{"level":"info","message":"PUT /api/orders/6a1d7496ca70a2c16c4ddf27/status 200 - - 7060.394 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:37"}
+{"level":"info","message":"GET /api/orders/6a1d7496ca70a2c16c4ddf27/invoice 200 817 - 23.161 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:37"}
+{"level":"info","message":"Email sent to john1780315276681@doe.com | subject=Commande CMD-2026-0001 : validée (récupérée) | messageId=<9464f640-2e2f-f119-5d53-f84562813ae4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 13:01:41"}
+{"level":"info","message":"PUT /api/orders/6a1d7496ca70a2c16c4ddf27/status 200 - - 3537.950 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:41"}
+{"level":"info","message":"POST /api/reviews 201 563 - 22.378 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:41"}
+{"level":"info","message":"POST /api/complaints 201 927 - 23.734 ms","service":"bigpharma-api","timestamp":"2026-06-01 13:01:41"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 13:01:42"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 13:01:45"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 14:19:54"}
+{"level":"info","message":"Email sent to admin1780319994624@example.com | subject=Votre compte BigPharma a été créé | messageId=<22c747e0-1af0-50b9-ea44-dda5882d6c8a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:19:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 4469.615 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:19:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 83.538 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:19:59"}
+{"level":"info","message":"Email sent to admin1780319999215@example.com | subject=Votre compte BigPharma a été créé | messageId=<0e2de1a1-2461-4306-699a-1f88158f327a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:02"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3457.809 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:02"}
+{"level":"info","message":"POST /api/auth/login 200 - - 67.187 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:02"}
+{"level":"info","message":"Email sent to admin1780319999215@example.com | subject=564803 — Votre code de réinitialisation BigPharma | messageId=<1a717478-a3dd-b816-f0c0-2a5475f7f5a4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:05"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780319999215@example.com","service":"bigpharma-api","timestamp":"2026-06-01 14:20:05"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 3199.539 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:05"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2.135 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:05"}
+{"level":"info","message":"Email sent to admin1780320005964@example.com | subject=Votre compte BigPharma a été créé | messageId=<2f5e68d3-c82c-0d44-51e9-722d44408a1c@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:08"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2861.034 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:08"}
+{"level":"info","message":"POST /api/auth/login 200 - - 68.011 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:08"}
+{"level":"info","message":"Email sent to admin1780320005964@example.com | subject=203352 — Votre code de réinitialisation BigPharma | messageId=<aa3b66ea-8c34-771c-58fc-ee5605c5e2e4@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:11"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780320005964@example.com","service":"bigpharma-api","timestamp":"2026-06-01 14:20:11"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 2982.315 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:11"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 67.295 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.798 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:12"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 1.970 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:12"}
+{"level":"info","message":"Email sent to admin1780320005964@example.com | subject=Votre mot de passe BigPharma a été modifié | messageId=<566040f1-de36-05a2-261f-fdd776388ad2@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:14"}
+{"level":"info","message":"Email sent to admin1780320012040@example.com | subject=Votre compte BigPharma a été créé | messageId=<2f8bcba9-0eba-b896-04b6-1a16eb7cf861@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:15"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3231.325 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:15"}
+{"level":"info","message":"POST /api/auth/login 200 - - 67.811 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:15"}
+{"level":"info","message":"PUT /api/auth/me 200 942 - 18.272 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:15"}
+{"level":"info","message":"Email sent to updated1780320015348@example.com | subject=Votre profil BigPharma a été mis à jour | messageId=<4102e249-4462-9d6b-aca1-9c971b2986a9@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:18"}
+{"level":"info","message":"Email sent to admin1780320015372@example.com | subject=Votre compte BigPharma a été créé | messageId=<e76f08ed-166e-4bfd-3941-d8dcf462ba41@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:18"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3481.068 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:18"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.418 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:18"}
+{"level":"info","message":"Email sent to assistant1780320018929@example.com | subject=Votre compte BigPharma a été créé | messageId=<2fb6db3d-b708-ab92-d88a-3935a3c6e7c2@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"POST /api/users 201 - - 3615.112 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.448 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"POST /api/users 403 112 - 5.121 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.226 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.209 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.169 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.163 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.209 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.406 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:22"}
+{"level":"info","message":"Email sent to admin1780320022651@example.com | subject=Votre compte BigPharma a été créé | messageId=<b040fb7e-2499-d566-03b8-7dfe360035d9@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:26"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3472.344 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:26"}
+{"level":"info","message":"POST /api/auth/login 200 - - 75.432 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:26"}
+{"level":"info","message":"GET /api/finance 200 114 - 9.321 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:26"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 20.229 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:26"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 5.614 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:26"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 14:20:27"}
+{"level":"info","message":"Email sent to admin1780320028063@test.com | subject=Votre compte BigPharma a été créé | messageId=<1bd89247-278c-18ab-e085-155f3fc5ac16@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:31"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3912.444 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 68.783 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:32"}
+{"level":"info","message":"Email sent to john1780320028063@doe.com | subject=Bienvenue chez BigPharma | messageId=<7c3b90a5-cbb1-48bf-f5c1-0c225af264df@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:35"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3278.159 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:35"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.508 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:35"}
+{"level":"info","message":"Email sent to john1780320028063@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<34b9d38e-067b-b1e7-9dab-494cea21203a@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:39"}
+{"level":"info","message":"POST /api/orders 201 - - 3720.598 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:39"}
+{"level":"info","message":"Email sent to john1780320028063@doe.com | subject=Commande CMD-2026-0001 : en préparation | messageId=<40c548a8-3d65-c65f-c265-5668412fcf89@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:42"}
+{"level":"info","message":"Email sent to john1780320028063@doe.com | subject=Facture FAC-2026-00001 disponible | messageId=<b6e3a7b1-74cc-6250-5dd5-dc485278b7c0@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:46"}
+{"level":"info","message":"PUT /api/orders/6a1d8723eeee05b405470cc0/status 200 - - 7367.133 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:46"}
+{"level":"info","message":"Email sent to john1780320028063@doe.com | subject=Commande CMD-2026-0001 : validée (récupérée) | messageId=<e4e24b23-347d-da81-250f-c3112a7cbc14@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:49"}
+{"level":"info","message":"PUT /api/orders/6a1d8723eeee05b405470cc0/status 200 - - 3461.438 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:49"}
+{"level":"info","message":"Email sent to admin1780320049992@test.com | subject=Votre compte BigPharma a été créé | messageId=<7c4a518f-c68d-4ea6-1393-2f6c9a866495@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:53"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3395.514 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:53"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.255 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:53"}
+{"level":"info","message":"Email sent to john1780320049992@doe.com | subject=Bienvenue chez BigPharma | messageId=<7d9ba520-6c0f-8275-fcea-a9fccecaaf6e@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:20:56"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 3117.671 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:56"}
+{"level":"info","message":"POST /api/auth/login 200 - - 69.516 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:56"}
+{"level":"info","message":"POST /api/orders 400 120 - 8.286 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:20:56"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 14:20:57"}
+{"level":"info","message":"Email sent to admin1780320058018@test.com | subject=Votre compte BigPharma a été créé | messageId=<cda5abda-5a5b-7d98-6ba1-d0450826df80@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:21:12"}
+{"level":"info","message":"POST /api/auth/register 201 - - 14182.266 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 70.056 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:12"}
+{"level":"info","message":"Email sent to john1780320058018@doe.com | subject=Bienvenue chez BigPharma | messageId=<a51bf607-279d-a776-eadf-d78ae2493712@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:21:16"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 4115.978 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:16"}
+{"level":"info","message":"POST /api/auth/login 200 - - 69.876 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:16"}
+{"level":"info","message":"Email sent to john1780320058018@doe.com | subject=Confirmation de commande CMD-2026-0001 | messageId=<1f04931c-ad70-c8b4-3c2b-8bc45ac6102e@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:21:19"}
+{"level":"info","message":"POST /api/orders 201 - - 3291.236 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:19"}
+{"level":"info","message":"Email sent to john1780320058018@doe.com | subject=Commande CMD-2026-0001 : en préparation | messageId=<288748d3-0f32-8010-6dd8-e1464fdc71bc@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:21:23"}
+{"level":"info","message":"Email sent to john1780320058018@doe.com | subject=Facture FAC-2026-00001 disponible | messageId=<b71300b2-2845-60ca-f81a-24e42eecc6ed@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:21:26"}
+{"level":"info","message":"PUT /api/orders/6a1d874c50b3dff41b2d0965/status 200 - - 7028.309 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:26"}
+{"level":"info","message":"GET /api/orders/6a1d874c50b3dff41b2d0965/invoice 200 817 - 16.220 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:26"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 14:21:29"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-01 14:21:30"}
+{"level":"info","message":"Email sent to john1780320058018@doe.com | subject=Commande CMD-2026-0001 : validée (récupérée) | messageId=<3464c625-6595-1ce2-e10f-d7ce91b7fc18@gmail.com>","service":"bigpharma-api","timestamp":"2026-06-01 14:21:31"}
+{"level":"error","message":"TypeError: require(...).decrypt is not a function","method":"PUT","path":"/api/orders/6a1d874c50b3dff41b2d0965/status","requestId":"f6155ef0-74ea-402e-a0b1-3c8282a0871c","service":"bigpharma-api","stack":"TypeError: require(...).decrypt is not a function\n    at model.get (D:\\Projets\\BigPharma 1.2\\api\\models\\User.js:49:46)\n    at SchemaString.Object.<anonymous>.SchemaType.applyGetters (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\schemaType.js:1311:20)\n    at applyGetters (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:4348:43)\n    at model.Object.<anonymous>.Document.$toObject (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:3991:5)\n    at model.Object.<anonymous>.Document.toJSON (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:4489:15)\n    at clone (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\helpers\\clone.js:87:17)\n    at cloneObject (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\helpers\\clone.js:186:17)\n    at clone (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\helpers\\clone.js:100:16)\n    at model.Object.<anonymous>.Document.$toObject (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:3982:11)\n    at model.Object.<anonymous>.Document.toJSON (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\mongoose\\lib\\document.js:4489:15)\n    at JSON.stringify (<anonymous>)\n    at stringify (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\express\\lib\\response.js:1034:12)\n    at ServerResponse.json (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\express\\lib\\response.js:245:14)\n    at success (D:\\Projets\\BigPharma 1.2\\api\\utils\\response.js:24:29)\n    at Object.<anonymous>.exports.updateOrderStatus (D:\\Projets\\BigPharma 1.2\\api\\controllers\\orderController.js:644:12)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2026-06-01 14:21:31"}
+{"level":"info","message":"PUT /api/orders/6a1d874c50b3dff41b2d0965/status 500 124 - 4541.336 ms","service":"bigpharma-api","timestamp":"2026-06-01 14:21:31"}

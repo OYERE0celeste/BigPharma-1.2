@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import '../services/auth_provider.dart';
 import '../widgets/app_notification.dart';
 import '../widgets/bp_theme.dart';
 import 'home_page.dart';
+import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -43,269 +46,370 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Créer un compte',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-            color: BpColors.textPrimary,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF0A271F), Color(0xFF133B2E)],
+              ),
+            ),
           ),
-        ),
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: BpColors.border),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // En-tête
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [BpColors.primary, BpColors.primaryLight],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.person_add_alt_1_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Rejoignez BigPharma',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Accédez à toutes nos pharmacies partenaires',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white.withOpacity(0.85),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+          Positioned(
+            top: -80,
+            left: -70,
+            child: Container(
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    BpColors.accent.withOpacity(0.24),
+                    Colors.transparent,
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
-
-              // Section infos personnelles
-              _buildSectionLabel('Informations personnelles'),
-              const SizedBox(height: 12),
-
-              _buildFormField(
-                label: 'Nom complet',
-                controller: _fullNameController,
-                icon: Icons.person_outline_rounded,
-                validator: (v) =>
-                    v == null || v.isEmpty ? 'Ce champ est requis' : null,
-              ),
-              const SizedBox(height: 14),
-
-              _buildFormField(
-                label: 'Email',
-                controller: _emailController,
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) {
-                  if (v == null || v.isEmpty) return 'Ce champ est requis';
-                  if (!v.contains('@')) return 'Email invalide';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 14),
-
-              _buildFormField(
-                label: 'Téléphone',
-                controller: _phoneController,
-                icon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: (v) =>
-                    v == null || v.isEmpty ? 'Ce champ est requis' : null,
-              ),
-              const SizedBox(height: 14),
-
-              _buildFormField(
-                label: 'Adresse',
-                controller: _addressController,
-                icon: Icons.location_on_outlined,
-                validator: (v) =>
-                    v == null || v.isEmpty ? 'Ce champ est requis' : null,
-              ),
-              const SizedBox(height: 24),
-
-              // Section sécurité
-              _buildSectionLabel('Sécurité'),
-              const SizedBox(height: 12),
-
-              TextFormField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: BpInputTheme.light(
-                  label: 'Mot de passe',
-                  prefixIcon: Icons.lock_outline_rounded,
-                  suffixIconWidget: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 20,
-                      color: BpColors.textSecondary,
-                    ),
-                    onPressed: () =>
-                        setState(() => _obscurePassword = !_obscurePassword),
-                  ),
-                ),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return 'Ce champ est requis';
-                  if (v.length < 6) return 'Minimum 6 caractères';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Section genre
-              _buildSectionLabel('Genre'),
-              const SizedBox(height: 8),
-
-              Container(
-                decoration: BoxDecoration(
-                  color: BpColors.surfaceMuted,
-                  borderRadius: BorderRadius.circular(BpSpacing.radiusMd),
-                  border: Border.all(color: BpColors.border),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildGenderOption('Homme', 'male', Icons.male_rounded),
-                    ),
-                    Container(width: 1, height: 48, color: BpColors.border),
-                    Expanded(
-                      child: _buildGenderOption('Femme', 'female', Icons.female_rounded),
-                    ),
+            ),
+          ),
+          Positioned(
+            bottom: -90,
+            right: -60,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    BpColors.textPrimary.withOpacity(0.14),
+                    Colors.transparent,
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Section date de naissance
-              _buildSectionLabel('Date de naissance'),
-              const SizedBox(height: 8),
-
-              InkWell(
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now().subtract(
-                      const Duration(days: 365 * 20),
-                    ),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                    builder: (context, child) => Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: const ColorScheme.light(
-                          primary: BpColors.primary,
-                        ),
-                      ),
-                      child: child!,
-                    ),
-                  );
-                  if (date != null) setState(() => _selectedDate = date);
-                },
-                borderRadius: BorderRadius.circular(BpSpacing.radiusMd),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF4F9F7),
-                    border: Border.all(
-                      color: _selectedDate != null
-                          ? BpColors.primary
-                          : BpColors.border,
-                      width: _selectedDate != null ? 1.8 : 1.2,
-                    ),
-                    borderRadius: BorderRadius.circular(BpSpacing.radiusMd),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_outlined,
-                        size: 20,
-                        color: _selectedDate != null
-                            ? BpColors.primary
-                            : BpColors.textSecondary,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        _selectedDate == null
-                            ? 'Sélectionner votre date de naissance'
-                            : '${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.year}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: _selectedDate == null
-                              ? BpColors.textHint
-                              : BpColors.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 36),
-
-              // Bouton d'inscription
-              Consumer<AuthProvider>(
-                builder: (context, auth, _) => BpButton(
-                  label: 'Créer mon compte',
-                  isLoading: auth.isLoading,
-                  onPressed: _handleRegister,
-                ),
-              ),
-              const SizedBox(height: 32),
-            ],
+            ),
           ),
-        ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 24,
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 620),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(32),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                      child: Container(
+                        padding: const EdgeInsets.all(28),
+                        decoration: BoxDecoration(
+                          color: BpColors.cardBg.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(32),
+                          border: Border.all(color: BpColors.borderStrong),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.18),
+                              blurRadius: 48,
+                              offset: const Offset(0, 20),
+                            ),
+                          ],
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 58,
+                                    height: 58,
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          BpColors.primary,
+                                          BpColors.accent,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: BpColors.primary.withOpacity(
+                                            0.24,
+                                          ),
+                                          blurRadius: 22,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.person_add_alt_1_rounded,
+                                      color: Colors.white,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: const [
+                                        Text(
+                                          'Créer un compte',
+                                          style: TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        SizedBox(height: 6),
+                                        Text(
+                                          'Rejoignez BigPharma pour une gestion santé fluide et sécurisée.',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white70,
+                                            height: 1.6,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 32),
+                              _buildSectionLabel('Informations personnelles'),
+                              const SizedBox(height: 14),
+                              _buildFormField(
+                                label: 'Nom complet',
+                                controller: _fullNameController,
+                                icon: Icons.person_outline_rounded,
+                                validator: (v) => v == null || v.isEmpty
+                                    ? 'Ce champ est requis'
+                                    : null,
+                              ),
+                              const SizedBox(height: 16),
+                              _buildFormField(
+                                label: 'Email',
+                                controller: _emailController,
+                                icon: Icons.email_outlined,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (v) {
+                                  if (v == null || v.isEmpty)
+                                    return 'Ce champ est requis';
+                                  if (!v.contains('@')) return 'Email invalide';
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              _buildFormField(
+                                label: 'Téléphone',
+                                controller: _phoneController,
+                                icon: Icons.phone_outlined,
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                validator: (v) => v == null || v.isEmpty
+                                    ? 'Ce champ est requis'
+                                    : null,
+                              ),
+                              const SizedBox(height: 16),
+                              _buildFormField(
+                                label: 'Adresse',
+                                controller: _addressController,
+                                icon: Icons.location_on_outlined,
+                                validator: (v) => v == null || v.isEmpty
+                                    ? 'Ce champ est requis'
+                                    : null,
+                              ),
+                              const SizedBox(height: 26),
+                              _buildSectionLabel('Sécurité'),
+                              const SizedBox(height: 14),
+                              TextFormField(
+                                controller: _passwordController,
+                                obscureText: _obscurePassword,
+                                decoration: BpInputTheme.light(
+                                  label: 'Mot de passe',
+                                  prefixIcon: Icons.lock_outline_rounded,
+                                  suffixIconWidget: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      size: 20,
+                                      color: BpColors.textSecondary,
+                                    ),
+                                    onPressed: () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
+                                    ),
+                                  ),
+                                ),
+                                validator: (v) {
+                                  if (v == null || v.isEmpty)
+                                    return 'Ce champ est requis';
+                                  if (v.length < 6)
+                                    return 'Minimum 6 caractères';
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 26),
+                              _buildSectionLabel('Genre'),
+                              const SizedBox(height: 12),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: BpColors.cardBg.withOpacity(0.08),
+                                  borderRadius: BorderRadius.circular(
+                                    BpSpacing.radiusLg,
+                                  ),
+                                  border: Border.all(
+                                    color: BpColors.borderStrong,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildGenderOption(
+                                        'Homme',
+                                        'male',
+                                        Icons.male_rounded,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 1,
+                                      height: 50,
+                                      color: Colors.white12,
+                                    ),
+                                    Expanded(
+                                      child: _buildGenderOption(
+                                        'Femme',
+                                        'female',
+                                        Icons.female_rounded,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 26),
+                              _buildSectionLabel('Date de naissance'),
+                              const SizedBox(height: 12),
+                              InkWell(
+                                onTap: () async {
+                                  final date = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now().subtract(
+                                      const Duration(days: 365 * 20),
+                                    ),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime.now(),
+                                    builder: (context, child) => Theme(
+                                      data: Theme.of(context).copyWith(
+                                        colorScheme: const ColorScheme.light(
+                                          primary: BpColors.primary,
+                                        ),
+                                      ),
+                                      child: child!,
+                                    ),
+                                  );
+                                  if (date != null)
+                                    setState(() => _selectedDate = date);
+                                },
+                                borderRadius: BorderRadius.circular(
+                                  BpSpacing.radiusMd,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 18,
+                                    vertical: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: BpColors.cardBg.withOpacity(0.08),
+                                    borderRadius: BorderRadius.circular(
+                                      BpSpacing.radiusMd,
+                                    ),
+                                    border: Border.all(
+                                      color: _selectedDate != null
+                                          ? BpColors.accent
+                                          : BpColors.borderStrong,
+                                      width: _selectedDate != null ? 2 : 1.2,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.calendar_today_outlined,
+                                        size: 20,
+                                        color: _selectedDate != null
+                                            ? BpColors.accent
+                                            : Colors.white70,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          _selectedDate == null
+                                              ? 'Sélectionner votre date de naissance'
+                                              : '${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.year}',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: _selectedDate == null
+                                                ? Colors.white60
+                                                : Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.white70,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Consumer<AuthProvider>(
+                                builder: (context, auth, _) => BpButton(
+                                  label: 'Créer mon compte',
+                                  isLoading: auth.isLoading,
+                                  onPressed: _handleRegister,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const LoginPage(),
+                                    ),
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Colors.white70,
+                                  ),
+                                  child: const Text(
+                                    'Vous avez déjà un compte ? Se connecter',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -375,8 +479,7 @@ class _RegisterPageState extends State<RegisterPage> {
               label,
               style: TextStyle(
                 fontSize: 14,
-                fontWeight:
-                    isSelected ? FontWeight.bold : FontWeight.normal,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 color: isSelected ? BpColors.primary : BpColors.textSecondary,
               ),
             ),

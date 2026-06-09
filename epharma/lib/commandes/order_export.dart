@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:epharma/widgets/app_notification.dart';
+import 'package:epharma/widgets/bp_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/api_constants.dart';
 
@@ -21,7 +22,7 @@ class _OrderExportWidgetState extends State<OrderExportWidget> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.surfaceStrong,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -71,8 +72,8 @@ class _OrderExportWidgetState extends State<OrderExportWidget> {
             icon: const Icon(Icons.download),
             label: const Text('Télécharger CSV'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              backgroundColor: BpColors.accent,
+              foregroundColor: BpColors.textPrimary,
             ),
           ),
         ],

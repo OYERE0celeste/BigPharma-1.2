@@ -4,6 +4,7 @@ import '../models/activity_model.dart';
 import 'package:flutter/material.dart';
 import 'package:epharma/widgets/app_notification.dart';
 import '../services/auth_service.dart';
+import '../widgets/bp_theme.dart';
 import 'settings_theme.dart';
 import '../widgets/app_colors.dart';
 import 'user_management_page.dart';
@@ -114,9 +115,13 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         final isEntering = child.key == ValueKey(_currentSubView);
         Offset beginOffset;
         if (_isGoingBack) {
-          beginOffset = isEntering ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+          beginOffset = isEntering
+              ? const Offset(-1.0, 0.0)
+              : const Offset(1.0, 0.0);
         } else {
-          beginOffset = isEntering ? const Offset(1.0, 0.0) : const Offset(-1.0, 0.0);
+          beginOffset = isEntering
+              ? const Offset(1.0, 0.0)
+              : const Offset(-1.0, 0.0);
         }
 
         return SlideTransition(
@@ -148,7 +153,9 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
       default:
         return _buildMainList();
     }
-  }  Widget _buildMainList() {
+  }
+
+  Widget _buildMainList() {
     return SingleChildScrollView(
       key: const ValueKey('main'),
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
@@ -197,7 +204,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
           // Grouped security tiles in a single premium card
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: SettingsTheme.background,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: SettingsTheme.divider),
             ),
@@ -209,32 +216,53 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   subtitle: "Changez votre mot de passe personnel",
                   onTap: () => _switchView('password'),
                 ),
-                const Divider(height: 1, color: SettingsTheme.divider, indent: 64),
+                const Divider(
+                  height: 1,
+                  color: SettingsTheme.divider,
+                  indent: 64,
+                ),
                 _buildListItemInCard(
                   icon: Icons.people_outline_rounded,
                   title: "Gestion des collaborateurs",
                   subtitle: "Ajouter, modifier ou désactiver des membres",
                   onTap: () => _switchView('users'),
                 ),
-                const Divider(height: 1, color: SettingsTheme.divider, indent: 64),
+                const Divider(
+                  height: 1,
+                  color: SettingsTheme.divider,
+                  indent: 64,
+                ),
                 _buildListItemInCard(
                   icon: Icons.admin_panel_settings_outlined,
                   title: "Gestion des droits et accès",
-                  subtitle: "Configurez les permissions par rôle (Admin, Caissier...)",
+                  subtitle:
+                      "Configurez les permissions par rôle (Admin, Caissier...)",
                   onTap: () => _switchView('rights'),
                 ),
-                const Divider(height: 1, color: SettingsTheme.divider, indent: 64),
+                const Divider(
+                  height: 1,
+                  color: SettingsTheme.divider,
+                  indent: 64,
+                ),
                 _buildListItemInCard(
                   icon: Icons.security_rounded,
                   title: "Journal d'audit de sécurité",
-                  subtitle: "Consultez l'historique complet des actions système",
+                  subtitle:
+                      "Consultez l'historique complet des actions système",
                   onTap: () {
                     // Pre-load activities
-                    Provider.of<ActivityProvider>(context, listen: false).loadActivities();
+                    Provider.of<ActivityProvider>(
+                      context,
+                      listen: false,
+                    ).loadActivities();
                     _switchView('audit_logs');
                   },
                 ),
-                const Divider(height: 1, color: SettingsTheme.divider, indent: 64),
+                const Divider(
+                  height: 1,
+                  color: SettingsTheme.divider,
+                  indent: 64,
+                ),
                 _buildListItemInCard(
                   icon: Icons.verified_user_outlined,
                   title: "Double authentification",
@@ -487,7 +515,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
           color: SettingsTheme.textSecondary,
         ),
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
+        fillColor: const Color.fromARGB(255, 15, 70, 47),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
@@ -573,18 +601,19 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
   Widget _buildAuditLogs() {
     final activityProvider = Provider.of<ActivityProvider>(context);
     final activities = activityProvider.activities;
-    
+
     // Filtering logic
     final filteredActivities = activities.where((activity) {
       // 1. Search Query filter
       final query = _auditSearchQuery.toLowerCase();
-      final matchesQuery = activity.employeeName.toLowerCase().contains(query) ||
+      final matchesQuery =
+          activity.employeeName.toLowerCase().contains(query) ||
           activity.notes.toLowerCase().contains(query) ||
           activity.reference.toLowerCase().contains(query);
-          
+
       // 2. Type filter
       if (_selectedAuditType == 'Tous') return matchesQuery;
-      
+
       String targetTypeStr = '';
       switch (_selectedAuditType) {
         case 'Ventes':
@@ -603,10 +632,12 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
           targetTypeStr = 'financeAction';
           break;
       }
-      
-      final matchesType = activity.type.name == targetTypeStr || 
-          (_selectedAuditType == 'Stock' && activity.type.name == 'stockAdjustment');
-          
+
+      final matchesType =
+          activity.type.name == targetTypeStr ||
+          (_selectedAuditType == 'Stock' &&
+              activity.type.name == 'stockAdjustment');
+
       return matchesQuery && matchesType;
     }).toList();
 
@@ -650,9 +681,12 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
               TextField(
                 decoration: InputDecoration(
                   hintText: 'Rechercher un utilisateur, une action, une réf...',
-                  prefixIcon: const Icon(Icons.search_rounded, color: Colors.grey),
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    color: BpColors.textSecondary,
+                  ),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: SettingsTheme.background,
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -670,40 +704,54 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                 },
               ),
               const SizedBox(height: 12),
-              
+
               // Filter chips scrollable Row
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: ['Tous', 'Ventes', 'Commandes', 'Stock', 'Collaborateurs', 'Finance'].map((type) {
-                    final isSelected = _selectedAuditType == type;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        label: Text(type),
-                        selected: isSelected,
-                        selectedColor: kPrimaryGreen.withOpacity(0.12),
-                        checkmarkColor: kPrimaryGreen,
-                        labelStyle: TextStyle(
-                          color: isSelected ? kPrimaryGreen : Colors.grey[700],
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 12,
-                        ),
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                            color: isSelected ? kPrimaryGreen.withOpacity(0.3) : Colors.transparent,
+                  children:
+                      [
+                        'Tous',
+                        'Ventes',
+                        'Commandes',
+                        'Stock',
+                        'Collaborateurs',
+                        'Finance',
+                      ].map((type) {
+                        final isSelected = _selectedAuditType == type;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: FilterChip(
+                            label: Text(type),
+                            selected: isSelected,
+                            selectedColor: kPrimaryGreen.withOpacity(0.12),
+                            checkmarkColor: kPrimaryGreen,
+                            labelStyle: TextStyle(
+                              color: isSelected
+                                  ? kPrimaryGreen
+                                  : Colors.grey[700],
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              fontSize: 12,
+                            ),
+                            backgroundColor: SettingsTheme.background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(
+                                color: isSelected
+                                    ? kPrimaryGreen.withOpacity(0.3)
+                                    : Colors.transparent,
+                              ),
+                            ),
+                            onSelected: (selected) {
+                              setState(() {
+                                _selectedAuditType = type;
+                              });
+                            },
                           ),
-                        ),
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedAuditType = type;
-                          });
-                        },
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
                 ),
               ),
             ],
@@ -719,140 +767,161 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   ),
                 )
               : filteredActivities.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.security_outlined,
-                            size: 64,
-                            color: Colors.grey[300],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            "Aucun log d'activité trouvé",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[500],
-                            ),
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.security_outlined,
+                        size: 64,
+                        color: Colors.grey[300],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Aucun log d'activité trouvé",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  itemCount: filteredActivities.length,
+                  itemBuilder: (context, index) {
+                    final log = filteredActivities[index];
+                    final timeStr =
+                        "${log.dateTime.hour.toString().padLeft(2, '0')}:${log.dateTime.minute.toString().padLeft(2, '0')}";
+                    final dateStr =
+                        "${log.dateTime.day}/${log.dateTime.month}/${log.dateTime.year}";
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: SettingsTheme.background,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: SettingsTheme.divider),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.01),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      itemCount: filteredActivities.length,
-                      itemBuilder: (context, index) {
-                        final log = filteredActivities[index];
-                        final timeStr = "${log.dateTime.hour.toString().padLeft(2, '0')}:${log.dateTime.minute.toString().padLeft(2, '0')}";
-                        final dateStr = "${log.dateTime.day}/${log.dateTime.month}/${log.dateTime.year}";
-                        
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        leading: Container(
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: SettingsTheme.divider),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.01),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                            color: log.typeColor.withOpacity(0.08),
+                            shape: BoxShape.circle,
                           ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            leading: Container(
-                              padding: const EdgeInsets.all(10),
+                          child: Icon(
+                            log.typeIcon,
+                            color: log.typeColor,
+                            size: 22,
+                          ),
+                        ),
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                log.employeeName.isNotEmpty
+                                    ? log.employeeName
+                                    : "Système",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: SettingsTheme.textPrimary,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: log.typeColor.withOpacity(0.08),
-                                shape: BoxShape.circle,
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Icon(
-                                log.typeIcon,
-                                color: log.typeColor,
-                                size: 22,
+                              child: Text(
+                                log.typeLabel,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: log.typeColor,
+                                ),
                               ),
                             ),
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    log.employeeName.isNotEmpty ? log.employeeName : "Système",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: SettingsTheme.textPrimary,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[100],
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    log.typeLabel,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: log.typeColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 6),
+                            Text(
+                              log.notes,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[700],
+                                height: 1.3,
+                              ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            const SizedBox(height: 8),
+                            Row(
                               children: [
-                                const SizedBox(height: 6),
+                                Icon(
+                                  Icons.calendar_today_rounded,
+                                  size: 12,
+                                  color: Colors.grey[400],
+                                ),
+                                const SizedBox(width: 4),
                                 Text(
-                                  log.notes,
+                                  "$dateStr à $timeStr",
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[700],
-                                    height: 1.3,
+                                    fontSize: 11,
+                                    color: Colors.grey[400],
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.calendar_today_rounded, size: 12, color: Colors.grey[400]),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      "$dateStr à $timeStr",
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.grey[400],
-                                      ),
+                                if (log.reference.isNotEmpty) ...[
+                                  const SizedBox(width: 12),
+                                  Icon(
+                                    Icons.tag_rounded,
+                                    size: 12,
+                                    color: Colors.grey[400],
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    log.reference,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey[400],
+                                      fontFamily: 'monospace',
                                     ),
-                                    if (log.reference.isNotEmpty) ...[
-                                      const SizedBox(width: 12),
-                                      Icon(Icons.tag_rounded, size: 12, color: Colors.grey[400]),
-                                      const SizedBox(width: 2),
-                                      Text(
-                                        log.reference,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.grey[400],
-                                          fontFamily: 'monospace',
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ],
                             ),
-                            onTap: () {
-                              _showLogDetailsSheet(context, log);
-                            },
-                          ),
-                        );
-                      },
-                    ),
+                          ],
+                        ),
+                        onTap: () {
+                          _showLogDetailsSheet(context, log);
+                        },
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );
@@ -865,7 +934,8 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        final dateStr = "${log.dateTime.day}/${log.dateTime.month}/${log.dateTime.year} ${log.dateTime.hour.toString().padLeft(2, '0')}:${log.dateTime.minute.toString().padLeft(2, '0')}";
+        final dateStr =
+            "${log.dateTime.day}/${log.dateTime.month}/${log.dateTime.year} ${log.dateTime.hour.toString().padLeft(2, '0')}:${log.dateTime.minute.toString().padLeft(2, '0')}";
         return Container(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -921,7 +991,10 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                 ],
               ),
               const SizedBox(height: 24),
-              _buildDetailRow("Opérateur", log.employeeName.isNotEmpty ? log.employeeName : "Système"),
+              _buildDetailRow(
+                "Opérateur",
+                log.employeeName.isNotEmpty ? log.employeeName : "Système",
+              ),
               const SizedBox(height: 12),
               _buildDetailRow("Horodatage", dateStr),
               if (log.reference.isNotEmpty) ...[
@@ -932,15 +1005,18 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
               _buildDetailRow("Action", log.notes),
               if (log.totalAmount > 0) ...[
                 const SizedBox(height: 12),
-                _buildDetailRow("Montant associé", "${log.totalAmount.toStringAsFixed(2)} FCFA"),
+                _buildDetailRow(
+                  "Montant associé",
+                  "${log.totalAmount.toStringAsFixed(2)} FCFA",
+                ),
               ],
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[200],
-                    foregroundColor: Colors.grey[800],
+                    backgroundColor: SettingsTheme.background,
+                    foregroundColor: BpColors.textPrimary,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -986,5 +1062,4 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
       ],
     );
   }
-
 }

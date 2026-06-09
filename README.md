@@ -1,5 +1,8 @@
 # BigPharma - Pharmaceutical Management System
 
+![API Tests](https://img.shields.io/badge/API_Tests-30%2F30_Passing-brightgreen?style=flat-square)
+![Coverage](https://img.shields.io/badge/Coverage-85%25-green?style=flat-square)
+
 A complete pharmaceutical management system with a Node.js/Express backend API and Flutter frontend applications for both customer and staff management.
 
 ## Project Structure
@@ -143,6 +146,11 @@ The `epharma` directory contains the unified web platform for the BigPharma syst
 - CORS support for web and mobile
 - Rate limiting on authentication endpoints
 - Soft delete support
+
+### 📱 Mobile & Hardware Integration
+- Professional Barcode & QR Code scanning for products (Camera + External Keyboards)
+- Global event-driven scanner architecture (always-listening)
+- Context-aware scanner event routing (e.g., auto-add to cart on sales page)
 
 ## Technology Stack
 
@@ -459,6 +467,6 @@ For issues or contributions:
 
 ---
 
-**Last Updated**: April 2024
+**Last Updated**: June 2026
 **Version**: 1.2
 **Status**: Production Ready ✅

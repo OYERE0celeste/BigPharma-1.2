@@ -29,10 +29,7 @@ class ScanResultCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFFF6FFF8),
-            const Color(0xFFEAF8EE),
-          ],
+          colors: [const Color(0xFFF6FFF8), const Color(0xFFEAF8EE)],
         ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0xFFB7D8BF), width: 1.2),
@@ -162,7 +159,7 @@ class ScanResultCard extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.82),
+                  color: BpColors.textPrimary.withOpacity(0.82),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: const Color(0xFFE1EFE5)),
                 ),
@@ -221,7 +218,9 @@ class ScanResultCard extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF183125),
                           side: const BorderSide(color: Color(0xFFB7D8BF)),
-                          backgroundColor: Colors.white.withOpacity(0.72),
+                          backgroundColor: BpColors.textPrimary.withOpacity(
+                            0.72,
+                          ),
                           minimumSize: const Size(0, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
@@ -241,7 +240,9 @@ class ScanResultCard extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF183125),
                           side: const BorderSide(color: Color(0xFFB7D8BF)),
-                          backgroundColor: Colors.white.withOpacity(0.72),
+                          backgroundColor: BpColors.textPrimary.withOpacity(
+                            0.72,
+                          ),
                           minimumSize: const Size(0, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
@@ -304,11 +305,7 @@ class _Badge extends StatelessWidget {
   final String label;
   final MaterialColor color;
 
-  const _Badge({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
+  const _Badge({required this.icon, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -360,7 +357,7 @@ class _MetricTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.82),
+        color: BpColors.textPrimary.withOpacity(0.82),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: const Color(0xFFE1EFE5)),
       ),

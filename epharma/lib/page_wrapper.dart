@@ -1,4 +1,5 @@
 import 'package:epharma/main_layout.dart';
+import 'package:epharma/widgets/bp_theme.dart';
 import 'package:flutter/material.dart';
 
 // =====================================================================
@@ -45,7 +46,7 @@ class MiniLayout extends StatelessWidget {
   const MiniLayout({
     required this.child,
     this.appBar,
-    this.backgroundColor = const Color(0xFFF5F5F5),
+    this.backgroundColor = BpColors.scaffold,
     this.showSidebar = true,
     super.key,
   });

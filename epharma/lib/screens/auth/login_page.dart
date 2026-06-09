@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/app_notification.dart';
 import '../../widgets/bp_theme.dart';
-// import 'register_page.dart';
+import '../../widgets/brand_title.dart';
+import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -107,10 +108,10 @@ class _LoginPageState extends State<LoginPage> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(32, 36, 32, 28),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: BpColors.cardBg.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(32),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.12),
+                            color: BpColors.borderStrong,
                             width: 1.2,
                           ),
                           boxShadow: [
@@ -172,8 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                               isLoading: isLoading,
                               onPressed: _handleLogin,
                             ),
-                            const SizedBox(height: 20),
-                            /*Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text(
@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ],
-                            ),*/
+                            ),
                           ],
                         ),
                       ),
@@ -227,36 +227,7 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [BpColors.primary, BpColors.accent],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: BpColors.primary.withOpacity(0.22),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: const Icon(
-            Icons.local_pharmacy_rounded,
-            color: Colors.white,
-            size: 34,
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'BigPharma',
-          style: BpTextStyles.authTitle,
-          textAlign: TextAlign.center,
-        ),
+        const BrandTitle(style: BpTextStyles.authTitle),
         const SizedBox(height: 6),
         const Text(
           'Espace Administration Pharmacie',
@@ -267,9 +238,9 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.06),
+            color: BpColors.cardBg.withOpacity(0.06),
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: Colors.white.withOpacity(0.12), width: 1),
+            border: Border.all(color: BpColors.borderStrong, width: 1),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -312,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscure
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: Colors.white.withOpacity(0.55),
+                      color: BpColors.textPrimary.withOpacity(0.55),
                       size: 20,
                     ),
                     onPressed: onToggle,

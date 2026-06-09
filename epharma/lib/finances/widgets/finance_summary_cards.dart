@@ -2,9 +2,9 @@ import 'package:epharma/providers/finance_provider.dart';
 import 'package:epharma/services/finance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../widgets/bp_theme.dart';
-//import '../providers/finance_provider.dart';
-//import '../services/finance_service.dart';
+import '../../widgets/page_stat_cards.dart';
 
 class FinanceSummaryCards extends StatelessWidget {
   final DateTime? startDate;
@@ -18,10 +18,7 @@ class FinanceSummaryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final financeProvider = Provider.of<FinanceProvider>(
-      context,
-      listen: false,
-    );
+    final financeProvider = Provider.of<FinanceProvider>(context, listen: false);
     final incomeTransactions = financeProvider.getFilteredTransactions(
       startDate: startDate,
       endDate: endDate,
@@ -32,10 +29,7 @@ class FinanceSummaryCards extends StatelessWidget {
       endDate: endDate,
     );
     final transactionCount = incomeTransactions.length;
-    final averageBasket = transactionCount > 0
-        ? totalRevenue / transactionCount
-        : 0.0;
-
+    final averageBasket = transactionCount > 0 ? totalRevenue / transactionCount : 0.0;
     final paymentBreakdown = financeProvider.getPaymentMethodBreakdown(
       startDate: startDate,
       endDate: endDate,
@@ -44,96 +38,37 @@ class FinanceSummaryCards extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Résumé des Entrées',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: BpColors.textPrimary),
-        ),
+        const Text('Résumé des entrées', style: BpTextStyles.heading2),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            _buildSummaryCard(
-              '💰 Chiffre d\'affaires total',
-              FinanceService.formatAmount(totalRevenue),
-              Colors.green,
-              Icons.account_balance_wallet,
+        PageStatCards(
+          items: [
+            PageStatCardData(
+              label: 'Chiffre d\'affaires total',
+              value: FinanceService.formatAmount(totalRevenue),
+              color: Colors.green,
+              icon: Icons.account_balance_wallet,
             ),
-            const SizedBox(width: 16),
-            _buildSummaryCard(
-              '📊 Nombre de transactions',
-              '$transactionCount ventes',
-              Colors.blue,
-              Icons.shopping_cart,
+            PageStatCardData(
+              label: 'Nombre de transactions',
+              value: '$transactionCount ventes',
+              color: Colors.blue,
+              icon: Icons.shopping_cart,
             ),
-            const SizedBox(width: 16),
-            _buildSummaryCard(
-              '🎯 Panier moyen',
-              FinanceService.formatAmount(averageBasket),
-              Colors.orange,
-              Icons.analytics,
+            PageStatCardData(
+              label: 'Panier moyen',
+              value: FinanceService.formatAmount(averageBasket),
+              color: Colors.orange,
+              icon: Icons.analytics,
             ),
-            const SizedBox(width: 16),
-            _buildSummaryCard(
-              '💳 Répartition paiements',
-              '${paymentBreakdown.length} méthodes',
-              Colors.purple,
-              Icons.payment,
+            PageStatCardData(
+              label: 'Répartition paiements',
+              value: '${paymentBreakdown.length} méthodes',
+              color: Colors.purple,
+              icon: Icons.payment,
             ),
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildSummaryCard(
-    String title,
-    String value,
-    Color color,
-    IconData icon,
-  ) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: BpColors.cardBg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: BpColors.borderStrong),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, color: color, size: 24),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(fontSize: 14, color: BpColors.textSecondary),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

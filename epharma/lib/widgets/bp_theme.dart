@@ -2,40 +2,41 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'brand_title.dart';
 
 class BpColors {
   BpColors._();
 
-  static const Color primary = Color(0xFF1E6E4C);
-  static const Color primaryLight = Color(0xFF2F996C);
-  static const Color primaryDark = Color(0xFF082117);
-  static const Color accent = Color(0xFF39C17E);
+  static const Color primary = Color(0xFF184F35);
+  static const Color primaryLight = Color(0xFF236A47);
+  static const Color primaryDark = Color(0xFF061A12);
+  static const Color accent = Color(0xFF2D8B5B);
 
-  static const Color authBg1 = Color(0xFF04140E);
-  static const Color authBg2 = Color(0xFF0A241A);
-  static const Color authBg3 = Color(0xFF103126);
+  static const Color authBg1 = primaryDark;
+  static const Color authBg2 = primary;
+  static const Color authBg3 = primaryLight;
 
-  static const Color scaffold = Color(0xFF071912);
-  static const Color scaffoldSecondary = Color(0xFF0B2118);
-  static const Color surface = Color(0xFF193126);
-  static const Color surfaceStrong = Color(0xFF213A2F);
-  static const Color surfaceMuted = Color(0xFF2A4338);
-  static const Color cardBg = Color(0xFF233B30);
-  static const Color cardHighlight = Color(0xFF2C473B);
-  static const Color glass = Color(0x5C355046);
+  static const Color scaffold = primaryDark;
+  static const Color scaffoldSecondary = primary;
+  static const Color surface = primaryDark;
+  static const Color surfaceStrong = primary;
+  static const Color surfaceMuted = primaryLight;
+  static const Color cardBg = primary;
+  static const Color cardHighlight = primaryLight;
+  static const Color glass = Color(0x4A184F35);
 
-  static const Color textPrimary = Color(0xFFF2FBF6);
-  static const Color textSecondary = Color(0xFFB5C8BD);
-  static const Color textHint = Color(0xFF8EA699);
+  static const Color textPrimary = Colors.white;
+  static const Color textSecondary = Color(0xFFD1DDD7);
+  static const Color textHint = Color(0x99D1DDD7);
   static const Color textOnDark = Colors.white;
-  static const Color textOnDarkMuted = Color(0xFFB9CCC0);
+  static const Color textOnDarkMuted = Color(0x99D1DDD7);
 
   static const Color error = Color(0xFFE86B6B);
   static const Color success = Color(0xFF4CD286);
   static const Color warning = Color(0xFFF3B85B);
 
-  static const Color border = Color(0x335F8174);
-  static const Color borderStrong = Color(0x667BA392);
+  static const Color border = Color(0x334E705E);
+  static const Color borderStrong = Color(0x66799884);
   static const Color borderFocused = accent;
 }
 
@@ -156,13 +157,16 @@ class BpTheme {
   static ThemeData materialTheme() {
     const colorScheme = ColorScheme.dark(
       primary: BpColors.accent,
-      onPrimary: BpColors.primaryDark,
+      onPrimary: Colors.white,
       secondary: BpColors.primaryLight,
-      onSecondary: BpColors.primaryDark,
-      error: BpColors.error,
-      onError: Colors.white,
+      onSecondary: Colors.white,
       surface: BpColors.surface,
       onSurface: BpColors.textPrimary,
+      background: BpColors.scaffold,
+      onBackground: BpColors.textPrimary,
+      error: BpColors.error,
+      onError: Colors.white,
+      surfaceVariant: BpColors.surfaceMuted,
     );
 
     return ThemeData(
@@ -170,11 +174,62 @@ class BpTheme {
       brightness: Brightness.dark,
       colorScheme: colorScheme,
       fontFamily: 'sans-serif',
-      scaffoldBackgroundColor: Colors.transparent,
-      canvasColor: BpColors.surface,
-      shadowColor: Colors.black,
+      scaffoldBackgroundColor: BpColors.scaffold,
+      canvasColor: BpColors.scaffold,
+      cardColor: BpColors.surfaceStrong,
+      shadowColor: BpColors.primaryDark.withOpacity(0.4),
       dividerColor: BpColors.border,
       splashFactory: InkSparkle.splashFactory,
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          foregroundColor: BpColors.textPrimary,
+          disabledForegroundColor: BpColors.textSecondary.withOpacity(0.4),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return BpColors.surfaceMuted.withOpacity(0.5);
+          }
+          if (states.contains(WidgetState.selected)) {
+            return BpColors.accent;
+          }
+          return BpColors.surfaceMuted;
+        }),
+        checkColor: WidgetStateProperty.all(BpColors.primaryDark),
+        side: const BorderSide(color: BpColors.borderStrong, width: 1.2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      ),
+      dataTableTheme: DataTableThemeData(
+        headingRowColor: const WidgetStatePropertyAll(BpColors.surfaceMuted),
+        dataRowColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return BpColors.accent.withOpacity(0.12);
+          }
+          if (states.contains(WidgetState.hovered)) {
+            return BpColors.surfaceStrong.withOpacity(0.94);
+          }
+          return BpColors.surfaceStrong.withOpacity(0.78);
+        }),
+        dataTextStyle: const TextStyle(
+          color: BpColors.textSecondary,
+          fontSize: 13,
+          height: 1.35,
+        ),
+        headingTextStyle: const TextStyle(
+          color: BpColors.textPrimary,
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.15,
+        ),
+        columnSpacing: 22,
+        horizontalMargin: 18,
+        dataRowMinHeight: 52,
+        dataRowMaxHeight: 64,
+        headingRowHeight: 56,
+        dividerThickness: 1,
+      ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
@@ -219,9 +274,9 @@ class BpTheme {
         ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: Colors.transparent,
+        backgroundColor: BpColors.surfaceStrong,
         surfaceTintColor: Colors.transparent,
-        modalBackgroundColor: Colors.transparent,
+        modalBackgroundColor: BpColors.surfaceStrong,
       ),
       cardTheme: CardThemeData(
         color: BpColors.cardBg,
@@ -390,17 +445,17 @@ class BpDecoratedBackground extends StatelessWidget {
         Positioned(
           top: -140,
           right: -100,
-          child: _buildBlob(380, BpColors.primary.withOpacity(0.16)),
+          child: _buildBlob(380, BpColors.primary.withOpacity(0.12)),
         ),
         Positioned(
           bottom: -120,
           left: -80,
-          child: _buildBlob(300, BpColors.accent.withOpacity(0.11)),
+          child: _buildBlob(300, BpColors.accent.withOpacity(0.08)),
         ),
         Positioned(
           top: 180,
           left: -120,
-          child: _buildBlob(240, Colors.white.withOpacity(0.03)),
+          child: _buildBlob(240, BpColors.textPrimary.withOpacity(0.03)),
         ),
         Positioned.fill(
           child: DecoratedBox(
@@ -409,9 +464,9 @@ class BpDecoratedBackground extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.white.withOpacity(0.02),
+                  BpColors.textPrimary.withOpacity(0.02),
                   Colors.transparent,
-                  Colors.black.withOpacity(0.10),
+                  BpColors.primaryDark.withOpacity(0.26),
                 ],
               ),
             ),
@@ -463,9 +518,9 @@ class BpSurfaceCard extends StatelessWidget {
         border: Border.all(color: BpColors.borderStrong, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.18),
-            blurRadius: 30,
-            offset: const Offset(0, 18),
+            color: BpColors.primaryDark.withOpacity(0.24),
+            blurRadius: 24,
+            offset: const Offset(0, 14),
           ),
         ],
       ),
@@ -507,7 +562,7 @@ class BpBottomSheetContainer extends StatelessWidget {
             top: 28,
             bottom: MediaQuery.of(context).viewInsets.bottom + 28,
           ),
-      color: const Color(0xE6223A30),
+      color: const Color.fromARGB(255, 17, 79, 53),
       child: child,
     );
   }
@@ -521,9 +576,10 @@ class BpInputTheme {
     String? hint,
     IconData? prefixIcon,
     Widget? suffixIconWidget,
+    bool showLabel = true,
   }) {
     return InputDecoration(
-      labelText: label,
+      labelText: showLabel ? label : null,
       hintText: hint,
       labelStyle: const TextStyle(fontSize: 14, color: BpColors.textSecondary),
       hintStyle: const TextStyle(fontSize: 13, color: BpColors.textHint),
@@ -563,30 +619,33 @@ class BpInputTheme {
     String? hint,
     IconData? prefixIcon,
     Widget? suffixIconWidget,
+    bool showLabel = true,
   }) {
     return InputDecoration(
+      labelText: showLabel ? label : null,
       hintText: hint ?? label,
-      hintStyle: TextStyle(color: Colors.white.withOpacity(0.34), fontSize: 14),
+      hintStyle: TextStyle(
+        color: BpColors.textPrimary.withOpacity(0.34),
+        fontSize: 14,
+      ),
       prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, size: 20, color: Colors.white.withOpacity(0.58))
+          ? Icon(
+              prefixIcon,
+              size: 20,
+              color: BpColors.textPrimary.withOpacity(0.58),
+            )
           : null,
       suffixIcon: suffixIconWidget,
       filled: true,
-      fillColor: Colors.white.withOpacity(0.09),
+      fillColor: BpColors.cardBg.withOpacity(0.08),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: BorderSide(
-          color: Colors.white.withOpacity(0.08),
-          width: 1.2,
-        ),
+        borderSide: BorderSide(color: BpColors.border, width: 1.2),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: BorderSide(
-          color: Colors.white.withOpacity(0.12),
-          width: 1.2,
-        ),
+        borderSide: BorderSide(color: BpColors.border, width: 1.2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
@@ -660,25 +719,7 @@ class BpAuthLoadingScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 68,
-                    height: 68,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [BpColors.primary, BpColors.accent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: const Icon(
-                      Icons.local_pharmacy_rounded,
-                      color: Colors.white,
-                      size: 34,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text('BigPharma', style: BpTextStyles.authTitle),
+                  const BrandTitle(style: BpTextStyles.authTitle),
                   const SizedBox(height: 10),
                   const Text(
                     'Chargement en cours...',

@@ -71,14 +71,18 @@ class BarcodeDetectionEngine {
       return BarcodeFormat.upcE;
     }
 
+    // Code-39: alphanumeric with special chars allowed
+    // Treat strings as Code-39 only when they use characters that are not
+    // exclusively valid for Code-128, reducing ambiguous detection.
+    if (length >= 5 &&
+        _isCode39(cleaned) &&
+        RegExp(r'[\-\.\$\/\+%]').hasMatch(cleaned)) {
+      return BarcodeFormat.code39;
+    }
+
     // Code-128: alphanumeric, variable length (10-50 chars typical)
     if (length >= 10 && length <= 50 && _isCode128(cleaned)) {
       return BarcodeFormat.code128;
-    }
-
-    // Code-39: alphanumeric with special chars allowed
-    if (length >= 5 && _isCode39(cleaned)) {
-      return BarcodeFormat.code39;
     }
 
     // QR Code: typically 20-150 chars, alphanumeric with symbols
@@ -136,9 +140,14 @@ class BarcodeDetectionEngine {
   /// Check if input should be ignored (invalid/empty)
   static bool shouldIgnore(String input) {
     if (input.isEmpty) return true;
-    if (input.trim().isEmpty) return true;
+    final trimmed = input.trim();
+    if (trimmed.isEmpty) return true;
 
-    // Ignore common non-barcode sequences
+    // Ignore invalid barcode strings or known non-barcode separators
+    if (!RegExp(r'^[A-Za-z0-9\-\.\s\$\/\+%]+$').hasMatch(trimmed)) {
+      return true;
+    }
+
     final common = [
       '*', // Common scan prefix
       '#', // Common scan suffix
@@ -147,7 +156,7 @@ class BarcodeDetectionEngine {
     ];
 
     for (final pattern in common) {
-      if (input.trim() == pattern) return true;
+      if (trimmed == pattern) return true;
     }
 
     return false;

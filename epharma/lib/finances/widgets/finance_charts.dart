@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:epharma/widgets/bp_theme.dart';
 //import '/providers/finance_provider.dart';
 //import '../services/finance_service.dart';
 
@@ -40,8 +41,15 @@ class FinanceCharts extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
+            // Precompute maxY and y-interval to avoid repeated computation and
+            // to control the number of Y-axis labels (prevent overlap)
+            (() {
+              // noop builder to allow local variables in widget tree
+              return const SizedBox.shrink();
+            }()),
+
             SizedBox(
-              height: 340,
+              height: 420,
               child: chartData.isEmpty
                   ? const Center(
                       child: Text(
@@ -50,21 +58,34 @@ class FinanceCharts extends StatelessWidget {
                     )
                   : BarChart(
                       BarChartData(
-                        maxY:
-                            chartData
-                                .map(
-                                  (row) => [
-                                    row['revenue'] as double,
-                                    row['expenses'] as double,
-                                  ].reduce((a, b) => a > b ? a : b),
-                                )
-                                .reduce((a, b) => a > b ? a : b) *
-                            1.15,
+                        // Compute a capped maxY to avoid a single outlier
+                        maxY: (() {
+                          final values = chartData
+                              .map(
+                                (row) => [
+                                  row['revenue'] as double,
+                                  row['expenses'] as double,
+                                ].reduce((a, b) => a > b ? a : b),
+                              )
+                              .where((v) => v.isFinite)
+                              .toList();
+                          if (values.isEmpty) return 1.0;
+                          values.sort();
+                          final rawMax = values.last;
+                          final pIndex = ((values.length * 0.95).floor()).clamp(
+                            0,
+                            values.length - 1,
+                          );
+                          final p95 = values[pIndex];
+                          final cap = p95 * 3;
+                          final chosen = rawMax > cap ? cap : rawMax;
+                          return (chosen * 1.15).clamp(1.0, double.infinity);
+                        })(),
                         gridData: FlGridData(
                           show: true,
                           drawVerticalLine: false,
                           getDrawingHorizontalLine: (value) => FlLine(
-                            color: Colors.white.withOpacity(0.08),
+                            color: BpColors.textPrimary.withOpacity(0.08),
                             strokeWidth: 1,
                           ),
                         ),
@@ -72,7 +93,7 @@ class FinanceCharts extends StatelessWidget {
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              reservedSize: 42,
+                              reservedSize: 56,
                               getTitlesWidget: (value, meta) {
                                 if (value.toInt() >= 0 &&
                                     value.toInt() < chartData.length) {
@@ -94,16 +115,60 @@ class FinanceCharts extends StatelessWidget {
                           leftTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              reservedSize: 72,
-                              interval: chartData.isEmpty ? 1 : null,
+                              reservedSize: 88,
+                              interval: null,
                               getTitlesWidget: (value, meta) {
-                                return SideTitleWidget(
-                                  meta: meta,
-                                  child: Text(
-                                    FinanceService.formatAmount(value),
-                                    style: const TextStyle(fontSize: 11),
-                                  ),
+                                // compute maxY similarly to above to derive interval
+                                final values = chartData
+                                    .map(
+                                      (row) => [
+                                        row['revenue'] as double,
+                                        row['expenses'] as double,
+                                      ].reduce((a, b) => a > b ? a : b),
+                                    )
+                                    .where((v) => v.isFinite)
+                                    .toList();
+                                if (values.isEmpty) {
+                                  return SideTitleWidget(
+                                    meta: meta,
+                                    child: Text(
+                                      FinanceService.formatAmount(value),
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  );
+                                }
+                                values.sort();
+                                final rawMax = values.last;
+                                final pIndex = ((values.length * 0.95).floor())
+                                    .clamp(0, values.length - 1);
+                                final p95 = values[pIndex];
+                                final cap = p95 * 3;
+                                final chosen = rawMax > cap ? cap : rawMax;
+                                final maxY = (chosen * 1.15).clamp(
+                                  1.0,
+                                  double.infinity,
                                 );
+
+                                final targetTicks = 5;
+                                final interval = (maxY / targetTicks).clamp(
+                                  1.0,
+                                  maxY,
+                                );
+                                // Show only multiples of interval (within small tolerance)
+                                const eps = 1e-6;
+                                if ((value % interval).abs() < eps ||
+                                    (value / interval).roundToDouble() *
+                                            interval ==
+                                        value) {
+                                  return SideTitleWidget(
+                                    meta: meta,
+                                    child: Text(
+                                      FinanceService.formatAmount(value),
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
                               },
                             ),
                           ),
@@ -120,11 +185,11 @@ class FinanceCharts extends StatelessWidget {
                           final expenses = entry.value['expenses'] as double;
                           return BarChartGroupData(
                             x: entry.key,
-                            barsSpace: 8,
+                            barsSpace: 6,
                             barRods: [
                               BarChartRodData(
                                 toY: revenue,
-                                width: 14,
+                                width: 12,
                                 borderRadius: BorderRadius.circular(6),
                                 gradient: const LinearGradient(
                                   colors: [Colors.greenAccent, Colors.green],
@@ -134,7 +199,7 @@ class FinanceCharts extends StatelessWidget {
                               ),
                               BarChartRodData(
                                 toY: expenses,
-                                width: 14,
+                                width: 12,
                                 borderRadius: BorderRadius.circular(6),
                                 gradient: const LinearGradient(
                                   colors: [Colors.redAccent, Colors.red],

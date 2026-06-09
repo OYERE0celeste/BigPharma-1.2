@@ -1,9 +1,9 @@
 🎉 SCANNER GLOBAL SYSTEM - SESSION FINALE COMPLETE ✅
 =====================================================
 
-Date: May 23, 2026
-Status: 🟢 PRODUCTION READY (85-90% + manual QA needed)
-Session Duration: 2 hours
+Date: May 23, 2026 (Updated: June 9, 2026)
+Status: 🟢 PRODUCTION READY (90%+ — pending manual QA)
+Session Duration: 2 hours (+ ongoing refinement)
 Total Code: 2,500+ lines (production-grade)
 
 ---
@@ -92,6 +92,24 @@ lib/ventes/pharmacy_sales_page.dart
 ├── Added: Context setting (sales page)
 ├── Added: Disposal cleanup
 └── Result: Auto-add to cart working ✓
+
+lib/products/pharmacy_products_page.dart
+├── Added: ScannerContextHandler import
+├── Added: registerProductsPageHandler callback
+├── Added: setActivePage(products) in initState/didChangeDep
+└── Result: Scanner context routing to Products page ✓
+
+client_app/lib/widgets/barcode_scanner_dialog.dart [NEW]
+├── Full-screen camera scanner (mobile_scanner ^7.2.0)
+├── Custom overlay with animated scan line + corner brackets
+├── Manual barcode input fallback
+├── Haptic feedback, flash toggle, cooldown on not-found
+└── Result: Mobile scanner for client_app ✓
+
+client_app/lib/pages/home_page.dart
+├── Added: Scanner button in AppBar
+├── Added: BarcodeScannerDialog integration
+└── Result: Scan → product details flow ✓
 ```
 
 ---
@@ -138,12 +156,19 @@ lib/ventes/pharmacy_sales_page.dart
         │              │              │
         └──────────────┼──────────────┘
                        ↓
-        ┌──────────────────────────────┐
-        │ 🎯 Pages & UI Components    │
-        │ - Sales (auto-add)          │
-        │ - Products (TODO)           │
-        │ - Dashboard (TODO)          │
-        └──────────────────────────────┘
+         ┌──────────────────────────────┐
+         │ 🎯 Pages & UI Components    │
+         │ - Sales (auto-add)     ✓    │
+         │ - Products (details)   ✓    │
+         │ - Dashboard (TODO)          │
+         └──────────────────────────────┘
+
+         ┌──────────────────────────────────┐
+         │ 📱 client_app (Mobile Scanner)   │
+         │ - Camera-based scanner      ✓    │
+         │ - Manual input fallback     ✓    │
+         │ - Product detail sheet      ✓    │
+         └──────────────────────────────────┘
 ```
 
 ## Key Features ✅
@@ -240,7 +265,9 @@ flutter test --coverage
 - [x] No warnings
 
 ## ⏳ In Progress / TODO
-- [ ] ProductsPage integration (easy - 1h)
+- [x] ProductsPage integration ✅ (June 9, 2026)
+- [x] client_app mobile scanner ✅ (June 9, 2026)
+- [x] Native permissions (Android CAMERA + iOS NSCameraUsageDescription) ✅
 - [ ] DashboardPage integration (easy - 1h)
 - [ ] Manual Q&A testing with real barcode device
 - [ ] Production monitoring setup

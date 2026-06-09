@@ -384,12 +384,20 @@ exports.forgotPassword = async (req, res, next) => {
       });
 
       logger.info(`OTP de réinitialisation envoyé à ${user.email}`);
+
+      // Keep otp available to include in response in test environment
+      res.locals.__testResetOtp = otp;
     }
 
-    // Réponse identique qu'un compte existe ou non (sécurité)
-    return success(res, {
-      data: { message: "Si cet identifiant existe, un code de réinitialisation a été envoyé par email" },
-    });
+    // Réponse identique qu'un compte existe ou non (sécurité).
+    // In test environment, include the token in the response to allow automated tests to validate reset flows.
+    const baseMessage = "Si cet identifiant existe, un code de réinitialisation a été envoyé par email";
+    const responseData = { message: baseMessage };
+    if (process.env.NODE_ENV === 'test' && res.locals.__testResetOtp) {
+      responseData.resetToken = res.locals.__testResetOtp;
+    }
+
+    return success(res, { data: responseData });
   } catch (error) {
     next(error);
   }

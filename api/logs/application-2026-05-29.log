@@ -1,0 +1,26 @@
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-29 06:28:38"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-05-29 14:37:17"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 1.500 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:03"}
+{"level":"info","message":"POST /api/auth/login 200 - - 263.180 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:03"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.460 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:04"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.266 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:04"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.214 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:04"}
+{"level":"info","message":"GET /api/notifications 200 - - 47.976 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:04"}
+{"level":"info","message":"GET /api/products?limit=4 200 - - 56.236 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:04"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 200 - - 52.983 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:04"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.079 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:13"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 99.565 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:13"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.075 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:26"}
+{"level":"info","message":"POST /api/auth/login 200 - - 94.316 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:26"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.290 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:33"}
+{"level":"info","message":"GET /api/auth/me 200 944 - 18.999 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:33"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.131 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:34"}
+{"level":"info","message":"OPTIONS /api/products?limit=4 204 0 - 0.251 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:34"}
+{"level":"info","message":"OPTIONS /api/products?limit=10&page=1 204 0 - 0.100 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:34"}
+{"level":"info","message":"GET /api/notifications 304 - - 20.038 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:34"}
+{"level":"info","message":"GET /api/products?limit=4 304 - - 34.035 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:34"}
+{"level":"info","message":"GET /api/products?limit=10&page=1 304 - - 31.611 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:34"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.130 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:48"}
+{"level":"info","message":"GET /api/auth/me 304 - - 13.138 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:38:48"}
+{"level":"info","message":"OPTIONS /api/invoices/my 204 0 - 0.104 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:39:08"}
+{"level":"info","message":"GET /api/invoices/my 200 - - 14.275 ms","service":"bigpharma-api","timestamp":"2026-05-29 14:39:08"}

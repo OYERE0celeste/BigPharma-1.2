@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:epharma/widgets/app_notification.dart';
 import 'package:flutter/services.dart';
-
 import 'package:provider/provider.dart';
-import '../providers/order_provider.dart';
-import '../providers/auth_provider.dart';
-import '../providers/client_provider.dart';
-import '../providers/product_provider.dart';
+
 import '../models/client_model.dart';
 import '../models/product_model.dart';
+import '../providers/auth_provider.dart';
+import '../providers/client_provider.dart';
+import '../providers/order_provider.dart';
+import '../providers/product_provider.dart';
+import '../widgets/app_notification.dart';
+import '../widgets/bp_theme.dart';
+import '../widgets/common/app_ui.dart';
 
 class OrderCreationDialog extends StatefulWidget {
   const OrderCreationDialog({super.key});
@@ -19,211 +21,271 @@ class OrderCreationDialog extends StatefulWidget {
 
 class _OrderCreationDialogState extends State<OrderCreationDialog> {
   Client? _selectedClient;
+  Product? _selectedProduct;
   final List<Map<String, dynamic>> _cartItems = [];
-  String? _note;
+  final TextEditingController _quantityController = TextEditingController(text: '1');
+  final TextEditingController _noteController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ClientProvider>(context, listen: false).loadClients();
-      Provider.of<ProductProvider>(context, listen: false).loadProducts();
+      context.read<ClientProvider>().loadClients();
+      context.read<ProductProvider>().loadProducts();
     });
   }
 
+  @override
+  void dispose() {
+    _quantityController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
   double get _total => _cartItems.fold(
-    0,
-    (sum, item) => sum + (item['price'] * item['quantity']),
-  );
+        0,
+        (sum, item) => sum + (item['price'] * item['quantity']),
+      );
 
   @override
   Widget build(BuildContext context) {
     final clientProvider = Provider.of<ClientProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
 
-    return AlertDialog(
-      title: const Text('Nouvelle Commande'),
-      content: SizedBox(
-        width: 600,
-        child: SingleChildScrollView(
-          child: Column(
+    return AppDialogShell(
+      maxWidth: 760,
+      maxHeight: 820,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildClientSelector(clientProvider),
-              const SizedBox(height: 16),
-              _buildProductAdder(productProvider),
-              const SizedBox(height: 16),
-              _buildCartTable(),
-              const SizedBox(height: 16),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Notes',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (val) => _note = val,
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Nouvelle commande', style: BpTextStyles.heading3),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
               ),
-              const Divider(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'TOTAL : ${_total.toStringAsFixed(0)} FCFA',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF6366F1),
+              const SizedBox(height: 16),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildClientSelector(clientProvider),
+                      const SizedBox(height: 12),
+                      _buildProductAdder(productProvider, isCompact, constraints.maxWidth),
+                      const SizedBox(height: 12),
+                      _buildCartSection(isCompact),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _noteController,
+                        decoration: BpInputTheme.light(
+                          label: 'Notes',
+                          prefixIcon: Icons.notes_outlined,
+                        ),
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: 16),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'TOTAL : ${_total.toStringAsFixed(0)} FCFA',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: BpColors.accent,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Annuler'),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    onPressed: _selectedClient != null && _cartItems.isNotEmpty
+                        ? _submitOrder
+                        : null,
+                    child: const Text('Creer la commande'),
+                  ),
+                ],
+              ),
             ],
-          ),
-        ),
+          );
+        },
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Annuler'),
-        ),
-        ElevatedButton(
-          onPressed: _selectedClient != null && _cartItems.isNotEmpty
-              ? () => _submitOrder()
-              : null,
-          child: const Text('Créer la commande'),
-        ),
-      ],
     );
   }
 
   Widget _buildClientSelector(ClientProvider provider) {
     return DropdownButtonFormField<Client>(
-      decoration: const InputDecoration(
-        labelText: 'Sélectionner un Client',
-        border: OutlineInputBorder(),
+      value: _selectedClient,
+      decoration: BpInputTheme.light(
+        label: 'Selectionner un client',
+        prefixIcon: Icons.person_outline,
       ),
       items: provider.clients
-          .map((c) => DropdownMenuItem(value: c, child: Text(c.fullName)))
+          .map((client) => DropdownMenuItem(value: client, child: Text(client.fullName)))
           .toList(),
-      onChanged: (val) => setState(() => _selectedClient = val),
+      onChanged: (value) => setState(() => _selectedClient = value),
     );
   }
 
-  Widget _buildProductAdder(ProductProvider provider) {
-    Product? selectedProduct;
-    int quantity = 1;
+  Widget _buildProductAdder(
+    ProductProvider provider,
+    bool isCompact,
+    double availableWidth,
+  ) {
+    final inputWidth = isCompact ? availableWidth : 380.0;
+    final quantityWidth = isCompact ? availableWidth : 120.0;
 
-    return Row(
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      crossAxisAlignment: WrapCrossAlignment.end,
       children: [
-        Expanded(
-          flex: 3,
+        SizedBox(
+          width: inputWidth,
           child: DropdownButtonFormField<Product>(
-            decoration: const InputDecoration(
-              labelText: 'Ajouter un Produit',
-              border: OutlineInputBorder(),
+            value: _selectedProduct,
+            decoration: BpInputTheme.light(
+              label: 'Ajouter un produit',
+              prefixIcon: Icons.inventory_2_outlined,
             ),
             items: provider.products
-                .map((p) => DropdownMenuItem(value: p, child: Text(p.name)))
+                .map((product) => DropdownMenuItem(value: product, child: Text(product.name)))
                 .toList(),
-            onChanged: (val) => selectedProduct = val,
+            onChanged: (value) => setState(() => _selectedProduct = value),
           ),
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          flex: 1,
-          child: TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Qté',
-              border: OutlineInputBorder(),
+        SizedBox(
+          width: quantityWidth,
+          child: TextField(
+            controller: _quantityController,
+            decoration: BpInputTheme.light(
+              label: 'Quantite',
+              prefixIcon: Icons.onetwothree_outlined,
             ),
-            initialValue: '1',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChanged: (val) => quantity = int.tryParse(val) ?? 1,
           ),
         ),
-        const SizedBox(width: 8),
-        IconButton(
-          icon: const Icon(
-            Icons.add_circle,
-            color: Color(0xFF6366F1),
-            size: 32,
+        SizedBox(
+          width: isCompact ? availableWidth : 120,
+          child: FilledButton.icon(
+            onPressed: _addSelectedProduct,
+            icon: const Icon(Icons.add),
+            label: const Text('Ajouter'),
           ),
-          onPressed: () {
-            if (selectedProduct != null) {
-              setState(() {
-                _cartItems.add({
-                  'product': selectedProduct!.id,
-                  'name': selectedProduct!.name,
-                  'price': selectedProduct!.sellingPrice,
-                  'quantity': quantity,
-                });
-              });
-            }
-          },
         ),
       ],
     );
   }
 
-  Widget _buildCartTable() {
-    if (_cartItems.isEmpty) return const Text('Aucun article ajouté.');
+  Widget _buildCartSection(bool isCompact) {
+    if (_cartItems.isEmpty) {
+      return const Text('Aucun article ajoute.');
+    }
 
-    return Table(
-      border: TableBorder.all(color: Colors.grey[300]!),
-      children: [
-        const TableRow(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                'Produit',
-                style: TextStyle(fontWeight: FontWeight.bold),
+    if (isCompact) {
+      return Column(
+        children: _cartItems.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: BpColors.surfaceMuted,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: BpColors.border),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item['name'], style: BpTextStyles.bodyBold),
+                        const SizedBox(height: 4),
+                        Text('${item['price']} FCFA', style: BpTextStyles.caption),
+                        Text('Qté ${item['quantity']}', style: BpTextStyles.caption),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: BpColors.error),
+                    onPressed: () => setState(() => _cartItems.removeAt(index)),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                'Prix',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text('Qté', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                'Action',
-                style: TextStyle(fontWeight: FontWeight.bold),
+          );
+        }).toList(),
+      );
+    }
+
+    return DataTable(
+      headingRowColor: const WidgetStatePropertyAll(BpColors.surfaceMuted),
+      columns: const [
+        DataColumn(label: Text('Produit')),
+        DataColumn(label: Text('Prix')),
+        DataColumn(label: Text('Qté')),
+        DataColumn(label: Text('Action')),
+      ],
+      rows: _cartItems.asMap().entries.map((entry) {
+        final index = entry.key;
+        final item = entry.value;
+        return DataRow(
+          cells: [
+            DataCell(Text(item['name'])),
+            DataCell(Text('${item['price']} FCFA')),
+            DataCell(Text('${item['quantity']}')),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: BpColors.error),
+                onPressed: () => setState(() => _cartItems.removeAt(index)),
               ),
             ),
           ],
-        ),
-        ..._cartItems.asMap().entries.map((entry) {
-          final idx = entry.key;
-          final item = entry.value;
-          return TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(item['name']),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text('${item['price']} FCFA'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text('${item['quantity']}'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () => setState(() => _cartItems.removeAt(idx)),
-              ),
-            ],
-          );
-        }),
-      ],
+        );
+      }).toList(),
     );
+  }
+
+  void _addSelectedProduct() {
+    final product = _selectedProduct;
+    if (product == null) {
+      return;
+    }
+
+    final quantity = int.tryParse(_quantityController.text) ?? 1;
+    setState(() {
+      _cartItems.add({
+        'product': product.id,
+        'name': product.name,
+        'price': product.sellingPrice,
+        'quantity': quantity,
+      });
+    });
   }
 
   void _submitOrder() async {
@@ -231,23 +293,27 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
     final orderData = {
       'client': _selectedClient!.id,
       'items': _cartItems
-          .map((i) => {'product': i['product'], 'quantity': i['quantity']})
+          .map((item) => {'product': item['product'], 'quantity': item['quantity']})
           .toList(),
-      'notes': _note,
+      'notes': _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
     };
 
     final success = await Provider.of<OrderProvider>(
       context,
       listen: false,
     ).createOrder(orderData, auth.token!);
+
     if (success) {
-      if (mounted) Navigator.pop(context);
-    } else {
       if (mounted) {
-        AppScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Échec de la création de la commande.")),
-        );
+        Navigator.pop(context);
       }
+      return;
+    }
+
+    if (mounted) {
+      AppScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Echec de la creation de la commande.')),
+      );
     }
   }
 }

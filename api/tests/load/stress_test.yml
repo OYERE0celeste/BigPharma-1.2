@@ -1,0 +1,37 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 50
+      name: "Ramp up load"
+    - duration: 120
+      arrivalRate: 50
+      name: "Sustained load"
+  environments:
+    production:
+      target: "https://api.bigpharma.bj"
+
+scenarios:
+  - name: "Consult product catalog"
+    flow:
+      - get:
+          url: "/api/products"
+      - think: 2
+      - get:
+          url: "/api/products/categories"
+
+  - name: "Login and check profile (simulated)"
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@bigpharma.bj"
+            password: "password"
+          capture:
+            - json: "$.token"
+              as: "token"
+      - get:
+          url: "/api/users/profile"
+          headers:
+            Authorization: "Bearer {{ token }}"

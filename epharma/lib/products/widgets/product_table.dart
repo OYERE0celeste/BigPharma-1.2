@@ -2,6 +2,7 @@ import 'package:epharma/products/pharmacy_products_page.dart';
 import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
 import '../../widgets/bp_theme.dart';
+import '../../widgets/common/app_table_controls.dart';
 import 'status_badge.dart';
 
 class ProductTable extends StatefulWidget {
@@ -41,24 +42,24 @@ class ProductTable extends StatefulWidget {
 class _ProductTableState extends State<ProductTable> {
   final Set<String> _selectedIds = {};
 
-  int get pageCount => (widget.products.length / widget.rowsPerPage).ceil();
-
   @override
   Widget build(BuildContext context) {
     final start = widget.currentPage * widget.rowsPerPage;
     final items = widget.products.skip(start).take(widget.rowsPerPage).toList();
+    final totalItems = widget.products.length;
+    final pageCount = totalItems == 0 ? 1 : (totalItems / widget.rowsPerPage).ceil();
+    final visibleStart = items.isEmpty ? 0 : start + 1;
+    final visibleEnd = items.isEmpty ? 0 : start + items.length;
+    final summary = totalItems == 0
+        ? 'Aucun produit à afficher'
+        : 'Affichage de $visibleStart à $visibleEnd sur $totalItems produits';
 
-    return Card(
-      elevation: 2,
-      color: BpColors.cardBg,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: BpColors.borderStrong),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
+    return BpSurfaceCard(
+      padding: const EdgeInsets.all(12),
+      radius: BpSpacing.radiusLg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
             if (_selectedIds.isNotEmpty && widget.onBulkDelete != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
@@ -89,75 +90,43 @@ class _ProductTableState extends State<ProductTable> {
                 ),
               ),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: BpColors.borderStrong),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                            child: _buildDataTable(items),
-                          ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth,
                         ),
-                      );
-                    },
-                  ),
-                ),
+                        child: _buildDataTable(items),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Text('Lignes par page :', style: TextStyle(color: BpColors.textSecondary)),
-                    const SizedBox(width: 8),
-                    DropdownButton<int>(
-                      value: widget.rowsPerPage,
-                      dropdownColor: BpColors.surface,
-                      style: const TextStyle(color: BpColors.textPrimary),
-                      items: const [10, 20, 50]
-                          .map(
-                            (e) =>
-                                DropdownMenuItem(value: e, child: Text('$e')),
-                          )
-                          .toList(),
-                      onChanged: (v) => widget.onRowsPerPageChanged(v ?? 10),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: widget.currentPage > 0
-                          ? () => widget.onPageChanged(widget.currentPage - 1)
-                          : null,
-                      icon: const Icon(Icons.chevron_left, color: BpColors.textPrimary),
-                    ),
-                    Text('${widget.currentPage + 1} / $pageCount', style: const TextStyle(color: BpColors.textPrimary)),
-                    IconButton(
-                      onPressed: widget.currentPage < pageCount - 1
-                          ? () => widget.onPageChanged(widget.currentPage + 1)
-                          : null,
-                      icon: const Icon(Icons.chevron_right, color: BpColors.textPrimary),
-                    ),
-                  ],
-                ),
-              ],
+            AppTableFooter(
+              summary: summary,
+              leading: AppTableRowsPerPageSelector(
+                value: widget.rowsPerPage,
+                onChanged: widget.onRowsPerPageChanged,
+              ),
+              pager: AppTablePager(
+                currentPage: widget.currentPage,
+                totalPages: pageCount,
+                onPrevious: widget.currentPage > 0
+                    ? () => widget.onPageChanged(widget.currentPage - 1)
+                    : null,
+                onNext: widget.currentPage < pageCount - 1
+                    ? () => widget.onPageChanged(widget.currentPage + 1)
+                    : null,
+              ),
             ),
           ],
         ),
-      ),
     );
   }
 
@@ -174,7 +143,7 @@ class _ProductTableState extends State<ProductTable> {
       },
       sortColumnIndex: _colIndex(widget.sortColumn),
       sortAscending: widget.sortAscending,
-      headingRowColor: WidgetStateProperty.all(BpColors.surface),
+      headingRowColor: WidgetStateProperty.all(BpColors.surfaceMuted),
       columnSpacing: 24,
       horizontalMargin: 24,
       dataRowMinHeight: 56,

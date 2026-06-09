@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../providers/notification_provider.dart';
 import '../models/notification_model.dart';
 import 'app_colors.dart';
+import 'bp_theme.dart';
 
 class NotificationPanel extends StatelessWidget {
   final Function(String, dynamic)? onTap;
@@ -18,11 +19,11 @@ class NotificationPanel extends StatelessWidget {
       width: 350,
       height: 450,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.surfaceStrong,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: BpColors.primaryDark.withOpacity(0.25),
             blurRadius: 10,
             spreadRadius: 2,
           ),
@@ -44,6 +45,7 @@ class NotificationPanel extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -54,7 +56,7 @@ class NotificationPanel extends StatelessWidget {
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.grey[400]!,
+                            BpColors.accent,
                           ),
                         ),
                       ),
@@ -179,14 +181,20 @@ class _NotificationTile extends StatelessWidget {
                       ),
                       Text(
                         _formatDate(notification.createdAt),
-                        style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: BpColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
                     notification.message,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: BpColors.textSecondary,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),

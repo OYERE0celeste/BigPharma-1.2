@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/bp_theme.dart';
+
 import '../../models/product_model.dart';
 import '../../products/services/product_api_service.dart';
 import '../../products/widgets/product_form.dart';
@@ -45,7 +47,7 @@ class _ScannerDialogState extends State<ScannerDialog> {
   late final TextEditingController _manualInputController;
   bool _showManualInput = false;
   bool _isClosing = false;
-  
+
   String _hardwareBarcodeBuffer = '';
   Timer? _hardwareBarcodeTimer;
   final FocusNode _keyboardFocusNode = FocusNode();
@@ -237,109 +239,118 @@ class _ScannerDialogState extends State<ScannerDialog> {
             } else if (event.character != null && event.character!.isNotEmpty) {
               _hardwareBarcodeBuffer += event.character!;
               _hardwareBarcodeTimer?.cancel();
-              _hardwareBarcodeTimer = Timer(const Duration(milliseconds: 200), () {
-                _hardwareBarcodeBuffer = '';
-              });
+              _hardwareBarcodeTimer = Timer(
+                const Duration(milliseconds: 200),
+                () {
+                  _hardwareBarcodeBuffer = '';
+                },
+              );
             }
           }
         },
         child: Dialog.fullscreen(
-        child: Consumer<ScannerProvider>(
-          builder: (context, scannerProvider, _) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  widget.title ?? 'Scanner QR / Code-barres',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+          child: Consumer<ScannerProvider>(
+            builder: (context, scannerProvider, _) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text(
+                    widget.title ?? 'Scanner QR / Code-barres',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                centerTitle: true,
-                leading: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: _closeScanner,
-                ),
-                actions: [
-                  FutureBuilder<bool>(
-                    future: scannerProvider.scannerService.hasTorch(),
-                    builder: (context, snapshot) {
-                      if (snapshot.data == true) {
-                        return IconButton(
-                          icon: const Icon(Icons.flashlight_on),
-                          onPressed: _toggleTorch,
-                          tooltip: 'Lampe torche',
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
+                  centerTitle: true,
+                  leading: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: _closeScanner,
                   ),
-                  if (widget.allowManualInput)
-                    IconButton(
-                      icon: const Icon(Icons.keyboard),
-                      onPressed: () {
-                        setState(() => _showManualInput = !_showManualInput);
-                        if (_showManualInput) {
-                          _manualInputFocus.requestFocus();
+                  actions: [
+                    FutureBuilder<bool>(
+                      future: scannerProvider.scannerService.hasTorch(),
+                      builder: (context, snapshot) {
+                        if (snapshot.data == true) {
+                          return IconButton(
+                            icon: const Icon(Icons.flashlight_on),
+                            onPressed: _toggleTorch,
+                            tooltip: 'Lampe torche',
+                          );
                         }
+                        return const SizedBox.shrink();
                       },
-                      tooltip: 'Entree manuelle',
                     ),
-                ],
-              ),
-              body: Stack(
-                children: [
-                  if (scannerProvider.isInitialized &&
-                      scannerProvider.scannerService.controller != null)
-                    MobileScanner(
-                      controller: scannerProvider.scannerService.controller!,
-                    )
-                  else
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const CircularProgressIndicator(),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Initialisation du scanner...',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
+                    if (widget.allowManualInput)
+                      IconButton(
+                        icon: const Icon(Icons.keyboard),
+                        onPressed: () {
+                          setState(() => _showManualInput = !_showManualInput);
+                          if (_showManualInput) {
+                            _manualInputFocus.requestFocus();
+                          }
+                        },
+                        tooltip: 'Entree manuelle',
                       ),
-                    ),
-                  if (scannerProvider.isActive)
-                    ScannerOverlay(
-                      controller:
-                          scannerProvider.scannerService.controller ??
-                          MobileScannerController(),
-                      onScan: (_) {},
-                      isActive: true,
-                      message: scannerProvider.isLoading
-                          ? 'Recherche en cours...'
-                          : 'Cadrez le code pour scanner',
-                    ),
-                  if (scannerProvider.state == ScannerState.found &&
-                      scannerProvider.lastProduct != null)
-                    _buildResultOverlay(context, scannerProvider.lastProduct!),
-                  if (scannerProvider.state == ScannerState.lookupFound &&
-                      scannerProvider.lookupResult != null)
-                    _buildLookupOverlay(context, scannerProvider.lookupResult!),
-                  if (scannerProvider.state == ScannerState.notFound)
-                    _buildNotFoundOverlay(context, scannerProvider),
-                  if (_showManualInput)
-                    Positioned(
-                      bottom: 20,
-                      left: 20,
-                      right: 20,
-                      child: _buildManualInputField(),
-                    ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+                body: Stack(
+                  children: [
+                    if (scannerProvider.isInitialized &&
+                        scannerProvider.scannerService.controller != null)
+                      MobileScanner(
+                        controller: scannerProvider.scannerService.controller!,
+                      )
+                    else
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Initialisation du scanner...',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (scannerProvider.isActive)
+                      ScannerOverlay(
+                        controller:
+                            scannerProvider.scannerService.controller ??
+                            MobileScannerController(),
+                        onScan: (_) {},
+                        isActive: true,
+                        message: scannerProvider.isLoading
+                            ? 'Recherche en cours...'
+                            : 'Cadrez le code pour scanner',
+                      ),
+                    if (scannerProvider.state == ScannerState.found &&
+                        scannerProvider.lastProduct != null)
+                      _buildResultOverlay(
+                        context,
+                        scannerProvider.lastProduct!,
+                      ),
+                    if (scannerProvider.state == ScannerState.lookupFound &&
+                        scannerProvider.lookupResult != null)
+                      _buildLookupOverlay(
+                        context,
+                        scannerProvider.lookupResult!,
+                      ),
+                    if (scannerProvider.state == ScannerState.notFound)
+                      _buildNotFoundOverlay(context, scannerProvider),
+                    if (_showManualInput)
+                      Positioned(
+                        bottom: 20,
+                        left: 20,
+                        right: 20,
+                        child: _buildManualInputField(),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
-      ),
       ),
     );
   }
@@ -540,7 +551,7 @@ class _ScannerDialogState extends State<ScannerDialog> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: BpColors.surfaceStrong,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(

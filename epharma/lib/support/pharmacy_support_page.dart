@@ -9,9 +9,12 @@ import '../providers/review_provider.dart';
 import '../providers/support_provider.dart';
 import '../widgets/app_colors.dart';
 import '../widgets/bp_theme.dart';
+import '../widgets/common/app_ui.dart';
 import '../widgets/animated_components.dart';
 import '../widgets/app_notification.dart';
 import '../widgets/page_stat_cards.dart';
+
+// ignore_for_file: dead_code
 
 class PharmacySupportPage extends StatefulWidget {
   const PharmacySupportPage({super.key});
@@ -50,6 +53,8 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
 
   @override
   Widget build(BuildContext context) {
+    return _buildResponsiveSupportPage(context);
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -140,7 +145,122 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
     );
   }
 
+  Widget _buildResponsiveSupportPage(BuildContext context) {
+    final isMobile = AppResponsive.isMobile(context);
+    final pagePadding = AppResponsive.pagePadding(context);
+
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: [
+            Padding(
+              padding: pagePadding.copyWith(bottom: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (isMobile)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Relation Client',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ).copyWith(color: BpColors.textPrimary),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Suivez les consultations, les avis et les réclamations depuis un seul espace.',
+                          style: TextStyle(
+                            color: BpColors.textSecondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: _refreshAll,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Actualiser'),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Relation Client',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ).copyWith(color: BpColors.textPrimary),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Suivez les consultations, les avis et les réclamations depuis un seul espace.',
+                                style: TextStyle(
+                                  color: BpColors.textSecondary,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        FilledButton.icon(
+                          onPressed: _refreshAll,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Actualiser'),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 16),
+                  BpSurfaceCard(
+                    padding: const EdgeInsets.all(6),
+                    radius: BpSpacing.radiusLg,
+                    child: TabBar(
+                      isScrollable: isMobile,
+                      labelColor: kAccentBlue,
+                      unselectedLabelColor: BpColors.textSecondary,
+                      indicatorColor: kAccentBlue,
+                      tabs: const [
+                        Tab(text: 'Questions'),
+                        Tab(text: 'Avis'),
+                        Tab(text: 'Réclamations'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _buildQuestionsTab(),
+                  _buildReviewsTab(),
+                  _buildComplaintsTab(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildQuestionsTab() {
+    return _buildResponsiveQuestionsTab();
+
     final provider = context.watch<SupportProvider>();
     final questions = provider.questions;
     final pending = questions
@@ -228,6 +348,122 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                 ),
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildResponsiveQuestionsTab() {
+    final provider = context.watch<SupportProvider>();
+    final questions = provider.questions;
+    final pending = questions
+        .where((question) => question.status == 'en_attente')
+        .length;
+    final answered = questions
+        .where((question) => question.status == 'repondu')
+        .length;
+    final closed = questions
+        .where((question) => question.status == 'ferme')
+        .length;
+    final messages = questions.fold<int>(
+      0,
+      (sum, question) => sum + question.messages.length,
+    );
+    final isMobile = AppResponsive.isMobile(context);
+
+    return Column(
+      children: [
+        Padding(
+          padding: AppResponsive.horizontalPadding(context),
+          child: PageStatCards(
+            items: [
+              PageStatCardData(
+                label: 'En attente',
+                value: '$pending',
+                color: Colors.orange,
+                icon: Icons.hourglass_top_rounded,
+              ),
+              PageStatCardData(
+                label: 'Répondues',
+                value: '$answered',
+                color: Colors.green,
+                icon: Icons.mark_email_read_outlined,
+              ),
+              PageStatCardData(
+                label: 'Fermées',
+                value: '$closed',
+                color: Colors.grey,
+                icon: Icons.lock_outline_rounded,
+              ),
+              PageStatCardData(
+                label: 'Messages',
+                value: '$messages',
+                color: Colors.blue,
+                icon: Icons.forum_outlined,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Expanded(
+          child: Padding(
+            padding: AppResponsive.horizontalPadding(context),
+            child: isMobile
+                ? Column(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: BpSurfaceCard(
+                          padding: EdgeInsets.zero,
+                          radius: BpSpacing.radiusLg,
+                          child: provider.isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : _buildQuestionList(provider.questions),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        flex: 3,
+                        child: BpSurfaceCard(
+                          padding: EdgeInsets.zero,
+                          radius: BpSpacing.radiusLg,
+                          child: _selectedQuestion == null
+                              ? _buildNoSelection()
+                              : _buildConversation(),
+                        ),
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: BpSurfaceCard(
+                          padding: EdgeInsets.zero,
+                          radius: BpSpacing.radiusLg,
+                          child: provider.isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : _buildQuestionList(provider.questions),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 3,
+                        child: BpSurfaceCard(
+                          padding: EdgeInsets.zero,
+                          radius: BpSpacing.radiusLg,
+                          child: _selectedQuestion == null
+                              ? _buildNoSelection()
+                              : _buildConversation(),
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         ),
       ],
@@ -478,14 +714,9 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                 Expanded(
                   child: TextField(
                     controller: _replyController,
-                    decoration: InputDecoration(
-                      hintText: 'Tapez votre réponse...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: BpColors.surfaceMuted,
+                    decoration: BpInputTheme.light(
+                      label: 'Réponse',
+                      hint: 'Tapez votre réponse...',
                     ),
                     maxLines: null,
                   ),
@@ -521,7 +752,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
         .length;
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: AppResponsive.horizontalPadding(context),
       children: [
         PageStatCards(
           items: [
@@ -569,10 +800,10 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
   }
 
   Widget _buildReviewCard(ReviewModel review) {
-    return Card(
+    return BpSurfaceCard(
       margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      padding: EdgeInsets.zero,
+      radius: BpSpacing.radiusLg,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -650,7 +881,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blueGrey.withOpacity(0.06),
+                  color: BpColors.surfaceMuted.withOpacity(0.16),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(review.response!.message),
@@ -682,7 +913,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
     final rejected = complaints.where((c) => c.status == 'rejetee').length;
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: AppResponsive.horizontalPadding(context),
       children: [
         PageStatCards(
           items: [
@@ -737,10 +968,10 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
       _ => Colors.orange,
     };
 
-    return Card(
+    return BpSurfaceCard(
       margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      padding: EdgeInsets.zero,
+      radius: BpSpacing.radiusLg,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -813,6 +1044,8 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
   }
 
   Future<void> _showReviewResponseDialog(ReviewModel review) async {
+    return _showResponsiveReviewResponseDialog(review);
+
     final controller = TextEditingController(
       text: review.response?.message ?? '',
     );
@@ -852,6 +1085,8 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
   }
 
   Future<void> _showComplaintStatusDialog(ComplaintModel complaint) async {
+    return _showResponsiveComplaintStatusDialog(complaint);
+
     var selectedStatus = complaint.status;
     final controller = TextEditingController(text: complaint.resolutionNote);
 
@@ -913,6 +1148,141 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
               child: const Text('Enregistrer'),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showResponsiveReviewResponseDialog(ReviewModel review) async {
+    final controller = TextEditingController(
+      text: review.response?.message ?? '',
+    );
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AppDialogShell(
+        maxWidth: 560,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Répondre à l’avis',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              minLines: 4,
+              maxLines: 6,
+              decoration: BpInputTheme.light(
+                label: 'Réponse',
+                hint: 'Votre réponse au client',
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Text('Annuler'),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  onPressed: () async {
+                    await context.read<ReviewProvider>().respondToReview(
+                      review.id,
+                      controller.text.trim(),
+                    );
+                    if (!mounted) return;
+                    Navigator.pop(dialogContext);
+                  },
+                  child: const Text('Envoyer'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showResponsiveComplaintStatusDialog(
+    ComplaintModel complaint,
+  ) async {
+    var selectedStatus = complaint.status;
+    final controller = TextEditingController(text: complaint.resolutionNote);
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setModalState) => AppDialogShell(
+          maxWidth: 560,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Suivi ${complaint.complaintNumber}',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: selectedStatus,
+                decoration: BpInputTheme.light(label: 'Statut'),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'en_attente',
+                    child: Text('En attente'),
+                  ),
+                  DropdownMenuItem(value: 'en_cours', child: Text('En cours')),
+                  DropdownMenuItem(value: 'resolue', child: Text('Résolue')),
+                  DropdownMenuItem(value: 'rejetee', child: Text('Rejetée')),
+                ],
+                onChanged: (value) {
+                  if (value == null) return;
+                  setModalState(() => selectedStatus = value);
+                },
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                minLines: 3,
+                maxLines: 5,
+                decoration: BpInputTheme.light(
+                  label: 'Note de traitement',
+                  hint: 'Ajoutez une note de suivi',
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuler'),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    onPressed: () async {
+                      await context.read<ComplaintProvider>().updateStatus(
+                        complaint.id,
+                        selectedStatus,
+                        controller.text.trim(),
+                      );
+                      if (!mounted) return;
+                      Navigator.pop(dialogContext);
+                    },
+                    child: const Text('Enregistrer'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

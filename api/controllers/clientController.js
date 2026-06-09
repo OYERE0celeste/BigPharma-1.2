@@ -82,10 +82,10 @@ exports.createClient = async (req, res, next) => {
     const { fullName, email, phone, dateOfBirth, gender, address, createUser, password } = req.body;
 
     // Validate required fields
-    if (!fullName || !phone || !dateOfBirth || !gender) {
+    if (!fullName || !phone) {
       return failure(res, {
         status: 400,
-        message: "Missing required fields: fullName, phone, dateOfBirth, gender",
+        message: "Missing required fields: fullName, phone",
         code: "VALIDATION_ERROR",
       });
     }

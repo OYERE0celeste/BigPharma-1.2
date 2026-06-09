@@ -200,7 +200,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
         final user = _users[index];
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: SettingsTheme.background,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: SettingsTheme.divider),
             boxShadow: [
@@ -529,7 +529,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       labelText: label,
       prefixIcon: Icon(icon, size: 20),
       filled: true,
-      fillColor: Colors.grey[50],
+      fillColor: SettingsTheme.background,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,

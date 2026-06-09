@@ -198,10 +198,7 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
           const SizedBox(height: 4),
           const Text(
             "Exportez vos données de pharmacie ou gérez vos fichiers de sauvegarde.",
-            style: TextStyle(
-              fontSize: 12,
-              color: SettingsTheme.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, color: SettingsTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -227,7 +224,7 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
   Widget _buildInfoCard(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: SettingsTheme.background,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: SettingsTheme.divider),
         boxShadow: [

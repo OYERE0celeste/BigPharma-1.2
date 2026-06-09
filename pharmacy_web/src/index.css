@@ -5,7 +5,7 @@
   --primary-dark: #059669;
   --primary-light: #d1fae5;
   --secondary: #0f172a; /* Slate 900 */
-  --accent: #3b82f6; /* Blue 500 */
+  --accent: #10b981; /* Emerald 500 - matches brand green */
   
   --bg-main: #f8fafc; /* Slate 50 */
   --bg-card: #ffffff;
@@ -88,8 +88,8 @@ body {
 /* Glassmorphism utility */
 .glass {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 

@@ -1,13 +1,13 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server-core");
 const Product = require("../models/product");
+
+jest.setTimeout(30000);
 const Client = require("../models/client");
 const Order = require("../models/order");
 const Finance = require("../models/finance");
 
 let app;
-let mongo;
 let adminToken;
 let clientToken;
 let adminUser;
@@ -86,18 +86,14 @@ async function setupTestData(testSuffix = Date.now()) {
 }
 
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = "test_secret";
-  process.env.MONGODB_URI = mongo.getUri();
+  process.env.MONGODB_URI = mongoose.connection.client.s.url || "mongodb://localhost:27017/test";
 
   app = require("../app");
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-  if (mongo) await mongo.stop();
-});
+
 
 describe("Order Integration Flow", () => {
   it("should complete a full order lifecycle: create -> prepare -> validate", async () => {

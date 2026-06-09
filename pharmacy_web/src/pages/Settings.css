@@ -55,8 +55,8 @@
 }
 
 .settings-tabs button.active {
-  background: #eef2ff;
-  color: #6366f1;
+  background: #e6f4ea;
+  color: #10b981;
 }
 
 .settings-content {
@@ -101,12 +101,12 @@
 }
 
 .form-group input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  border-color: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
 }
 
 .save-btn {
-  background: #6366f1;
+  background: #10b981;
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -118,7 +118,7 @@
 }
 
 .save-btn:hover {
-  background: #4f46e5;
+  background: #059669;
   transform: translateY(-1px);
 }
 

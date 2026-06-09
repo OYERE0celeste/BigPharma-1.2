@@ -1,8 +1,10 @@
-import 'package:epharma/models/client_model.dart';
-import 'package:epharma/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:epharma/widgets/app_notification.dart';
 import 'package:flutter/services.dart';
+
+import '../../models/client_model.dart';
+import '../../widgets/app_notification.dart';
+import '../../widgets/bp_theme.dart';
+import '../../widgets/common/app_ui.dart';
 
 class ClientFormDialog extends StatefulWidget {
   final Client? client;
@@ -31,16 +33,10 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
   @override
   void initState() {
     super.initState();
-
-    _fullNameController = TextEditingController(
-      text: widget.client?.fullName ?? '',
-    );
+    _fullNameController = TextEditingController(text: widget.client?.fullName ?? '');
     _phoneController = TextEditingController(text: widget.client?.phone ?? '');
     _emailController = TextEditingController(text: widget.client?.email ?? '');
-    _addressController = TextEditingController(
-      text: widget.client?.address ?? '',
-    );
-
+    _addressController = TextEditingController(text: widget.client?.address ?? '');
     _selectedGender = widget.client?.gender;
     _dateOfBirth = widget.client?.dateOfBirth;
     _hasMedicalHistory = widget.client?.hasMedicalHistory ?? false;
@@ -57,50 +53,72 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        width: 600,
-        constraints: const BoxConstraints(maxHeight: 800),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _FormHeader(isEditing: widget.client != null),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _SectionTitle('Information personnelle'),
-                    _buildTextField(_fullNameController, 'Nom complet'),
-                    const SizedBox(height: 12),
-                    _buildPhoneField(),
-                    const SizedBox(height: 12),
-                    _buildTextField(_emailController, 'Email'),
-                    const SizedBox(height: 12),
-                    _buildTextField(_addressController, 'Addresse'),
-                    const SizedBox(height: 12),
-                    _buildGenderSelector(),
-                    const SizedBox(height: 12),
-                    _buildDateOfBirthSelector(),
+    return AppDialogShell(
+      maxWidth: 720,
+      maxHeight: 860,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isCompact = constraints.maxWidth < AppResponsive.tabletBreakpoint;
 
-                    const SizedBox(height: 20),
-                    CheckboxListTile(
-                      title: const Text('Antécédents médicaux'),
-                      value: _hasMedicalHistory,
-                      onChanged: (value) {
-                        setState(() {
-                          _hasMedicalHistory = value ?? false;
-                        });
-                      },
-                    ),
-                  ],
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _FormHeader(isEditing: widget.client != null),
+              const SizedBox(height: 20),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _SectionTitle('Information personnelle'),
+                      _buildTextField(_fullNameController, 'Nom complet'),
+                      const SizedBox(height: 12),
+                      _buildPhoneField(),
+                      const SizedBox(height: 12),
+                      _buildTextField(_emailController, 'Email'),
+                      const SizedBox(height: 12),
+                      _buildTextField(_addressController, 'Adresse', maxLines: 2),
+                      const SizedBox(height: 12),
+                      if (isCompact)
+                        Column(
+                          children: [
+                            _buildGenderSelector(),
+                            const SizedBox(height: 12),
+                            _buildDateOfBirthSelector(),
+                          ],
+                        )
+                      else
+                        Row(
+                          children: [
+                            Expanded(child: _buildGenderSelector()),
+                            const SizedBox(width: 12),
+                            Expanded(child: _buildDateOfBirthSelector()),
+                          ],
+                        ),
+                      const SizedBox(height: 20),
+                      CheckboxListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Antecedents medicaux'),
+                        value: _hasMedicalHistory,
+                        onChanged: (value) {
+                          setState(() {
+                            _hasMedicalHistory = value ?? false;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            _FormActions(context),
-          ],
-        ),
+              const SizedBox(height: 20),
+              _FormActions(
+                onCancel: () => Navigator.pop(context),
+                onSave: _submitForm,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -113,9 +131,9 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(15),
       ],
-      decoration: const InputDecoration(
-        labelText: 'Téléphone',
-        border: OutlineInputBorder(),
+      decoration: BpInputTheme.light(
+        label: 'Telephone',
+        prefixIcon: Icons.phone_outlined,
       ),
     );
   }
@@ -128,9 +146,9 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
+      decoration: BpInputTheme.light(
+        label: label,
+        prefixIcon: Icons.text_fields_outlined,
       ),
     );
   }
@@ -138,13 +156,13 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
   Widget _buildGenderSelector() {
     return DropdownButtonFormField<Gender>(
       value: _selectedGender,
-      decoration: const InputDecoration(
-        labelText: 'Genre',
-        border: OutlineInputBorder(),
+      decoration: BpInputTheme.light(
+        label: 'Genre',
+        prefixIcon: Icons.wc_outlined,
       ),
-      items: Gender.values.map((gender) {
-        return DropdownMenuItem(value: gender, child: Text(gender.name));
-      }).toList(),
+      items: Gender.values
+          .map((gender) => DropdownMenuItem(value: gender, child: Text(gender.name)))
+          .toList(),
       onChanged: (value) {
         setState(() {
           _selectedGender = value;
@@ -169,14 +187,12 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
         }
       },
       child: InputDecorator(
-        decoration: const InputDecoration(
-          labelText: 'Date de naissance',
-          border: OutlineInputBorder(),
+        decoration: BpInputTheme.light(
+          label: 'Date de naissance',
+          prefixIcon: Icons.cake_outlined,
         ),
         child: Text(
-          _dateOfBirth != null
-              ? _dateOfBirth.toString().split(' ')[0]
-              : 'Selectionner la date',
+          _dateOfBirth != null ? _dateOfBirth.toString().split(' ')[0] : 'Selectionner la date',
         ),
       ),
     );
@@ -190,7 +206,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
       AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Veuillez remplir tous les champs requis'),
-          backgroundColor: kDangerRed,
+          backgroundColor: BpColors.error,
         ),
       );
       return;
@@ -200,10 +216,8 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
     if (!RegExp(r'^[0-9]{8,15}$').hasMatch(phone)) {
       AppScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Téléphone invalide (8-15 chiffres, chiffres uniquement)',
-          ),
-          backgroundColor: kDangerRed,
+          content: Text('Telephone invalide (8-15 chiffres)'),
+          backgroundColor: BpColors.error,
         ),
       );
       return;
@@ -232,22 +246,15 @@ class _FormHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: kPrimaryGreen.withOpacity(0.1),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(4),
-          topRight: Radius.circular(4),
-        ),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
         children: [
-          Icon(isEditing ? Icons.edit : Icons.person_add, color: kPrimaryGreen),
-          const SizedBox(width: 16),
+          Icon(isEditing ? Icons.edit : Icons.person_add, color: BpColors.accent),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               isEditing ? 'Modifier le client' : 'Ajouter un nouveau client',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: BpTextStyles.heading3,
             ),
           ),
           IconButton(
@@ -269,49 +276,35 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
+      child: Text(title, style: BpTextStyles.heading3),
     );
   }
 }
 
 class _FormActions extends StatelessWidget {
-  final BuildContext context;
+  final VoidCallback onCancel;
+  final VoidCallback onSave;
 
-  const _FormActions(this.context);
+  const _FormActions({
+    required this.onCancel,
+    required this.onSave,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          const SizedBox(width: 12),
-          ElevatedButton(
-            onPressed: () {
-              // Access the state to call _submitForm
-              final state = context
-                  .findAncestorStateOfType<_ClientFormDialogState>();
-              state?._submitForm();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryGreen,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Enregistrer'),
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        OutlinedButton(
+          onPressed: onCancel,
+          child: const Text('Annuler'),
+        ),
+        const SizedBox(width: 12),
+        FilledButton(
+          onPressed: onSave,
+          child: const Text('Enregistrer'),
+        ),
+      ],
     );
   }
 }

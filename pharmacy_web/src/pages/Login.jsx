@@ -42,7 +42,6 @@ const Login = () => {
     <div className="login-wrapper">
       <div className="login-card">
         <div className="login-brand">
-          <div className="logo-icon">💊</div>
           <h1>BigPharma</h1>
           <p>Espace Administration & Staff</p>
         </div>

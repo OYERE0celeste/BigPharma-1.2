@@ -7,19 +7,13 @@ const User = require("../models/User");
 const Product = require("../models/product");
 const Finance = require("../models/finance");
 const { logActivity } = require("../utils/activityLogger");
-const { runInTransaction } = require("../utils/dbUtils");
 const { success, failure } = require("../utils/response");
-const { sendNotification, notifyStaff } = require("../utils/notificationHelper");
-const {
-  sendOrderConfirmationEmail,
-  sendOrderStatusUpdateEmail,
-  sendInvoiceReadyEmail,
-} = require("../utils/mailService");
 const {
   createInvoiceFromOrder,
   syncInvoiceForOrder,
   toInvoicePayload,
 } = require("../utils/invoiceService");
+const { createOrderService } = require("../services/orderService");
 
 
 const ORDER_STATUSES = [
@@ -44,18 +38,6 @@ const ORDER_STATUS_LABELS = {
   pret_pour_recuperation: "prête pour récupération",
   validee: "validée (récupérée)",
   annulee: "annulée",
-};
-
-const generateOrderNumber = async () => {
-  const year = new Date().getFullYear();
-  const startOfYear = new Date(year, 0, 1);
-  const endOfYear = new Date(year, 11, 31, 23, 59, 59);
-
-  const count = await Order.countDocuments({
-    createdAt: { $gte: startOfYear, $lte: endOfYear },
-  });
-
-  return `CMD-${year}-${String(count + 1).padStart(4, "0")}`;
 };
 
 const toPositiveInteger = (value) => {
@@ -93,61 +75,6 @@ const availableOrderableStockForProduct = (product) => {
   }, 0);
 };
 
-const allocateStock = (product, quantity) => {
-  const now = new Date();
-  const eligibleLots = [...(product.lots || [])]
-    .filter((lot) => (lot.quantityAvailable || 0) > 0 && new Date(lot.expirationDate) >= now)
-    .sort((a, b) => new Date(a.expirationDate) - new Date(b.expirationDate));
-
-  let remaining = quantity;
-  const lotAllocations = [];
-
-  for (const lot of eligibleLots) {
-    if (remaining <= 0) {
-      break;
-    }
-
-    const usedQuantity = Math.min(lot.quantityAvailable || 0, remaining);
-    if (usedQuantity <= 0) {
-      continue;
-    }
-
-    lot.quantityAvailable -= usedQuantity;
-    remaining -= usedQuantity;
-    lotAllocations.push({
-      lotId: lot._id,
-      quantity: usedQuantity,
-    });
-  }
-
-  if (remaining > 0) {
-    throw new Error(`Stock insuffisant pour ${product.name}`);
-  }
-
-  product.stockQuantity = availableStockForProduct(product);
-
-  return lotAllocations;
-};
-
-const restoreStock = (product, lotAllocations = []) => {
-  for (const allocation of lotAllocations) {
-    const lot = product.lots.id(allocation.lotId);
-    if (lot) {
-      lot.quantityAvailable += allocation.quantity;
-    }
-  }
-
-  product.stockQuantity = availableStockForProduct(product);
-};
-
-const resolveClientForUser = async (user) =>
-  Client.findOne({
-    userId: user._id,
-    companyId: user.companyId,
-  });
-
-
-
 const computeOrderStats = async (companyId) => {
   const stats = await Promise.all(
     ORDER_STATUSES.map((status) =>
@@ -160,184 +87,11 @@ const computeOrderStats = async (companyId) => {
 
 exports.createOrder = async (req, res, next) => {
   try {
-    let rawProducts = req.body.products || req.body.items || [];
-
-    // If it's a string, try to parse it (sometimes happens with some clients/proxies)
-    if (typeof rawProducts === "string") {
-      try {
-        rawProducts = JSON.parse(rawProducts);
-      } catch (e) {
-        rawProducts = [];
-      }
-    }
-
-    if (!Array.isArray(rawProducts) || rawProducts.length === 0) {
-      console.log("Order creation failed: empty or invalid products list.", {
-        body: req.body,
-        extracted: rawProducts,
-      });
-      return failure(res, {
-        status: 400,
-        message: "La commande doit contenir au moins un article",
-      });
-    }
-
-    const client = await resolveClientForUser(req.user);
-    if (!client) {
-      return failure(res, {
-        status: 404,
-        message: "Profil client introuvable pour cet utilisateur",
-      });
-    }
-
-    const normalizedProducts = rawProducts.map((item) => ({
-      productId: item.productId || item.product || item._id || item.id,
-      quantity: toPositiveInteger(item.quantity),
-    }));
-
-    if (normalizedProducts.some((item) => !item.productId || item.quantity === null)) {
-      return failure(res, {
-        status: 400,
-        message: "Chaque produit doit contenir productId et une quantité valide",
-      });
-    }
-
-    const productIds = normalizedProducts.map((item) => String(item.productId));
-    if (new Set(productIds).size !== productIds.length) {
-      return failure(res, {
-        status: 400,
-        message: "Un produit ne peut apparaître qu'une seule fois dans la commande",
-      });
-    }
-
-    const products = await Product.find({
-      _id: { $in: productIds },
-      isActive: true,
-    });
-
-    if (products.length !== productIds.length) {
-      console.log("Product mismatch details:", {
-        userCompanyId: req.user.companyId,
-        requestedProductIds: productIds,
-        foundProductsCount: products.length,
-        foundProductsCompanyIds: products.map((p) => p.companyId),
-      });
-      return failure(res, {
-        status: 404,
-        message: "Un ou plusieurs produits de la commande sont introuvables",
-      });
-    }
-
-    const targetCompanyIds = new Set(products.map((p) => String(p.companyId)));
-    if (targetCompanyIds.size > 1) {
-      return failure(res, {
-        status: 400,
-        message: "Tous les produits de la commande doivent provenir de la même pharmacie",
-      });
-    }
-
-    const targetCompanyId = products[0].companyId;
-
-    const productsById = new Map(products.map((product) => [String(product._id), product]));
-
-    let totalPrice = 0;
-
-    const orderProducts = [];
-
-    for (const requestedProduct of normalizedProducts) {
-      const product = productsById.get(String(requestedProduct.productId));
-      if (!product) {
-        return failure(res, {
-          status: 404,
-          message: `Produit introuvable : ${requestedProduct.productId}`,
-        });
-      }
-
-      const currentStock = availableOrderableStockForProduct(product);
-      if (currentStock < requestedProduct.quantity) {
-        return failure(res, {
-          status: 400,
-          message: `Stock insuffisant pour ${product.name}`,
-        });
-      }
-
-      totalPrice += product.sellingPrice * requestedProduct.quantity;
-
-
-      orderProducts.push({
-        productId: product._id,
-        name: product.name,
-        price: product.sellingPrice,
-        quantity: requestedProduct.quantity,
-      });
-    }
-
-
-
-    const order = await Order.create({
-      orderNumber: await generateOrderNumber(),
-      userId: req.user._id,
-      clientId: client._id,
-      companyId: targetCompanyId,
-      products: orderProducts,
-      totalPrice,
-      status: "en_attente",
-
-      notes: req.body.notes,
-      pickupMode: req.body.pickupMode === "livraison" ? "livraison" : "sur_place",
-      collectionCode: Math.floor(100000 + Math.random() * 900000).toString(),
-    });
-
-    await OrderTimeline.create({
-      orderId: order._id,
-      status: "en_attente",
-      userId: req.user._id,
-      note: "Commande créée par le client",
-      companyId: targetCompanyId,
-    });
-
-    await logActivity({
-      actionType: "create",
-      entityType: "order",
-      entityId: order._id.toString(),
-      entityName: order.orderNumber,
-      description: `Nouvelle commande ${order.orderNumber} créée`,
-      companyId: targetCompanyId,
-      user: req.user.fullName || "Client",
-      clientOrSupplierName: client.fullName,
-      totalAmount: order.totalPrice,
-      quantity: order.products.reduce((sum, p) => sum + p.quantity, 0),
-      status: "pending",
-      listOfItems: order.products.map((p) => ({
-        productName: p.name,
-        quantity: p.quantity,
-        unitPrice: p.price,
-        totalPrice: p.price * p.quantity,
-      })),
-    }, req);
-
-    const savedOrder = await buildOrderQuery({ _id: order._id });
-
-    if (global.io) {
-      global.io.to(targetCompanyId.toString()).emit("new-order", savedOrder);
-    }
-
-    // Notify staff via persistent notification
-    await notifyStaff({
-      companyId: targetCompanyId,
-      title: "Nouvelle commande",
-      message: `Une nouvelle commande ${order.orderNumber} a été reçue de ${client.fullName}.`,
-      type: "order",
-      data: { orderId: order._id, orderNumber: order.orderNumber },
-    });
-
-    await sendOrderConfirmationEmail({
-      email: req.user.email,
-      fullName: req.user.fullName,
-      orderNumber: order.orderNumber,
-      pickupMode: order.pickupMode,
-      companyName: "BigPharma",
-      collectionCode: order.collectionCode,
+    const savedOrder = await createOrderService({
+      user: req.user,
+      body: req.body,
+      io: global.io,
+      request: req,
     });
 
     return success(res, {
@@ -345,7 +99,7 @@ exports.createOrder = async (req, res, next) => {
       data: savedOrder,
     });
   } catch (error) {
-    next(error);
+    return failure(res, { status: 400, message: error.message });
   }
 };
 
@@ -473,244 +227,47 @@ exports.getOrderById = async (req, res, next) => {
 exports.updateOrderStatus = async (req, res, next) => {
   try {
     const { status, note } = req.body;
-
-    if (!ORDER_STATUSES.includes(status)) {
-      return failure(res, {
-        status: 400,
-        message: "Statut de commande invalide",
-      });
-    }
-
-    let transactionResult;
-    try {
-      transactionResult = await runInTransaction(async (session) => {
-        const order = await Order.findOne({
-          _id: req.params.id,
-          companyId: req.user.companyId,
-        }).session(session);
-
-        if (!order) {
-          throw new Error("Commande non trouvée");
-        }
-
-        if (order.status === status) {
-          throw new Error(`La commande est déjà ${ORDER_STATUS_LABELS[status]}`);
-        }
-
-        const allowedTransitions = ORDER_TRANSITIONS[order.status] || [];
-
-        if (!allowedTransitions.includes(status)) {
-          throw new Error(`Transition invalide de ${ORDER_STATUS_LABELS[order.status]} vers ${ORDER_STATUS_LABELS[status]}`);
-        }
-
-        // Allocation de stock si on passe à un état actif (non attente, non annulée)
-        // et que le stock n'est pas encore alloué
-        const isActiveStatus = ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
-        const wasAllocated = order.stockAllocations && order.stockAllocations.length > 0;
-
-        if (isActiveStatus && !wasAllocated) {
-          const allocations = [];
-
-          const productIds = order.products.map((product) => product.productId);
-          const products = await Product.find({
-            _id: { $in: productIds },
-            companyId: req.user.companyId,
-          }).session(session);
-          const productsById = new Map(products.map((product) => [String(product._id), product]));
-
-          for (const orderedProduct of order.products) {
-            const product = productsById.get(String(orderedProduct.productId));
-            if (!product) {
-              throw new Error(`Produit introuvable : ${orderedProduct.name}`);
-            }
-
-            if (availableOrderableStockForProduct(product) < orderedProduct.quantity) {
-              throw new Error(`Stock insuffisant pour ${orderedProduct.name}`);
-            }
-          }
-
-          for (const orderedProduct of order.products) {
-            const product = productsById.get(String(orderedProduct.productId));
-            const lotAllocations = allocateStock(product, orderedProduct.quantity);
-            product.markModified("lots");
-            await product.save({ session });
-
-            // Check for low stock alert
-            if (product.stockQuantity <= (product.minStockLevel || 0)) {
-              await notifyStaff({
-                companyId: req.user.companyId,
-                title: "Alerte Stock Faible",
-                message: `Le stock de ${product.name} est bas (${product.stockQuantity} restants).`,
-                type: "stock",
-                data: { productId: product._id },
-              });
-            }
-
-            allocations.push({
-              productId: product._id,
-              lotAllocations,
-            });
-          }
-
-          order.stockAllocations = allocations;
-        }
-
-        // Restauration de stock si on annule une commande qui avait du stock alloué
-        if (status === "annulee" && wasAllocated) {
-          for (const allocation of order.stockAllocations || []) {
-            const product = await Product.findOne({
-              _id: allocation.productId,
-              companyId: req.user.companyId,
-            }).session(session);
-
-            if (!product) {
-              continue;
-            }
-
-            restoreStock(product, allocation.lotAllocations);
-            product.markModified("lots");
-            await product.save({ session });
-          }
-
-          order.stockAllocations = [];
-        }
-
-        const previousStatus = order.status;
-        const shouldNotifyInvoiceAvailability =
-          !order.invoiceNumber && ["en_preparation", "pret_pour_recuperation", "validee"].includes(status);
-
-        order.status = status;
-        await order.save({ session });
-
-        let invoice = null;
-        if (["en_preparation", "pret_pour_recuperation", "validee"].includes(status)) {
-          const [clientProfile, company] = await Promise.all([
-            Client.findById(order.clientId).session(session),
-            Company.findById(order.companyId).session(session),
-          ]);
-          invoice = await createInvoiceFromOrder(order, {
-            client: clientProfile,
-            company,
-          });
-        }
-        invoice = await syncInvoiceForOrder(order);
-
-        // Record in Finance if validated
-        if (status === "validee") {
-          await new Finance({
-            dateTime: new Date(),
-            type: "sale",
-            sourceModule: "Commandes",
-            reference: order.orderNumber,
-            description: `Commande ${order.orderNumber} récupérée par le client`,
-            amount: order.totalPrice,
-            isIncome: true,
-            paymentMethod: "other", // Default for orders
-            employeeName: req.user.fullName,
-            orderId: order._id,
-            companyId: req.user.companyId,
-          }).save({ session });
-        }
-
-        await new OrderTimeline({
-          orderId: order._id,
-          status,
-          userId: req.user._id,
-          note:
-            note ||
-            `Statut changé de ${ORDER_STATUS_LABELS[previousStatus]} vers ${ORDER_STATUS_LABELS[status]}`,
-          companyId: req.user.companyId,
-        }).save({ session });
-
-        await logActivity({
-          actionType: "update",
-          entityType: "order",
-          entityId: order._id.toString(),
-          entityName: order.orderNumber,
-          description: `Commande ${order.orderNumber} mise à jour : ${ORDER_STATUS_LABELS[status]}`,
-          companyId: req.user.companyId,
-          user: req.user.fullName,
-          clientOrSupplierName: order.clientId?.fullName || "Client",
-          totalAmount: order.totalPrice,
-          quantity: order.products.reduce((sum, p) => sum + p.quantity, 0),
-          status: status === "validee" ? "completed" : status === "annulee" ? "cancelled" : "pending",
-          listOfItems: order.products.map((p) => ({
-            productName: p.name,
-            quantity: p.quantity,
-            unitPrice: p.price,
-            totalPrice: p.price * p.quantity,
-          })),
-        }, req);
-
-        const updatedOrder = await buildOrderQuery({ _id: order._id }).session(session);
-        return { updatedOrder, invoice, shouldNotifyInvoiceAvailability };
-      });
-    } catch (txError) {
-      return failure(res, {
-        status: 400,
-        message: txError.message,
-      });
-    }
-
-    const { updatedOrder, invoice, shouldNotifyInvoiceAvailability } = transactionResult;
-
-    if (global.io) {
-      // Notify staff
-      global.io.to(req.user.companyId.toString()).emit("order-status-update", updatedOrder);
-    }
-
-    const clientUser = await User.findById(updatedOrder.userId).select("email fullName").lean();
-    if (clientUser) {
-      await sendOrderStatusUpdateEmail({
-        email: clientUser.email,
-        fullName: clientUser.fullName,
-        orderNumber: updatedOrder.orderNumber,
-        statusLabel: ORDER_STATUS_LABELS[status],
-        companyName: "BigPharma",
-      });
-    }
-
-    // Notify the specific client via persistent notification
-    await sendNotification({
-      userId: updatedOrder.userId,
+    const { updateOrderStatusService } = require("../services/orderService");
+    
+    const updatedOrder = await updateOrderStatusService({
+      orderId: req.params.id,
       companyId: req.user.companyId,
-      title: "Mise à jour de votre commande",
-      message: `Votre commande ${updatedOrder.orderNumber} est maintenant ${ORDER_STATUS_LABELS[status]}.`,
-      type: "order",
-      data: { orderId: updatedOrder._id, orderNumber: updatedOrder.orderNumber, status },
+      userId: req.user._id,
+      userFullName: req.user.fullName,
+      status,
+      note
     });
 
-    if (invoice && shouldNotifyInvoiceAvailability) {
-      if (clientUser) {
-        await sendInvoiceReadyEmail({
-          email: clientUser.email,
-          fullName: clientUser.fullName,
-          invoiceNumber: invoice.invoiceNumber,
-          orderNumber: updatedOrder.orderNumber,
-          companyName: "BigPharma",
-        });
-      }
-
-      await sendNotification({
-        userId: updatedOrder.userId,
-        companyId: req.user.companyId,
-        title: "Votre facture est disponible",
-        message: `La facture ${invoice.invoiceNumber} de la commande ${updatedOrder.orderNumber} est maintenant disponible.`,
-        type: "invoice",
-        data: {
-          invoiceId: invoice._id,
-          invoiceNumber: invoice.invoiceNumber,
-          orderId: updatedOrder._id,
-          orderNumber: updatedOrder.orderNumber,
-        },
-      });
-    }
+    // Activity log
+    const { logActivity } = require("../utils/activityLogger");
+    await logActivity({
+      actionType: "update",
+      entityType: "order",
+      entityId: updatedOrder._id.toString(),
+      entityName: updatedOrder.orderNumber,
+      description: `Commande ${updatedOrder.orderNumber} mise à jour : ${status}`,
+      companyId: req.user.companyId,
+      user: req.user.fullName,
+      clientOrSupplierName: updatedOrder.clientId?.fullName || "Client",
+      totalAmount: updatedOrder.totalPrice,
+      quantity: updatedOrder.products.reduce((sum, p) => sum + p.quantity, 0),
+      status: status === "validee" ? "completed" : status === "annulee" ? "cancelled" : "pending",
+      listOfItems: updatedOrder.products.map((p) => ({
+        productName: p.name,
+        quantity: p.quantity,
+        unitPrice: p.price,
+        totalPrice: p.price * p.quantity,
+      })),
+    }, req);
 
     return success(res, {
       data: updatedOrder,
     });
   } catch (error) {
-    next(error);
+    if (error.message === "Commande non trouvée") {
+      return failure(res, { status: 404, message: error.message });
+    }
+    return failure(res, { status: 400, message: error.message });
   }
 };
 

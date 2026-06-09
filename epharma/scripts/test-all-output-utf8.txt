@@ -1,0 +1,816 @@
+﻿[1/2] Running API tests...
+
+> epharma-api@1.0.0 test:api
+> cross-env NODE_ENV=test jest --runInBand
+
+powershell : FAIL tests/auth.int.test.js (29.345 s)
+Au caractère Ligne:1 : 42
++ ... harma 1.2"; powershell -ExecutionPolicy Bypass -File .\epharma\script ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (FAIL tests/auth.int.test.js (29.3 
+   45 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  ÔùÅ Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (9) from .env -- tip: ÔÜÖ´©Å  override 
+existing env vars with { override: true }
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.log
+      2026-06-01 10:39:04 [32minfo[39m: Redis caching disabled (no 
+REDIS_HOST provided)
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      [32m[DB] MongoDB connect├® avec succ├¿s sur la base : test[0m
+
+      at log (config/db.js:12:13)
+
+    console.log
+      2026-06-01 10:39:08 [32minfo[39m: Email sent to 
+admin1780306744916@example.com | subject=Votre compte BigPharma a ├®t├® cr├®├® 
+| messageId=<aa240029-0681-c5e8-135b-ba8e456d21d2@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:08 [32minfo[39m: POST /api/auth/register 201 - - 
+3519.311 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:08 [32minfo[39m: POST /api/auth/login 200 - - 120.613 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:11 [32minfo[39m: Email sent to 
+admin1780306748625@example.com | subject=Votre compte BigPharma a ├®t├® cr├®├® 
+| messageId=<6d981760-d823-a328-7a43-d965bdfee245@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:11 [32minfo[39m: POST /api/auth/register 201 - - 
+3114.622 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:11 [32minfo[39m: POST /api/auth/login 200 - - 98.157 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:14 [32minfo[39m: Email sent to 
+admin1780306748625@example.com | subject=283930 ÔÇö Votre code de 
+r├®initialisation BigPharma | 
+messageId=<73bfcd9f-963f-501a-0e40-43e97dca1429@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:14 [32minfo[39m: OTP de r├®initialisation envoy├® ├á 
+admin1780306748625@example.com
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:14 [32minfo[39m: POST /api/auth/forgot-password 200 
+119 - 2797.146 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:14 [32minfo[39m: POST /api/auth/forgot-password 200 
+119 - 3.145 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:16 [32minfo[39m: Email sent to 
+admin1780306753638@example.com | subject=Votre compte BigPharma a ├®t├® cr├®├® 
+| messageId=<77448fc6-e587-2070-7a2a-daaa1abdc9c6@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:16 [32minfo[39m: POST /api/auth/register 201 - - 
+3027.492 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:16 [32minfo[39m: POST /api/auth/login 200 - - 98.290 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:19 [32minfo[39m: Email sent to 
+admin1780306753638@example.com | subject=160288 ÔÇö Votre code de 
+r├®initialisation BigPharma | 
+messageId=<f8bcf1b0-cd5b-1b05-2c66-6de2d89203c4@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:19 [32minfo[39m: OTP de r├®initialisation envoy├® ├á 
+admin1780306753638@example.com
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:19 [32minfo[39m: POST /api/auth/forgot-password 200 
+119 - 2776.436 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:21 [32minfo[39m: Email sent to 
+admin1780306758640@example.com | subject=Votre compte BigPharma a ├®t├® cr├®├® 
+| messageId=<56a1ce68-fa62-e62b-6223-ddbfc28f24f8@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:21 [32minfo[39m: POST /api/auth/register 201 - - 
+2945.693 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:21 [32minfo[39m: POST /api/auth/login 200 - - 97.887 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:21 [32minfo[39m: PUT /api/auth/me 200 942 - 21.284 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:24 [32minfo[39m: Email sent to 
+updated1780306761699@example.com | subject=Votre profil BigPharma a ├®t├® mis 
+├á jour | messageId=<02227ab4-2095-624e-504c-582e9774db53@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:24 [32minfo[39m: Email sent to 
+admin1780306761729@example.com | subject=Votre compte BigPharma a ├®t├® cr├®├® 
+| messageId=<94412f21-b211-d59d-d903-4f11f23e1095@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:24 [32minfo[39m: POST /api/auth/register 201 - - 
+3106.204 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:24 [32minfo[39m: POST /api/auth/login 200 - - 101.534 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:26 [32minfo[39m: GET /api/sales 401 111 - 0.706 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:26 [32minfo[39m: GET /api/finance 401 111 - 0.458 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:26 [32minfo[39m: GET /api/activityLogs 401 111 - 
+0.235 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:26 [32minfo[39m: GET /api/QuestionsClients 401 111 - 
+0.407 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:26 [32minfo[39m: GET /api/dashboard/summary 401 111 - 
+0.370 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:26 [32minfo[39m: GET /api/settings/profile 401 111 - 
+0.349 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:28 [32minfo[39m: Email sent to 
+assistant1780306764955@example.com | subject=Votre compte BigPharma a ├®t├® 
+cr├®├® | messageId=<115158c5-f578-9206-4a77-e524e0eb4d87@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:28 [32minfo[39m: POST /api/users 201 - - 3380.993 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:28 [32minfo[39m: POST /api/auth/login 200 - - 95.099 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:28 [32minfo[39m: POST /api/users 403 112 - 12.755 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:29 [32minfo[39m: Email sent to 
+admin1780306766778@example.com | subject=Votre compte BigPharma a ├®t├® cr├®├® 
+| messageId=<5755b286-4f51-e112-a650-37367d3a124c@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:29 [32minfo[39m: POST /api/auth/register 201 - - 
+3008.693 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:29 [32minfo[39m: POST /api/auth/login 200 - - 95.896 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:29 [32minfo[39m: GET /api/finance 200 114 - 10.743 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:29 [32minfo[39m: GET /api/activityLogs 200 81 - 9.374 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:29 [32minfo[39m: GET /api/QuestionsClients 200 26 - 
+8.919 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+  ÔùÅ Auth and profile integration ÔÇ║ does not leak account existence on 
+forgot-password
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a 
+long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 58 |[39m   })[33m;[39m
+     [90m 59 |[39m
+    [31m[1m>[22m[39m[90m 60 |[39m   it([32m"does not leak account 
+existence on forgot-password"[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 61 |[39m     [36mconst[39m existing [33m=[39m [36mawait[39m 
+registerAndLogin()[33m;[39m
+     [90m 62 |[39m
+     [90m 63 |[39m     [36mconst[39m known [33m=[39m [36mawait[39m 
+request(app)[0m
+
+      at it (tests/auth.int.test.js:60:3)
+      at Object.describe (tests/auth.int.test.js:54:1)
+
+  ÔùÅ Auth and profile integration ÔÇ║ resets password with valid token and 
+rejects reused token
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a 
+long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 74 |[39m   })[33m;[39m
+     [90m 75 |[39m
+    [31m[1m>[22m[39m[90m 76 |[39m   it([32m"resets password with valid 
+token and rejects reused token"[39m[33m,[39m [36masync[39m () 
+[33m=>[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 77 |[39m     [36mconst[39m ctx [33m=[39m [36mawait[39m 
+registerAndLogin()[33m;[39m
+     [90m 78 |[39m
+     [90m 79 |[39m     [36mconst[39m forgot [33m=[39m [36mawait[39m 
+request(app)[0m
+
+      at it (tests/auth.int.test.js:76:3)
+      at Object.describe (tests/auth.int.test.js:54:1)
+
+  ÔùÅ Auth and profile integration ÔÇ║ enforces admin role for /api/users
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a 
+long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 119 |[39m   })[33m;[39m
+     [90m 120 |[39m
+    [31m[1m>[22m[39m[90m 121 |[39m   it([32m"enforces admin role for 
+/api/users"[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m     |[39m   [31m[1m^[22m[39m
+     [90m 122 |[39m     [36mconst[39m admin [33m=[39m [36mawait[39m 
+registerAndLogin()[33m;[39m
+     [90m 123 |[39m
+     [90m 124 |[39m     [36mconst[39m createUser [33m=[39m 
+[36mawait[39m request(app)[0m
+
+      at it (tests/auth.int.test.js:121:3)
+      at Object.describe (tests/auth.int.test.js:54:1)
+
+FAIL tests/order.int.test.js (12.753 s)
+  ÔùÅ Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (11) from .env -- tip: ƒöÉ encrypt with 
+Dotenvx: https://dotenvx.com
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.log
+      2026-06-01 10:39:32 [32minfo[39m: Redis caching disabled (no 
+REDIS_HOST provided)
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      [32m[DB] MongoDB connect├® avec succ├¿s sur la base : test[0m
+
+      at log (config/db.js:12:13)
+
+    console.log
+      2026-06-01 10:39:36 [32minfo[39m: Email sent to 
+admin1780306772747@test.com | subject=Votre compte BigPharma a ├®t├® cr├®├® | 
+messageId=<99f23f29-c4f7-3db8-bdc9-68f21c56b123@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:36 [32minfo[39m: POST /api/auth/register 201 - - 
+3334.641 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:36 [32minfo[39m: POST /api/auth/login 200 - - 94.831 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:39 [32minfo[39m: Email sent to 
+john1780306772747@doe.com | subject=Bienvenue chez BigPharma | 
+messageId=<6a862ad1-4ad6-74e8-63f8-7b9b2d4b7081@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:39 [32minfo[39m: POST /api/auth/register-client 201 - 
+- 3251.785 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:39 [32minfo[39m: POST /api/auth/login 200 - - 107.142 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:41 [32minfo[39m: Email sent to 
+admin1780306777752@test.com | subject=Votre compte BigPharma a ├®t├® cr├®├® | 
+messageId=<ab5d6e92-9e0e-9419-ef18-9f84bd769819@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:41 [32minfo[39m: POST /api/auth/register 201 - - 
+3313.604 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:41 [32minfo[39m: POST /api/auth/login 200 - - 96.141 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:42 [32minfo[39m: Email sent to 
+john1780306772747@doe.com | subject=Confirmation de commande CMD-2026-0001 | 
+messageId=<74b87d0c-a05e-cb8c-a96b-11cd1ab1af86@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:42 [32minfo[39m: POST /api/orders 201 - - 3018.465 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      [Transaction] Starting callback. session is function? false
+
+      at log (utils/dbUtils.js:22:13)
+
+    console.warn
+      ÔÜá´©Å MongoDB Standalone d├®tect├® : Ex├®cution sans transaction 
+(non-atomique).
+
+    [0m [90m 45 |[39m     [90m// Si l'erreur est sp├®cifiquement li├®e ├á 
+l'absence de Replica Set au moment du startTransaction[39m
+     [90m 46 |[39m     [36mif[39m 
+(error[33m.[39mmessage[33m.[39mincludes([32m"Transaction numbers are only 
+allowed on a replica set member"[39m)) {
+    [31m[1m>[22m[39m[90m 47 |[39m       
+console[33m.[39mwarn([32m"ÔÜá´©Å MongoDB Standalone d├®tect├® : Ex├®cution 
+sans transaction (non-atomique)."[39m)[33m;[39m
+     [90m    |[39m               [31m[1m^[22m[39m
+     [90m 48 |[39m       [90m// On retente le callback sans session pour ce 
+cas pr├®cis si on n'avait pas encore bascul├® en fallback[39m
+     [90m 49 |[39m       [36mif[39m ([33m![39museFallback) {
+     [90m 50 |[39m         [36mreturn[39m 
+callback([36mnull[39m)[33m;[39m[0m
+
+      at warn (utils/dbUtils.js:47:15)
+      at Object.<anonymous>.exports.updateOrderStatus 
+(controllers/orderController.js:486:27)
+
+    console.log
+      2026-06-01 10:39:42 [32minfo[39m: PUT 
+/api/orders/6a1d535b30fdd7ae74f91abe/status 400 107 - 22.253 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+  ÔùÅ Order Integration Flow ÔÇ║ should complete a full order lifecycle: 
+create -> prepare -> validate
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a 
+long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 101 |[39m
+     [90m 102 |[39m describe([32m"Order Integration Flow"[39m[33m,[39m 
+() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 103 |[39m   it([32m"should complete a full 
+order lifecycle: create -> prepare -> validate"[39m[33m,[39m 
+[36masync[39m () [33m=>[39m {
+     [90m     |[39m   [31m[1m^[22m[39m
+     [90m 104 |[39m     [36mconst[39m { product[33m,[39m clientInfo } 
+[33m=[39m [36mawait[39m setupTestData()[33m;[39m
+     [90m 105 |[39m
+     [90m 106 |[39m     [90m// 1. Create Order (Client)[39m[0m
+
+      at it (tests/order.int.test.js:103:3)
+      at Object.describe (tests/order.int.test.js:102:1)
+
+  ÔùÅ Order Integration Flow ÔÇ║ should fail to create order if stock is 
+insufficient
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a 
+long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 143 |[39m   })[33m;[39m
+     [90m 144 |[39m
+    [31m[1m>[22m[39m[90m 145 |[39m   it([32m"should fail to create 
+order if stock is insufficient"[39m[33m,[39m [36masync[39m () 
+[33m=>[39m {
+     [90m     |[39m   [31m[1m^[22m[39m
+     [90m 146 |[39m     [36mconst[39m { product } [33m=[39m 
+[36mawait[39m setupTestData([33mDate[39m[33m.[39mnow() [33m+[39m 
+[35m1[39m)[33m;[39m
+     [90m 147 |[39m
+     [90m 148 |[39m     [36mawait[39m request(app)[0m
+
+      at it (tests/order.int.test.js:145:3)
+      at Object.describe (tests/order.int.test.js:102:1)
+
+FAIL tests/client_module.int.test.js (7.025 s)
+  ÔùÅ Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (11) from .env -- tip: ÔÜÖ´©Å  suppress 
+all logs with { quiet: true }
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.log
+      2026-06-01 10:39:44 [32minfo[39m: Redis caching disabled (no 
+REDIS_HOST provided)
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      [32m[DB] MongoDB connect├® avec succ├¿s sur la base : test[0m
+
+      at log (config/db.js:12:13)
+
+    console.log
+      2026-06-01 10:39:49 [32minfo[39m: Email sent to 
+admin1780306784784@test.com | subject=Votre compte BigPharma a ├®t├® cr├®├® | 
+messageId=<f2f21bc9-1fe2-e74c-ad17-bd8dc4803c5a@gmail.com>
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:49 [32minfo[39m: POST /api/auth/register 201 - - 
+4527.134 ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:49 [32minfo[39m: POST /api/auth/login 200 - - 89.811 
+ms
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+  ÔùÅ Client module workflow ÔÇ║ generates an invoice, then allows review and 
+complaint flows
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a 
+long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 102 |[39m
+     [90m 103 |[39m describe([32m"Client module workflow"[39m[33m,[39m 
+() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 104 |[39m   it([32m"generates an invoice, then 
+allows review and complaint flows"[39m[33m,[39m [36masync[39m () 
+[33m=>[39m {
+     [90m     |[39m   [31m[1m^[22m[39m
+     [90m 105 |[39m     [36mconst[39m { product } [33m=[39m 
+[36mawait[39m setupTestData()[33m;[39m
+     [90m 106 |[39m
+     [90m 107 |[39m     [36mconst[39m createRes [33m=[39m 
+[36mawait[39m request(app)[0m
+
+      at it (tests/client_module.int.test.js:104:3)
+      at Object.describe (tests/client_module.int.test.js:103:1)
+
+FAIL tests/unit/utils/response.test.js
+  ÔùÅ Response Utility ÔÇ║ failure ÔÇ║ should return 400 and success: false by 
+default
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+    -   "code": "ERROR",
+    -   "message": "Erreur",
+    +   "error": Object {
+    +     "code": "INTERNAL_SERVER_ERROR",
+    +     "details": null,
+    +     "message": "Error",
+    +   },
+        "success": false,
+      },
+
+    Number of calls: 1
+
+    [0m [90m 46 |[39m       failure(res)[33m;[39m
+     [90m 47 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoHaveBeenCal
+ledWith([35m400[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 48 |[39m       
+expect(res[33m.[39mjson)[33m.[39mtoHaveBeenCalledWith({
+     [90m    |[39m                        [31m[1m^[22m[39m
+     [90m 49 |[39m         success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 50 |[39m         message[33m:[39m [32m"Erreur"[39m[33m,[39m
+     [90m 51 |[39m         code[33m:[39m [32m"ERROR"[39m[33m,[39m[0m
+
+      at Object.toHaveBeenCalledWith (tests/unit/utils/response.test.js:48:24)
+
+  ÔùÅ Response Utility ÔÇ║ failure ÔÇ║ should include custom status, message, 
+and code
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+    +   "error": Object {
+          "code": "NOT_FOUND",
+    +     "details": null,
+          "message": "Not Found",
+    +   },
+        "success": false,
+      },
+
+    Number of calls: 1
+
+    [0m [90m 56 |[39m       failure(res[33m,[39m { status[33m:[39m 
+[35m404[39m[33m,[39m message[33m:[39m [32m"Not Found"[39m[33m,[39m 
+code[33m:[39m [32m"NOT_FOUND"[39m })[33m;[39m
+     [90m 57 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoHaveBeenCal
+ledWith([35m404[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 58 |[39m       
+expect(res[33m.[39mjson)[33m.[39mtoHaveBeenCalledWith({
+     [90m    |[39m                        [31m[1m^[22m[39m
+     [90m 59 |[39m         success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 60 |[39m         message[33m:[39m [32m"Not 
+Found"[39m[33m,[39m
+     [90m 61 |[39m         code[33m:[39m 
+[32m"NOT_FOUND"[39m[33m,[39m[0m
+
+      at Object.toHaveBeenCalledWith (tests/unit/utils/response.test.js:58:24)
+
+  ÔùÅ Response Utility ÔÇ║ failure ÔÇ║ should include data field if provided
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+    -   "code": "ERROR",
+    -   "data": Object {
+    +   "error": Object {
+    +     "code": "INTERNAL_SERVER_ERROR",
+    +     "details": Object {
+            "errors": Array [
+              "Invalid email",
+            ],
+          },
+    -   "message": "Erreur",
+    +     "message": "Error",
+    +   },
+        "success": false,
+      },
+
+    Number of calls: 1
+
+    [0m [90m 66 |[39m       [36mconst[39m data [33m=[39m { 
+errors[33m:[39m [[32m"Invalid email"[39m] }[33m;[39m
+     [90m 67 |[39m       failure(res[33m,[39m { data })[33m;[39m
+    [31m[1m>[22m[39m[90m 68 |[39m       
+expect(res[33m.[39mjson)[33m.[39mtoHaveBeenCalledWith({
+     [90m    |[39m                        [31m[1m^[22m[39m
+     [90m 69 |[39m         success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 70 |[39m         message[33m:[39m [32m"Erreur"[39m[33m,[39m
+     [90m 71 |[39m         code[33m:[39m [32m"ERROR"[39m[33m,[39m[0m
+
+      at Object.toHaveBeenCalledWith (tests/unit/utils/response.test.js:68:24)
+
+PASS tests/unit/controllers/saleController.test.js
+PASS tests/seeder.int.test.js
+  ÔùÅ Console
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Default company created.
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Default administrator 
+created: laflorale8@gmail.com / admin
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Seeding realistic 
+parapharmacy products...
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] 18 parapharmacy products 
+successfully seeded.
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Linking mutual product 
+substitutions...
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Mutual product substitutions 
+linked successfully.
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Default company created.
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      2026-06-01 10:39:52 [32minfo[39m: [SEED] Default administrator 
+created: laflorale8@gmail.com / admin
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+PASS tests/unit/controllers/productController.test.js
+  ÔùÅ Console
+
+    console.log
+      2026-06-01 10:39:53 [32m'info'[39m: Redis caching disabled (no 
+REDIS_HOST provided)
+
+      at Console.log 
+(node_modules/winston/lib/winston/transports/console.js:87:23)
+
+
+Test Suites: 4 failed, 3 passed, 7 total
+Tests:       9 failed, 18 passed, 27 total
+Snapshots:   0 total
+Time:        53.049 s
+Ran all test suites.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't 
+stopped in your tests. Consider running Jest with `--detectOpenHandles` to 
+troubleshoot this issue.
+[2/2] Running Flutter tests...
+Test directory "test" not found.
+All tests completed.

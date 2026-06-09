@@ -17,6 +17,7 @@ import 'support/pharmacy_support_page.dart';
 import 'ventes/pharmacy_sales_page.dart';
 import 'widgets/app_sidebar.dart';
 import 'widgets/bp_theme.dart';
+import 'widgets/common/app_ui.dart';
 import 'widgets/global_navbar.dart';
 
 typedef SectionNavigationCallback = void Function(String section);
@@ -181,7 +182,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 768;
+        final isMobile = constraints.maxWidth < AppResponsive.mobileBreakpoint;
 
         return Scaffold(
           key: _scaffoldKey,
@@ -243,29 +244,36 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 400),
-                          transitionBuilder: (child, animation) =>
-                              FadeTransition(
-                                opacity: animation,
-                                child: SlideTransition(
-                                  position:
-                                      Tween<Offset>(
-                                        begin: const Offset(0.1, 0),
-                                        end: Offset.zero,
-                                      ).animate(
-                                        CurvedAnimation(
-                                          parent: animation,
-                                          curve: Curves.easeOutCubic,
+                        padding: EdgeInsets.fromLTRB(
+                          isMobile ? 12 : 16,
+                          0,
+                          isMobile ? 12 : 16,
+                          isMobile ? 12 : 16,
+                        ),
+                        child: AppContentShell(
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 400),
+                            transitionBuilder: (child, animation) =>
+                                FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position:
+                                        Tween<Offset>(
+                                          begin: const Offset(0.1, 0),
+                                          end: Offset.zero,
+                                        ).animate(
+                                          CurvedAnimation(
+                                            parent: animation,
+                                            curve: Curves.easeOutCubic,
+                                          ),
                                         ),
-                                      ),
-                                  child: child,
+                                    child: child,
+                                  ),
                                 ),
-                              ),
-                          child: KeyedSubtree(
-                            key: ValueKey(_currentSection),
-                            child: _pageForSection(_currentSection),
+                            child: KeyedSubtree(
+                              key: ValueKey(_currentSection),
+                              child: _pageForSection(_currentSection),
+                            ),
                           ),
                         ),
                       ),

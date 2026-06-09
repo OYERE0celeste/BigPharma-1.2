@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../widgets/bp_theme.dart';
 
 class ThemeService extends ChangeNotifier {
-  Color _primaryColor = const Color(0xFF6366F1); // Default Indigo
-  ThemeMode _themeMode = ThemeMode.light;
+  Color _primaryColor = BpColors.accent;
+  ThemeMode _themeMode = ThemeMode.dark;
 
   Color get primaryColor => _primaryColor;
   ThemeMode get themeMode => _themeMode;
@@ -21,18 +22,46 @@ class ThemeService extends ChangeNotifier {
 
   ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
-    colorSchemeSeed: _primaryColor,
-    brightness: Brightness.light,
+    colorScheme: const ColorScheme.dark(
+      primary: BpColors.accent,
+      onPrimary: Colors.white,
+      secondary: BpColors.primaryLight,
+      onSecondary: Colors.white,
+      background: BpColors.scaffold,
+      onBackground: BpColors.textPrimary,
+      surface: BpColors.surface,
+      onSurface: BpColors.textPrimary,
+      error: BpColors.error,
+      onError: Colors.white,
+    ),
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: BpColors.scaffold,
+    canvasColor: BpColors.scaffold,
+    cardColor: BpColors.surfaceStrong,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black87,
+      backgroundColor: BpColors.surfaceStrong,
+      foregroundColor: BpColors.textPrimary,
       elevation: 0,
     ),
   );
 
   ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
-    colorSchemeSeed: _primaryColor,
+    colorScheme: const ColorScheme.dark(
+      primary: BpColors.accent,
+      onPrimary: Colors.white,
+      secondary: BpColors.primaryLight,
+      onSecondary: Colors.white,
+      background: BpColors.scaffold,
+      onBackground: BpColors.textPrimary,
+      surface: BpColors.surface,
+      onSurface: BpColors.textPrimary,
+      error: BpColors.error,
+      onError: Colors.white,
+    ),
     brightness: Brightness.dark,
+    scaffoldBackgroundColor: BpColors.scaffold,
+    canvasColor: BpColors.scaffold,
+    cardColor: BpColors.surfaceStrong,
   );
 }

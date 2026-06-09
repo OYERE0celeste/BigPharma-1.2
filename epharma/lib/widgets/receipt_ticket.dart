@@ -151,7 +151,10 @@ class ReceiptTicketFactory {
   }) {
     return ReceiptTicketData(
       pharmacyName: _fallbackText(invoice.pharmacyName, _defaultPharmacyName),
-      pharmacyPhone: _fallbackText(invoice.pharmacyPhone, _defaultPharmacyPhone),
+      pharmacyPhone: _fallbackText(
+        invoice.pharmacyPhone,
+        _defaultPharmacyPhone,
+      ),
       pharmacistName: pharmacistName,
       operatorName: _fallbackText(operatorName, _defaultOperator),
       operationDate: invoice.invoiceDate,
@@ -234,7 +237,7 @@ class ReceiptTicket extends StatelessWidget {
   static const TextStyle _textStyle = TextStyle(
     fontFamily: 'Courier',
     fontSize: 12,
-    color: Color(0xFF111111),
+    color: BpColors.textPrimary,
     height: 1.35,
   );
 
@@ -242,7 +245,7 @@ class ReceiptTicket extends StatelessWidget {
     fontFamily: 'Courier',
     fontSize: 12,
     fontWeight: FontWeight.w700,
-    color: Color(0xFF111111),
+    color: BpColors.textPrimary,
     height: 1.35,
   );
 
@@ -252,12 +255,12 @@ class ReceiptTicket extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 380),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEFDF8),
+        color: BpColors.surfaceStrong,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE6DCC9)),
+        border: Border.all(color: BpColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.14),
+            color: BpColors.primaryDark.withOpacity(0.18),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -287,7 +290,12 @@ class ReceiptTicket extends StatelessWidget {
             const SizedBox(height: 6),
             ...data.items.map(_buildItem),
             const SizedBox(height: 8),
-            _buildSummaryLine('Total:', data.totalAmount, 'Assur :', data.coveredAmount),
+            _buildSummaryLine(
+              'Total:',
+              data.totalAmount,
+              'Assur :',
+              data.coveredAmount,
+            ),
             const Text('------------------------------------'),
             Text(
               'Total ticket: ${ReceiptTicketFormatters.money(data.totalAmount)} FCFA (${ReceiptTicketFormatters.euros(data.totalAmount)} Euros)',
@@ -343,7 +351,11 @@ class ReceiptTicket extends StatelessWidget {
   Widget _centerText(String text, {TextStyle? style}) {
     return SizedBox(
       width: double.infinity,
-      child: Text(text, textAlign: TextAlign.center, style: style ?? _textStyle),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: style ?? _textStyle,
+      ),
     );
   }
 }

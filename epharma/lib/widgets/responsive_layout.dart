@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'common/app_ui.dart';
+
 class ResponsiveLayout extends StatelessWidget {
   final Widget desktop;
   final Widget mobile;
@@ -13,12 +15,11 @@ class ResponsiveLayout extends StatelessWidget {
   });
 
   static bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < 800;
+      AppResponsive.isMobile(context);
   static bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 800 &&
-      MediaQuery.of(context).size.width < 1200;
+      AppResponsive.isTablet(context);
   static bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 1200;
+      AppResponsive.isDesktop(context);
 
   @override
   Widget build(BuildContext context) {

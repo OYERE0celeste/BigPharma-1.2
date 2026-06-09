@@ -1,0 +1,994 @@
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 08:43:54"}
+{"level":"info","message":"GET /api/health 200 162 - 3.834 ms","service":"bigpharma-api","timestamp":"2026-06-09 08:49:37"}
+{"level":"info","message":"GET /api/health 200 162 - 0.256 ms","service":"bigpharma-api","timestamp":"2026-06-09 08:50:12"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 29.066 ms","service":"bigpharma-api","timestamp":"2026-06-09 08:50:18"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 125.642 ms","service":"bigpharma-api","timestamp":"2026-06-09 08:50:33"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 08:59:13"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:01:13"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:01:20"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:01:23"}
+{"level":"info","message":"POST /api/auth/login 200 1452 - 124.857 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:01:31"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:01:54"}
+{"level":"info","message":"GET /api/health 200 162 - 2.330 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:31"}
+{"level":"info","message":"POST /api/auth/login 200 1452 - 143.180 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:31"}
+{"level":"info","message":"GET /api/products?page=1&limit=10 200 8883 - 28.136 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:31"}
+{"level":"info","message":"GET /api/clients?page=1&limit=10 200 4689 - 29.172 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:31"}
+{"level":"info","message":"GET /api/sales?page=1&limit=10 200 26 - 9.739 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:31"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 186 - 27.599 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:31"}
+{"level":"info","message":"POST /api/clients 400 142 - 9.495 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:02:32"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:02:36"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:12:27"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:12:44"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:12:58"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:13:26"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:16:10"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:29:49"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:30:18"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:30:42"}
+{"level":"info","message":"GET /api/health 200 162 - 8.251 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:34:59"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:35:26"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:35:41"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:36:15"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:36:27"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:36:45"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:38:16"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:38:22"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:38:38"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:38:59"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:39:50"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:40:05"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:40:10"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:40:18"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:40:28"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:41:20"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:44:29"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:45:12"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:46:14"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994775174@test.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4602cda363bsm47892773f8f.31 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4602cda363bsm47892773f8f.31 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4602cda363bsm47892773f8f.31 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:17"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2201.327 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 72.461 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:17"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to john1780994775174@doe.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3fcf5bsm552654515e9.9 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3fcf5bsm552654515e9.9 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3fcf5bsm552654515e9.9 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:19"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 1682.030 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:19"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.400 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:19"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to john1780994775174@doe.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3b5b06sm421878975e9.3 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3b5b06sm421878975e9.3 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3b5b06sm421878975e9.3 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:21"}
+{"level":"info","message":"POST /api/orders 201 - - 2140.915 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:21"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to john1780994775174@doe.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc39eb04sm469529135e9.6 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc39eb04sm469529135e9.6 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc39eb04sm469529135e9.6 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:23"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to john1780994775174@doe.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3cc140sm552930335e9.9 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3cc140sm552930335e9.9 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3cc140sm552930335e9.9 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:25"}
+{"level":"info","message":"PUT /api/orders/6a27d2db02c334e8079e5416/status 200 - - 3654.630 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:25"}
+{"level":"info","message":"GET /api/orders/6a27d2db02c334e8079e5416/invoice 200 817 - 14.075 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:25"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to john1780994775174@doe.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35fb24sm63953316f8f.34 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35fb24sm63953316f8f.34 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35fb24sm63953316f8f.34 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:48"}
+{"level":"info","message":"PUT /api/orders/6a27d2db02c334e8079e5416/status 200 - - 23325.094 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:48"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994805309@test.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3b59f0sm531848445e9.2 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3b59f0sm531848445e9.2 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc3b59f0sm531848445e9.2 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:48"}
+{"level":"info","message":"POST /api/auth/register 201 - - 3609.677 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:48"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.426 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:48"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to john1780994805309@doe.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2dcae2sm63548410f8f.6 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2dcae2sm63548410f8f.6 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2dcae2sm63548410f8f.6 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:46:50"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 1863.135 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:50"}
+{"level":"info","message":"POST /api/auth/login 200 - - 70.263 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:50"}
+{"level":"info","message":"POST /api/clients 201 355 - 9.710 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:50"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:46:52"}
+{"level":"info","message":"POST /api/auth/register 400 278 - 12.118 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:52"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 3.740 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:46:53"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:46:54"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994814452@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2e4b18sm46946783f8f.10 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2e4b18sm46946783f8f.10 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2e4b18sm46946783f8f.10 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:47:18"}
+{"level":"info","message":"POST /api/auth/register 201 - - 23918.658 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:47:18"}
+{"level":"info","message":"POST /api/auth/login 200 - - 90.203 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:47:18"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994838511@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2eadefsm61687204f8f.11 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2eadefsm61687204f8f.11 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f2eadefsm61687204f8f.11 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:47:20"}
+{"level":"info","message":"POST /api/auth/register 201 - - 2439.258 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:47:20"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.744 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:47:21"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994838511@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc4082c3sm445931445e9.13 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc4082c3sm445931445e9.13 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc4082c3sm445931445e9.13 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:47:44"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780994838511@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:47:44"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 23366.218 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:47:44"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2.531 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:47:44"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994864466@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490c2d5d2b4sm304732445e9.2 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490c2d5d2b4sm304732445e9.2 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490c2d5d2b4sm304732445e9.2 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:48:07"}
+{"level":"info","message":"POST /api/auth/register 201 - - 23385.068 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:07"}
+{"level":"info","message":"POST /api/auth/login 200 - - 79.290 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:07"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994864466@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc39eb04sm469657945e9.6 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc39eb04sm469657945e9.6 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-490bc39eb04sm469657945e9.6 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:48:10"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780994864466@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:48:10"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 3002.685 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:10"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 65.996 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 78.817 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:11"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 2.370 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:11"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:16"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994891134@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f351d69sm108606311f8f.29 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f351d69sm108606311f8f.29 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f351d69sm108606311f8f.29 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:48:17"}
+{"level":"info","message":"POST /api/auth/register 201 - - 5910.884 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 74.872 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:17"}
+{"level":"info","message":"PUT /api/auth/me 200 938 - 16.990 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:17"}
+{"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"MailService: failed to send email to admin1780994864466@example.com Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35fd33sm66375329f8f.35 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35fd33sm66375329f8f.35 - gsmtp","responseCode":535,"service":"bigpharma-api","stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-4601f35fd33sm66375329f8f.35 - gsmtp\n    at SMTPConnection._formatError (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:887:19)\n    at SMTPConnection._actionAUTHComplete (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1695:34)\n    at SMTPConnection.<anonymous> (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:626:26)\n    at SMTPConnection._processResponse (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1072:20)\n    at SMTPConnection._onData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:847:14)\n    at TLSSocket.SMTPConnection._onSocketData (D:\\Projets\\BigPharma 1.2\\api\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:217:44)\n    at TLSSocket.emit (node:events:518:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at TLSSocket.Readable.push (node:internal/streams/readable:392:5)\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23)","timestamp":"2026-06-09 09:48:17"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:26"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:38"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:53"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994933650@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:53"}
+{"level":"info","message":"POST /api/auth/register 201 - - 320.796 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/login 200 - - 105.627 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994933650@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 111.641 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/login 200 - - 83.061 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994933650@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/orders 201 - - 52.770 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994933650@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994933650@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"PUT /api/orders/6a27d3766ff10480a89fae9a/status 200 - - 75.341 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"GET /api/orders/6a27d3766ff10480a89fae9a/invoice 200 817 - 18.125 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994933650@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"PUT /api/orders/6a27d3766ff10480a89fae9a/status 200 - - 63.464 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/reviews 201 563 - 19.869 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/complaints 201 927 - 23.906 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994934809@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/register 201 - - 82.240 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/login 200 - - 78.240 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994934809@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 90.995 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:54"}
+{"level":"info","message":"POST /api/auth/login 200 - - 70.152 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:55"}
+{"level":"info","message":"POST /api/clients 201 355 - 12.134 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:55"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:56"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:57"}
+{"level":"info","message":"POST /api/auth/register 201 - - 195.788 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:57"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 3.952 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:57"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:58"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994938705@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:58"}
+{"level":"info","message":"POST /api/auth/register 201 - - 224.172 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:58"}
+{"level":"info","message":"POST /api/auth/login 200 - - 100.588 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939105@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 72.302 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 76.776 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939105@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780994939105@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 8.679 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 3.479 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939298@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 74.461 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 69.347 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939298@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780994939298@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 4.594 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939298@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 71.515 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 71.897 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 3.884 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939636@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 80.176 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 74.599 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to updated1780994939805@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"PUT /api/auth/me 200 938 - 16.657 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994939836@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/register 201 - - 79.848 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"POST /api/auth/login 200 - - 73.353 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:48:59"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to assistant1780994940000@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"POST /api/users 201 - - 83.213 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"POST /api/auth/login 200 - - 72.762 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"POST /api/users 403 112 - 6.650 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.382 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.469 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.324 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.197 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.467 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.350 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994940237@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"POST /api/auth/register 201 - - 71.562 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"POST /api/auth/login 200 - - 76.210 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/finance 200 114 - 10.803 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 7.662 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 4.738 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:00"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994942230@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"POST /api/auth/register 201 - - 258.387 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"POST /api/auth/login 200 - - 89.101 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994942230@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 109.727 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"POST /api/auth/login 200 - - 87.465 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994942230@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"POST /api/orders 201 - - 38.015 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994942230@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994942230@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"PUT /api/orders/6a27d37e3307b308d41b6677/status 200 - - 48.649 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994942230@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"PUT /api/orders/6a27d37e3307b308d41b6677/status 200 - - 40.643 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:02"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780994942999@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"POST /api/auth/register 201 - - 92.709 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"POST /api/auth/login 200 - - 85.544 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780994942999@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 95.197 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"POST /api/auth/login 200 - - 81.767 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"error","message":"Error: Stock insuffisant pour Paracetamol","method":"POST","path":"/api/orders","requestId":"56168219-ea53-411f-860c-67be43ee91ef","service":"bigpharma-api","stack":"Error: Stock insuffisant pour Paracetamol\n    at D:\\Projets\\BigPharma 1.2\\api\\services\\orderService.js:343:13\n    at Array.map (<anonymous>)\n    at map (D:\\Projets\\BigPharma 1.2\\api\\services\\orderService.js:336:44)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous>.exports.createOrder (D:\\Projets\\BigPharma 1.2\\api\\controllers\\orderController.js:158:24)","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"POST /api/orders 500 120 - 25.668 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:49:03"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 09:49:04"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:07"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:49:56"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:03"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995003898@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"POST /api/auth/register 201 - - 325.515 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"POST /api/auth/login 200 - - 113.728 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995003898@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 113.972 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"POST /api/auth/login 200 - - 84.155 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995003898@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"POST /api/orders 201 - - 66.120 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995003898@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995003898@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"PUT /api/orders/6a27d3bced271a730333c344/status 200 - - 108.237 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995003898@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"PUT /api/orders/6a27d3bced271a730333c344/status 200 - - 63.687 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:04"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995004928@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"POST /api/auth/register 201 - - 92.965 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"POST /api/auth/login 200 - - 85.500 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995004928@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 99.381 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"POST /api/auth/login 200 - - 83.207 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"POST /api/orders 400 120 - 13.836 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:05"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:07"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995007486@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:07"}
+{"level":"info","message":"POST /api/auth/register 201 - - 261.106 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:07"}
+{"level":"info","message":"POST /api/auth/login 200 - - 122.496 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:07"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995007486@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 132.677 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/auth/login 200 - - 89.977 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995007486@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/orders 201 - - 46.774 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995007486@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995007486@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"PUT /api/orders/6a27d3c0d4d3f8050b9e0a04/status 200 - - 97.295 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"GET /api/orders/6a27d3c0d4d3f8050b9e0a04/invoice 200 817 - 29.482 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995007486@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"PUT /api/orders/6a27d3c0d4d3f8050b9e0a04/status 200 - - 67.736 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/reviews 201 563 - 35.559 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/complaints 201 927 - 35.076 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995008687@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/auth/register 201 - - 100.127 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/auth/login 200 - - 107.605 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995008687@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 128.014 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:08"}
+{"level":"info","message":"POST /api/auth/login 200 - - 94.725 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:09"}
+{"level":"info","message":"POST /api/clients 201 355 - 21.043 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:09"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995011303@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"POST /api/auth/register 201 - - 239.245 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 122.307 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995011759@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"POST /api/auth/register 201 - - 101.214 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.794 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995011759@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780995011759@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 10.121 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2.562 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:11"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995012024@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/register 201 - - 87.243 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 81.694 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995012024@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780995012024@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 8.435 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995012024@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 82.831 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 83.220 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 4.496 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995012427@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/register 201 - - 86.206 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 77.868 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to updated1780995012607@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"PUT /api/auth/me 200 938 - 19.027 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995012648@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/register 201 - - 90.065 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 82.031 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to assistant1780995012834@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/users 201 - - 92.124 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:12"}
+{"level":"info","message":"POST /api/auth/login 200 - - 84.589 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"POST /api/users 403 112 - 11.271 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.423 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.736 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.459 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.471 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.386 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.462 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995013115@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"POST /api/auth/register 201 - - 92.728 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"POST /api/auth/login 200 - - 84.740 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/finance 200 114 - 12.269 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 14.942 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 7.401 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:13"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:15"}
+{"level":"info","message":"POST /api/auth/register 201 - - 267.340 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:15"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 6.899 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:50:16"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 09:50:19"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:50:21"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:51:50"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:52:17"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:52:44"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:53:38"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:54:40"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:21"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:22"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995503887@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"POST /api/auth/register 201 - - 449.632 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"POST /api/auth/login 200 - - 105.852 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995503887@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 120.624 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"POST /api/auth/login 200 - - 92.993 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995503887@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"POST /api/orders 201 - - 89.946 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:24"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995503887@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995503887@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"PUT /api/orders/6a27d5b0c6d16ea85d99037d/status 200 - - 138.497 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995503887@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"PUT /api/orders/6a27d5b0c6d16ea85d99037d/status 200 - - 68.135 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995505281@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"POST /api/auth/register 201 - - 85.155 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"POST /api/auth/login 200 - - 90.457 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995505281@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 110.612 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"POST /api/auth/login 200 - - 92.098 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"POST /api/orders 400 120 - 22.077 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:25"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:27"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995507723@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/register 201 - - 368.400 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/login 200 - - 97.521 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995508340@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/register 201 - - 101.194 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/login 200 - - 93.042 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995508340@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780995508340@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 18.031 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 6.085 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995508667@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/register 201 - - 101.981 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/login 200 - - 93.983 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995508667@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780995508667@example.com","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 15.841 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:28"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995508667@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 86.855 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 78.016 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 7.811 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995509177@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 96.613 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.332 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to updated1780995509404@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"PUT /api/auth/me 200 938 - 26.853 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995509498@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 104.247 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 90.177 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to assistant1780995509735@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/users 201 - - 90.858 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 74.408 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"POST /api/users 403 112 - 9.690 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.222 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:29"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.982 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.209 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.262 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.202 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.360 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995510092@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"POST /api/auth/register 201 - - 94.858 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"POST /api/auth/login 200 - - 94.034 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/finance 200 114 - 14.959 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 18.911 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 9.674 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:30"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:32"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995512390@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:32"}
+{"level":"info","message":"POST /api/auth/register 201 - - 345.956 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:32"}
+{"level":"info","message":"POST /api/auth/login 200 - - 99.792 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:32"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995512390@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 117.563 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.210 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995512390@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/orders 201 - - 71.657 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995512390@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995512390@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"PUT /api/orders/6a27d5b9c96fbc143d2ed541/status 200 - - 125.849 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"GET /api/orders/6a27d5b9c96fbc143d2ed541/invoice 200 817 - 35.899 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995512390@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"PUT /api/orders/6a27d5b9c96fbc143d2ed541/status 200 - - 90.109 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/reviews 201 563 - 42.365 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/complaints 201 927 - 23.345 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780995513832@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/auth/register 201 - - 88.451 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.273 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780995513832@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:34"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 117.399 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:34"}
+{"level":"info","message":"POST /api/auth/login 200 - - 91.924 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:34"}
+{"level":"info","message":"POST /api/clients 201 355 - 29.250 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:34"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:35"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:36"}
+{"level":"info","message":"POST /api/auth/register 201 - - 373.278 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:36"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 8.371 ms","service":"bigpharma-api","timestamp":"2026-06-09 09:58:36"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 09:58:39"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 09:58:41"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:05:05"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:05:21"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:06:07"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:06:32"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:09:17"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:09:19"}
+{"level":"info","message":"GET /api/health 200 162 - 3.782 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:12:14"}
+{"level":"info","message":"GET /health 404 92 - 0.505 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:13:05"}
+{"level":"info","message":"GET / 404 92 - 0.445 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:13:12"}
+{"level":"info","message":"GET /api/health 200 162 - 0.231 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:13:40"}
+{"level":"info","message":"GET /api/health 200 162 - 0.297 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:14:14"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 167.848 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:21:40"}
+{"level":"info","message":"POST /api/orders 401 115 - 2.327 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:02"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 3.330 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:07"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:28"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996948720@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 295.659 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 75.406 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996948720@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 82.738 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.899 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996948720@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/orders 201 - - 38.589 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996948720@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996948720@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"PUT /api/orders/6a27db554b7fd9b8d577b8b9/status 200 - - 53.877 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996948720@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"PUT /api/orders/6a27db554b7fd9b8d577b8b9/status 200 - - 32.497 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996949462@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/register 201 - - 70.222 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.534 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996949462@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 71.163 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.405 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"POST /api/orders 400 120 - 6.450 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:29"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951228@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/register 201 - - 147.987 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 75.438 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951503@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/register 201 - - 68.835 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.937 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951503@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780996951503@example.com","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 4.825 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 2.914 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951677@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/register 201 - - 67.047 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.575 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951677@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780996951677@example.com","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 4.910 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951677@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 65.519 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/login 200 - - 67.075 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 1.723 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:31"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996951984@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/register 201 - - 69.449 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.129 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to updated1780996952125@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"PUT /api/auth/me 200 938 - 12.880 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996952152@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/register 201 - - 67.502 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.640 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to assistant1780996952295@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/users 201 - - 71.398 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/login 200 - - 63.463 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/users 403 112 - 5.249 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.215 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.214 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.247 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.203 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.180 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.171 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996952488@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/register 201 - - 66.105 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.400 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/finance 200 114 - 7.754 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 8.622 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 3.878 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:32"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:33"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996953996@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/register 201 - - 215.827 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/login 200 - - 87.329 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996953996@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 80.695 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/login 200 - - 62.458 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996953996@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/orders 201 - - 24.935 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996953996@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996953996@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"PUT /api/orders/6a27db5aa20980847f8ab4b4/status 200 - - 44.895 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"GET /api/orders/6a27db5aa20980847f8ab4b4/invoice 200 817 - 13.803 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996953996@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"PUT /api/orders/6a27db5aa20980847f8ab4b4/status 200 - - 28.297 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/reviews 201 563 - 14.282 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/complaints 201 927 - 13.216 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996954761@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/register 201 - - 67.376 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/login 200 - - 62.042 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996954761@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 73.198 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.843 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"POST /api/clients 201 355 - 10.579 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:34"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:35"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:36"}
+{"level":"info","message":"POST /api/auth/register 201 - - 149.244 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:36"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 1.975 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:22:36"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 10:22:38"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:22:39"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:13"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996993988@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/register 201 - - 272.088 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/login 200 - - 72.465 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996993988@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 80.288 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.945 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996993988@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/orders 201 - - 35.840 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996993988@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996993988@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"PUT /api/orders/6a27db82bd7a57509f7cfc16/status 200 - - 47.649 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996993988@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"PUT /api/orders/6a27db82bd7a57509f7cfc16/status 200 - - 43.059 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996994698@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/register 201 - - 67.070 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.359 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996994698@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 74.844 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.282 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:14"}
+{"level":"info","message":"POST /api/orders 400 120 - 9.152 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:15"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996996324@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/register 201 - - 155.671 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/login 200 - - 79.127 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996996621@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/register 201 - - 71.241 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.147 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996996621@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780996996621@example.com","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 4.667 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 119 - 1.842 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996996797@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/register 201 - - 64.508 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.605 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996996797@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"OTP de réinitialisation envoyé à admin1780996996797@example.com","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"POST /api/auth/forgot-password 200 141 - 5.140 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:16"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996996797@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/reset-password 200 78 - 62.656 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 62.435 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/reset-password 400 144 - 1.906 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996997092@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/register 201 - - 66.149 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.755 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to updated1780996997234@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"PUT /api/auth/me 200 938 - 9.487 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996997257@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/register 201 - - 65.051 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 66.554 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to assistant1780996997397@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/users 201 - - 69.354 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 64.472 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/users 403 112 - 4.750 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/sales 401 111 - 0.221 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/finance 401 111 - 0.189 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/activityLogs 401 111 - 0.251 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/QuestionsClients 401 111 - 0.194 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/dashboard/summary 401 111 - 0.176 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/settings/profile 401 111 - 0.194 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996997588@example.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/register 201 - - 65.203 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"POST /api/auth/login 200 - - 67.571 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/finance 200 114 - 9.769 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/activityLogs 200 81 - 8.587 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"GET /api/QuestionsClients 200 26 - 3.830 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:17"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:18"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996999058@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/register 201 - - 214.234 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/login 200 - - 71.770 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996999058@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 88.348 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/login 200 - - 62.129 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996999058@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/orders 201 - - 23.946 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996999058@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996999058@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"PUT /api/orders/6a27db8776a91efb3f7b52bd/status 200 - - 46.810 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"GET /api/orders/6a27db8776a91efb3f7b52bd/invoice 200 817 - 11.097 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996999058@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"PUT /api/orders/6a27db8776a91efb3f7b52bd/status 200 - - 28.719 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/reviews 201 563 - 11.522 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/complaints 201 927 - 12.556 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin1780996999811@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/register 201 - - 70.710 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/login 200 - - 62.977 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to john1780996999811@doe.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/register-client 201 - - 70.767 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:19"}
+{"level":"info","message":"POST /api/auth/login 200 - - 65.113 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:20"}
+{"level":"info","message":"POST /api/clients 201 355 - 9.779 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:20"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:20"}
+{"level":"info","message":"MailService: test environment detected, skipping actual email sending to admin@test.com (mocked success)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:21"}
+{"level":"info","message":"POST /api/auth/register 201 - - 156.286 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:21"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 3.564 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:23:21"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Default company created.","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Default administrator created: laflorale8@gmail.com / admin","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Seeding realistic parapharmacy products...","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] 18 parapharmacy products successfully seeded.","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Linking mutual product substitutions...","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"[SEED] Mutual product substitutions linked successfully.","service":"bigpharma-api","timestamp":"2026-06-09 10:23:23"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:23:24"}
+{"level":"info","message":"GET /api/health 200 162 - 0.313 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:24:47"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 10:26:45"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 2.293 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:11"}
+{"level":"info","message":"POST /api/auth/login 200 - - 260.658 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:11"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.616 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:11"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.534 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:11"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.390 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:11"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.149 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:12"}
+{"level":"info","message":"GET /api/notifications 200 - - 52.262 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:12"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 73.175 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:12"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 77.355 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:12"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 200 - - 78.039 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:12"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.193 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:28"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 54.618 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:28"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.186 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:39"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 200 - - 40.092 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:28:39"}
+{"level":"info","message":"OPTIONS /api/orders?page=2&limit=10 204 0 - 0.186 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:00"}
+{"level":"info","message":"GET /api/orders?page=2&limit=10 200 - - 45.282 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=3&limit=10 204 0 - 0.255 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:01"}
+{"level":"info","message":"GET /api/orders?page=3&limit=10 200 - - 40.793 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:01"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.225 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:05"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.252 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:05"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.240 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:05"}
+{"level":"info","message":"GET /api/reviews 200 26 - 30.313 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:05"}
+{"level":"info","message":"GET /api/complaints 200 26 - 21.910 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:05"}
+{"level":"info","message":"GET /api/QuestionsClients 200 - - 41.607 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:05"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.212 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:16"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 23.811 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:16"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.377 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:54"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 16.825 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:54"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.149 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:57"}
+{"level":"info","message":"GET /api/users/staff 200 - - 20.001 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:29:57"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.109 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:30:12"}
+{"level":"info","message":"GET /api/users/staff 304 - - 18.955 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:30:12"}
+{"level":"info","message":"GET /api/users/staff 304 - - 19.394 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:30:15"}
+{"level":"info","message":"OPTIONS /api/activityLogs 204 0 - 0.129 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:30:19"}
+{"level":"info","message":"GET /api/activityLogs 200 - - 23.879 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:30:19"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.417 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:05"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.132 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:05"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 30.265 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:05"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 34.963 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:05"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.183 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:19"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 53.851 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:19"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.250 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:40"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 304 - - 30.121 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:31:40"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.154 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:11"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 65.003 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:11"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.208 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:15"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.361 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:15"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.147 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:15"}
+{"level":"info","message":"GET /api/reviews 304 - - 16.568 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:15"}
+{"level":"info","message":"GET /api/complaints 304 - - 15.023 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:15"}
+{"level":"info","message":"GET /api/QuestionsClients 304 - - 25.248 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:15"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.185 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:20"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 16.832 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:32:20"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.183 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:34"}
+{"level":"info","message":"GET /api/auth/me 200 936 - 18.188 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:34"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.181 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.175 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.505 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.275 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"GET /api/notifications 304 - - 30.758 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 51.861 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 64.713 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 58.857 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:35"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 18.303 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:41:39"}
+{"level":"info","message":"OPTIONS /api/auth/refresh-token 204 0 - 0.310 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"POST /api/auth/refresh-token 200 493 - 43.642 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.159 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"GET /api/auth/me 304 - - 17.839 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.160 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.158 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.293 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.245 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"GET /api/notifications 304 - - 33.593 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 53.392 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 62.745 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 63.396 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:12"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 13.652 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:16"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.105 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:56"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 41.697 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:45:57"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.102 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:46:02"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 304 - - 29.212 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:46:02"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.181 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:54"}
+{"level":"info","message":"GET /api/auth/me 304 - - 15.247 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:54"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.584 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.182 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.710 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.201 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"GET /api/notifications 304 - - 45.815 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 62.014 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 79.088 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 62.656 ms","service":"bigpharma-api","timestamp":"2026-06-09 10:50:55"}
+{"level":"info","message":"OPTIONS /api/auth/refresh-token 204 0 - 0.478 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:08"}
+{"level":"info","message":"POST /api/auth/refresh-token 200 493 - 19.955 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:08"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.176 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"GET /api/auth/me 304 - - 12.981 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.088 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.296 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.214 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.152 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"GET /api/notifications 304 - - 30.456 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 44.997 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 51.073 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 48.194 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:12:09"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.180 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:22:41"}
+{"level":"info","message":"POST /api/auth/login 401 120 - 5.687 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:22:41"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.105 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"POST /api/auth/login 200 - - 127.515 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.172 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.209 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.170 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.144 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"GET /api/notifications 200 - - 30.900 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 57.558 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 200 - - 57.654 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 44.256 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:18"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.141 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:34"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 39.792 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:35"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.182 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:41"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 200 - - 20.229 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:23:41"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.099 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:24:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 31.384 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:24:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.134 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:26:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 17.997 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:26:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.176 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:27:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 19.592 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:27:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.116 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:29:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 17.986 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:29:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.214 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:30:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 18.914 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:30:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.115 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:32:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 21.960 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:32:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.183 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:33:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 21.557 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:33:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.615 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:35:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 65.755 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:35:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.097 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:36:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 28.052 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:36:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.347 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:38:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 65.791 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:38:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.166 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:39:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.351 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:39:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.093 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:40:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.801 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:40:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.114 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:41:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.862 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:41:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.140 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:41:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.799 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:41:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.123 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:42:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.375 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:42:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.110 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:43:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.604 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:43:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.091 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:44:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.847 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:44:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.149 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:44:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.827 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:44:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.105 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:45:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.914 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:45:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.185 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:46:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 3.619 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:46:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.215 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:47:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.372 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:47:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.330 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:47:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.809 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:47:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.096 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:48:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.938 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:48:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.145 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:49:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 3.452 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:49:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.168 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:50:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.912 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:50:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.172 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:50:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.307 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:50:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.102 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:51:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.305 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:51:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.270 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:52:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.029 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:52:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.088 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:53:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.813 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:53:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.091 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:53:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.045 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:53:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.110 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:54:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.828 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:54:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.137 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:55:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.942 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:55:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.123 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:56:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.889 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:56:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.103 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:56:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.147 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:56:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.081 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:57:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.837 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:57:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.081 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:58:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.868 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:58:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.225 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:59:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.938 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:59:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.086 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:59:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.380 ms","service":"bigpharma-api","timestamp":"2026-06-09 11:59:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.225 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:00:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.200 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:00:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.076 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:01:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.829 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:01:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.114 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:02:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.778 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:02:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.179 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:02:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.003 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:02:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.112 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:03:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.866 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:03:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.160 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:04:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.817 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:04:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.097 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:05:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.843 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:05:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.091 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:05:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.130 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:05:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.111 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:06:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.979 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:06:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.121 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:07:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 3.057 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:07:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.074 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:08:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.708 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:08:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.079 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:08:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 1.522 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:08:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.188 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:09:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.818 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:09:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.071 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:10:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.753 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:10:15"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.076 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:11:00"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.918 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:11:00"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.116 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:11:45"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.842 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:11:45"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.076 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:12:30"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.800 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:12:30"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.073 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:13:15"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 401 115 - 0.795 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:13:15"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 0.172 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"POST /api/auth/login 200 - - 116.646 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.151 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.211 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.251 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.183 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"GET /api/notifications 200 - - 41.849 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 54.030 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 62.077 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 200 - - 79.265 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:33"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.131 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:57"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 40.236 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:23:57"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.129 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:01"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 200 - - 36.361 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:01"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.141 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:45"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.114 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:45"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.175 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:45"}
+{"level":"info","message":"GET /api/reviews 200 26 - 19.249 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:45"}
+{"level":"info","message":"GET /api/complaints 200 26 - 18.577 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:45"}
+{"level":"info","message":"GET /api/QuestionsClients 200 - - 30.760 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:45"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.123 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:50"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 14.390 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:24:50"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.134 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:12"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 304 - - 29.652 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:12"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.154 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:19"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 34.902 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:19"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.264 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:27"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.303 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:27"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.098 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:27"}
+{"level":"info","message":"GET /api/complaints 304 - - 23.181 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:27"}
+{"level":"info","message":"GET /api/reviews 304 - - 21.743 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:27"}
+{"level":"info","message":"GET /api/QuestionsClients 304 - - 32.390 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:27"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.175 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:31"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 18.835 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:31"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.153 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:46"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 16.466 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:46"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.125 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:47"}
+{"level":"info","message":"GET /api/users/staff 200 - - 23.808 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:26:47"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.088 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:27:49"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 13.209 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:27:49"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.137 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:36:13"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 13.015 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:36:13"}
+{"level":"info","message":"OPTIONS /api/auth/refresh-token 204 0 - 0.268 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:19"}
+{"level":"info","message":"POST /api/auth/refresh-token 200 493 - 34.345 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:19"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.200 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"GET /api/auth/me 200 936 - 24.637 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.133 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.108 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.106 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.216 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"GET /api/notifications 304 - - 38.604 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 56.936 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 304 - - 68.950 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 68.782 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:20"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.110 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:33"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 26.859 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:33"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.129 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:37"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 304 - - 28.175 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:37"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.086 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:55"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.191 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:55"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.151 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:55"}
+{"level":"info","message":"GET /api/QuestionsClients 304 - - 32.791 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:55"}
+{"level":"info","message":"GET /api/reviews 304 - - 23.595 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:55"}
+{"level":"info","message":"GET /api/complaints 304 - - 21.667 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:40:55"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.202 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:41:46"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 18.163 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:41:46"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.111 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:43:16"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 21.732 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:43:16"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.120 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:44:46"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 18.985 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:44:46"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.138 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:46:16"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 29.031 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:46:16"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.145 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:47:46"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 304 - - 17.982 ms","service":"bigpharma-api","timestamp":"2026-06-09 12:47:46"}
+{"level":"info","message":"OPTIONS /api/auth/login 204 0 - 1.668 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"POST /api/auth/login 200 - - 152.090 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"OPTIONS /api/notifications 204 0 - 0.150 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.352 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"OPTIONS /api/sales?page=1&limit=50 204 0 - 0.135 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.101 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"GET /api/notifications 200 - - 34.322 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 200 - - 81.961 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"GET /api/finance/summary? 200 - - 103.490 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"GET /api/sales?page=1&limit=50 200 - - 115.799 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:40"}
+{"level":"info","message":"OPTIONS /api/orders?page=1&limit=10 204 0 - 0.189 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:57"}
+{"level":"info","message":"GET /api/orders?page=1&limit=10 200 - - 40.020 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:51:57"}
+{"level":"info","message":"OPTIONS /api/clients?page=1&limit=1000 204 0 - 0.143 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:01"}
+{"level":"info","message":"GET /api/clients?page=1&limit=1000 200 - - 26.511 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:01"}
+{"level":"info","message":"OPTIONS /api/QuestionsClients 204 0 - 0.196 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:21"}
+{"level":"info","message":"OPTIONS /api/reviews 204 0 - 0.132 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:21"}
+{"level":"info","message":"OPTIONS /api/complaints 204 0 - 0.134 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:21"}
+{"level":"info","message":"GET /api/reviews 200 26 - 25.395 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:21"}
+{"level":"info","message":"GET /api/complaints 200 26 - 25.245 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:21"}
+{"level":"info","message":"GET /api/QuestionsClients 200 - - 35.596 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:21"}
+{"level":"info","message":"OPTIONS /api/finance/summary? 204 0 - 0.248 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:26"}
+{"level":"info","message":"GET /api/finance/summary? 304 - - 12.110 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:52:26"}
+{"level":"info","message":"OPTIONS /api/products?page=1&limit=1000 204 0 - 0.128 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:05"}
+{"level":"info","message":"GET /api/products?page=1&limit=1000 304 - - 21.120 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:05"}
+{"level":"info","message":"OPTIONS /api/settings/profile 204 0 - 0.164 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:19"}
+{"level":"info","message":"GET /api/settings/profile 200 234 - 15.912 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:19"}
+{"level":"info","message":"OPTIONS /api/auth/me 204 0 - 0.144 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:21"}
+{"level":"info","message":"GET /api/settings/profile 304 - - 19.974 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:21"}
+{"level":"info","message":"GET /api/auth/me 200 936 - 19.489 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:21"}
+{"level":"info","message":"OPTIONS /api/users/staff 204 0 - 0.120 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:27"}
+{"level":"info","message":"GET /api/users/staff 200 - - 19.822 ms","service":"bigpharma-api","timestamp":"2026-06-09 13:53:27"}
+{"level":"info","message":"Redis caching disabled (no REDIS_HOST provided)","service":"bigpharma-api","timestamp":"2026-06-09 13:53:36"}

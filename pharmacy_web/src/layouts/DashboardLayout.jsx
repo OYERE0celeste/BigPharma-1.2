@@ -59,7 +59,6 @@ const DashboardLayout = () => {
       <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <div className="logo-container">
-            <div className="logo-icon">BP</div>
             <span className="logo-text">BigPharma</span>
           </div>
           <button className="sidebar-toggle-mobile" onClick={() => setSidebarOpen(false)}>

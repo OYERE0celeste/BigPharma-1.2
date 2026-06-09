@@ -66,10 +66,12 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
     final reviews = reviewProvider.reviewsForProduct(product.id);
     final summary = reviewProvider.summaryForProduct(product.id);
 
+    final surfaceColor = theme.colorScheme.surface;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 5),
         ],
@@ -81,7 +83,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
             width: 44,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: theme.colorScheme.outline.withOpacity(0.25),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -97,19 +99,13 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                     decoration: BoxDecoration(
                       color: primary.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade100),
+                      border: Border.all(color: theme.colorScheme.outline),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Hero(
                         tag: 'product_sheet_${product.id}',
-                        child: product.image.startsWith('http')
-                            ? Image.network(product.image, fit: BoxFit.cover)
-                            : Icon(
-                                Icons.medication_rounded,
-                                size: 84,
-                                color: primary.withOpacity(0.4),
-                              ),
+                        child: _buildProductImage(product.image, primary),
                       ),
                     ),
                   ),
@@ -182,12 +178,11 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                   ),
                 ],
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Description',
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF334155),
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -197,7 +192,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                       : product.description,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey[700],
+                    color: theme.colorScheme.onSurface,
                     height: 1.5,
                   ),
                 ),
@@ -208,24 +203,27 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
                     horizontal: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: theme.colorScheme.surfaceVariant,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey[100]!),
+                    border: Border.all(color: theme.colorScheme.outline),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildInfoItem(
+                        context,
                         Icons.inventory_2_outlined,
                         'Stock',
                         '${product.availableStock}',
                       ),
                       _buildInfoItem(
+                        context,
                         Icons.verified_user_outlined,
                         'Qualite',
                         'Certifie',
                       ),
                       _buildInfoItem(
+                        context,
                         Icons.local_shipping_outlined,
                         'Retrait',
                         'Rapide',
@@ -246,8 +244,8 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey.shade100)),
+              color: surfaceColor,
+              border: Border(top: BorderSide(color: theme.colorScheme.outline)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.04),
@@ -301,17 +299,53 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String label, String value) {
+  Widget _buildInfoItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
+    final textColor = Theme.of(context).colorScheme.onSurfaceVariant;
+
     return Column(
       children: [
-        Icon(icon, color: Colors.grey[600], size: 20),
+        Icon(icon, color: textColor, size: 20),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[600])),
+        Text(label, style: TextStyle(fontSize: 11, color: textColor)),
         Text(
           value,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
         ),
       ],
+    );
+  }
+
+  Widget _buildProductImage(String image, Color primary) {
+    if (image.startsWith('http')) {
+      return Image.network(
+        image,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _buildProductPlaceholder(primary),
+      );
+    }
+
+    return _buildProductPlaceholder(primary);
+  }
+
+  Widget _buildProductPlaceholder(Color primary) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: primary.withOpacity(0.08),
+      child: Center(
+        child: Text(
+          'Image indisponible',
+          style: TextStyle(
+            color: primary.withOpacity(0.85),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
     );
   }
 
@@ -335,7 +369,7 @@ class _ProductDetailsBottomSheetState extends State<ProductDetailsBottomSheet> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),

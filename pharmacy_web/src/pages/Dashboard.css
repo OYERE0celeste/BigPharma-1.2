@@ -48,7 +48,7 @@
   justify-content: center;
 }
 
-.primary .card-icon { background: #eef2ff; color: #6366f1; }
+.primary .card-icon { background: #e6f4ea; color: #10b981; }
 .danger .card-icon { background: #fef2f2; color: #f43f5e; }
 .warning .card-icon { background: #fffbeb; color: #f59e0b; }
 .info .card-icon { background: #f0fdf4; color: #10b981; }
@@ -99,7 +99,7 @@
 
 .view-all {
   font-size: 0.85rem;
-  color: #6366f1;
+  color: #10b981;
   text-decoration: none;
   font-weight: 600;
   display: flex;
@@ -131,7 +131,7 @@
 }
 
 .act-icon.sale { background: #dcfce7; color: #166534; }
-.act-icon.product { background: #eef2ff; color: #6366f1; }
+.act-icon.product { background: #e6f4ea; color: #10b981; }
 
 .act-content p {
   margin: 0;
@@ -161,5 +161,5 @@
 }
 
 .task-item.warning { background: #fffbeb; color: #92400e; }
-.task-item.info { background: #eef2ff; color: #3730a3; }
+.task-item.info { background: #e6f4ea; color: #047857; }
 .task-item.danger { background: #fef2f2; color: #991b1b; }

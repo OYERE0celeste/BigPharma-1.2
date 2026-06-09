@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:client_app/pages/home_page.dart';
+import 'package:client_app/pages/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,6 @@ import 'services/notification_provider.dart';
 import 'services/invoice_provider.dart';
 import 'services/review_provider.dart';
 import 'services/complaint_provider.dart';
-import 'pages/login_page.dart';
 import 'widgets/app_notification.dart';
 
 void main() {
@@ -110,7 +110,7 @@ class MyApp extends StatelessWidget {
           if (!auth.isInitialized) {
             return const BpAuthLoadingScreen();
           }
-          return auth.isAuthenticated ? const HomePage() : const LoginPage();
+          return auth.isAuthenticated ? const HomePage() : const LandingPage();
         },
       ),
     );

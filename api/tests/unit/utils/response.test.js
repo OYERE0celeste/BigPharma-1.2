@@ -47,8 +47,11 @@ describe("Response Utility", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: "Erreur",
-        code: "ERROR",
+        error: {
+          message: "Error",
+          code: "INTERNAL_SERVER_ERROR",
+          details: null,
+        },
       });
     });
 
@@ -57,8 +60,11 @@ describe("Response Utility", () => {
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: "Not Found",
-        code: "NOT_FOUND",
+        error: {
+          message: "Not Found",
+          code: "NOT_FOUND",
+          details: null,
+        },
       });
     });
 
@@ -67,9 +73,11 @@ describe("Response Utility", () => {
       failure(res, { data });
       expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: "Erreur",
-        code: "ERROR",
-        data,
+        error: {
+          message: "Error",
+          code: "INTERNAL_SERVER_ERROR",
+          details: data,
+        },
       });
     });
   });

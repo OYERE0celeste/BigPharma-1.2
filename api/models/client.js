@@ -18,7 +18,6 @@ const ClientSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      required: true,
     },
     email: {
       type: String,
@@ -35,8 +34,7 @@ const ClientSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      required: true,
-      enum: ["male", "female"],
+      enum: ["male", "female", "other"],
     },
     isActive: {
       type: Boolean,

@@ -1,9 +1,9 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server-core");
+
+jest.setTimeout(30000);
 
 let app;
-let mongo;
 
 async function registerAndLogin(overrides = {}) {
   const registerPayload = {
@@ -36,19 +36,13 @@ async function registerAndLogin(overrides = {}) {
 }
 
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = "test_secret";
-  process.env.MONGODB_URI = mongo.getUri();
+  process.env.MONGODB_URI = mongoose.connection.client.s.url || "mongodb://localhost:27017/test";
   process.env.CORS_ORIGIN = "*";
   process.env.FEATURE_2FA_ENABLED = "false";
 
   app = require("../app");
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-  if (mongo) await mongo.stop();
 });
 
 describe("Auth and profile integration", () => {

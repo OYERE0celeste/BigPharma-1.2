@@ -1,6 +1,7 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server-core");
+
+jest.setTimeout(30000);
 
 const Finance = require("../models/finance");
 const Invoice = require("../models/invoice");
@@ -9,7 +10,6 @@ const Review = require("../models/review");
 const Complaint = require("../models/complaint");
 
 let app;
-let mongo;
 let adminToken;
 let clientToken;
 let companyId;
@@ -77,10 +77,9 @@ async function setupTestData(testSuffix = Date.now()) {
 }
 
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = "test_secret";
-  process.env.MONGODB_URI = mongo.getUri();
+  process.env.MONGODB_URI = mongoose.connection.client.s.url || "mongodb://localhost:27017/test";
 
   app = require("../app");
 });
@@ -95,10 +94,6 @@ afterEach(async () => {
   ]);
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-  if (mongo) await mongo.stop();
-});
 
 describe("Client module workflow", () => {
   it("generates an invoice, then allows review and complaint flows", async () => {
@@ -172,5 +167,23 @@ describe("Client module workflow", () => {
     expect(complaintRes.body.data.orderSnapshot.orderNumber).toBe(
       createRes.body.data.orderNumber
     );
+  });
+
+  it("allows admin to create a client without dateOfBirth and gender", async () => {
+    const { product } = await setupTestData(Date.now() + 100);
+
+    const createClientRes = await request(app)
+      .post("/api/clients")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({
+        fullName: "New Walkin Client",
+        phone: "0102030409",
+      })
+      .expect(201);
+
+    expect(createClientRes.body.data.fullName).toBe("New Walkin Client");
+    expect(createClientRes.body.data.phone).toBe("0102030409");
+    expect(createClientRes.body.data.dateOfBirth).toBeUndefined();
+    expect(createClientRes.body.data.gender).toBeUndefined();
   });
 });
