@@ -10,6 +10,13 @@ services:
       - MONGODB_URI=mongodb://mongodb:27017/BigPharmaDB
       - NODE_ENV=production
       - JWT_SECRET=your_super_secret_key_here
+      # SMTP configuration (placeholders) - replace with real credentials or secrets
+      - SMTP_HOST=smtp.example.com
+      - SMTP_PORT=587
+      - SMTP_USER=you@example.com
+      - SMTP_PASS=changeme
+      - SMTP_SECURE=false
+      - EMAIL_FROM="noreply@example.com"
     depends_on:
       - mongodb
     networks:

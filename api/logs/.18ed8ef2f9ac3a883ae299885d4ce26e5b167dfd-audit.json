@@ -6,16 +6,6 @@
     "auditLog": "D:\\Projets\\BigPharma 1.2\\api\\logs\\.18ed8ef2f9ac3a883ae299885d4ce26e5b167dfd-audit.json",
     "files": [
         {
-            "date": 1779992024064,
-            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\application-2026-05-28.log",
-            "hash": "583340a8bc449ebc881a8312612c3984ae9be2b9eff5f1eb5432595ba79efa84"
-        },
-        {
-            "date": 1780032513437,
-            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\application-2026-05-29.log",
-            "hash": "1aee14c1df5af74ede8aaac97ffad12fe87c0adb65443f1020e15b5409e78372"
-        },
-        {
             "date": 1780151785919,
             "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\application-2026-05-30.log",
             "hash": "ad64d8c4778618cecec06b384e1dea06e4072469923ddb0ed643876f9e932ec7"
@@ -34,6 +24,11 @@
             "date": 1780991031348,
             "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\application-2026-06-09.log",
             "hash": "889e02a31c4732df15d9641663824305b4645ce1b6bc742f6a63ae18ae9f965d"
+        },
+        {
+            "date": 1781250232498,
+            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\application-2026-06-12.log",
+            "hash": "b0b1f8b1164a2b5dfc9aa9da7aaaf28ce3465e582bd877b8cb96d5544c38e669"
         }
     ],
     "hashType": "sha256"

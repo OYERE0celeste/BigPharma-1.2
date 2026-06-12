@@ -60,7 +60,7 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: BpColors.textSecondary),
+          style: TextStyle(fontSize: 12, color: BpColors.textSecondary),
         ),
         Text(
           value,
@@ -80,7 +80,7 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: BpColors.surface,
         border: Border(top: BorderSide(color: BpColors.border)),
       ),
@@ -90,14 +90,14 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
             'Sous-total',
             '${widget.subtotal.toStringAsFixed(0)} FCFA',
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             children: [
-              const Text(
+              Text(
                 'Remise',
                 style: TextStyle(fontSize: 12, color: BpColors.textSecondary),
               ),
-              const Spacer(),
+              Spacer(),
               SizedBox(
                 width: 140,
                 child: TextField(
@@ -105,7 +105,7 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  style: const TextStyle(color: BpColors.textPrimary),
+                  style: TextStyle(color: BpColors.textPrimary),
                   onChanged: (value) =>
                       widget.onDiscountChanged(double.tryParse(value) ?? 0),
                   decoration: const InputDecoration(
@@ -122,14 +122,14 @@ class _TransactionSummaryPanelState extends State<TransactionSummaryPanel> {
           ),
           const SizedBox(height: 12),
           _buildAmountRow('Taxes', '${widget.tax.toStringAsFixed(0)} FCFA'),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 14),
             child: Divider(color: BpColors.border, height: 1),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'TOTAL',
                 style: TextStyle(
                   fontSize: 16,

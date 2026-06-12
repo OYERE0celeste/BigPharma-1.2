@@ -63,12 +63,12 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Row(
         children: [
-          const Icon(Icons.search_off, color: BpColors.warning, size: 28),
-          const SizedBox(width: 12),
+          Icon(Icons.search_off, color: BpColors.warning, size: 28),
+          SizedBox(width: 12),
           Expanded(
             child: Text(
               widget.title ?? 'Produit non trouvé',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: BpColors.textPrimary,
@@ -93,7 +93,7 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Barcode scanné:',
                     style: TextStyle(
                       fontSize: 12,
@@ -101,13 +101,13 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           widget.barcode,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: BpColors.textPrimary,
@@ -115,7 +115,7 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       // Copy button
                       GestureDetector(
                         onTap: _copyBarcodeToClipboard,
@@ -138,7 +138,7 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // ========== ERROR MESSAGE ==========
             Container(
@@ -154,7 +154,7 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Ce barcode n\'existe pas dans la base de données.',
                     style: TextStyle(
                       fontSize: 14,
@@ -163,10 +163,10 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
                     ),
                   ),
                   if (widget.subtitle != null) ...[
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text(
                       widget.subtitle!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: BpColors.textSecondary,
                       ),
@@ -176,7 +176,7 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // ========== OPTIONS ==========
             Text(
@@ -187,12 +187,12 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
                 color: BpColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               '• Créer un nouveau produit avec ce barcode\n'
               '• Continuer le scan avec un autre barcode\n'
               '• Vérifier le barcode et rescanner',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: BpColors.textSecondary,
                 height: 1.6,
@@ -208,7 +208,7 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
             Navigator.of(context).pop();
             widget.onContinueScanning?.call();
           },
-          child: const Text(
+          child: Text(
             'Continuer le scan',
             style: TextStyle(color: BpColors.textSecondary),
           ),
@@ -262,8 +262,8 @@ class _ProductNotFoundDialogState extends State<ProductNotFoundDialog> {
     // Show snackbar
     scaffold.showSnackBar(
       SnackBar(
-        content: const Text('Barcode copié'),
-        duration: const Duration(seconds: 2),
+        content: Text('Barcode copié'),
+        duration: Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         backgroundColor: BpColors.success,
       ),
@@ -328,7 +328,7 @@ class ProductNotFoundDialogMinimal extends StatelessWidget {
     return AlertDialog(
       backgroundColor: BpColors.scaffold,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      title: const Row(
+      title: Row(
         children: [
           Icon(Icons.error_outline, color: BpColors.error),
           SizedBox(width: 8),
@@ -340,7 +340,7 @@ class ProductNotFoundDialogMinimal extends StatelessWidget {
       ),
       content: Text(
         'Le barcode "$barcode" n\'a pas été trouvé.',
-        style: const TextStyle(color: BpColors.textPrimary),
+        style: TextStyle(color: BpColors.textPrimary),
       ),
       actions: [
         TextButton(
@@ -382,7 +382,7 @@ class _ProductNotFoundDialogWithRetryState
     return AlertDialog(
       backgroundColor: BpColors.scaffold,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      title: const Text(
+      title: Text(
         'Produit non trouvé - Recommencer?',
         style: TextStyle(color: BpColors.textPrimary),
       ),
@@ -391,25 +391,25 @@ class _ProductNotFoundDialogWithRetryState
         children: [
           Text(
             'Barcode: ${widget.barcode}',
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'monospace',
               color: BpColors.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             'Le produit n\'a pas été trouvé.\n'
             'Vérifiez le barcode et recommencez.',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
           if (_retryCount > 0)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: Text(
                 'Tentative $_retryCount',
-                style: const TextStyle(color: BpColors.warning, fontSize: 12),
+                style: TextStyle(color: BpColors.warning, fontSize: 12),
               ),
             ),
         ],

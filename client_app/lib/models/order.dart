@@ -81,6 +81,26 @@ class OrderItem {
   }
 }
 
+class Prescription {
+  final String status;
+  final String? rejectionReason;
+  final String? pharmacistNotes;
+
+  const Prescription({
+    required this.status,
+    this.rejectionReason,
+    this.pharmacistNotes,
+  });
+
+  factory Prescription.fromJson(Map<String, dynamic> json) {
+    return Prescription(
+      status: json['status']?.toString() ?? 'pending',
+      rejectionReason: json['rejectionReason']?.toString(),
+      pharmacistNotes: json['pharmacistNotes']?.toString(),
+    );
+  }
+}
+
 class Order {
   final String id;
   final String orderNumber;
@@ -96,6 +116,7 @@ class Order {
   final DateTime? invoiceDate;
   final String? collectionCode;
   final String pickupMode;
+  final Prescription? prescription;
 
   const Order({
     required this.id,
@@ -112,6 +133,7 @@ class Order {
     this.invoiceDate,
     this.collectionCode,
     this.pickupMode = 'sur_place',
+    this.prescription,
   });
 
   String get statusLabel => orderStatusLabel(status);
@@ -155,6 +177,7 @@ class Order {
           : null,
       collectionCode: json['collectionCode']?.toString(),
       pickupMode: (json['pickupMode'] ?? 'sur_place').toString(),
+      prescription: json['prescription'] != null ? Prescription.fromJson(json['prescription']) : null,
     );
   }
 }

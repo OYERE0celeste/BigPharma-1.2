@@ -10,31 +10,31 @@ class SettingsTheme {
   static const double sidePadding = 24.0;
 
   // Colors (Curated for premium look)
-  static const Color primary = BpColors.accent;
-  static const Color accent = BpColors.surfaceMuted;
-  static const Color background = BpColors.surfaceStrong;
-  static const Color textPrimary = BpColors.textPrimary;
-  static const Color textSecondary = BpColors.textSecondary;
-  static const Color divider = BpColors.border;
+  static Color get primary => BpColors.accent;
+  static Color get accent => BpColors.surfaceMuted;
+  static Color get background => BpColors.surfaceStrong;
+  static Color get textPrimary => BpColors.textPrimary;
+  static Color get textSecondary => BpColors.textSecondary;
+  static Color get divider => BpColors.border;
 
   // Transitions
   static const Duration animationDuration = Duration(milliseconds: 400);
   static const Curve animationCurve = Curves.easeInOutCubic;
 
   // Text Styles
-  static const TextStyle headerTitle = TextStyle(
+  static TextStyle get headerTitle => TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
     color: textPrimary,
   );
 
-  static const TextStyle sectionTitle = TextStyle(
+  static TextStyle get sectionTitle => TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: textPrimary,
   );
 
-  static const TextStyle bodyText = TextStyle(
+  static TextStyle get bodyText => TextStyle(
     fontSize: 14,
     color: textSecondary,
   );

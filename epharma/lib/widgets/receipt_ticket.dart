@@ -234,14 +234,14 @@ class ReceiptTicket extends StatelessWidget {
 
   final ReceiptTicketData data;
 
-  static const TextStyle _textStyle = TextStyle(
+  static TextStyle get _textStyle => TextStyle(
     fontFamily: 'Courier',
     fontSize: 12,
     color: BpColors.textPrimary,
     height: 1.35,
   );
 
-  static const TextStyle _boldStyle = TextStyle(
+  static TextStyle get _boldStyle => TextStyle(
     fontFamily: 'Courier',
     fontSize: 12,
     fontWeight: FontWeight.w700,
@@ -286,7 +286,7 @@ class ReceiptTicket extends StatelessWidget {
               style: _boldStyle,
             ),
             const SizedBox(height: 8),
-            const Text('Design.    Prix  Qte %rem. Montant', style: _boldStyle),
+            Text('Design.    Prix  Qte %rem. Montant', style: _boldStyle),
             const SizedBox(height: 6),
             ...data.items.map(_buildItem),
             const SizedBox(height: 8),
@@ -388,7 +388,7 @@ class ReceiptPreviewDialog extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: BpColors.textPrimary,

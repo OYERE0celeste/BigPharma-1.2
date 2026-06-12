@@ -137,6 +137,39 @@ class OrderTimelineEntry {
   }
 }
 
+class PrescriptionModel {
+  final String status; // pending, validated, rejected
+  final String? validatedById;
+  final String? validatedByName;
+  final DateTime? validatedAt;
+  final String? rejectionReason;
+  final String? pharmacistNotes;
+  final DateTime uploadedAt;
+
+  const PrescriptionModel({
+    required this.status,
+    this.validatedById,
+    this.validatedByName,
+    this.validatedAt,
+    this.rejectionReason,
+    this.pharmacistNotes,
+    required this.uploadedAt,
+  });
+
+  factory PrescriptionModel.fromJson(Map<String, dynamic> json) {
+    final validatedBy = json['validatedBy'];
+    return PrescriptionModel(
+      status: json['status']?.toString() ?? 'pending',
+      validatedById: validatedBy is Map ? validatedBy['_id']?.toString() : validatedBy?.toString(),
+      validatedByName: validatedBy is Map ? validatedBy['fullName']?.toString() : null,
+      validatedAt: json['validatedAt'] != null ? DateTime.tryParse(json['validatedAt'].toString()) : null,
+      rejectionReason: json['rejectionReason']?.toString(),
+      pharmacistNotes: json['pharmacistNotes']?.toString(),
+      uploadedAt: DateTime.tryParse(json['uploadedAt']?.toString() ?? '') ?? DateTime.now(),
+    );
+  }
+}
+
 class OrderModel {
   final String id;
   final String orderNumber;
@@ -153,6 +186,7 @@ class OrderModel {
   final DateTime updatedAt;
   final String? invoiceNumber;
   final String pickupMode;
+  final PrescriptionModel? prescription;
 
   const OrderModel({
     required this.id,
@@ -170,6 +204,7 @@ class OrderModel {
     required this.updatedAt,
     this.invoiceNumber,
     this.pickupMode = 'sur_place',
+    this.prescription,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -209,7 +244,8 @@ class OrderModel {
           DateTime.tryParse((json['updatedAt'] ?? '').toString()) ??
           DateTime.now(),
       invoiceNumber: json['invoiceNumber']?.toString(),
-      pickupMode: (json['pickupMode'] ?? 'sur_place').toString(),
+      pickupMode: json['pickupMode']?.toString() ?? 'sur_place',
+      prescription: json['prescription'] != null ? PrescriptionModel.fromJson(json['prescription']) : null,
     );
   }
 

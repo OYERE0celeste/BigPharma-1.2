@@ -19,6 +19,7 @@ import 'widgets/app_sidebar.dart';
 import 'widgets/bp_theme.dart';
 import 'widgets/common/app_ui.dart';
 import 'widgets/global_navbar.dart';
+import 'commandes/prescriptions_page.dart';
 
 typedef SectionNavigationCallback = void Function(String section);
 
@@ -106,6 +107,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
       'Sales',
       'Clients',
       'Orders',
+      'Prescriptions',
       'Support',
       'Finances',
       'Rights',
@@ -134,6 +136,8 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         return const PharmacySalesPage();
       case 'Orders':
         return const PharmacyOrdersPage();
+      case 'Prescriptions':
+        return const PrescriptionsPage();
       case 'Clients':
         return const PharmacyClientsPage();
       case 'Activity':
@@ -419,20 +423,20 @@ class FeatureNotAvailablePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.construction, size: 80, color: BpColors.textHint),
-          const SizedBox(height: 16),
+          Icon(Icons.construction, size: 80, color: BpColors.textHint),
+          SizedBox(height: 16),
           Text(
             '$title en construction...',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: BpColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             'Nous travaillons sur cette fonctionnalite.',
-            style: const TextStyle(fontSize: 16, color: BpColors.textSecondary),
+            style: TextStyle(fontSize: 16, color: BpColors.textSecondary),
           ),
         ],
       ),

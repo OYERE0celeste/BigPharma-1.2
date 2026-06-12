@@ -4,6 +4,7 @@ import 'settings_theme.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_colors.dart';
+import '../widgets/bp_theme.dart';
 
 class UserManagementDialog extends StatefulWidget {
   const UserManagementDialog({super.key});
@@ -90,14 +91,14 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                     color: SettingsTheme.primary.withOpacity(0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.people_alt_rounded,
                     color: SettingsTheme.primary,
                     size: 40,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   "Gestion des collaborateurs",
                   style: TextStyle(
                     fontSize: 17,
@@ -106,7 +107,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   "Gérez votre équipe pharmaceutique et configurez leurs accès.",
                   style: TextStyle(
                     fontSize: 12,
@@ -125,7 +126,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
             children: [
               Text(
                 "${_users.length} collaborateur(s)",
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: SettingsTheme.textSecondary,
@@ -140,7 +141,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: SettingsTheme.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: BpColors.textPrimary,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
@@ -156,7 +157,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           const SizedBox(height: 16),
           Expanded(
             child: _isLoading
-                ? const Center(
+                ? Center(
                     child: CircularProgressIndicator(
                       color: SettingsTheme.primary,
                     ),
@@ -226,7 +227,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                     user.fullName.isNotEmpty
                         ? user.fullName[0].toUpperCase()
                         : '?',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SettingsTheme.primary,
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -255,7 +256,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                 Expanded(
                   child: Text(
                     user.email,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: SettingsTheme.textSecondary,
                     ),
@@ -427,7 +428,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text(
+                child: Text(
                   "ANNULER",
                   style: TextStyle(color: SettingsTheme.textSecondary),
                 ),

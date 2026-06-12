@@ -161,7 +161,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
             Positioned(
               top: 8,
               right: 8,
-              child: TextButton(onPressed: () {}, child: const Text('Fermer')),
+              child: TextButton(onPressed: () {}, child: Text('Fermer')),
             ),
             Column(
               children: [
@@ -192,7 +192,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
                               backgroundColor: kPrimaryGreen.withOpacity(0.1),
                               child: Text(
                                 initials,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold,
                                   color: kPrimaryGreen,
@@ -203,11 +203,11 @@ class _ProfilDialogState extends State<ProfilDialog> {
                           if (_isEditing)
                             Container(
                               padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 color: kPrimaryGreen,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.camera_alt,
                                 color: Colors.white,
                                 size: 14,
@@ -389,7 +389,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
       leading: Icon(icon, color: Colors.grey[600], size: 22),
       title: Text(
         value.isEmpty ? 'Non renseigné' : value,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
         label,
@@ -410,7 +410,7 @@ class _ProfilDialogState extends State<ProfilDialog> {
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
-        style: const TextStyle(fontSize: 15),
+        style: TextStyle(fontSize: 15),
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, size: 20, color: kPrimaryGreen),
@@ -457,12 +457,12 @@ class _ProfilDialogState extends State<ProfilDialog> {
             }),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: const BorderSide(color: Colors.grey),
+              side: BorderSide(color: Colors.grey),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
+            child: Text(
               'ANNULER',
               style: TextStyle(color: BpColors.textSecondary),
             ),

@@ -50,16 +50,16 @@ const toPositiveInteger = (value) => {
 
 const buildOrdersQuery = (query = {}) =>
   Order.find(query)
+    .select("-prescription.data")
     .populate("userId", "fullName email phone")
     .populate("clientId", "fullName email phone address userId")
-
     .populate("products.productId", "name sellingPrice stockQuantity");
 
 const buildOrderQuery = (query = {}) =>
   Order.findOne(query)
+    .select("-prescription.data")
     .populate("userId", "fullName email phone")
     .populate("clientId", "fullName email phone address userId")
-
     .populate("products.productId", "name sellingPrice stockQuantity");
 
 const availableStockForProduct = (product) =>
@@ -92,6 +92,7 @@ exports.createOrder = async (req, res, next) => {
       body: req.body,
       io: global.io,
       request: req,
+      file: req.file,
     });
 
     return success(res, {
@@ -336,6 +337,74 @@ exports.getOrderInvoice = async (req, res, next) => {
     }
 
     return success(res, { data: toInvoicePayload(invoice) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.uploadPrescription = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return failure(res, { status: 400, message: "Aucun fichier de prescription fourni" });
+    }
+
+    const order = await Order.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!order) {
+      return failure(res, { status: 404, message: "Commande non trouvée" });
+    }
+
+    order.prescription = {
+      fileName: req.file.originalname,
+      mimeType: req.file.mimetype,
+      data: req.file.buffer,
+      uploadedBy: req.user._id,
+      uploadedAt: new Date(),
+    };
+
+    await order.save();
+
+    await OrderTimeline.create({
+      orderId: order._id,
+      status: order.status,
+      userId: req.user._id,
+      note: "Ordonnance téléchargée par le client",
+      companyId: order.companyId,
+    });
+
+    return success(res, { data: order });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.downloadPrescription = async (req, res, next) => {
+  try {
+    const query = { _id: req.params.id };
+    if (req.user.role === "client") {
+      query.userId = req.user._id;
+    } else {
+      query.companyId = req.user.companyId;
+    }
+
+    const order = await Order.findOne(query).select("prescription.fileName prescription.mimeType prescription.data");
+    if (!order) {
+      return failure(res, { status: 404, message: "Commande non trouvée" });
+    }
+
+    if (!order.prescription || !order.prescription.data) {
+      return failure(res, { status: 404, message: "Aucune ordonnance disponible pour cette commande" });
+    }
+
+    res.setHeader("Content-Type", order.prescription.mimeType || "application/octet-stream");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${order.prescription.fileName || "prescription"}"`
+    );
+    return res.send(order.prescription.data);
   } catch (error) {
     next(error);
   }

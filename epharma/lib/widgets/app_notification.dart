@@ -633,7 +633,7 @@ class _AppNotificationCard extends StatelessWidget {
                               style: TextButton.styleFrom(
                                 foregroundColor: palette.baseColor,
                                 padding: EdgeInsets.zero,
-                                minimumSize: const Size(0, 0),
+                                minimumSize: Size(0, 0),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Text(
@@ -645,7 +645,7 @@ class _AppNotificationCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     IconButton(
                       onPressed: () => AppNotificationService.dismiss(entry.id),
                       splashRadius: 18,

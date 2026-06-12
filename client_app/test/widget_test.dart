@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:client_app/main.dart';
+import 'package:client_app/core/theme/theme_provider.dart';
 import 'package:client_app/services/auth_provider.dart';
 import 'package:client_app/services/cart_provider.dart';
 import 'package:client_app/services/profile_provider.dart';
@@ -23,6 +24,7 @@ import 'package:client_app/services/complaint_provider.dart';
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
+      ChangeNotifierProvider(create: (_) => ThemeProvider()..init()),
       ChangeNotifierProvider(create: (_) => AuthProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => ProfileProvider()),

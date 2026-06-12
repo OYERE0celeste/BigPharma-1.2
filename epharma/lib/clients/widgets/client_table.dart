@@ -64,7 +64,7 @@ class _ClientsTableState extends State<ClientsTable> {
                 children: [
                   Text(
                     '${_selectedIds.length} client(s) sélectionné(s)',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: BpColors.textPrimary,
                     ),
@@ -122,7 +122,7 @@ class _ClientsTableState extends State<ClientsTable> {
                         dataRowMinHeight: 56,
                         dataRowMaxHeight: 64,
                         headingRowHeight: 56,
-                        headingTextStyle: const TextStyle(
+                        headingTextStyle: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: BpColors.textPrimary,
                         ),
@@ -154,7 +154,7 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   client.fullName,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textPrimary,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -163,7 +163,7 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   client.phone,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textSecondary,
                                   ),
                                 ),
@@ -171,7 +171,7 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   client.email.isNotEmpty ? client.email : '—',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textSecondary,
                                   ),
                                 ),
@@ -179,7 +179,7 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   client.totalPurchases.toString(),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textSecondary,
                                   ),
                                 ),
@@ -187,7 +187,7 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   '${client.totalSpent.toStringAsFixed(0)} FCFA',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textPrimary,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -196,7 +196,7 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   _formatDate(client.lastVisitDate),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textSecondary,
                                   ),
                                 ),
@@ -204,14 +204,14 @@ class _ClientsTableState extends State<ClientsTable> {
                               DataCell(
                                 Text(
                                   client.loyaltyStatus.name.toUpperCase(),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textSecondary,
                                   ),
                                 ),
                               ),
                               DataCell(
                                 client.hasMedicalHistory
-                                    ? const Tooltip(
+                                    ? Tooltip(
                                         message: 'Profil médical disponible',
                                         child: Icon(
                                           Icons.check_circle,
@@ -219,7 +219,7 @@ class _ClientsTableState extends State<ClientsTable> {
                                           size: 20,
                                         ),
                                       )
-                                    : const Icon(
+                                    : Icon(
                                         Icons.cancel,
                                         color: Colors.grey,
                                         size: 20,
@@ -230,7 +230,7 @@ class _ClientsTableState extends State<ClientsTable> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.visibility_outlined,
                                         color: BpColors.textPrimary,
                                       ),
@@ -239,7 +239,7 @@ class _ClientsTableState extends State<ClientsTable> {
                                     ),
                                     if (isSelected) ...[
                                       IconButton(
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.edit_outlined,
                                           color: BpColors.textPrimary,
                                         ),

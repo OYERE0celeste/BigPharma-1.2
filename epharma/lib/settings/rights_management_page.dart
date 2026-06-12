@@ -118,7 +118,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Roles & Permissions',
             style: TextStyle(
               fontSize: 24,
@@ -137,7 +137,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
           const SizedBox(height: 24),
           Expanded(
             child: _isLoading
-                ? const Center(
+                ? Center(
                     child: CircularProgressIndicator(
                       color: SettingsTheme.primary,
                     ),
@@ -213,7 +213,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
                     user.fullName.isNotEmpty
                         ? user.fullName[0].toUpperCase()
                         : '?',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SettingsTheme.primary,
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -222,7 +222,7 @@ class _RightsManagementDialogState extends State<RightsManagementDialog> {
                 ),
                 title: Text(
                   user.fullName,
-                  style: const TextStyle(
+        style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

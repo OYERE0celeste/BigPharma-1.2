@@ -37,13 +37,7 @@ class AppSidebar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
-                children: [
-                  Flexible(
-                    child: BrandTitle(
-                      title: 'BigPharma',
-                    ),
-                  ),
-                ],
+                children: [Flexible(child: BrandTitle(title: 'BigPharma'))],
               ),
             ),
             const SizedBox(height: 32),
@@ -92,7 +86,7 @@ class AppSidebarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = color ?? Colors.white;
+    final activeColor = color ?? BpColors.textPrimary;
     final inactiveColor = color ?? BpColors.textSecondary;
 
     return Padding(

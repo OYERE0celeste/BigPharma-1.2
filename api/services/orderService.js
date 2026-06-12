@@ -297,7 +297,7 @@ const generateOrderNumber = async () => {
   return `CMD-${year}-${String(count + 1).padStart(4, "0")}`;
 };
 
-const createOrderService = async ({ user, body, io, request }) => {
+const createOrderService = async ({ user, body, io, request, file }) => {
   const rawProducts = body.products || body.items || [];
   const normalizedProducts = normalizeOrderProducts(rawProducts);
 
@@ -353,7 +353,7 @@ const createOrderService = async ({ user, body, io, request }) => {
     };
   });
 
-  const order = await Order.create({
+  const orderPayload = {
     orderNumber: await generateOrderNumber(),
     userId: user._id,
     clientId: client._id,
@@ -364,7 +364,19 @@ const createOrderService = async ({ user, body, io, request }) => {
     notes: body.notes,
     pickupMode: body.pickupMode === "livraison" ? "livraison" : "sur_place",
     collectionCode: Math.floor(100000 + Math.random() * 900000).toString(),
-  });
+  };
+
+  if (body.file) {
+    orderPayload.prescription = {
+      fileName: body.file.originalname,
+      mimeType: body.file.mimetype,
+      data: body.file.buffer,
+      uploadedBy: user._id,
+      uploadedAt: new Date(),
+    };
+  }
+
+  const order = await Order.create(orderPayload);
 
   await new OrderTimeline({
     orderId: order._id,

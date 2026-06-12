@@ -323,7 +323,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 _searchQuery = value;
                                 _applyFilters();
                               },
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textPrimary,
                               ),
                               decoration: BpInputTheme.light(
@@ -335,7 +335,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         SizedBox(
                           width: 220,
                           height: 54,
@@ -348,7 +348,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               hint: 'Type',
                               showLabel: false,
                             ),
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: BpColors.textPrimary,
                               fontSize: 14,
                             ),
@@ -419,7 +419,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
+                          Text(
                             'Finance & Comptabilité',
                             style: TextStyle(
                               fontSize: 22,
@@ -427,7 +427,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               color: BpColors.textPrimary,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4),
                           Text(
                             'Suivi des revenus, dépenses et trésorerie',
                             style: TextStyle(
@@ -455,7 +455,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                     _searchQuery = value;
                                     _applyFilters();
                                   },
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: BpColors.textPrimary,
                                   ),
                                   decoration: BpInputTheme.light(
@@ -468,7 +468,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
                           SizedBox(
                             width: 220,
                             height: 54,
@@ -481,7 +481,7 @@ class _FinancePageContentState extends State<FinancePageContent> {
                                 hint: 'Type',
                                 showLabel: false,
                               ),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textPrimary,
                                 fontSize: 14,
                               ),

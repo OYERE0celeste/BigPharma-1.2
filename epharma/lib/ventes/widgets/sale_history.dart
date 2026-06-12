@@ -53,16 +53,16 @@ class SaleHistoryTable extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             color: BpColors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         Text(
           subtitle,
-          style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
+          style: TextStyle(color: BpColors.textSecondary, fontSize: 12),
         ),
       ],
     );
@@ -81,12 +81,12 @@ class SaleHistoryTable extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
+            style: TextStyle(color: BpColors.textSecondary, fontSize: 12),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               color: BpColors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
@@ -120,16 +120,16 @@ class SaleHistoryTable extends StatelessWidget {
                   children: [
                     Text(
                       order.orderNumber,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: BpColors.textPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt),
-                      style: const TextStyle(color: BpColors.textSecondary),
+                      style: TextStyle(color: BpColors.textSecondary),
                     ),
                   ],
                 ),
@@ -143,7 +143,7 @@ class SaleHistoryTable extends StatelessWidget {
                 ),
                 child: Text(
                   '${order.totalPrice.toStringAsFixed(0)} FCFA',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -151,20 +151,20 @@ class SaleHistoryTable extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           Text(
             'Facture: $invoiceLabel',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             'Client: ${order.clientName}',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             'Statut: ${order.status.label}',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
           if (onOpenOrder != null || onDownloadOrder != null) ...[
             const SizedBox(height: 12),
@@ -212,16 +212,16 @@ class SaleHistoryTable extends StatelessWidget {
                   children: [
                     Text(
                       sale.invoiceNumber,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: BpColors.textPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       DateFormat('dd/MM/yyyy HH:mm').format(sale.dateTime),
-                      style: const TextStyle(color: BpColors.textSecondary),
+                      style: TextStyle(color: BpColors.textSecondary),
                     ),
                   ],
                 ),
@@ -237,7 +237,7 @@ class SaleHistoryTable extends StatelessWidget {
                 ),
                 child: Text(
                   '${sale.totalAmount.toStringAsFixed(0)} FCFA',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -245,20 +245,20 @@ class SaleHistoryTable extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           Text(
             'Paiement: ${_formatPaymentMethod(sale.paymentMethod)}',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             'Pharmacien: ${sale.pharmacist}',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             'Articles: ${sale.items.length}',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
           if (onOpenSale != null || onDownloadSale != null) ...[
             const SizedBox(height: 12),
@@ -311,7 +311,7 @@ class SaleHistoryTable extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: BpColors.border),
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
@@ -363,14 +363,14 @@ class SaleHistoryTable extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         _buildSectionTitle(
           'Historique des factures de vente',
           'Chaque vente enregistree avec sa facture.',
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         if (sortedSales.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Text(
               'Aucune vente disponible.',
@@ -384,7 +384,7 @@ class SaleHistoryTable extends StatelessWidget {
               child: _buildSaleCard(sale),
             );
           }),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Row(
           children: [
             Expanded(
@@ -396,14 +396,14 @@ class SaleHistoryTable extends StatelessWidget {
             if (onRefreshOrders != null)
               TextButton.icon(
                 onPressed: onRefreshOrders,
-                icon: const Icon(Icons.refresh, size: 18),
-                label: const Text('Rafraichir'),
+                icon: Icon(Icons.refresh, size: 18),
+                label: Text('Rafraichir'),
               ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         if (isLoadingOrders)
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 24),
             child: Center(
               child: Column(
@@ -422,10 +422,10 @@ class SaleHistoryTable extends StatelessWidget {
         else if (hasOrdersError)
           Text(
             ordersErrorMessage!,
-            style: const TextStyle(color: BpColors.error),
+            style: TextStyle(color: BpColors.error),
           )
         else if (sortedOrders.isEmpty)
-          const Text(
+          Text(
             'Aucune commande disponible.',
             style: TextStyle(color: BpColors.textSecondary),
           )

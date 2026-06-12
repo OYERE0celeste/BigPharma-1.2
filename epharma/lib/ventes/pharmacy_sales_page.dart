@@ -393,7 +393,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
 
     if ((productProvider.isLoading && productProvider.products.isEmpty) ||
         (salesProvider.isLoading && salesProvider.sales.isEmpty)) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(color: BpColors.accent),
       );
     }
@@ -496,11 +496,11 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             ),
             if (canViewHistory)
               IconButton(
-                icon: const Icon(Icons.history),
+                icon: Icon(Icons.history),
                 onPressed: _openSalesHistory,
               ),
           ],
-          bottom: const TabBar(
+          bottom: TabBar(
             labelColor: BpColors.textPrimary,
             unselectedLabelColor: BpColors.textSecondary,
             indicatorColor: BpColors.accent,
@@ -584,14 +584,14 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: BpColors.surfaceStrong,
-                        border: const Border(
+                        border: Border(
                           bottom: BorderSide(color: BpColors.border),
                         ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text(
+                          Text(
                             'POINT DE VENTE',
                             style: TextStyle(
                               fontSize: 18,
@@ -600,11 +600,11 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                               color: BpColors.textPrimary,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12),
                           TextField(
                             controller: _searchController,
                             onChanged: _filterProducts,
-                            style: const TextStyle(color: BpColors.textPrimary),
+                            style: TextStyle(color: BpColors.textPrimary),
                             decoration: BpInputTheme.light(
                               label: 'Rechercher un produit',
                               hint: 'Nom, categorie ou ID...',
@@ -650,7 +650,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                     ),
                     decoration: BoxDecoration(
                       color: BpColors.surfaceStrong,
-                      border: const Border(
+                      border: Border(
                         bottom: BorderSide(color: BpColors.border),
                       ),
                     ),
@@ -663,7 +663,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text(
+                              Text(
                                 'POINT DE VENTE',
                                 style: TextStyle(
                                   fontSize: 20,
@@ -672,7 +672,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                                   color: BpColors.textPrimary,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4),
                               Text(
                                 'Gerez vos ventes quotidiennes',
                                 style: TextStyle(
@@ -692,13 +692,13 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                             children: [
                               Expanded(
                                 child: Container(
-                                  constraints: const BoxConstraints(
+                                  constraints: BoxConstraints(
                                     maxWidth: 400,
                                   ),
                                   child: TextField(
                                     controller: _searchController,
                                     onChanged: _filterProducts,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: BpColors.textPrimary,
                                     ),
                                     decoration: BpInputTheme.light(
@@ -784,7 +784,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
                   }
 
                   if (filteredProducts.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
                         'Aucun produit ne correspond a votre recherche.',
                         style: TextStyle(color: BpColors.textSecondary),
@@ -857,14 +857,14 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: BpColors.surfaceStrong,
-                border: const Border(
+                border: Border(
                   bottom: BorderSide(color: BpColors.border),
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'PANIER',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -925,8 +925,8 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             size: 48,
             color: BpColors.textHint,
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             'Le panier est vide',
             style: TextStyle(color: BpColors.textSecondary),
           ),
@@ -1000,7 +1000,7 @@ class _PharmacySalesPageState extends State<PharmacySalesPage> {
             width: double.infinity,
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
                     'HISTORIQUE DES VENTES',
                     style: TextStyle(

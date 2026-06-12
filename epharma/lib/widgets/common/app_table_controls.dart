@@ -32,20 +32,20 @@ class AppTableRowsPerPageSelector extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               color: BpColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           DropdownButtonHideUnderline(
             child: DropdownButton<int>(
               value: value,
               isDense: true,
-              icon: const Icon(Icons.expand_more, size: 18),
+              icon: Icon(Icons.expand_more, size: 18),
               iconEnabledColor: BpColors.textSecondary,
               dropdownColor: BpColors.surface,
-              style: const TextStyle(
+              style: TextStyle(
                 color: BpColors.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
@@ -112,12 +112,12 @@ class AppTablePager extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints.tightFor(width: 36, height: 36),
             iconSize: 18,
-            icon: const Icon(Icons.chevron_left, color: BpColors.textPrimary),
+            icon: Icon(Icons.chevron_left, color: BpColors.textPrimary),
             onPressed: currentPage > 0 ? onPrevious : null,
           ),
           Text(
             _pageLabel,
-            style: const TextStyle(
+            style: TextStyle(
               color: BpColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
@@ -127,7 +127,7 @@ class AppTablePager extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints.tightFor(width: 36, height: 36),
             iconSize: 18,
-            icon: const Icon(Icons.chevron_right, color: BpColors.textPrimary),
+            icon: Icon(Icons.chevron_right, color: BpColors.textPrimary),
             onPressed: (currentPage + 1) < totalPages ? onNext : null,
           ),
         ],
@@ -166,7 +166,7 @@ class AppTableFooter extends StatelessWidget {
               children: [
                 Text(
                   summary,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textSecondary,
                     fontSize: 13,
                   ),
@@ -192,7 +192,7 @@ class AppTableFooter extends StatelessWidget {
               Expanded(
                 child: Text(
                   summary,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textSecondary,
                     fontSize: 13,
                   ),

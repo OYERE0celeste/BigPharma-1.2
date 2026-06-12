@@ -180,26 +180,26 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
               color: SettingsTheme.primary.withOpacity(0.08),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.storage_rounded,
-              color: SettingsTheme.primary,
-              size: 40,
-            ),
-          ),
+                  child: Icon(
+                    Icons.storage_rounded,
+                    color: SettingsTheme.primary,
+                    size: 40,
+                  ),
+                ),
           const SizedBox(height: 10),
-          const Text(
-            "Gestion des données",
-            style: TextStyle(
-              fontSize: 17,
+            Text(
+              "Gestion des données",
+              style: TextStyle(
+                fontSize: 17,
               fontWeight: FontWeight.bold,
               color: SettingsTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            "Exportez vos données de pharmacie ou gérez vos fichiers de sauvegarde.",
-            style: TextStyle(fontSize: 12, color: SettingsTheme.textSecondary),
-            textAlign: TextAlign.center,
+            Text(
+              "Exportez vos données de pharmacie ou gérez vos fichiers de sauvegarde.",
+              style: TextStyle(fontSize: 12, color: SettingsTheme.textSecondary),
+              textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -209,12 +209,12 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 12),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: SettingsTheme.primary,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
+        child: Text(
+          title,
+          style: TextStyle(
+            color: SettingsTheme.primary,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
           letterSpacing: 1.1,
         ),
       ),
@@ -267,19 +267,19 @@ class _GestionDonneesDialogState extends State<GestionDonneesDialog> {
           color: color,
         ),
       ),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(
-          fontSize: 13,
-          color: SettingsTheme.textSecondary,
-        ),
-      ),
-      trailing:
-          trailing ??
-          const Icon(
-            Icons.chevron_right_rounded,
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: 13,
             color: SettingsTheme.textSecondary,
           ),
+        ),
+        trailing:
+            trailing ??
+            Icon(
+              Icons.chevron_right_rounded,
+              color: SettingsTheme.textSecondary,
+            ),
     );
   }
 }

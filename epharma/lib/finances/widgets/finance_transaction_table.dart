@@ -54,7 +54,7 @@ class FinanceTransactionTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(16),
             child: Text(
               'Flux financiers',
@@ -86,48 +86,48 @@ class FinanceTransactionTable extends StatelessWidget {
                     dataRowMinHeight: 56,
                     dataRowMaxHeight: 64,
                     headingRowHeight: 56,
-                    headingTextStyle: const TextStyle(
+                    headingTextStyle: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: BpColors.textPrimary,
                     ),
                     columns: [
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Date',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Type',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Référence',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Source',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Description',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Montant',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
@@ -135,27 +135,27 @@ class FinanceTransactionTable extends StatelessWidget {
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Entrée/Sortie',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Mode paiement',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
                       DataColumn(
-                        label: const Text(
+                        label: Text(
                           'Employé',
                           style: TextStyle(color: BpColors.textPrimary),
                         ),
                         onSort: onSort,
                       ),
-                      const DataColumn(
+                      DataColumn(
                         label: Text(
                           'Action',
                           style: TextStyle(color: BpColors.textPrimary),
@@ -168,7 +168,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               FinanceService.formatDate(transaction.dateTime),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -176,7 +176,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               transaction.type,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -184,7 +184,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               transaction.reference,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -192,7 +192,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               transaction.sourceModule,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -200,7 +200,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               transaction.description,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -208,7 +208,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               FinanceService.formatAmount(transaction.amount),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -227,7 +227,7 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               transaction.paymentMethod,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
@@ -235,14 +235,14 @@ class FinanceTransactionTable extends StatelessWidget {
                           DataCell(
                             Text(
                               transaction.employeeName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: BpColors.textSecondary,
                               ),
                             ),
                           ),
                           DataCell(
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.visibility,
                                 color: BpColors.textPrimary,
                               ),

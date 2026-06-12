@@ -34,7 +34,7 @@ class OrderTracker extends StatelessWidget {
           color: BpColors.error.withOpacity(0.12),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Row(
+        child: Row(
           children: [
             Icon(Icons.cancel, color: BpColors.error),
             SizedBox(width: 8),
@@ -87,7 +87,7 @@ class OrderTracker extends StatelessWidget {
                               : BpColors.textSecondary,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       SizedBox(
                         width: 54,
                         child: Text(

@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:client_app/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,7 @@ import 'package:client_app/services/auth_provider.dart';
 import 'package:client_app/services/cart_provider.dart';
 import 'package:client_app/services/order_provider.dart';
 import 'package:client_app/pages/login_page.dart';
+import 'package:client_app/widgets/file_picker_button.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -16,6 +18,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   bool _isSubmitting = false;
   String _pickupMode = 'sur_place';
+  PlatformFile? _prescriptionFile;
 
   Future<void> _submitOrder(BuildContext context) async {
     final auth = context.read<AuthProvider>();
@@ -50,6 +53,7 @@ class _CartPageState extends State<CartPage> {
     final result = await orderProvider.createOrder(
       orderItems,
       pickupMode: _pickupMode,
+      prescriptionFile: _prescriptionFile,
     );
     setState(() => _isSubmitting = false);
 
@@ -352,6 +356,37 @@ class _CartPageState extends State<CartPage> {
                                       () => _pickupMode = selection.first,
                                     );
                                   },
+                                ),
+                                const SizedBox(height: 16),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 0,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      const Text(
+                                        'Prescription (facultative)',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      FilePickerButton(
+                                        label: _prescriptionFile == null
+                                            ? 'Joindre une prescription'
+                                            : 'Changer la prescription',
+                                        selectedFile: _prescriptionFile,
+                                        onFileSelected: (file) {
+                                          setState(
+                                            () => _prescriptionFile = file,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 24),
                                 SizedBox(

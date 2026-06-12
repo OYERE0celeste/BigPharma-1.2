@@ -134,7 +134,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(child: CircularProgressIndicator(color: BpColors.accent)),
       );
     }
@@ -149,18 +149,18 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         actions: [
           IconButton(
             icon: _isDownloading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Icon(Icons.download_outlined),
+                : Icon(Icons.download_outlined),
             onPressed: _isDownloading ? null : _downloadInvoice,
             tooltip: 'Telecharger la facture',
           ),
           if (_order!.availableNextStatuses.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.edit_note),
+              icon: Icon(Icons.edit_note),
               onPressed: _showStatusUpdateDialog,
               tooltip: 'Mettre a jour le statut',
             ),
@@ -241,22 +241,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   children: [
                     Text(
                       previewLabel,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: BpColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       helperText,
-                      style: const TextStyle(color: BpColors.textSecondary),
+                      style: TextStyle(color: BpColors.textSecondary),
                     ),
                     if (_invoiceErrorMessage != null) ...[
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         _invoiceErrorMessage!,
-                        style: const TextStyle(color: BpColors.warning),
+                        style: TextStyle(color: BpColors.warning),
                       ),
                     ],
                   ],
@@ -341,22 +341,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       child: Row(
         children: [
           Icon(icon, color: color ?? BpColors.textSecondary),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textSecondary,
                     fontSize: 12,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -381,7 +381,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Produits commandes',
             style: TextStyle(
               fontSize: 18,
@@ -389,14 +389,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               color: BpColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 12),
-          const Divider(color: BpColors.border),
+          SizedBox(height: 12),
+          Divider(color: BpColors.border),
           ListView.separated(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             itemCount: _order!.items.length,
             separatorBuilder: (context, index) =>
-                const Divider(color: BpColors.border),
+                Divider(color: BpColors.border),
             itemBuilder: (context, index) {
               final item = _order!.items[index];
               final isPendingOrPrep =
@@ -420,7 +420,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             children: [
                               Text(
                                 item.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                   color: BpColors.textPrimary,
@@ -439,7 +439,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                       color: BpColors.warning.withOpacity(0.45),
                                     ),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     'Substitue',
                                     style: TextStyle(
                                       color: BpColors.warning,
@@ -453,7 +453,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           const SizedBox(height: 4),
                           Text(
                             '${item.quantity} x ${_formatMoney(item.price)}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: BpColors.textSecondary,
                               fontSize: 13,
                             ),
@@ -463,7 +463,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               padding: const EdgeInsets.only(top: 2),
                               child: Text(
                                 'Prix d origine : ${_formatMoney(item.originalPrice!)}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: BpColors.textHint,
                                   fontSize: 12,
                                   decoration: TextDecoration.lineThrough,
@@ -476,7 +476,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 6),
                               child: Row(
-                                children: const [
+                                children: [
                                   Icon(
                                     Icons.swap_horiz,
                                     size: 16,
@@ -499,13 +499,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           _formatMoney(item.subtotal),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: BpColors.textPrimary,
@@ -537,12 +537,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               );
             },
           ),
-          const Divider(color: BpColors.border),
+          Divider(color: BpColors.border),
           Align(
             alignment: Alignment.centerRight,
             child: Text(
               'TOTAL : ${_formatMoney(_order!.totalPrice)}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: BpColors.accent,
@@ -565,7 +565,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Historique',
             style: TextStyle(
               fontSize: 18,
@@ -597,21 +597,21 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             Container(width: 2, height: 40, color: BpColors.borderStrong),
           ],
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 entry.status.label,
-                style: const TextStyle(
+                style: TextStyle(
                   color: BpColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 '${entry.userName} - ${_formatTimestamp(entry.timestamp)}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: BpColors.textSecondary,
                   fontSize: 12,
                 ),
@@ -621,7 +621,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     entry.note!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: BpColors.textSecondary,
                       fontStyle: FontStyle.italic,
                       fontSize: 13,
@@ -761,7 +761,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 borderRadius: BorderRadius.circular(16),
               ),
               title: Row(
-                children: const [
+                children: [
                   Icon(Icons.swap_horiz, color: BpColors.accent),
                   SizedBox(width: 8),
                   Text('Substituer l article'),
@@ -786,17 +786,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Article original a remplacer :',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: BpColors.textSecondary,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4),
                                 Text(
                                   item.name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
                                     color: BpColors.textPrimary,
@@ -804,14 +804,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                 ),
                                 Text(
                                   'Quantite commandee : ${item.quantity}',
-                                  style: const TextStyle(fontSize: 13),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),
                           ),
                           Text(
                             _formatMoney(item.subtotal),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                               color: BpColors.textPrimary,
@@ -820,8 +820,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
+                    SizedBox(height: 16),
+                    Text(
                       'Alternatives de substitution :',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -829,9 +829,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         color: BpColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     if (loadingSubstitutes)
-                      const Center(
+                      Center(
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 24),
                           child: CircularProgressIndicator(
@@ -845,7 +845,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Text(
                             dialogError!,
-                            style: const TextStyle(color: BpColors.error),
+                            style: TextStyle(color: BpColors.error),
                           ),
                         ),
                       )
@@ -854,7 +854,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Column(
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.info_outline,
                                 size: 48,
@@ -872,12 +872,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       )
                     else
                       ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 250),
+                        constraints: BoxConstraints(maxHeight: 250),
                         child: ListView.separated(
                           shrinkWrap: true,
                           itemCount: substitutes.length,
                           separatorBuilder: (context, index) =>
-                              const Divider(color: BpColors.border),
+                              Divider(color: BpColors.border),
                           itemBuilder: (context, index) {
                             final sub = substitutes[index];
                             final subId = sub['_id'] as String;
@@ -899,7 +899,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                       children: [
                                         Text(
                                           subName,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
                                             color: BpColors.textPrimary,
@@ -912,7 +912,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                           children: [
                                             Text(
                                               'Prix: ${_formatMoney(subPrice)}',
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 color: BpColors.accent,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w500,

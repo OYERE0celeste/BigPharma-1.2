@@ -319,6 +319,12 @@ const List<SidebarEntry> kSidebarEntries = [
     permissions: [AppPermission.viewOrders],
   ),
   SidebarEntry(
+    key: 'Prescriptions',
+    label: 'Ordonnances',
+    icon: Icons.receipt_long_rounded,
+    permissions: [AppPermission.viewOrders],
+  ),
+  SidebarEntry(
     key: 'Support',
     label: 'Consultations',
     icon: Icons.chat_bubble_outline_rounded,

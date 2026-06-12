@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'constants/strings.dart';
 import 'widgets/bp_theme.dart';
+import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'services/cart_provider.dart';
 import 'services/auth_provider.dart';
 import 'services/profile_provider.dart';
@@ -18,12 +20,15 @@ import 'services/review_provider.dart';
 import 'services/complaint_provider.dart';
 import 'widgets/app_notification.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Fix: A message on the flutter/lifecycle channel was discarded before it could be handled.
   // This happens on web when the framework is initializing.
   ServicesBinding.instance.channelBuffers.resize('flutter/lifecycle', 100);
+
+  final themeProvider = ThemeProvider();
+  await themeProvider.init();
 
   // Catch Flutter framework errors
   FlutterError.onError = (details) {
@@ -46,9 +51,9 @@ void main() {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: BpColors.error, size: 48),
-            const SizedBox(height: 16),
-            const Text(
+            Icon(Icons.error_outline, color: BpColors.error, size: 48),
+            SizedBox(height: 16),
+            Text(
               'Oups ! Une erreur est survenue.',
               style: TextStyle(
                 fontSize: 18,
@@ -56,11 +61,11 @@ void main() {
                 color: BpColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               details.exception.toString(),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: BpColors.textSecondary),
+              style: TextStyle(color: BpColors.textSecondary),
             ),
           ],
         ),
@@ -71,6 +76,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: themeProvider),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
@@ -97,22 +103,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppStrings.appName,
-      debugShowCheckedModeBanner: false,
-      navigatorKey: AppNotificationService.navigatorKey,
-      builder: (context, child) => AppNotificationHost(
-        child: BpDecoratedBackground(child: child ?? const SizedBox.shrink()),
-      ),
-      theme: BpTheme.materialTheme(),
-      home: Consumer<AuthProvider>(
-        builder: (context, auth, _) {
-          if (!auth.isInitialized) {
-            return const BpAuthLoadingScreen();
-          }
-          return auth.isAuthenticated ? const HomePage() : const LandingPage();
-        },
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: AppStrings.appName,
+          debugShowCheckedModeBanner: false,
+          navigatorKey: AppNotificationService.navigatorKey,
+          builder: (context, child) => AppNotificationHost(
+            child: BpDecoratedBackground(
+              child: child ?? const SizedBox.shrink(),
+            ),
+          ),
+          theme: themeProvider.lightTheme,
+          darkTheme: themeProvider.darkTheme,
+          themeMode: themeProvider.themeMode,
+          themeAnimationDuration: AppTheme.themeAnimationDuration,
+          themeAnimationCurve: AppTheme.themeAnimationCurve,
+          home: Consumer<AuthProvider>(
+            builder: (context, auth, _) {
+              if (!auth.isInitialized) {
+                return const BpAuthLoadingScreen();
+              }
+              return auth.isAuthenticated
+                  ? const HomePage()
+                  : const LandingPage();
+            },
+          ),
+        );
+      },
     );
   }
 }

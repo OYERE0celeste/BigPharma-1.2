@@ -153,6 +153,60 @@ class _OrdersPageState extends State<OrdersPage> {
                         ],
                       ),
 
+                      if (order.prescription != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: order.prescription!.status == 'validated' 
+                                ? Colors.green.withOpacity(0.1) 
+                                : order.prescription!.status == 'rejected'
+                                  ? Colors.red.withOpacity(0.1)
+                                  : Colors.orange.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: order.prescription!.status == 'validated' 
+                                  ? Colors.green.withOpacity(0.3) 
+                                  : order.prescription!.status == 'rejected'
+                                    ? Colors.red.withOpacity(0.3)
+                                    : Colors.orange.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.receipt_long, 
+                                size: 16, 
+                                color: order.prescription!.status == 'validated' 
+                                    ? Colors.green 
+                                    : order.prescription!.status == 'rejected'
+                                      ? Colors.red
+                                      : Colors.orange,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  order.prescription!.status == 'validated' 
+                                      ? 'Ordonnance validée' 
+                                      : order.prescription!.status == 'rejected'
+                                        ? 'Ordonnance refusée: ${order.prescription!.rejectionReason ?? ''}'
+                                        : 'Ordonnance en attente de validation',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: order.prescription!.status == 'validated' 
+                                        ? Colors.green[700] 
+                                        : order.prescription!.status == 'rejected'
+                                          ? Colors.red[700]
+                                          : Colors.orange[800],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+
                       const SizedBox(height: 14),
                       ...order.items.map(
                         (item) => Padding(
@@ -207,8 +261,8 @@ class _OrdersPageState extends State<OrdersPage> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.receipt_long_rounded),
-                            label: const Text('Voir la facture'),
+                            icon: Icon(Icons.receipt_long_rounded),
+                            label: Text('Voir la facture'),
                             style: FilledButton.styleFrom(
                               backgroundColor: BpColors.primary,
                               shape: RoundedRectangleBorder(

@@ -1,43 +1,41 @@
-import 'dart:ui';
-
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import '../core/theme/theme_colors.dart';
 import 'brand_title.dart';
 
 class BpColors {
   BpColors._();
 
-  static const Color primary = Color(0xFF1E6E4C);
-  static const Color primaryLight = Color(0xFF2F996C);
-  static const Color primaryDark = Color(0xFF082117);
-  static const Color accent = Color(0xFF39C17E);
+  static Color get primary => AppBpColors.primary;
+  static Color get primaryLight => AppBpColors.primaryLight;
+  static Color get primaryDark => AppBpColors.primaryDark;
+  static Color get accent => AppBpColors.accent;
 
-  static const Color authBg1 = primaryDark;
-  static const Color authBg2 = primary;
-  static const Color authBg3 = primaryLight;
+  static Color get authBg1 => AppBpColors.authBg1;
+  static Color get authBg2 => AppBpColors.authBg2;
+  static Color get authBg3 => AppBpColors.authBg3;
 
-  static const Color scaffold = primaryDark;
-  static const Color scaffoldSecondary = primary;
-  static const Color surface = primaryDark;
-  static const Color surfaceStrong = primary;
-  static const Color surfaceMuted = primaryLight;
-  static const Color cardBg = primary;
-  static const Color cardHighlight = primaryLight;
-  static const Color glass = Color(0x5C1E6E4C);
+  static Color get scaffold => AppBpColors.scaffold;
+  static Color get scaffoldSecondary => AppBpColors.scaffoldSecondary;
+  static Color get surface => AppBpColors.surface;
+  static Color get surfaceStrong => AppBpColors.surfaceStrong;
+  static Color get surfaceMuted => AppBpColors.surfaceMuted;
+  static Color get cardBg => AppBpColors.cardBg;
+  static Color get cardHighlight => AppBpColors.cardHighlight;
+  static Color get glass => AppBpColors.glass;
 
-  static const Color textPrimary = Colors.white;
-  static const Color textSecondary = Colors.white;
-  static const Color textHint = Color(0xB3FFFFFF);
-  static const Color textOnDark = Colors.white;
-  static const Color textOnDarkMuted = Color(0xB3FFFFFF);
+  static Color get textPrimary => AppBpColors.textPrimary;
+  static Color get textSecondary => AppBpColors.textSecondary;
+  static Color get textHint => AppBpColors.textHint;
+  static Color get textOnDark => AppBpColors.textOnDark;
+  static Color get textOnDarkMuted => AppBpColors.textOnDarkMuted;
 
-  static const Color error = Color(0xFFE86B6B);
-  static const Color success = Color(0xFF4CD286);
-  static const Color warning = Color(0xFFF3B85B);
+  static Color get error => AppBpColors.error;
+  static Color get success => AppBpColors.success;
+  static Color get warning => AppBpColors.warning;
 
-  static const Color border = Color(0x335F8174);
-  static const Color borderStrong = Color(0x667BA392);
-  static const Color borderFocused = accent;
+  static Color get border => AppBpColors.border;
+  static Color get borderStrong => AppBpColors.borderStrong;
+  static Color get borderFocused => AppBpColors.borderFocused;
 }
 
 class BpSpacing {
@@ -59,7 +57,7 @@ class BpSpacing {
 class BpTextStyles {
   BpTextStyles._();
 
-  static const TextStyle heading1 = TextStyle(
+  static TextStyle get heading1 => TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w800,
     letterSpacing: -0.5,
@@ -67,87 +65,78 @@ class BpTextStyles {
     height: 1.2,
   );
 
-  static const TextStyle heading2 = TextStyle(
+  static TextStyle get heading2 => TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w700,
     color: BpColors.textPrimary,
     height: 1.25,
   );
 
-  static const TextStyle heading3 = TextStyle(
+  static TextStyle get heading3 => TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w700,
     color: BpColors.textPrimary,
   );
 
-  static const TextStyle body = TextStyle(
+  static TextStyle get body => TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.normal,
     color: BpColors.textSecondary,
     height: 1.5,
   );
 
-  static const TextStyle bodyBold = TextStyle(
+  static TextStyle get bodyBold => TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: BpColors.textPrimary,
   );
 
-  static const TextStyle label = TextStyle(
+  static TextStyle get label => TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.w600,
     color: BpColors.textSecondary,
     letterSpacing: 0.1,
   );
 
-  static const TextStyle caption = TextStyle(
+  static TextStyle get caption => TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.normal,
     color: BpColors.textHint,
   );
 
-  static const TextStyle buttonText = TextStyle(
-    fontSize: 15,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.2,
-  );
+  static TextStyle get buttonText =>
+      TextStyle(fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: 0.2);
 
-  static const TextStyle headingOnDark = TextStyle(
+  static TextStyle get headingOnDark => TextStyle(
     fontSize: 26,
     fontWeight: FontWeight.w800,
-    color: Colors.white,
+    color: BpColors.textPrimary,
     letterSpacing: -0.3,
   );
 
-  static const TextStyle authTitle = TextStyle(
+  static TextStyle get authTitle => TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.w800,
-    color: Colors.white,
+    color: BpColors.textPrimary,
     letterSpacing: -0.5,
   );
 
-  static const TextStyle authSubtitle = TextStyle(
-    fontSize: 14,
-    color: BpColors.textOnDarkMuted,
-    height: 1.5,
-  );
+  static TextStyle get authSubtitle =>
+      TextStyle(fontSize: 14, color: BpColors.textSecondary, height: 1.5);
 
-  static const TextStyle authBadge = TextStyle(
+  static TextStyle get authBadge => TextStyle(
     fontSize: 12,
     color: BpColors.accent,
     fontWeight: FontWeight.w700,
   );
 
-  static const TextStyle bodyOnDark = TextStyle(
-    fontSize: 13,
-    color: BpColors.textOnDarkMuted,
-    height: 1.5,
-  );
+  static TextStyle get bodyOnDark =>
+      TextStyle(fontSize: 13, color: BpColors.textSecondary, height: 1.5);
 
-  static const TextStyle labelOnDark = TextStyle(
+  static TextStyle get labelOnDark => TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.w500,
-    color: BpColors.textOnDarkMuted,
+    color: BpColors.textSecondary,
   );
 }
 
@@ -155,29 +144,109 @@ class BpTheme {
   BpTheme._();
 
   static ThemeData materialTheme() {
-    const colorScheme = ColorScheme.dark(
-      primary: BpColors.accent,
-      onPrimary: BpColors.primaryDark,
-      secondary: BpColors.primaryLight,
-      onSecondary: BpColors.primaryDark,
-      error: BpColors.error,
-      onError: Colors.white,
-      surface: BpColors.surface,
-      onSurface: BpColors.textPrimary,
-    );
+    final isLight = BpColors.scaffold.computeLuminance() > 0.5;
+
+    final colorScheme = isLight
+        ? ColorScheme.light(
+            primary: BpColors.accent,
+            onPrimary: BpColors.textPrimary,
+            secondary: BpColors.primaryLight,
+            onSecondary: BpColors.textPrimary,
+            surface: BpColors.surface,
+            onSurface: BpColors.textPrimary,
+            background: BpColors.scaffold,
+            onBackground: BpColors.textPrimary,
+            error: BpColors.error,
+            onError: BpColors.textPrimary,
+            surfaceVariant: BpColors.surfaceMuted,
+          )
+        : ColorScheme.dark(
+            primary: BpColors.accent,
+            onPrimary: Colors.white,
+            secondary: BpColors.primaryLight,
+            onSecondary: Colors.white,
+            surface: BpColors.surface,
+            onSurface: BpColors.textPrimary,
+            background: BpColors.scaffold,
+            onBackground: BpColors.textPrimary,
+            error: BpColors.error,
+            onError: Colors.white,
+            surfaceVariant: BpColors.surfaceMuted,
+          );
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      brightness: isLight ? Brightness.light : Brightness.dark,
       colorScheme: colorScheme,
       fontFamily: 'sans-serif',
-      scaffoldBackgroundColor: Colors.transparent,
-      canvasColor: BpColors.surface,
-      shadowColor: Colors.black,
+      scaffoldBackgroundColor: BpColors.scaffold,
+      canvasColor: BpColors.scaffold,
+      cardColor: BpColors.surfaceStrong,
+      shadowColor: BpColors.primaryDark.withOpacity(0.4),
       dividerColor: BpColors.border,
       splashFactory: InkSparkle.splashFactory,
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          foregroundColor: BpColors.textPrimary,
+          disabledForegroundColor: BpColors.textSecondary.withOpacity(0.4),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return BpColors.surfaceMuted.withOpacity(0.5);
+          }
+          if (states.contains(WidgetState.selected)) {
+            return BpColors.accent;
+          }
+          return BpColors.surfaceMuted;
+        }),
+        checkColor: WidgetStateProperty.all(BpColors.primaryDark),
+        side: BorderSide(color: BpColors.borderStrong, width: 1.2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      ),
+      dataTableTheme: DataTableThemeData(
+        headingRowColor: WidgetStatePropertyAll(BpColors.surfaceMuted),
+        dataRowColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return BpColors.accent.withOpacity(0.12);
+          }
+          if (states.contains(WidgetState.hovered)) {
+            return BpColors.surfaceStrong.withOpacity(0.94);
+          }
+          return BpColors.surfaceStrong.withOpacity(0.78);
+        }),
+        dataTextStyle: TextStyle(
+          color: BpColors.textSecondary,
+          fontSize: 13,
+          height: 1.35,
+        ),
+        headingTextStyle: TextStyle(
+          color: BpColors.textPrimary,
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.15,
+        ),
+        columnSpacing: 22,
+        horizontalMargin: 18,
+        dataRowMinHeight: 52,
+        dataRowMaxHeight: 64,
+        headingRowHeight: 56,
+        dividerThickness: 1,
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: FadeUpwardsPageTransitionsBuilder(),
+        },
+      ),
       textTheme:
-          const TextTheme(
+          TextTheme(
             displayLarge: BpTextStyles.heading1,
             displayMedium: BpTextStyles.heading2,
             titleLarge: BpTextStyles.heading2,
@@ -189,14 +258,14 @@ class BpTheme {
             bodyColor: BpColors.textPrimary,
             displayColor: BpColors.textPrimary,
           ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: BpColors.textPrimary,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
-      drawerTheme: const DrawerThemeData(
+      drawerTheme: DrawerThemeData(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
       ),
@@ -206,13 +275,13 @@ class BpTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
-          side: const BorderSide(color: BpColors.border),
+          side: BorderSide(color: BpColors.border),
         ),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: Colors.transparent,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: BpColors.surfaceStrong,
         surfaceTintColor: Colors.transparent,
-        modalBackgroundColor: Colors.transparent,
+        modalBackgroundColor: BpColors.surfaceStrong,
       ),
       cardTheme: CardThemeData(
         color: BpColors.cardBg,
@@ -221,7 +290,7 @@ class BpTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-          side: const BorderSide(color: BpColors.border),
+          side: BorderSide(color: BpColors.border),
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
@@ -230,17 +299,17 @@ class BpTheme {
         elevation: 8,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-          side: const BorderSide(color: BpColors.border),
+          side: BorderSide(color: BpColors.border),
         ),
-        textStyle: const TextStyle(color: BpColors.textPrimary),
+        textStyle: TextStyle(color: BpColors.textPrimary),
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: BpColors.surfaceStrong,
-        contentTextStyle: const TextStyle(color: BpColors.textPrimary),
+        contentTextStyle: TextStyle(color: BpColors.textPrimary),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BpSpacing.radiusMd),
-          side: const BorderSide(color: BpColors.border),
+          side: BorderSide(color: BpColors.border),
         ),
       ),
       inputDecorationTheme: _inputDecorationTheme,
@@ -262,7 +331,7 @@ class BpTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: BpColors.textPrimary,
-          side: const BorderSide(color: BpColors.borderStrong),
+          side: BorderSide(color: BpColors.borderStrong),
           minimumSize: const Size.fromHeight(52),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
@@ -278,7 +347,7 @@ class BpTheme {
           ),
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: BpColors.accent,
         foregroundColor: BpColors.primaryDark,
       ),
@@ -288,18 +357,18 @@ class BpTheme {
         selectedColor: BpColors.accent.withOpacity(0.18),
         secondarySelectedColor: BpColors.accent.withOpacity(0.18),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        labelStyle: const TextStyle(color: BpColors.textSecondary),
-        secondaryLabelStyle: const TextStyle(color: BpColors.textPrimary),
+        labelStyle: TextStyle(color: BpColors.textSecondary),
+        secondaryLabelStyle: TextStyle(color: BpColors.textPrimary),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(999),
-          side: const BorderSide(color: BpColors.border),
+          side: BorderSide(color: BpColors.border),
         ),
       ),
-      listTileTheme: const ListTileThemeData(
+      listTileTheme: ListTileThemeData(
         iconColor: BpColors.textSecondary,
         textColor: BpColors.textPrimary,
       ),
-      dividerTheme: const DividerThemeData(
+      dividerTheme: DividerThemeData(
         color: BpColors.border,
         thickness: 1,
         space: 1,
@@ -315,7 +384,7 @@ class BpTheme {
           }
           return BpColors.textPrimary;
         }),
-        todayForegroundColor: const WidgetStatePropertyAll(BpColors.accent),
+        todayForegroundColor: WidgetStatePropertyAll(BpColors.accent),
         dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return BpColors.accent;
@@ -329,7 +398,7 @@ class BpTheme {
     );
   }
 
-  static const InputDecorationTheme _inputDecorationTheme =
+  static final InputDecorationTheme _inputDecorationTheme =
       InputDecorationTheme(
         filled: true,
         fillColor: BpColors.surfaceMuted,
@@ -366,60 +435,15 @@ class BpDecoratedBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        const DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [BpColors.authBg1, BpColors.authBg2, BpColors.authBg3],
-            ),
-          ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [BpColors.authBg1, BpColors.authBg2, BpColors.authBg3],
         ),
-        Positioned(
-          top: -140,
-          right: -100,
-          child: _buildBlob(380, BpColors.primary.withOpacity(0.16)),
-        ),
-        Positioned(
-          bottom: -120,
-          left: -80,
-          child: _buildBlob(300, BpColors.accent.withOpacity(0.11)),
-        ),
-        Positioned(
-          top: 180,
-          left: -120,
-          child: _buildBlob(240, BpColors.textPrimary.withOpacity(0.03)),
-        ),
-        Positioned.fill(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  BpColors.textPrimary.withOpacity(0.02),
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.10),
-                ],
-              ),
-            ),
-          ),
-        ),
-        child,
-      ],
-    );
-  }
-
-  static Widget _buildBlob(double size, Color color) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
+      child: child,
     );
   }
 }
@@ -432,7 +456,6 @@ class BpSurfaceCard extends StatelessWidget {
     this.margin,
     this.radius = BpSpacing.radiusXl,
     this.color,
-    this.blurSigma = 10,
   });
 
   final Widget child;
@@ -440,43 +463,27 @@ class BpSurfaceCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final double radius;
   final Color? color;
-  final double blurSigma;
 
   @override
   Widget build(BuildContext context) {
     final cardContent = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color:
-            color ??
-            (kIsWeb ? BpColors.glass.withOpacity(0.85) : BpColors.glass),
+        color: color ?? BpColors.surfaceStrong.withOpacity(0.92),
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: BpColors.borderStrong, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.18),
-            blurRadius: 30,
-            offset: const Offset(0, 18),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 14,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: child,
     );
 
-    if (kIsWeb) {
-      return Container(margin: margin, child: cardContent);
-    }
-
-    return Container(
-      margin: margin,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: cardContent,
-        ),
-      ),
-    );
+    return Container(margin: margin, child: cardContent);
   }
 }
 
@@ -498,7 +505,7 @@ class BpBottomSheetContainer extends StatelessWidget {
             top: 28,
             bottom: MediaQuery.of(context).viewInsets.bottom + 28,
           ),
-      color: const Color(0xE61E6E4C),
+      color: BpColors.surfaceStrong,
       child: child,
     );
   }
@@ -516,8 +523,8 @@ class BpInputTheme {
     return InputDecoration(
       labelText: label,
       hintText: hint,
-      labelStyle: const TextStyle(fontSize: 14, color: BpColors.textSecondary),
-      hintStyle: const TextStyle(fontSize: 13, color: BpColors.textHint),
+      labelStyle: TextStyle(fontSize: 14, color: BpColors.textSecondary),
+      hintStyle: TextStyle(fontSize: 13, color: BpColors.textHint),
       prefixIconColor: BpColors.textSecondary,
       suffixIcon: suffixIconWidget,
       filled: true,
@@ -525,23 +532,23 @@ class BpInputTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.border, width: 1.2),
+        borderSide: BorderSide(color: BpColors.border, width: 1.2),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.border, width: 1.2),
+        borderSide: BorderSide(color: BpColors.border, width: 1.2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.accent, width: 1.8),
+        borderSide: BorderSide(color: BpColors.accent, width: 1.8),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.error, width: 1.5),
+        borderSide: BorderSide(color: BpColors.error, width: 1.5),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.error, width: 1.8),
+        borderSide: BorderSide(color: BpColors.error, width: 1.8),
       ),
       prefixIcon: prefixIcon != null
           ? Icon(prefixIcon, size: 20, color: BpColors.textSecondary)
@@ -554,8 +561,10 @@ class BpInputTheme {
     String? hint,
     IconData? prefixIcon,
     Widget? suffixIconWidget,
+    bool showLabel = true,
   }) {
     return InputDecoration(
+      labelText: showLabel ? label : null,
       hintText: hint ?? label,
       hintStyle: TextStyle(
         color: BpColors.textPrimary.withOpacity(0.34),
@@ -582,7 +591,7 @@ class BpInputTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.accent, width: 1.8),
+        borderSide: BorderSide(color: BpColors.accent, width: 1.8),
       ),
     );
   }
@@ -607,7 +616,7 @@ class BpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final background = isDark ? BpColors.accent : BpColors.primaryLight;
-    final foreground = isDark ? BpColors.primaryDark : Colors.white;
+    final foreground = BpColors.primaryDark;
 
     return SizedBox(
       width: double.infinity,
@@ -652,14 +661,14 @@ class BpAuthLoadingScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const BrandTitle(style: BpTextStyles.authTitle),
+                  BrandTitle(style: BpTextStyles.authTitle),
                   const SizedBox(height: 10),
-                  const Text(
+                  Text(
                     'Chargement en cours...',
                     style: BpTextStyles.authSubtitle,
                   ),
                   const SizedBox(height: 28),
-                  const SizedBox(
+                  SizedBox(
                     width: 32,
                     height: 32,
                     child: CircularProgressIndicator(

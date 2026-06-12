@@ -20,18 +20,18 @@ class BrandTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const defaultStyle = TextStyle(
+    final defaultStyle = TextStyle(
       fontSize: 24,
       fontWeight: FontWeight.w800,
       letterSpacing: 0.2,
-      color: Colors.white,
+      color: BpColors.textPrimary,
     );
 
     final textStyle = style ?? defaultStyle;
     final fontSize = textStyle.fontSize ?? 24.0;
     // L'icône est légèrement plus grande que le texte
     final finalIconSize = fontSize * 1.25;
-    final finalIconColor = iconColor ?? textStyle.color ?? Colors.white;
+    final finalIconColor = iconColor ?? textStyle.color ?? BpColors.textPrimary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +42,7 @@ class BrandTitle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(Icons.medication, size: finalIconSize, color: finalIconColor),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Flexible(
               child: Text(
                 title,
@@ -52,7 +52,7 @@ class BrandTitle extends StatelessWidget {
               ),
             ),
             if (badge != null && badge!.isNotEmpty) ...[
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -64,7 +64,7 @@ class BrandTitle extends StatelessWidget {
                 ),
                 child: Text(
                   badge!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: BpColors.accent,
@@ -80,9 +80,7 @@ class BrandTitle extends StatelessWidget {
             subtitle!,
             style: TextStyle(
               fontSize: 14,
-              color: Theme.of(
-                context,
-              ).textTheme.bodySmall?.color?.withOpacity(0.75),
+              color: BpColors.textSecondary,
             ),
           ),
         ],

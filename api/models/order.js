@@ -140,6 +140,51 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       index: true,
     },
+    prescription: {
+      fileName: String,
+      mimeType: String,
+      data: Buffer,
+      uploadedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      uploadedAt: {
+        type: Date,
+        default: Date.now,
+      },
+      // Workflow de validation
+      status: {
+        type: String,
+        enum: ["pending", "validated", "rejected"],
+        default: "pending",
+      },
+      validatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+      },
+      validatedAt: {
+        type: Date,
+        default: null,
+      },
+      rejectionReason: {
+        type: String,
+        trim: true,
+        maxlength: 500,
+        default: null,
+      },
+      pharmacistNotes: {
+        type: String,
+        trim: true,
+        maxlength: 1000,
+        default: null,
+      },
+    },
+    // Produits nécessitant une ordonnance
+    requiresPrescription: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

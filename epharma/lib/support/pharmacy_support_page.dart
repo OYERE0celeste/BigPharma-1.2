@@ -74,12 +74,12 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                           children: [
                             Text(
                               'Relation Client',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                               ).copyWith(color: BpColors.textPrimary),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4),
                             Text(
                               'Suivez les consultations, les avis et les réclamations depuis un seul espace.',
                               style: TextStyle(
@@ -90,12 +90,12 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Flexible(
                         child: FilledButton.icon(
                           onPressed: _refreshAll,
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Actualiser'),
+                          icon: Icon(Icons.refresh),
+                          label: Text('Actualiser'),
                           style: FilledButton.styleFrom(
                             backgroundColor: BpColors.cardBg,
                             foregroundColor: BpColors.textPrimary,
@@ -109,7 +109,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   Container(
                     decoration: BoxDecoration(
                       color: BpColors.cardBg,
@@ -166,12 +166,12 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                       children: [
                         Text(
                           'Relation Client',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ).copyWith(color: BpColors.textPrimary),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           'Suivez les consultations, les avis et les réclamations depuis un seul espace.',
                           style: TextStyle(
@@ -179,13 +179,13 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                             fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
                             onPressed: _refreshAll,
-                            icon: const Icon(Icons.refresh),
-                            label: const Text('Actualiser'),
+                            icon: Icon(Icons.refresh),
+                            label: Text('Actualiser'),
                           ),
                         ),
                       ],
@@ -199,12 +199,12 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                             children: [
                               Text(
                                 'Relation Client',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 ).copyWith(color: BpColors.textPrimary),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4),
                               Text(
                                 'Suivez les consultations, les avis et les réclamations depuis un seul espace.',
                                 style: TextStyle(
@@ -215,15 +215,15 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12),
                         FilledButton.icon(
                           onPressed: _refreshAll,
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Actualiser'),
+                          icon: Icon(Icons.refresh),
+                          label: Text('Actualiser'),
                         ),
                       ],
                     ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   BpSurfaceCard(
                     padding: const EdgeInsets.all(6),
                     radius: BpSpacing.radiusLg,
@@ -310,7 +310,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         Expanded(
           child: Row(
             children: [
@@ -325,12 +325,12 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: provider.isLoading
-                        ? const Center(child: CircularProgressIndicator())
+                        ? Center(child: CircularProgressIndicator())
                         : _buildQuestionList(provider.questions),
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16),
               Expanded(
                 flex: 3,
                 child: AnimatedCardContainer(
@@ -481,7 +481,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
               size: 64,
               color: BpColors.surfaceMuted,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               'Aucune question pour le moment',
               style: TextStyle(color: BpColors.textSecondary),
@@ -530,9 +530,9 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
               children: [
                 Text(
                   q.clientName,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(fontWeight: FontWeight.w500),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   preview,
                   maxLines: 1,
@@ -575,7 +575,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
             size: 80,
             color: BpColors.surfaceMuted,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           Text(
             'Sélectionnez une conversation pour commencer',
             style: TextStyle(color: BpColors.textSecondary, fontSize: 16),
@@ -657,7 +657,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
-                  constraints: const BoxConstraints(maxWidth: 500),
+                  constraints: BoxConstraints(maxWidth: 500),
                   decoration: BoxDecoration(
                     color: isMe ? kAccentBlue : BpColors.cardBg,
                     borderRadius: BorderRadius.only(
@@ -670,7 +670,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 4,
-                        offset: const Offset(0, 2),
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),
@@ -686,7 +686,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                           fontSize: 14,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         _formatTime(msg.createdAt),
                         style: TextStyle(
@@ -817,12 +817,12 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                     children: [
                       Text(
                         review.productName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         review.clientName,
                         style: TextStyle(color: BpColors.textSecondary),
@@ -856,7 +856,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
               ),
             ],
             if (review.isLightDissatisfaction) ...[
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -866,7 +866,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
                   color: Colors.orange.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
+                child: Text(
                   'Insatisfaction légère signalée',
                   style: TextStyle(
                     color: Colors.orange,
@@ -876,7 +876,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
               ),
             ],
             if (review.hasResponse) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -1023,7 +1023,7 @@ class _PharmacySupportPageState extends State<PharmacySupportPage> {
               const SizedBox(height: 4),
               Text('Produit: ${complaint.productName}'),
             ],
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
               complaint.description,
               style: TextStyle(color: BpColors.textSecondary),

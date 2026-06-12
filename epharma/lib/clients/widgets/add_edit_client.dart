@@ -204,7 +204,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
         _selectedGender == null ||
         _dateOfBirth == null) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Veuillez remplir tous les champs requis'),
           backgroundColor: BpColors.error,
         ),
@@ -215,7 +215,7 @@ class _ClientFormDialogState extends State<ClientFormDialog> {
     final phone = _phoneController.text.trim();
     if (!RegExp(r'^[0-9]{8,15}$').hasMatch(phone)) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Telephone invalide (8-15 chiffres)'),
           backgroundColor: BpColors.error,
         ),

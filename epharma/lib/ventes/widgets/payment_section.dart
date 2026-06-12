@@ -107,13 +107,13 @@ class _PaymentSectionState extends State<PaymentSection> {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(top: BorderSide(color: BpColors.border)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Mode de paiement',
             style: TextStyle(
               fontSize: 12,
@@ -121,7 +121,7 @@ class _PaymentSectionState extends State<PaymentSection> {
               color: BpColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -135,12 +135,12 @@ class _PaymentSectionState extends State<PaymentSection> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           TextField(
             controller: _amountReceivedController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: const TextStyle(color: BpColors.textPrimary),
+            style: TextStyle(color: BpColors.textPrimary),
             onChanged: (value) {
               widget.onAmountReceivedChanged(double.tryParse(value) ?? 0);
               setState(() {});
@@ -151,7 +151,7 @@ class _PaymentSectionState extends State<PaymentSection> {
               prefixIcon: Icons.account_balance_wallet_outlined,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -166,7 +166,7 @@ class _PaymentSectionState extends State<PaymentSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Monnaie a rendre',
                   style: TextStyle(
                     fontSize: 12,

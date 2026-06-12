@@ -327,7 +327,7 @@ class _BarcodeScannerDialogState extends State<BarcodeScannerDialog> with Single
     if (_isLoading) {
       return Container(
         color: Colors.black54,
-        child: const Center(
+        child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -359,7 +359,7 @@ class _BarcodeScannerDialogState extends State<BarcodeScannerDialog> with Single
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, color: BpColors.error, size: 24),
+              Icon(Icons.error_outline, color: BpColors.error, size: 24),
               const SizedBox(width: 12),
               Text(
                 _errorMessage!,

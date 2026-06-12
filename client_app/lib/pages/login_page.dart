@@ -37,12 +37,16 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
+    final isLightTheme = BpColors.scaffold.computeLuminance() > 0.5;
+    final cardColor = isLightTheme
+        ? BpColors.surfaceStrong.withOpacity(0.96)
+        : BpColors.cardBg.withOpacity(0.12);
 
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -68,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   vertical: 28,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 480),
+                  constraints: BoxConstraints(maxWidth: 480),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(32),
                     child: BackdropFilter(
@@ -76,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(32, 36, 32, 28),
                         decoration: BoxDecoration(
-                          color: BpColors.cardBg.withOpacity(0.12),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(32),
                           border: Border.all(
                             color: BpColors.borderStrong,
@@ -86,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                             BoxShadow(
                               color: Colors.black.withOpacity(0.14),
                               blurRadius: 34,
-                              offset: const Offset(0, 16),
+                              offset: Offset(0, 16),
                             ),
                           ],
                         ),
@@ -94,14 +98,14 @@ class _LoginPageState extends State<LoginPage> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             _buildHeader(),
-                            const SizedBox(height: 32),
+                            SizedBox(height: 32),
                             _buildDarkField(
                               controller: _identifierController,
                               label: 'Email ou nom d\'utilisateur',
                               hint: 'ex: celeste@bigpharma.bj',
                               icon: Icons.person_outline_rounded,
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
                             _buildDarkField(
                               controller: _passwordController,
                               label: 'Mot de passe',
@@ -113,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                                 () => _obscurePassword = !_obscurePassword,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10),
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
@@ -160,11 +164,11 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               },
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
+                                Text(
                                   'Pas encore de compte ?',
                                   style: TextStyle(
                                     color: BpColors.textOnDarkMuted,
@@ -175,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const RegisterPage(),
+                                      builder: (_) => RegisterPage(),
                                     ),
                                   ),
                                   style: TextButton.styleFrom(
@@ -215,14 +219,14 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const BrandTitle(style: BpTextStyles.authTitle),
-        const SizedBox(height: 6),
-        const Text(
+        BrandTitle(style: BpTextStyles.authTitle),
+        SizedBox(height: 6),
+        Text(
           'Connectez-vous à votre espace client',
           style: BpTextStyles.authSubtitle,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 18),
+        SizedBox(height: 18),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
@@ -232,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               Icon(Icons.verified_rounded, size: 14, color: BpColors.accent),
               SizedBox(width: 8),
               Text('Accès client', style: BpTextStyles.authBadge),
@@ -256,15 +260,16 @@ class _LoginPageState extends State<LoginPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: BpTextStyles.labelOnDark),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         TextField(
           controller: controller,
           obscureText: obscure,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: TextStyle(color: BpColors.textPrimary, fontSize: 14),
           decoration: BpInputTheme.dark(
             label: label,
             hint: hint,
             prefixIcon: icon,
+            showLabel: false,
             suffixIconWidget: isPassword
                 ? IconButton(
                     icon: Icon(
@@ -300,7 +305,7 @@ class _LoginPageState extends State<LoginPage> {
       builder: (ctx) => StatefulBuilder(
         builder: (context, setModalState) {
           return Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: BpColors.surfaceStrong,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(BpSpacing.radiusXl),

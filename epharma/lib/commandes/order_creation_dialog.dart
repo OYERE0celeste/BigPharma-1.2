@@ -99,7 +99,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
                         alignment: Alignment.centerRight,
                         child: Text(
                           'TOTAL : ${_total.toStringAsFixed(0)} FCFA',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: BpColors.accent,
@@ -232,7 +232,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: BpColors.error),
+                    icon: Icon(Icons.delete, color: BpColors.error),
                     onPressed: () => setState(() => _cartItems.removeAt(index)),
                   ),
                 ],
@@ -244,7 +244,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
     }
 
     return DataTable(
-      headingRowColor: const WidgetStatePropertyAll(BpColors.surfaceMuted),
+      headingRowColor: WidgetStatePropertyAll(BpColors.surfaceMuted),
       columns: const [
         DataColumn(label: Text('Produit')),
         DataColumn(label: Text('Prix')),
@@ -261,7 +261,7 @@ class _OrderCreationDialogState extends State<OrderCreationDialog> {
             DataCell(Text('${item['quantity']}')),
             DataCell(
               IconButton(
-                icon: const Icon(Icons.delete, color: BpColors.error),
+                icon: Icon(Icons.delete, color: BpColors.error),
                 onPressed: () => setState(() => _cartItems.removeAt(index)),
               ),
             ),

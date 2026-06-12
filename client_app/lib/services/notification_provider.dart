@@ -17,32 +17,56 @@ class NotificationProvider with ChangeNotifier {
   bool _isLoading = false;
   io.Socket? _socket;
   bool _isSocketConnected = false;
+  bool _isInitialized = false;
+  bool _isInitializing = false;
 
   NotificationProvider();
 
   void update(AuthProvider auth) {
     if (_authProvider?.token == auth.token &&
-        _authProvider?.user?.id == auth.user?.id)
+        _authProvider?.user?.id == auth.user?.id) {
       return;
+    }
 
     _authProvider = auth;
-    if (auth.isAuthenticated) {
-      fetchNotifications();
-      _initSocket();
-    } else {
-      _isSocketConnected = false;
-      _socket?.disconnect();
-      _socket = null;
-      _notifications = [];
-      _unreadCount = 0;
-      notifyListeners();
+    if (!auth.isAuthenticated) {
+      _cleanup();
+      return;
     }
+
+    _isInitialized = false;
+  }
+
+  Future<void> ensureInitialized() async {
+    if (_isInitialized || _isInitializing) return;
+    if (_authProvider == null || !_authProvider!.isAuthenticated) return;
+
+    _isInitializing = true;
+    try {
+      await fetchNotifications();
+      _initSocket();
+      _isInitialized = true;
+    } finally {
+      _isInitializing = false;
+    }
+  }
+
+  void _cleanup() {
+    _isSocketConnected = false;
+    _socket?.disconnect();
+    _socket = null;
+    _notifications = [];
+    _unreadCount = 0;
+    _isInitialized = false;
+    _isInitializing = false;
+    notifyListeners();
   }
 
   List<NotificationModel> get notifications => _notifications;
   int get unreadCount => _unreadCount;
   bool get isLoading => _isLoading;
   bool get isSocketConnected => _isSocketConnected;
+  bool get isInitialized => _isInitialized;
 
   void _initSocket() {
     if (_socket != null) return;

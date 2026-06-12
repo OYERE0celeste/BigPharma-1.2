@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
+import 'api_service.dart';
 import 'auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -24,7 +25,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _initialize() async {
     await _loadSession();
-    await refreshUser();
+    if (_token != null) {
+      await ApiService().setToken(_token);
+      await refreshUser();
+    }
     _isInitialized = true;
     notifyListeners();
   }
@@ -38,6 +42,7 @@ class AuthProvider extends ChangeNotifier {
       _user = result['user'];
       _token = result['token'];
       await _saveSession();
+      await ApiService().setToken(_token);
       notifyListeners();
     }
     return result;
@@ -70,6 +75,7 @@ class AuthProvider extends ChangeNotifier {
       _user = result['user'];
       _token = result['token'];
       await _saveSession();
+      await ApiService().setToken(_token);
       notifyListeners();
     }
     return result;
@@ -121,6 +127,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     _user = null;
     _token = null;
+    await ApiService().setToken(null);
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
     await prefs.remove('auth_user');

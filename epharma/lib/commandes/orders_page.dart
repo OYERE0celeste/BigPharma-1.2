@@ -146,7 +146,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Gestion des commandes',
                   style: TextStyle(
                     fontSize: 24,
@@ -171,11 +171,11 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                 SizedBox(
                   width: 300,
                   child: TextField(
-                    style: const TextStyle(color: BpColors.textPrimary),
+                    style: TextStyle(color: BpColors.textPrimary),
                     decoration: InputDecoration(
                       hintText: 'Rechercher par numéro ou client...',
-                      hintStyle: const TextStyle(color: BpColors.textHint),
-                      prefixIcon: const Icon(
+                      hintStyle: TextStyle(color: BpColors.textHint),
+                      prefixIcon: Icon(
                         Icons.search,
                         size: 20,
                         color: BpColors.textSecondary,
@@ -189,19 +189,19 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: BpColors.borderStrong,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: BpColors.border),
+                        borderSide: BorderSide(color: BpColors.border),
                       ),
                     ),
                     onChanged: _onSearchChanged,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Container(
                   width: 200,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -214,7 +214,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                     child: DropdownButton<String?>(
                       isExpanded: true,
                       dropdownColor: BpColors.surface,
-                      hint: const Text(
+                      hint: Text(
                         'Filtrer par statut',
                         style: TextStyle(
                           fontSize: 14,
@@ -222,7 +222,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                         ),
                       ),
                       value: _selectedStatus,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: BpColors.textPrimary,
                         fontSize: 14,
                       ),
@@ -258,15 +258,15 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                 Flexible(
                   child: FilledButton.icon(
                     onPressed: () => _loadOrders(page: 1, forceRefresh: true),
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Rafraîchir'),
+                    icon: Icon(Icons.refresh),
+                    label: Text('Rafraîchir'),
                     style: FilledButton.styleFrom(
                       backgroundColor: BpColors.surfaceMuted,
                       foregroundColor: BpColors.textPrimary,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: BpColors.border),
+                        side: BorderSide(color: BpColors.border),
                       ),
                     ),
                   ),
@@ -369,7 +369,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                   ),
                   child: Icon(icon, color: color, size: 20),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
               ],
               Expanded(
                 child: Column(
@@ -380,17 +380,17 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                       title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: BpColors.textSecondary,
                         fontSize: 11,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
                         value,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: BpColors.textPrimary,
@@ -420,7 +420,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Rechercher par numéro ou client...',
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: Icon(Icons.search),
                   filled: true,
                   fillColor: BpColors.surfaceMuted,
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -504,11 +504,11 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                     dataRowMinHeight: 56,
                     dataRowMaxHeight: 64,
                     headingRowHeight: 56,
-                    headingTextStyle: const TextStyle(
+                    headingTextStyle: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: BpColors.textPrimary,
                     ),
-                    columns: const [
+                    columns: [
                       DataColumn(
                         label: Text(
                           'N° Commande',
@@ -563,7 +563,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
         DataCell(
           Text(
             order.orderNumber,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               color: BpColors.textPrimary,
             ),
@@ -572,19 +572,19 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
         DataCell(
           Text(
             order.clientName,
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
         ),
         DataCell(
           Text(
             order.formattedDate,
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
         ),
         DataCell(
           Text(
             '${order.totalPrice.toStringAsFixed(0)} FCFA',
-            style: const TextStyle(color: BpColors.textSecondary),
+            style: TextStyle(color: BpColors.textSecondary),
           ),
         ),
         DataCell(_buildStatusBadge(order.status)),
@@ -663,20 +663,20 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: BpColors.textPrimary),
+            icon: Icon(Icons.arrow_back, color: BpColors.textPrimary),
             onPressed: provider.currentPage > 1
                 ? () => _loadOrders(page: provider.currentPage - 1)
                 : null,
           ),
           Text(
             'Page ${provider.currentPage} sur ${provider.totalPages}',
-            style: const TextStyle(
+            style: TextStyle(
               color: BpColors.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.arrow_forward, color: BpColors.textPrimary),
+            icon: Icon(Icons.arrow_forward, color: BpColors.textPrimary),
             onPressed: provider.currentPage < provider.totalPages
                 ? () => _loadOrders(page: provider.currentPage + 1)
                 : null,
@@ -695,7 +695,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
           final field = SizedBox(
             height: 54,
             child: TextField(
-              style: const TextStyle(color: BpColors.textPrimary),
+              style: TextStyle(color: BpColors.textPrimary),
               onChanged: _onSearchChanged,
               decoration: BpInputTheme.light(
                 label: 'Recherche',
@@ -721,7 +721,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                 hint: 'Tous les statuts',
                 showLabel: false,
               ),
-              style: const TextStyle(
+              style: TextStyle(
                 color: BpColors.textPrimary,
                 fontSize: 14,
               ),
@@ -752,8 +752,8 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
             height: 54,
             child: FilledButton.icon(
               onPressed: () => _loadOrders(page: 1, forceRefresh: true),
-              icon: const Icon(Icons.refresh),
-              label: const Text('Rafraîchir'),
+              icon: Icon(Icons.refresh),
+              label: Text('Rafraîchir'),
               style: FilledButton.styleFrom(
                 backgroundColor: BpColors.surfaceMuted,
                 foregroundColor: BpColors.textPrimary,
@@ -762,7 +762,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: BpColors.border),
+                  side: BorderSide(color: BpColors.border),
                 ),
               ),
             ),
@@ -777,7 +777,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Gestion des commandes',
                       style: TextStyle(
                         fontSize: 24,
@@ -785,19 +785,19 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                         color: BpColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: 4),
+                    Text(
                       'Suivi en temps reel du cycle de commande.',
                       style: TextStyle(
                         fontSize: 14,
                         color: BpColors.textSecondary,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     searchField(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     statusFilter(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     refreshButton(fullWidth: true),
                   ],
                 )
@@ -808,7 +808,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
                       flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'Gestion des commandes',
                             style: TextStyle(
@@ -896,20 +896,20 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back, color: BpColors.textPrimary),
+                icon: Icon(Icons.arrow_back, color: BpColors.textPrimary),
                 onPressed: provider.currentPage > 1
                     ? () => _loadOrders(page: provider.currentPage - 1)
                     : null,
               ),
               Text(
                 'Page ${provider.currentPage} sur ${provider.totalPages}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: BpColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.arrow_forward, color: BpColors.textPrimary),
+                icon: Icon(Icons.arrow_forward, color: BpColors.textPrimary),
                 onPressed: provider.currentPage < provider.totalPages
                     ? () => _loadOrders(page: provider.currentPage + 1)
                     : null,
@@ -923,7 +923,7 @@ class _PharmacyOrdersPageState extends State<PharmacyOrdersPage> {
               children: [
                 Text(
                   'Page ${provider.currentPage} sur ${provider.totalPages}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),

@@ -98,6 +98,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final Color primary = Theme.of(context).colorScheme.primary;
+    final authProvider = context.watch<AuthProvider>();
+    final notificationProvider = context.read<NotificationProvider>();
+
+    if (authProvider.isAuthenticated && !notificationProvider.isInitialized) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notificationProvider.ensureInitialized();
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -126,11 +134,11 @@ class _HomePageState extends State<HomePage> {
                 icon: Stack(
                   alignment: Alignment.topRight,
                   children: [
-                    const Icon(Icons.notifications_none_rounded, size: 26),
+                    Icon(Icons.notifications_none_rounded, size: 26),
                     if (notificationProvider.unreadCount > 0)
                       Container(
                         padding: const EdgeInsets.all(2),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: BpColors.error,
                           shape: BoxShape.circle,
                         ),
@@ -180,11 +188,11 @@ class _HomePageState extends State<HomePage> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
-                            child: const Text('Annuler'),
+                            child: Text('Annuler'),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: const Text(
+                            child: Text(
                               'Déconnexion',
                               style: TextStyle(color: BpColors.error),
                             ),
@@ -205,18 +213,18 @@ class _HomePageState extends State<HomePage> {
                         PopupMenuItem(
                           value: 'settings',
                           child: Row(
-                            children: const [
+                            children: [
                               Icon(Icons.settings_outlined, size: 20),
                               SizedBox(width: 12),
                               Text('Paramètres'),
                             ],
                           ),
                         ),
-                        const PopupMenuDivider(),
+                        PopupMenuDivider(),
                         PopupMenuItem(
                           value: 'logout',
                           child: Row(
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.logout_rounded,
                                 size: 20,
@@ -235,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                         PopupMenuItem(
                           value: 'login',
                           child: Row(
-                            children: const [
+                            children: [
                               Icon(Icons.login_rounded, size: 20),
                               SizedBox(width: 12),
                               Text('Se connecter'),
@@ -276,7 +284,7 @@ class _HomePageState extends State<HomePage> {
               },
               backgroundColor: primary,
               foregroundColor: Colors.white,
-              child: const Icon(Icons.shopping_cart_rounded),
+              child: Icon(Icons.shopping_cart_rounded),
             ),
             if (cart.totalItems > 0)
               Positioned(
@@ -284,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                 top: 0,
                 child: Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: BpColors.error,
                     shape: BoxShape.circle,
                   ),

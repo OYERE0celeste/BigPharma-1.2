@@ -28,23 +28,23 @@ class _OrderExportWidgetState extends State<OrderExportWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             'Exporter les Commandes',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _selectDateRange(context),
-                  icon: const Icon(Icons.date_range),
+                  icon: Icon(Icons.date_range),
                   label: Text(
                     _startDate == null ? 'Période' : 'Dates sélectionnées',
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: DropdownButton<String>(
                   hint: const Text('Statut'),

@@ -20,10 +20,10 @@ class ProductDetailsPanel extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         width: 1040,
-        constraints: const BoxConstraints(maxWidth: 1040, maxHeight: 720),
+        constraints: BoxConstraints(maxWidth: 1040, maxHeight: 720),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [BpColors.surfaceStrong, BpColors.cardBg],
@@ -33,7 +33,7 @@ class ProductDetailsPanel extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.28),
               blurRadius: 34,
-              offset: const Offset(0, 22),
+              offset: Offset(0, 22),
             ),
           ],
         ),
@@ -50,7 +50,7 @@ class ProductDetailsPanel extends StatelessWidget {
                       Colors.transparent,
                     ],
                   ),
-                  border: const Border(
+                  border: Border(
                     bottom: BorderSide(color: BpColors.border),
                   ),
                 ),
@@ -87,7 +87,7 @@ class ProductDetailsPanel extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12),
                           Text(
                             product.description.trim().isEmpty
                                 ? 'Fiche produit sans description detaillee pour le moment.'
@@ -105,7 +105,7 @@ class ProductDetailsPanel extends StatelessWidget {
                       style: IconButton.styleFrom(
                         backgroundColor: BpColors.surface.withOpacity(0.65),
                         foregroundColor: BpColors.textPrimary,
-                        side: const BorderSide(color: BpColors.border),
+                        side: BorderSide(color: BpColors.border),
                       ),
                       icon: const Icon(Icons.close_rounded),
                     ),
@@ -169,7 +169,7 @@ class ProductDetailsPanel extends StatelessWidget {
                           : product.barcode,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: _DetailTile(
                       icon: Icons.sell_rounded,
@@ -179,7 +179,7 @@ class ProductDetailsPanel extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -191,7 +191,7 @@ class ProductDetailsPanel extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Description', style: BpTextStyles.label),
+                    Text('Description', style: BpTextStyles.label),
                     const SizedBox(height: 8),
                     Text(
                       product.description.trim().isEmpty
@@ -236,7 +236,7 @@ class ProductDetailsPanel extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 18),
+        SizedBox(height: 18),
         _SectionCard(
           title: 'Historique des mouvements',
           subtitle:
@@ -258,20 +258,20 @@ class ProductDetailsPanel extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: BpColors.accent.withOpacity(0.12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.timeline_rounded,
                     color: BpColors.accent,
                     size: 28,
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Text(
+                Text(
                   'Historique a connecter',
                   style: BpTextStyles.heading3,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Cette section est prete pour accueillir les mouvements de stock du produit dans un format plus lisible.',
                   style: BpTextStyles.body,
                   textAlign: TextAlign.center,
@@ -332,7 +332,7 @@ class ProductDetailsPanel extends StatelessWidget {
                   tone: BpColors.primaryLight,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: _MetricCard(
                   label: 'Expiration',
@@ -343,7 +343,7 @@ class ProductDetailsPanel extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           if (product.lots.isEmpty)
             Container(
               width: double.infinity,
@@ -353,7 +353,7 @@ class ProductDetailsPanel extends StatelessWidget {
                 borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
                 border: Border.all(color: BpColors.border),
               ),
-              child: const Column(
+              child: Column(
                 children: [
                   Icon(
                     Icons.inventory_2_outlined,
@@ -494,16 +494,16 @@ class _MetricCard extends StatelessWidget {
             ),
             child: Icon(icon, color: tone),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: BpTextStyles.caption),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                     color: BpColors.textPrimary,
@@ -549,16 +549,16 @@ class _DetailTile extends StatelessWidget {
             ),
             child: Icon(icon, color: BpColors.accent, size: 20),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: BpTextStyles.caption),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: BpColors.textPrimary,
                   ),

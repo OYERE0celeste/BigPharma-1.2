@@ -40,20 +40,20 @@ class PageWrapper extends StatelessWidget {
 class MiniLayout extends StatelessWidget {
   final Widget child;
   final Widget? appBar;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final bool showSidebar;
 
   const MiniLayout({
     required this.child,
     this.appBar,
-    this.backgroundColor = BpColors.scaffold,
+    this.backgroundColor,
     this.showSidebar = true,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(color: backgroundColor, child: child);
+    return Material(color: backgroundColor ?? BpColors.scaffold, child: child);
   }
 }
 

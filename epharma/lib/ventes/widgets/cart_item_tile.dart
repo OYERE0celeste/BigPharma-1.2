@@ -22,7 +22,7 @@ class CartItemTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: const Border(bottom: BorderSide(color: BpColors.border)),
+        border: Border(bottom: BorderSide(color: BpColors.border)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class CartItemTile extends StatelessWidget {
                   children: [
                     Text(
                       cartItem.product.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: BpColors.textPrimary,
@@ -44,14 +44,14 @@ class CartItemTile extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       'Lot: ${cartItem.selectedLot.lotNumber}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
                         color: BpColors.textSecondary,
                       ),
                     ),
                     Text(
                       'P.U: ${cartItem.product.sellingPrice.toStringAsFixed(0)} FCFA',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
                         color: BpColors.textSecondary,
                       ),
@@ -83,7 +83,7 @@ class CartItemTile extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           '${cartItem.quantity}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                             color: BpColors.textPrimary,

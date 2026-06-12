@@ -298,6 +298,37 @@ const sendPasswordChangedEmail = async ({ email, fullName }) =>
     outro: "Votre sécurité est notre priorité.",
   });
 
+const sendPrescriptionValidatedEmail = async ({ email, fullName, orderNumber, pharmacistNotes, companyName }) =>
+  sendTemplateEmail({
+    to: email,
+    subject: `Ordonnance validée — Commande ${orderNumber}`,
+    greeting: `Bonjour ${fullName},`,
+    intro: `Votre ordonnance pour la commande ${orderNumber} chez ${companyName} a été <strong>validée</strong> par notre équipe pharmacie.`,
+    bullets: [
+      `Commande : ${orderNumber}`,
+      pharmacistNotes ? `Notes du pharmacien : ${pharmacistNotes}` : "Votre commande va être préparée sous peu.",
+    ].filter(Boolean),
+    actionText: "Voir ma commande",
+    actionUrl: appUrl,
+    outro: "Merci de votre confiance. L'équipe BigPharma.",
+  });
+
+const sendPrescriptionRejectedEmail = async ({ email, fullName, orderNumber, rejectionReason, companyName }) =>
+  sendTemplateEmail({
+    to: email,
+    subject: `Ordonnance refusée — Commande ${orderNumber}`,
+    greeting: `Bonjour ${fullName},`,
+    intro: `Nous avons examiné votre ordonnance pour la commande ${orderNumber} chez ${companyName}. Malheureusement, elle n'a pas pu être acceptée.`,
+    bullets: [
+      `Commande : ${orderNumber}`,
+      `Motif : ${rejectionReason || "Ordonnance non conforme ou illisible"}`,
+      "Vous pouvez soumettre une nouvelle ordonnance ou contacter la pharmacie.",
+    ],
+    actionText: "Voir ma commande",
+    actionUrl: appUrl,
+    outro: "Nous restons à votre disposition. L'équipe BigPharma.",
+  });
+
 module.exports = {
   sendMail,
   sendStaffWelcomeEmail,
@@ -310,5 +341,7 @@ module.exports = {
   sendInvoiceReadyEmail,
   sendSupportResponseEmail,
   sendComplaintStatusEmail,
+  sendPrescriptionValidatedEmail,
+  sendPrescriptionRejectedEmail,
   isConfigured,
 };

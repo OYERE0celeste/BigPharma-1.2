@@ -71,16 +71,16 @@ class DetailInfoTile extends StatelessWidget {
             ),
             child: Icon(icon, color: BpColors.accent, size: 20),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: BpTextStyles.caption),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: BpColors.textPrimary,
@@ -129,16 +129,16 @@ class DetailMetricCard extends StatelessWidget {
             ),
             child: Icon(icon, color: tone, size: 22),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: BpTextStyles.caption),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: BpColors.textPrimary,

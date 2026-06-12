@@ -386,7 +386,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
             height: 54,
             child: TextField(
               controller: _searchController,
-              style: const TextStyle(color: BpColors.textPrimary),
+              style: TextStyle(color: BpColors.textPrimary),
               decoration: BpInputTheme.light(
                 label: 'Recherche',
                 hint: 'Rechercher par nom ou catégorie',
@@ -411,7 +411,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 hint: 'Tous les produits',
                 showLabel: false,
               ),
-              style: const TextStyle(
+              style: TextStyle(
                 color: BpColors.textPrimary,
                 fontSize: 14,
               ),
@@ -457,8 +457,8 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
             height: 54,
             child: FilledButton.icon(
               onPressed: _loadProducts,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Rafraîchir'),
+              icon: Icon(Icons.refresh),
+              label: Text('Rafraîchir'),
               style: FilledButton.styleFrom(
                 backgroundColor: BpColors.surfaceMuted,
                 foregroundColor: BpColors.textPrimary,
@@ -466,7 +466,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 minimumSize: const Size.fromHeight(54),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: BpColors.border),
+                  side: BorderSide(color: BpColors.border),
                 ),
               ),
             ),
@@ -483,8 +483,8 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
             height: 54,
             child: FilledButton.icon(
               onPressed: _openAddDialog,
-              icon: const Icon(Icons.add),
-              label: const Text('Ajouter'),
+              icon: Icon(Icons.add),
+              label: Text('Ajouter'),
               style: FilledButton.styleFrom(
                 backgroundColor: BpColors.cardBg,
                 foregroundColor: BpColors.textPrimary,
@@ -492,7 +492,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 minimumSize: const Size.fromHeight(54),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: BpColors.borderStrong),
+                  side: BorderSide(color: BpColors.borderStrong),
                 ),
               ),
             ),
@@ -505,7 +505,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'GESTION DES PRODUITS',
                       style: TextStyle(
                         fontSize: 20,
@@ -514,21 +514,21 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         color: BpColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: 4),
+                    Text(
                       'Gérez les médicaments, le stock et les lots pharmaceutiques',
                       style: TextStyle(
                         color: BpColors.textSecondary,
                         fontSize: 13,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     searchField(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     filterField(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     scannerAction(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     refreshAction(fullWidth: true),
                     if (canAdd) const SizedBox(height: 12),
                     if (canAdd) addAction(fullWidth: true),
@@ -541,7 +541,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                       flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'GESTION DES PRODUITS',
                             style: TextStyle(
@@ -599,7 +599,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text(
                     'GESTION DES PRODUITS',
                     style: TextStyle(
@@ -619,22 +619,22 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               // Search and Filter
               Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _searchController,
-                      style: const TextStyle(color: BpColors.textPrimary),
+                      style: TextStyle(color: BpColors.textPrimary),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.search,
                           size: 20,
                           color: BpColors.textSecondary,
                         ),
                         hintText: 'Rechercher...',
-                        hintStyle: const TextStyle(
+                        hintStyle: TextStyle(
                           color: BpColors.textHint,
                           fontSize: 14,
                         ),
@@ -647,19 +647,19 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                             color: BpColors.borderStrong,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: BpColors.border),
+                          borderSide: BorderSide(color: BpColors.border),
                         ),
                       ),
                       onChanged: (v) => setState(() => _search = v),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -671,15 +671,15 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                       child: DropdownButton<String>(
                         value: _filter,
                         dropdownColor: BpColors.surface,
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_drop_down,
                           color: BpColors.textSecondary,
                         ),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: BpColors.textPrimary,
                           fontSize: 14,
                         ),
-                        items: const [
+                        items: [
                           DropdownMenuItem(
                             value: 'Tous les produits',
                             child: Text('Tous'),
@@ -704,7 +704,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               // Actions
               Row(
                 children: [
@@ -712,8 +712,8 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _openAddDialog,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Ajouter un produit'),
+                        icon: Icon(Icons.add),
+                        label: Text('Ajouter un produit'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: BpColors.cardBg,
                           foregroundColor: BpColors.textPrimary,
@@ -721,23 +721,23 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
-                            side: const BorderSide(
+                            side: BorderSide(
                               color: BpColors.borderStrong,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  if (canAdd) const SizedBox(width: 8),
+                  if (canAdd) SizedBox(width: 8),
                   ScannerButton(
                     style: ScannerButtonStyle.icon,
                     tooltip: 'Scanner un produit',
                     onProductScanned: _handleScannedProduct,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   IconButton(
                     onPressed: _loadProducts,
-                    icon: const Icon(Icons.refresh),
+                    icon: Icon(Icons.refresh),
                     tooltip: 'Actualiser',
                     color: BpColors.textPrimary,
                   ),
@@ -757,7 +757,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Text(
                       'GESTION DES PRODUITS',
                       style: TextStyle(
@@ -787,18 +787,18 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                   children: [
                     Expanded(
                       child: Container(
-                        constraints: const BoxConstraints(maxWidth: 400),
+                        constraints: BoxConstraints(maxWidth: 400),
                         child: TextField(
                           controller: _searchController,
-                          style: const TextStyle(color: BpColors.textPrimary),
+                          style: TextStyle(color: BpColors.textPrimary),
                           decoration: InputDecoration(
-                            prefixIcon: const Icon(
+                            prefixIcon: Icon(
                               Icons.search,
                               size: 20,
                               color: BpColors.textSecondary,
                             ),
                             hintText: 'Rechercher par nom ou catégorie',
-                            hintStyle: const TextStyle(
+                            hintStyle: TextStyle(
                               color: BpColors.textHint,
                               fontSize: 14,
                             ),
@@ -811,13 +811,13 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(
+                              borderSide: BorderSide(
                                 color: BpColors.borderStrong,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(
+                              borderSide: BorderSide(
                                 color: BpColors.border,
                               ),
                             ),
@@ -826,7 +826,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
@@ -838,15 +838,15 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                         child: DropdownButton<String>(
                           value: _filter,
                           dropdownColor: BpColors.surface,
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.arrow_drop_down,
                             color: BpColors.textSecondary,
                           ),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: BpColors.textPrimary,
                             fontSize: 14,
                           ),
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: 'Tous les produits',
                               child: Text('Tous les produits'),
@@ -885,14 +885,14 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                       tooltip: 'Scanner un produit',
                       onProductScanned: _handleScannedProduct,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     IconButton(
                       onPressed: _loadProducts,
-                      icon: const Icon(Icons.refresh),
+                      icon: Icon(Icons.refresh),
                       tooltip: 'Actualiser les produits',
                       color: BpColors.textPrimary,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     if (canAdd)
                       ElevatedButton(
                         onPressed: _openAddDialog,
@@ -906,7 +906,7 @@ class _PharmacyProductsPageState extends State<PharmacyProductsPage> {
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
-                            side: const BorderSide(
+                            side: BorderSide(
                               color: BpColors.borderStrong,
                             ),
                           ),

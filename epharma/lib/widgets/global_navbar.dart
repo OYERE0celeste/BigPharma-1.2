@@ -59,7 +59,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
               BoxShadow(
                 color: Colors.black.withOpacity(0.12),
                 blurRadius: 18,
-                offset: const Offset(0, 10),
+                offset: Offset(0, 10),
               ),
             ],
           ),
@@ -173,14 +173,14 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                               backgroundColor: BpColors.accent.withOpacity(
                                 0.15,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.person,
                                 color: BpColors.accent,
                                 size: 20,
                               ),
                             ),
                             if (!isMobile) ...[
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -191,7 +191,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                                             .user
                                             ?.fullName ??
                                         'Utilisateur',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                       color: BpColors.textPrimary,
@@ -208,7 +208,7 @@ class _GlobalNavbarState extends State<GlobalNavbar> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4),
                               Icon(
                                 Icons.arrow_drop_down,
                                 color: BpColors.textSecondary,

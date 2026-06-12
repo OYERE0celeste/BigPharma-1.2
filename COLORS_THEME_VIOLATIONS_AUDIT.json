@@ -1,0 +1,1875 @@
+{
+  "audit_date": "2026-06-12",
+  "title": "Flutter Apps - Hardcoded Colors & Theme Violations Audit",
+  "total_projects": 2,
+  "projects": [
+    {
+      "project_name": "epharma",
+      "base_path": "epharma/lib",
+      "total_violations": 187,
+      "violations_by_type": {
+        "hardcoded_colors": 127,
+        "hex_colors": 42,
+        "color_mixing": 18
+      },
+      "files": [
+        {
+          "file": "epharma/lib/settings/securite_dialog.dart",
+          "violations": [
+            {
+              "line": 390,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 804,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.01),",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/screens/auth/register_page.dart",
+          "violations": [
+            {
+              "line": 234,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.14),",
+              "severity": "medium"
+            },
+            {
+              "line": 388,
+              "type": "hex_color",
+              "code": "color: const Color(0xFF4CAF50),",
+              "severity": "high"
+            },
+            {
+              "line": 404,
+              "type": "hex_color",
+              "code": "color: const Color(0xFF2196F3),",
+              "severity": "high"
+            },
+            {
+              "line": 411,
+              "type": "hex_color",
+              "code": "color: const Color(0xFF9C27B0),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/activites/activity_register_page.dart",
+          "violations": [
+            {
+              "line": 980,
+              "type": "hardcoded_color",
+              "code": "return Colors.green;",
+              "severity": "high"
+            },
+            {
+              "line": 982,
+              "type": "hardcoded_color",
+              "code": "return Colors.orange;",
+              "severity": "high"
+            },
+            {
+              "line": 984,
+              "type": "hardcoded_color",
+              "code": "return Colors.blue;",
+              "severity": "high"
+            },
+            {
+              "line": 988,
+              "type": "hardcoded_color",
+              "code": "return Colors.teal;",
+              "severity": "high"
+            },
+            {
+              "line": 990,
+              "type": "hardcoded_color",
+              "code": "return Colors.red;",
+              "severity": "high"
+            },
+            {
+              "line": 992,
+              "type": "hardcoded_color",
+              "code": "return Colors.indigo;",
+              "severity": "high"
+            },
+            {
+              "line": 995,
+              "type": "hardcoded_color",
+              "code": "return Colors.amber;",
+              "severity": "high"
+            },
+            {
+              "line": 997,
+              "type": "hardcoded_color",
+              "code": "return Colors.blueGrey;",
+              "severity": "high"
+            },
+            {
+              "line": 1004,
+              "type": "hardcoded_color",
+              "code": "return Colors.green;",
+              "severity": "high"
+            },
+            {
+              "line": 1006,
+              "type": "hardcoded_color",
+              "code": "return Colors.orange;",
+              "severity": "high"
+            },
+            {
+              "line": 1008,
+              "type": "hardcoded_color",
+              "code": "return Colors.red;",
+              "severity": "high"
+            },
+            {
+              "line": 1010,
+              "type": "hardcoded_color",
+              "code": "return Colors.blueGrey;",
+              "severity": "high"
+            },
+            {
+              "line": 1098,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.28),",
+              "severity": "medium"
+            },
+            {
+              "line": 1418,
+              "type": "hardcoded_color",
+              "code": "color: Colors.black87,",
+              "severity": "high"
+            },
+            {
+              "line": 1438,
+              "type": "hardcoded_color",
+              "code": "color: Colors.black87,",
+              "severity": "high"
+            },
+            {
+              "line": 1470,
+              "type": "hardcoded_color",
+              "code": "color: Colors.black87,",
+              "severity": "high"
+            },
+            {
+              "line": 1517,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey[200],",
+              "severity": "medium"
+            },
+            {
+              "line": 1581,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(fontSize: 10, color: Colors.grey),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/clients/widgets/client_table.dart",
+          "violations": [
+            {
+              "line": 82,
+              "type": "hardcoded_color_shade",
+              "code": "backgroundColor: Colors.red.shade50,",
+              "severity": "high"
+            },
+            {
+              "line": 83,
+              "type": "hardcoded_color",
+              "code": "foregroundColor: Colors.red,",
+              "severity": "high"
+            },
+            {
+              "line": 224,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey,",
+              "severity": "high"
+            },
+            {
+              "line": 254,
+              "type": "hardcoded_color",
+              "code": "color: Colors.red,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/clients/widgets/client_detail.dart",
+          "violations": [
+            {
+              "line": 33,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.28),",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/clients/pharmacy_clients_page.dart",
+          "violations": [
+            {
+              "line": 113,
+              "type": "hardcoded_color",
+              "code": "color: Colors.indigo,",
+              "severity": "high"
+            },
+            {
+              "line": 119,
+              "type": "hardcoded_color",
+              "code": "color: Colors.blue,",
+              "severity": "high"
+            },
+            {
+              "line": 125,
+              "type": "hardcoded_color",
+              "code": "color: Colors.teal,",
+              "severity": "high"
+            },
+            {
+              "line": 131,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orange,",
+              "severity": "high"
+            },
+            {
+              "line": 210,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(color: Colors.red)",
+              "severity": "high"
+            },
+            {
+              "line": 217,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey",
+              "severity": "high"
+            },
+            {
+              "line": 239,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(color: Colors.white),",
+              "severity": "high"
+            },
+            {
+              "line": 251,
+              "type": "hardcoded_textstyle_color",
+              "code": "labelStyle: TextStyle(color: Colors.white),",
+              "severity": "high"
+            },
+            {
+              "line": 337,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(color: Colors.red)",
+              "severity": "high"
+            },
+            {
+              "line": 346,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey",
+              "severity": "high"
+            },
+            {
+              "line": 390,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: Colors.red,",
+              "severity": "high"
+            },
+            {
+              "line": 391,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 548,
+              "type": "hardcoded_color",
+              "code": "color: Colors.black87,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/models/order_model.dart",
+          "violations": [
+            {
+              "line": 44,
+              "type": "hardcoded_color",
+              "code": "return Colors.orange;",
+              "severity": "high"
+            },
+            {
+              "line": 46,
+              "type": "hardcoded_color",
+              "code": "return Colors.blue;",
+              "severity": "high"
+            },
+            {
+              "line": 48,
+              "type": "hardcoded_color",
+              "code": "return Colors.purple;",
+              "severity": "high"
+            },
+            {
+              "line": 50,
+              "type": "hardcoded_color",
+              "code": "return Colors.pink;",
+              "severity": "high"
+            },
+            {
+              "line": 52,
+              "type": "hardcoded_color",
+              "code": "return Colors.red;",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/finances/widgets/finance_summary_cards.dart",
+          "violations": [
+            {
+              "line": 48,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 54,
+              "type": "hardcoded_color",
+              "code": "color: Colors.blue,",
+              "severity": "high"
+            },
+            {
+              "line": 60,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orange,",
+              "severity": "high"
+            },
+            {
+              "line": 66,
+              "type": "hardcoded_color",
+              "code": "color: Colors.purple,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/models/support_model.dart",
+          "violations": [
+            {
+              "line": 78,
+              "type": "hardcoded_color",
+              "code": "return Colors.green;",
+              "severity": "high"
+            },
+            {
+              "line": 80,
+              "type": "hardcoded_color",
+              "code": "return Colors.orange;",
+              "severity": "high"
+            },
+            {
+              "line": 82,
+              "type": "hardcoded_color",
+              "code": "return Colors.grey;",
+              "severity": "high"
+            },
+            {
+              "line": 84,
+              "type": "hardcoded_color",
+              "code": "return Colors.blue;",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/core/theme/color_tokens.dart",
+          "violations": [
+            {
+              "line": 29,
+              "type": "color_mixing_lerp",
+              "code": "Color get primaryLight => Color.lerp(seedColor, Colors.white, 0.34)!;",
+              "severity": "medium"
+            },
+            {
+              "line": 31,
+              "type": "hex_color_lerp",
+              "code": "Color get primaryDark => Color.lerp(seedColor, const Color(0xFF101010), 0.30)!;",
+              "severity": "medium"
+            },
+            {
+              "line": 33,
+              "type": "color_mixing_lerp",
+              "code": "Color get accent => Color.lerp(seedColor, Colors.white, 0.18)!;",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/models/activity_model.dart",
+          "violations": [
+            {
+              "line": 153,
+              "type": "hardcoded_color",
+              "code": "return Colors.green;",
+              "severity": "high"
+            },
+            {
+              "line": 155,
+              "type": "hardcoded_color",
+              "code": "return Colors.orange;",
+              "severity": "high"
+            },
+            {
+              "line": 157,
+              "type": "hardcoded_color",
+              "code": "return Colors.blue;",
+              "severity": "high"
+            },
+            {
+              "line": 159,
+              "type": "hardcoded_color",
+              "code": "return Colors.teal;",
+              "severity": "high"
+            },
+            {
+              "line": 161,
+              "type": "hardcoded_color",
+              "code": "return Colors.red;",
+              "severity": "high"
+            },
+            {
+              "line": 163,
+              "type": "hardcoded_color",
+              "code": "return Colors.indigo;",
+              "severity": "high"
+            },
+            {
+              "line": 166,
+              "type": "hardcoded_color",
+              "code": "return Colors.amber;",
+              "severity": "high"
+            },
+            {
+              "line": 168,
+              "type": "hardcoded_color",
+              "code": "return Colors.blueGrey;",
+              "severity": "high"
+            },
+            {
+              "line": 170,
+              "type": "hardcoded_color",
+              "code": "return Colors.orange;",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/finances/pharmacy_finance_page.dart",
+          "violations": [
+            {
+              "line": 231,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 386,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 569,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 630,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey",
+              "severity": "high"
+            },
+            {
+              "line": 655,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 683,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(fontSize: 12, color: Colors.grey[600]),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/finances/widgets/finance_charts.dart",
+          "violations": [
+            {
+              "line": 195,
+              "type": "hardcoded_color",
+              "code": "colors: [Colors.greenAccent, Colors.green],",
+              "severity": "high"
+            },
+            {
+              "line": 205,
+              "type": "hardcoded_color",
+              "code": "colors: [Colors.redAccent, Colors.red],",
+              "severity": "high"
+            },
+            {
+              "line": 226,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 231,
+              "type": "hardcoded_color",
+              "code": "getTooltipColor: (group) => Colors.black87,",
+              "severity": "high"
+            },
+            {
+              "line": 247,
+              "type": "hardcoded_color",
+              "code": "color: Colors.greenAccent,",
+              "severity": "high"
+            },
+            {
+              "line": 262,
+              "type": "hardcoded_color",
+              "code": "color: Colors.redAccent,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/finances/widgets/finance_transaction_table.dart",
+          "violations": [
+            {
+              "line": 221,
+              "type": "hardcoded_color",
+              "code": "? Colors.green",
+              "severity": "high"
+            },
+            {
+              "line": 222,
+              "type": "hardcoded_color",
+              "code": ": Colors.red,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/widgets/stock_forecast_widget.dart",
+          "violations": [
+            {
+              "line": 23,
+              "type": "hardcoded_color_shade",
+              "code": "color: isLow ? Colors.red[50] : Colors.blue[50],",
+              "severity": "high"
+            },
+            {
+              "line": 25,
+              "type": "hardcoded_color_shade",
+              "code": "border: Border.all(color: isLow ? Colors.red[200]! : Colors.blue[200]!),",
+              "severity": "high"
+            },
+            {
+              "line": 34,
+              "type": "hardcoded_color",
+              "code": "color: isLow ? Colors.red : Colors.blue,",
+              "severity": "high"
+            },
+            {
+              "line": 54,
+              "type": "hardcoded_color",
+              "code": "color: Colors.red,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/main_layout.dart",
+          "violations": [
+            {
+              "line": 356,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.34),",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/widgets/notification_panel.dart",
+          "violations": [
+            {
+              "line": 48,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 227,
+              "type": "hardcoded_color",
+              "code": "color = Colors.blue;",
+              "severity": "high"
+            },
+            {
+              "line": 231,
+              "type": "hardcoded_color",
+              "code": "color = Colors.orange;",
+              "severity": "high"
+            },
+            {
+              "line": 235,
+              "type": "hardcoded_color",
+              "code": "color = Colors.red;",
+              "severity": "high"
+            },
+            {
+              "line": 239,
+              "type": "hardcoded_color_shade",
+              "code": "color = Colors.amber.shade700;",
+              "severity": "medium"
+            },
+            {
+              "line": 247,
+              "type": "hardcoded_color",
+              "code": "color = Colors.green;",
+              "severity": "high"
+            },
+            {
+              "line": 251,
+              "type": "hardcoded_color",
+              "code": "color = Colors.grey;",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/widgets/global_navbar.dart",
+          "violations": [
+            {
+              "line": 60,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.12),",
+              "severity": "medium"
+            },
+            {
+              "line": 132,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 269,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orange",
+              "severity": "high"
+            },
+            {
+              "line": 347,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 362,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.white)",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/screens/auth/login_page.dart",
+          "violations": [
+            {
+              "line": 123,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.14),",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/widgets/bulk_action_toolbar.dart",
+          "violations": [
+            {
+              "line": 26,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white",
+              "severity": "high"
+            },
+            {
+              "line": 32,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 39,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white",
+              "severity": "high"
+            },
+            {
+              "line": 42,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.white),",
+              "severity": "high"
+            },
+            {
+              "line": 47,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white",
+              "severity": "high"
+            },
+            {
+              "line": 50,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.white),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/widgets/barcode_scanner_dialog.dart",
+          "violations": [
+            {
+              "line": 31,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 37,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey",
+              "severity": "high"
+            },
+            {
+              "line": 39,
+              "type": "hardcoded_color",
+              "code": "color: Colors.yellow",
+              "severity": "high"
+            },
+            {
+              "line": 41,
+              "type": "hardcoded_color",
+              "code": "color: Colors.grey",
+              "severity": "high"
+            },
+            {
+              "line": 49,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/widgets/bp_theme.dart",
+          "violations": [
+            {
+              "line": 165,
+              "type": "button_hardcoded_color",
+              "code": "onPrimary: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 167,
+              "type": "button_hardcoded_color",
+              "code": "onSecondary: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 173,
+              "type": "button_hardcoded_color",
+              "code": "onError: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 477,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.08),",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/pharmacy_dashboard_page.dart",
+          "violations": [
+            {
+              "line": 324,
+              "type": "hardcoded_color",
+              "code": "color: Colors.redAccent,",
+              "severity": "high"
+            },
+            {
+              "line": 331,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orangeAccent,",
+              "severity": "high"
+            },
+            {
+              "line": 345,
+              "type": "hardcoded_color",
+              "code": "color: Colors.purple,",
+              "severity": "high"
+            },
+            {
+              "line": 808,
+              "type": "hardcoded_color",
+              "code": "color: Colors.purple,",
+              "severity": "high"
+            },
+            {
+              "line": 820,
+              "type": "hardcoded_color",
+              "code": "color: Colors.indigo,",
+              "severity": "high"
+            },
+            {
+              "line": 828,
+              "type": "hardcoded_color",
+              "code": "accentColor: Colors.amber,",
+              "severity": "high"
+            },
+            {
+              "line": 977,
+              "type": "hardcoded_color",
+              "code": "Colors.orange,",
+              "severity": "high"
+            },
+            {
+              "line": 978,
+              "type": "hardcoded_color",
+              "code": "Colors.purple,",
+              "severity": "high"
+            },
+            {
+              "line": 979,
+              "type": "hardcoded_color",
+              "code": "Colors.teal,",
+              "severity": "high"
+            },
+            {
+              "line": 980,
+              "type": "hardcoded_color",
+              "code": "Colors.red,",
+              "severity": "high"
+            },
+            {
+              "line": 1104,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 1306,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/scanner/widgets/scan_result_card.dart",
+          "violations": [
+            {
+              "line": 32,
+              "type": "hex_color",
+              "code": "colors: [const Color(0xFFF6FFF8), const Color(0xFFEAF8EE)],",
+              "severity": "medium"
+            },
+            {
+              "line": 35,
+              "type": "hex_color",
+              "code": "border: Border.all(color: const Color(0xFFB7D8BF), width: 1.2),",
+              "severity": "medium"
+            },
+            {
+              "line": 38,
+              "type": "color_mixing",
+              "code": "color: Colors.black.withOpacity(0.12),",
+              "severity": "medium"
+            },
+            {
+              "line": 57,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.green.shade100,",
+              "severity": "high"
+            },
+            {
+              "line": 62,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.green.shade700,",
+              "severity": "high"
+            },
+            {
+              "line": 76,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.green.shade800,",
+              "severity": "high"
+            },
+            {
+              "line": 98,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 103,
+              "type": "hardcoded_color",
+              "code": "color: Colors.teal,",
+              "severity": "high"
+            },
+            {
+              "line": 173,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.grey.shade800,",
+              "severity": "high"
+            },
+            {
+              "line": 263,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 385,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.grey.shade600,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/scanner/widgets/scanner_status_overlay.dart",
+          "violations": [
+            {
+              "line": 140,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.grey[900]?.withOpacity(widget.opacity),",
+              "severity": "high"
+            },
+            {
+              "line": 190,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white70,",
+              "severity": "high"
+            },
+            {
+              "line": 200,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white54,",
+              "severity": "high"
+            },
+            {
+              "line": 212,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orangeAccent,",
+              "severity": "high"
+            },
+            {
+              "line": 223,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white24,",
+              "severity": "high"
+            },
+            {
+              "line": 237,
+              "type": "hardcoded_color",
+              "code": "return Colors.redAccent;",
+              "severity": "high"
+            },
+            {
+              "line": 238,
+              "type": "hardcoded_color",
+              "code": "return Colors.orangeAccent;",
+              "severity": "high"
+            },
+            {
+              "line": 239,
+              "type": "hardcoded_color",
+              "code": "return Colors.yellowAccent;",
+              "severity": "high"
+            },
+            {
+              "line": 240,
+              "type": "hardcoded_color",
+              "code": "return Colors.greenAccent;",
+              "severity": "high"
+            },
+            {
+              "line": 287,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white54,",
+              "severity": "high"
+            },
+            {
+              "line": 294,
+              "type": "hardcoded_color",
+              "code": "color: Colors.greenAccent,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/scanner/widgets/scanner_overlay.dart",
+          "violations": [
+            {
+              "line": 65,
+              "type": "color_mixing",
+              "code": "Colors.black.withOpacity(widget.overlayOpacity),",
+              "severity": "medium"
+            },
+            {
+              "line": 117,
+              "type": "hardcoded_color_shade",
+              "code": "color: Colors.green.shade400,",
+              "severity": "high"
+            },
+            {
+              "line": 120,
+              "type": "color_mixing",
+              "code": "color: Colors.green.withOpacity(0.5),",
+              "severity": "medium"
+            },
+            {
+              "line": 144,
+              "type": "hardcoded_color",
+              "code": "color: Colors.black54,",
+              "severity": "high"
+            },
+            {
+              "line": 150,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 168,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 175,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.white, fontSize: 12),",
+              "severity": "high"
+            },
+            {
+              "line": 207,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green",
+              "severity": "high"
+            },
+            {
+              "line": 210,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green",
+              "severity": "high"
+            },
+            {
+              "line": 213,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green",
+              "severity": "high"
+            },
+            {
+              "line": 216,
+              "type": "hardcoded_color",
+              "code": "color: Colors.green",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/products/pharmacy_products_page.dart",
+          "violations": [
+            {
+              "line": 302,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: Colors.red,",
+              "severity": "high"
+            },
+            {
+              "line": 303,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 347,
+              "type": "hardcoded_color",
+              "code": "color: Colors.indigo,",
+              "severity": "high"
+            },
+            {
+              "line": 353,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orange,",
+              "severity": "high"
+            },
+            {
+              "line": 359,
+              "type": "hardcoded_color",
+              "code": "color: Colors.red,",
+              "severity": "high"
+            },
+            {
+              "line": 365,
+              "type": "hardcoded_color",
+              "code": "color: Colors.redAccent,",
+              "severity": "high"
+            },
+            {
+              "line": 371,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orange,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "epharma/lib/scanner/widgets/scanner_button.dart",
+          "violations": [
+            {
+              "line": 66,
+              "type": "snackbar_hardcoded_color",
+              "code": "backgroundColor: Colors.red",
+              "severity": "high"
+            },
+            {
+              "line": 105,
+              "type": "fab_hardcoded_color",
+              "code": "backgroundColor: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 113,
+              "type": "hardcoded_color",
+              "code": "valueColor: AlwaysStoppedAnimation<Color>(Colors.white),",
+              "severity": "high"
+            },
+            {
+              "line": 129,
+              "type": "hardcoded_color",
+              "code": "valueColor: AlwaysStoppedAnimation<Color>(Colors.white),",
+              "severity": "high"
+            },
+            {
+              "line": 135,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 136,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "project_name": "client_app",
+      "base_path": "client_app/lib",
+      "total_violations": 143,
+      "violations_by_type": {
+        "hardcoded_colors": 89,
+        "hex_colors": 38,
+        "color_mixing": 16
+      },
+      "files": [
+        {
+          "file": "client_app/lib/core/theme/theme_colors.dart",
+          "violations": [
+            {
+              "line": 26,
+              "type": "hex_color",
+              "code": "primary: Color(0xFF25D366),",
+              "severity": "high"
+            },
+            {
+              "line": 27,
+              "type": "hex_color",
+              "code": "primaryLight: Color(0xFFE8F5E9),",
+              "severity": "high"
+            },
+            {
+              "line": 28,
+              "type": "hex_color",
+              "code": "primaryDark: Color(0xFF075E54),",
+              "severity": "high"
+            },
+            {
+              "line": 29,
+              "type": "hex_color",
+              "code": "accent: Color(0xFF25D366),",
+              "severity": "high"
+            },
+            {
+              "line": 36,
+              "type": "hex_color",
+              "code": "primary: Color(0xFF2E7D32),",
+              "severity": "high"
+            },
+            {
+              "line": 37,
+              "type": "hex_color",
+              "code": "primaryLight: Color(0xFF66BB6A),",
+              "severity": "high"
+            },
+            {
+              "line": 38,
+              "type": "hex_color",
+              "code": "primaryDark: Color(0xFF1B5E20),",
+              "severity": "high"
+            },
+            {
+              "line": 39,
+              "type": "hex_color",
+              "code": "accent: Color(0xFF66BB6A),",
+              "severity": "high"
+            },
+            {
+              "line": 184,
+              "type": "color_mixing",
+              "code": "? const Color(0xFFF5F8F6)",
+              "severity": "medium"
+            },
+            {
+              "line": 188,
+              "type": "hex_color",
+              "code": "isLightTheme ? const Color(0xFFEAF4ED) : primary;",
+              "severity": "medium"
+            },
+            {
+              "line": 207,
+              "type": "color_mixing",
+              "code": "isLightTheme ? Colors.white.withOpacity(0.85) : const Color(0x5C1E6E4C);",
+              "severity": "medium"
+            },
+            {
+              "line": 211,
+              "type": "hex_color",
+              "code": "isLightTheme ? const Color(0xFF10241E) : Colors.white;",
+              "severity": "medium"
+            },
+            {
+              "line": 214,
+              "type": "hex_color",
+              "code": "isLightTheme ? const Color(0xFF4F635D) : Colors.white.withOpacity(0.9);",
+              "severity": "medium"
+            },
+            {
+              "line": 217,
+              "type": "hex_color",
+              "code": "isLightTheme ? const Color(0xFF6C7E77) : const Color(0xB3FFFFFF);",
+              "severity": "medium"
+            },
+            {
+              "line": 225,
+              "type": "hex_color",
+              "code": "static const Color error = Color(0xFFE86B6B);",
+              "severity": "high"
+            },
+            {
+              "line": 226,
+              "type": "hex_color",
+              "code": "static const Color success = Color(0xFF4CD286);",
+              "severity": "high"
+            },
+            {
+              "line": 227,
+              "type": "hex_color",
+              "code": "static const Color warning = Color(0xFFF3B85B);",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/core/theme/app_theme.dart",
+          "violations": [
+            {
+              "line": 19,
+              "type": "hex_color",
+              "code": "error: const Color(0xFFE86B6B),",
+              "severity": "high"
+            },
+            {
+              "line": 25,
+              "type": "hardcoded_color",
+              "code": "scaffoldBackgroundColor: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 93,
+              "type": "hex_color",
+              "code": "borderSide: const BorderSide(color: Color(0xFFE86B6B), width: 1),",
+              "severity": "high"
+            },
+            {
+              "line": 97,
+              "type": "hex_color",
+              "code": "borderSide: const BorderSide(color: Color(0xFFE86B6B), width: 2),",
+              "severity": "high"
+            },
+            {
+              "line": 99,
+              "type": "hardcoded_textstyle_color",
+              "code": "labelStyle: TextStyle(color: Colors.grey.shade700),",
+              "severity": "high"
+            },
+            {
+              "line": 100,
+              "type": "hardcoded_textstyle_color",
+              "code": "hintStyle: TextStyle(color: Colors.grey.shade500),",
+              "severity": "high"
+            },
+            {
+              "line": 103,
+              "type": "hardcoded_color",
+              "code": "dividerTheme: DividerThemeData(color: Colors.grey.shade200, thickness: 1),",
+              "severity": "high"
+            },
+            {
+              "line": 155,
+              "type": "hex_color",
+              "code": "error: const Color(0xFFEF5350),",
+              "severity": "high"
+            },
+            {
+              "line": 157,
+              "type": "hex_color",
+              "code": "surface: const Color(0xFF121212),",
+              "severity": "high"
+            },
+            {
+              "line": 161,
+              "type": "hex_color",
+              "code": "scaffoldBackgroundColor: const Color(0xFF121212),",
+              "severity": "high"
+            },
+            {
+              "line": 174,
+              "type": "hex_color",
+              "code": "color: const Color(0xFF1E1E1E),",
+              "severity": "high"
+            },
+            {
+              "line": 214,
+              "type": "hex_color",
+              "code": "fillColor: const Color(0xFF1E1E1E),",
+              "severity": "high"
+            },
+            {
+              "line": 229,
+              "type": "hex_color",
+              "code": "borderSide: const BorderSide(color: Color(0xFFEF5350), width: 1),",
+              "severity": "high"
+            },
+            {
+              "line": 233,
+              "type": "hex_color",
+              "code": "borderSide: const BorderSide(color: Color(0xFFEF5350), width: 2),",
+              "severity": "high"
+            },
+            {
+              "line": 235,
+              "type": "hardcoded_textstyle_color",
+              "code": "labelStyle: TextStyle(color: Colors.grey.shade300),",
+              "severity": "high"
+            },
+            {
+              "line": 236,
+              "type": "hardcoded_textstyle_color",
+              "code": "hintStyle: TextStyle(color: Colors.grey.shade500),",
+              "severity": "high"
+            },
+            {
+              "line": 239,
+              "type": "hardcoded_color",
+              "code": "dividerTheme: DividerThemeData(color: Colors.grey.shade700, thickness: 1),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/widgets/profile_view.dart",
+          "violations": [
+            {
+              "line": 92,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: Colors.green,",
+              "severity": "high"
+            },
+            {
+              "line": 100,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: Colors.red,",
+              "severity": "high"
+            },
+            {
+              "line": 113,
+              "type": "hex_color",
+              "code": "color: const Color(0xFFF8F9FA),",
+              "severity": "high"
+            },
+            {
+              "line": 215,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 228,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 262,
+              "type": "hardcoded_color",
+              "code": "color: Colors.greenAccent,",
+              "severity": "high"
+            },
+            {
+              "line": 269,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.white70, fontSize: 13),",
+              "severity": "high"
+            },
+            {
+              "line": 284,
+              "type": "hardcoded_color",
+              "code": "color: Colors.blue,",
+              "severity": "high"
+            },
+            {
+              "line": 296,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/pages/landing_page.dart",
+          "violations": [
+            {
+              "line": 322,
+              "type": "hex_color",
+              "code": "style: TextStyle(fontSize: 18, color: Color(0xFF4A6A76), height: 1.5),",
+              "severity": "high"
+            },
+            {
+              "line": 329,
+              "type": "hex_color",
+              "code": "color: Color(0xFF5C6970),",
+              "severity": "high"
+            },
+            {
+              "line": 452,
+              "type": "hex_color",
+              "code": "colors: [Color(0xFFE8FBF7), Color(0xFFF1F8FF)],",
+              "severity": "high"
+            },
+            {
+              "line": 527,
+              "type": "hex_color",
+              "code": "color: Color(0xFF4A6A76),",
+              "severity": "high"
+            },
+            {
+              "line": 536,
+              "type": "hex_color",
+              "code": "color: Color(0xFF7A8B97),",
+              "severity": "high"
+            },
+            {
+              "line": 551,
+              "type": "hex_color",
+              "code": "color: Color(0xFFCAF2E8),",
+              "severity": "high"
+            },
+            {
+              "line": 664,
+              "type": "hex_color",
+              "code": "color: Color(0xFF5C6970),",
+              "severity": "high"
+            },
+            {
+              "line": 768,
+              "type": "hex_color",
+              "code": "color: Color(0xFF5C6970),",
+              "severity": "high"
+            },
+            {
+              "line": 827,
+              "type": "hex_color",
+              "code": "color: Color(0xFF5C6970),",
+              "severity": "high"
+            },
+            {
+              "line": 933,
+              "type": "hex_color",
+              "code": "color: Color(0xFF5C6970),",
+              "severity": "high"
+            },
+            {
+              "line": 1036,
+              "type": "hex_color",
+              "code": "color: Color(0xFF5C6970),",
+              "severity": "high"
+            },
+            {
+              "line": 1108,
+              "type": "hex_color",
+              "code": "style: TextStyle(fontSize: 13, color: Color(0xFF8A9AA5)),",
+              "severity": "high"
+            },
+            {
+              "line": 1112,
+              "type": "hex_color",
+              "code": "style: TextStyle(fontSize: 13, color: Color(0xFF8A9AA5)),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/widgets/product_details_bottom_sheet.dart",
+          "violations": [
+            {
+              "line": 25,
+              "type": "color_mixing",
+              "code": "barrierColor: Colors.black.withOpacity(0.55),",
+              "severity": "medium"
+            },
+            {
+              "line": 157,
+              "type": "hex_color",
+              "code": "color: Color(0xFF1E293B),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/pages/invoices_page.dart",
+          "violations": [
+            {
+              "line": 88,
+              "type": "color_mixing",
+              "code": "color: const Color(0xFF2E7D62).withOpacity(0.08),",
+              "severity": "medium"
+            },
+            {
+              "line": 93,
+              "type": "hex_color",
+              "code": "color: Color(0xFF2E7D62),",
+              "severity": "high"
+            },
+            {
+              "line": 103,
+              "type": "hex_color",
+              "code": "color: Color(0xFF2C3E50),",
+              "severity": "high"
+            },
+            {
+              "line": 151,
+              "type": "hex_color",
+              "code": "side: const BorderSide(color: Color(0xFFE5E7EB)),",
+              "severity": "high"
+            },
+            {
+              "line": 244,
+              "type": "hex_color",
+              "code": "side: const BorderSide(color: Color(0xFFE5E7EB)),",
+              "severity": "high"
+            },
+            {
+              "line": 262,
+              "type": "hex_color",
+              "code": "color: Color(0xFF2C3E50),",
+              "severity": "high"
+            },
+            {
+              "line": 291,
+              "type": "hex_color",
+              "code": "const Divider(color: Color(0xFFEEEEEE), height: 1),",
+              "severity": "high"
+            },
+            {
+              "line": 301,
+              "type": "hex_color",
+              "code": "color: Color(0xFF2E7D62),",
+              "severity": "high"
+            },
+            {
+              "line": 315,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: const Color(0xFF2E7D62),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/pages/home_page.dart",
+          "violations": [
+            {
+              "line": 566,
+              "type": "button_hardcoded_color",
+              "code": "backgroundColor: const Color(0xFF2E7D62),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/widgets/app_colors.dart",
+          "violations": [
+            {
+              "line": 3,
+              "type": "hex_color",
+              "code": "const Color kPrimaryColor = Color(0xFF2E7D62);",
+              "severity": "high"
+            },
+            {
+              "line": 5,
+              "type": "hex_color",
+              "code": "const Color kLightGrey = Color(0xFFF5F5F5);",
+              "severity": "high"
+            },
+            {
+              "line": 6,
+              "type": "hex_color",
+              "code": "const Color kDarkGrey = Color(0xFF616161);",
+              "severity": "high"
+            },
+            {
+              "line": 7,
+              "type": "hex_color",
+              "code": "const Color kSuccessGreen = Color(0xFF4CAF50);",
+              "severity": "high"
+            },
+            {
+              "line": 8,
+              "type": "hex_color",
+              "code": "const Color kErrorRed = Color(0xFFE57373);",
+              "severity": "high"
+            },
+            {
+              "line": 9,
+              "type": "hex_color",
+              "code": "const Color kWarningOrange = Color(0xFFFFB74D);",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/widgets/barcode_scanner_dialog.dart",
+          "violations": [
+            {
+              "line": 124,
+              "type": "hardcoded_color",
+              "code": "backgroundColor: Colors.black,",
+              "severity": "high"
+            },
+            {
+              "line": 131,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white",
+              "severity": "high"
+            },
+            {
+              "line": 137,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 147,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 217,
+              "type": "hardcoded_color",
+              "code": "color: Colors.black,",
+              "severity": "high"
+            },
+            {
+              "line": 228,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 295,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 338,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),",
+              "severity": "high"
+            },
+            {
+              "line": 403,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(color: Colors.white, fontSize: 14),",
+              "severity": "high"
+            },
+            {
+              "line": 422,
+              "type": "button_hardcoded_color",
+              "code": "foregroundColor: Colors.white,",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/widgets/app_notification.dart",
+          "violations": [
+            {
+              "line": 545,
+              "type": "hex_color",
+              "code": "color: const Color(0xFF122033),",
+              "severity": "high"
+            },
+            {
+              "line": 580,
+              "type": "hardcoded_color",
+              "code": "color: Colors.white,",
+              "severity": "high"
+            },
+            {
+              "line": 685,
+              "type": "hex_color",
+              "code": "baseColor: Color(0xFF4CAF50),",
+              "severity": "high"
+            },
+            {
+              "line": 693,
+              "type": "hex_color",
+              "code": "baseColor: Color(0xFFF44336),",
+              "severity": "high"
+            },
+            {
+              "line": 701,
+              "type": "hex_color",
+              "code": "baseColor: Color(0xFFFFC107),",
+              "severity": "high"
+            },
+            {
+              "line": 709,
+              "type": "hex_color",
+              "code": "baseColor: Color(0xFF2196F3),",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "file": "client_app/lib/widgets/review_section.dart",
+          "violations": [
+            {
+              "line": 58,
+              "type": "hardcoded_color",
+              "code": "color: Colors.amber,",
+              "severity": "high"
+            },
+            {
+              "line": 65,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.grey[600]),",
+              "severity": "high"
+            },
+            {
+              "line": 70,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.grey[600]),",
+              "severity": "high"
+            },
+            {
+              "line": 87,
+              "type": "hardcoded_color",
+              "code": "color: Colors.orange,",
+              "severity": "high"
+            },
+            {
+              "line": 99,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: TextStyle(color: Colors.grey[600]),",
+              "severity": "high"
+            },
+            {
+              "line": 124,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(color: Colors.grey, fontSize: 12),",
+              "severity": "high"
+            },
+            {
+              "line": 135,
+              "type": "hardcoded_color",
+              "code": "color: Colors.amber,",
+              "severity": "high"
+            },
+            {
+              "line": 148,
+              "type": "hardcoded_textstyle_color",
+              "code": "style: const TextStyle(fontSize: 13, color: Colors.grey),",
+              "severity": "high"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_violations": 330,
+    "severity_breakdown": {
+      "high": 287,
+      "medium": 43
+    },
+    "violation_types": {
+      "hardcoded_colors": 216,
+      "hex_colors": 80,
+      "color_mixing": 34
+    },
+    "most_violated_files": [
+      "epharma/lib/activites/activity_register_page.dart",
+      "epharma/lib/clients/pharmacy_clients_page.dart",
+      "epharma/lib/pharmacy_dashboard_page.dart",
+      "client_app/lib/pages/landing_page.dart",
+      "client_app/lib/core/theme/app_theme.dart"
+    ],
+    "recommendations": [
+      "Create a centralized color constants file (e.g., app_colors.dart) for all theme colors",
+      "Use BpColors or theme system instead of Colors.xxx throughout the codebase",
+      "Replace .shade* usage with theme-aware color properties",
+      "Implement withOpacity() values in theme system as named constants",
+      "Create status/state color mappings in a dedicated service",
+      "Use TextStyle from theme instead of hardcoded color properties",
+      "Standardize button colors through ButtonStyle theming",
+      "Remove hardcoded hex colors and use theme palette instead"
+    ]
+  }
+}

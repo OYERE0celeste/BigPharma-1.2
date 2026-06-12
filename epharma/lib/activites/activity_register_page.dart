@@ -199,7 +199,7 @@ class HeaderSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Registre des Activités',
                   style: TextStyle(
                     fontSize: 22,
@@ -207,8 +207,8 @@ class HeaderSection extends StatelessWidget {
                     color: BpColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   'Suivi centralisé de toutes les activités quotidiennes',
                   style: TextStyle(fontSize: 13, color: BpColors.textSecondary),
                 ),
@@ -323,7 +323,7 @@ class HeaderSection extends StatelessWidget {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: BpColors.border),
+          side: BorderSide(color: BpColors.border),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
@@ -353,7 +353,7 @@ class StatisticsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Résumé Statistiques',
           style: TextStyle(
             fontSize: 16,
@@ -449,7 +449,7 @@ class StatCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: BpColors.textSecondary,
                         fontWeight: FontWeight.w500,
@@ -527,29 +527,29 @@ class _FiltersSectionState extends State<FiltersSection> {
     return InputDecorationTheme(
       filled: true,
       fillColor: BpColors.cardBg,
-      labelStyle: const TextStyle(color: BpColors.textSecondary),
-      hintStyle: const TextStyle(color: BpColors.textHint),
+      labelStyle: TextStyle(color: BpColors.textSecondary),
+      hintStyle: TextStyle(color: BpColors.textHint),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.border),
+        borderSide: BorderSide(color: BpColors.border),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.borderStrong),
+        borderSide: BorderSide(color: BpColors.borderStrong),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
-        borderSide: const BorderSide(color: BpColors.accent, width: 1.4),
+        borderSide: BorderSide(color: BpColors.accent, width: 1.4),
       ),
     );
   }
 
   MenuStyle _menuStyle() {
     return MenuStyle(
-      backgroundColor: const WidgetStatePropertyAll(BpColors.surfaceStrong),
-      surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-      side: const WidgetStatePropertyAll(
+      backgroundColor: WidgetStatePropertyAll(BpColors.surfaceStrong),
+      surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+      side: WidgetStatePropertyAll(
         BorderSide(color: BpColors.borderStrong),
       ),
       shape: WidgetStatePropertyAll(
@@ -577,7 +577,7 @@ class _FiltersSectionState extends State<FiltersSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Filtres Avancés',
                 style: TextStyle(
                   fontSize: 14,
@@ -596,8 +596,8 @@ class _FiltersSectionState extends State<FiltersSection> {
                   });
                   widget.onReset();
                 },
-                icon: const Icon(Icons.refresh, size: 18, color: BpColors.accent),
-                label: const Text('Réinitialiser', style: TextStyle(color: BpColors.accent)),
+                icon: Icon(Icons.refresh, size: 18, color: BpColors.accent),
+                label: Text('Réinitialiser', style: TextStyle(color: BpColors.accent)),
               ),
             ],
           ),
@@ -815,7 +815,7 @@ class TransactionsTable extends StatelessWidget {
                   dataRowMinHeight: 56,
                   dataRowMaxHeight: 64,
                   headingRowHeight: 56,
-                  headingTextStyle: const TextStyle(
+                  headingTextStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: BpColors.textPrimary,
                   ),
@@ -878,7 +878,7 @@ class TransactionsTable extends StatelessWidget {
           children: [
             Text(
               'Affichage ${start + 1} à ${end > transactions.length ? transactions.length : end} sur ${transactions.length} transactions',
-              style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
+              style: TextStyle(color: BpColors.textSecondary, fontSize: 12),
             ),
             Row(
               children: [
@@ -1084,10 +1084,10 @@ class TransactionDetailsDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         width: 780,
-        constraints: const BoxConstraints(maxHeight: 760),
+        constraints: BoxConstraints(maxHeight: 760),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [BpColors.surfaceStrong, BpColors.cardBg],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -1097,7 +1097,7 @@ class TransactionDetailsDialog extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.28),
               blurRadius: 28,
-              offset: const Offset(0, 18),
+              offset: Offset(0, 18),
             ),
           ],
         ),
@@ -1120,7 +1120,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  border: const Border(
+                  border: Border(
                     bottom: BorderSide(color: BpColors.border),
                   ),
                 ),
@@ -1135,7 +1135,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                             'Détails transaction',
                             style: BpTextStyles.heading2,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6),
                           Text(transaction.reference, style: BpTextStyles.body),
                         ],
                       ),
@@ -1146,9 +1146,9 @@ class TransactionDetailsDialog extends StatelessWidget {
                       foreground: transaction.typeColor,
                       background: transaction.typeColor.withOpacity(0.12),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                       color: BpColors.textPrimary,
                       onPressed: () => Navigator.pop(context),
                     ),
@@ -1253,7 +1253,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                                         children: [
                                           Text(
                                             item.productName,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: BpColors.textPrimary,
                                             ),
@@ -1349,8 +1349,8 @@ class TransactionDetailsDialog extends StatelessWidget {
                                 }
                               }
                             },
-                            icon: const Icon(Icons.print),
-                            label: const Text('Imprimer reçu'),
+                            icon: Icon(Icons.print),
+                            label: Text('Imprimer reçu'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: BpColors.accent,
                               foregroundColor: BpColors.primaryDark,

@@ -148,13 +148,13 @@ class ScanResultCard extends StatelessWidget {
                     icon: Icons.layers_rounded,
                     label: 'Nombre de lots',
                     value: '${product.lots.length}',
-                    accentColor: const Color(0xFFEA580C),
+                    accentColor: Color(0xFFEA580C),
                   ),
                 ),
               ],
             ),
             if (product.description.trim().isNotEmpty) ...[
-              const SizedBox(height: 14),
+              SizedBox(height: 14),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
@@ -206,22 +206,22 @@ class ScanResultCard extends StatelessWidget {
               ),
             ),
             if (showActions) ...[
-              const SizedBox(height: 18),
+              SizedBox(height: 18),
               Row(
                 children: [
                   if (onEditProduct != null)
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: onEditProduct,
-                        icon: const Icon(Icons.edit_rounded),
-                        label: const Text('Modifier'),
+                        icon: Icon(Icons.edit_rounded),
+                        label: Text('Modifier'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF183125),
+                          foregroundColor: Color(0xFF183125),
                           side: const BorderSide(color: Color(0xFFB7D8BF)),
                           backgroundColor: BpColors.textPrimary.withOpacity(
                             0.72,
                           ),
-                          minimumSize: const Size(0, 50),
+                          minimumSize: Size(0, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
                           ),
@@ -230,20 +230,20 @@ class ScanResultCard extends StatelessWidget {
                     ),
                   if (onEditProduct != null &&
                       (onViewDetails != null || onAddToCart != null))
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                   if (onViewDetails != null)
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: onViewDetails,
-                        icon: const Icon(Icons.open_in_full_rounded),
-                        label: const Text('Details'),
+                        icon: Icon(Icons.open_in_full_rounded),
+                        label: Text('Details'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF183125),
                           side: const BorderSide(color: Color(0xFFB7D8BF)),
                           backgroundColor: BpColors.textPrimary.withOpacity(
                             0.72,
                           ),
-                          minimumSize: const Size(0, 50),
+                          minimumSize: Size(0, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
                           ),
@@ -251,13 +251,13 @@ class ScanResultCard extends StatelessWidget {
                       ),
                     ),
                   if (onViewDetails != null && onAddToCart != null)
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                   if (onAddToCart != null)
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: onAddToCart,
-                        icon: const Icon(Icons.shopping_cart_checkout_rounded),
-                        label: const Text('Ajouter'),
+                        icon: Icon(Icons.shopping_cart_checkout_rounded),
+                        label: Text('Ajouter'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: BpColors.success,
                           foregroundColor: Colors.white,

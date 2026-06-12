@@ -377,11 +377,20 @@ exports.forgotPassword = async (req, res, next) => {
       user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
       await user.save();
 
-      await sendPasswordResetEmail({
+      const emailSent = await sendPasswordResetEmail({
         email: user.email,
         fullName: user.fullName,
         token: otp, // L'email affiche le code OTP directement
       });
+
+      if (!emailSent) {
+        logger.error(`Échec de l'envoi du code OTP à ${user.email}`);
+        return failure(res, {
+          status: 500,
+          message: "Impossible d'envoyer l'email de réinitialisation. Veuillez réessayer plus tard.",
+          code: "EMAIL_SENDING_FAILED",
+        });
+      }
 
       logger.info(`OTP de réinitialisation envoyé à ${user.email}`);
 

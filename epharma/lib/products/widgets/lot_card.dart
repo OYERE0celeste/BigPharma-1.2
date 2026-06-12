@@ -30,7 +30,7 @@ class LotCard extends StatelessWidget {
                   children: [
                     Text(
                       'Lot ${lot.lotNumber}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                         color: BpColors.textPrimary,
@@ -85,19 +85,19 @@ class LotCard extends StatelessWidget {
   _LotStatusData _lotStatusData(LotStatus status) {
     switch (status) {
       case LotStatus.expired:
-        return const _LotStatusData(
+        return _LotStatusData(
           label: 'Expire',
           color: BpColors.error,
           icon: Icons.error_outline_rounded,
         );
       case LotStatus.nearExpiration:
-        return const _LotStatusData(
+        return _LotStatusData(
           label: 'Bientot expire',
           color: BpColors.warning,
           icon: Icons.schedule_rounded,
         );
       case LotStatus.active:
-        return const _LotStatusData(
+        return _LotStatusData(
           label: 'Valide',
           color: BpColors.success,
           icon: Icons.verified_rounded,
@@ -132,16 +132,16 @@ class _LotInfo extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, size: 16, color: BpColors.accent),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: BpTextStyles.caption),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textPrimary,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,

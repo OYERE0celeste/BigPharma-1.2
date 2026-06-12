@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 import '../models/order.dart';
 import 'api_constants.dart';
 import 'api_service.dart';
@@ -27,9 +29,31 @@ class OrderService {
     }
   }
 
+  Future<List<Order>> getMyPrescriptions() async {
+    try {
+      final response = await _apiService.get(ApiConstants.prescriptionsMy);
+      if (response.statusCode != 200) {
+        return [];
+      }
+
+      final body = json.decode(response.body) as Map<String, dynamic>;
+      if (body['success'] != true) {
+        return [];
+      }
+
+      final data = (body['data'] as List<dynamic>? ?? []);
+      return data
+          .map((json) => Order.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<Map<String, dynamic>> createOrder(
     List<OrderItem> items, {
     String pickupMode = 'sur_place',
+    PlatformFile? prescriptionFile,
   }) async {
     try {
       final orderData = {
@@ -37,7 +61,42 @@ class OrderService {
         'pickupMode': pickupMode,
       };
 
-      final response = await _apiService.post(ApiConstants.orders, orderData);
+      http.Response response;
+      if (prescriptionFile != null) {
+        final http.MultipartFile multipartFile;
+        if (prescriptionFile.path != null) {
+          multipartFile = await http.MultipartFile.fromPath(
+            'prescription',
+            prescriptionFile.path!,
+            filename: prescriptionFile.name,
+          );
+        } else if (prescriptionFile.bytes != null) {
+          multipartFile = http.MultipartFile.fromBytes(
+            'prescription',
+            prescriptionFile.bytes!,
+            filename: prescriptionFile.name,
+          );
+        } else {
+          return {
+            'success': false,
+            'message': 'Fichier de prescription invalide.',
+          };
+        }
+
+        final fields = {
+          'products': json.encode(orderData['products']),
+          'pickupMode': pickupMode,
+        };
+
+        response = await _apiService.postMultipart(
+          ApiConstants.orders,
+          fields,
+          [multipartFile],
+        );
+      } else {
+        response = await _apiService.post(ApiConstants.orders, orderData);
+      }
+
       final body = json.decode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode == 201 && body['success'] == true) {
@@ -49,10 +108,11 @@ class OrderService {
 
       return {
         'success': false,
-        'message': (body['error']?['message'] ??
-                body['message'] ??
-                'Erreur lors de la création de la commande')
-            .toString(),
+        'message':
+            (body['error']?['message'] ??
+                    body['message'] ??
+                    'Erreur lors de la création de la commande')
+                .toString(),
       };
     } catch (e) {
       return {

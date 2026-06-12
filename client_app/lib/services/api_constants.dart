@@ -37,6 +37,7 @@ class ApiConstants {
   // Orders
   static String get orders => '$baseUrl/orders';
   static String get myOrders => '$baseUrl/orders/my';
+  static String get prescriptionsMy => '$baseUrl/orders/my/prescriptions';
   static String get invoices => '$baseUrl/invoices';
   static String get invoicesMy => '$baseUrl/invoices/my';
 

@@ -59,6 +59,10 @@ class AuthProvider with ChangeNotifier {
         _company = null;
       }
 
+      if (token == null) {
+        return;
+      }
+
       final data = await _authService.getCurrentUser();
       if (data != null) {
         _user = UserModel.fromJson(data);
@@ -75,6 +79,10 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> refreshCurrentUser() async {
+    if (_authService.token == null) {
+      return;
+    }
+
     try {
       final data = await _authService.getCurrentUser();
       if (data != null) {

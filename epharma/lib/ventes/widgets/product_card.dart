@@ -47,7 +47,7 @@ class ProductCard extends StatelessWidget {
                       product.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         height: 1.2,
@@ -57,24 +57,24 @@ class ProductCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
                 product.category,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
                   color: BpColors.textSecondary,
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   StatusBadge(status: status),
                   Text(
                     'Stock: $availableStock',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
                       color: BpColors.textSecondary,
                       fontWeight: FontWeight.w500,
@@ -92,7 +92,7 @@ class ProductCard extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         '${product.sellingPrice.toStringAsFixed(0)} FCFA',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: kPrimaryGreen,

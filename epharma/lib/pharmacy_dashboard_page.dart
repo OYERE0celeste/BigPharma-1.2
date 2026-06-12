@@ -111,18 +111,18 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.calendar_today,
                   size: 16,
                   color: kAccentBlue,
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10),
                 Flexible(
                   child: Text(
                     todayLabel,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: BpColors.textPrimary,
                     ),
@@ -139,15 +139,15 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
             width: stretch ? double.infinity : null,
             child: FilledButton.icon(
               onPressed: () => _refreshDashboard(forceRefresh: true),
-              icon: const Icon(Icons.refresh, size: 20),
-              label: const Text('Actualiser'),
+              icon: Icon(Icons.refresh, size: 20),
+              label: Text('Actualiser'),
               style: FilledButton.styleFrom(
                 backgroundColor: BpColors.surfaceMuted,
                 foregroundColor: BpColors.textPrimary,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: const BorderSide(color: BpColors.border),
+                  side: BorderSide(color: BpColors.border),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 18),
               ),
@@ -160,7 +160,7 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildGreeting(context),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 'Aperçu global de votre activité pharmaceutique',
                 style: TextStyle(color: BpColors.textSecondary, fontSize: 14),
@@ -183,10 +183,10 @@ class _DashboardPageContentState extends State<DashboardPageContent> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildGreeting(context),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     'Aperçu global de votre activité pharmaceutique',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: BpColors.textSecondary,
                       fontSize: 14,
                     ),
@@ -265,7 +265,7 @@ class _DashboardSectionCard extends StatelessWidget {
                   ),
                   child: Icon(icon, color: accentColor, size: 20),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     title,
@@ -453,14 +453,14 @@ class KPICard extends StatelessWidget {
                           child: Icon(icon, color: color, size: 24),
                         ),
                         if (!isSmall)
-                          const Icon(
+                          Icon(
                             Icons.arrow_forward_ios,
                             color: BpColors.textHint,
                             size: 14,
                           ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -468,18 +468,18 @@ class KPICard extends StatelessWidget {
                           title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: BpColors.textSecondary,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
                             value,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: BpColors.textPrimary,
@@ -627,11 +627,11 @@ class AlertTile extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Text(
                   data.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: BpColors.textPrimary,
                   ),
@@ -679,12 +679,12 @@ class RecentActivityPanel extends StatelessWidget {
       icon: Icons.history,
       accentColor: kAccentBlue,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 320, minHeight: 150),
+        constraints: BoxConstraints(maxHeight: 320, minHeight: 150),
         child: ListView.separated(
           shrinkWrap: true,
           itemCount: activities.length,
           separatorBuilder: (_, _) =>
-              const Divider(height: 24, color: BpColors.border),
+              Divider(height: 24, color: BpColors.border),
           itemBuilder: (context, index) {
             final a = activities[index];
             return ActivityTile(
@@ -750,21 +750,21 @@ class ActivityTile extends StatelessWidget {
               backgroundColor: data.color.withOpacity(0.12),
               child: Icon(data.icon, color: data.color, size: 18),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     data.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: BpColors.textPrimary,
                     ),
                   ),
                   Text(
                     data.subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: BpColors.textSecondary,
                       fontSize: 13,
                     ),
@@ -774,7 +774,7 @@ class ActivityTile extends StatelessWidget {
             ),
             Text(
               data.time,
-              style: const TextStyle(color: BpColors.textHint, fontSize: 12),
+              style: TextStyle(color: BpColors.textHint, fontSize: 12),
             ),
           ],
         ),
@@ -896,20 +896,20 @@ class QuickActionButton extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   child: Icon(action.icon, color: action.color, size: 20),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     action.label,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: BpColors.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.chevron_right,
                   color: BpColors.textHint,
                   size: 16,
@@ -987,7 +987,7 @@ class StockSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Top 5 des meilleures ventes',
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -995,9 +995,9 @@ class StockSummary extends StatelessWidget {
               color: BpColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           if (bestSelling.isEmpty)
-            const Text(
+            Text(
               'Aucun produit disponible',
               style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
             )
@@ -1007,15 +1007,15 @@ class StockSummary extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.check_circle_outline,
                       size: 14,
                       color: kPrimaryGreen,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(
                       s,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: BpColors.textSecondary,
                       ),
@@ -1024,8 +1024,8 @@ class StockSummary extends StatelessWidget {
                 ),
               ),
             ),
-          const SizedBox(height: 20),
-          const Text(
+          SizedBox(height: 20),
+          Text(
             'Produits à stock faible',
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -1033,9 +1033,9 @@ class StockSummary extends StatelessWidget {
               color: BpColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           if (lowStock.isEmpty)
-            const Text(
+            Text(
               'Aucun produit en rupture',
               style: TextStyle(color: BpColors.textSecondary, fontSize: 13),
             )
@@ -1045,15 +1045,15 @@ class StockSummary extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.warning_amber_rounded,
                       size: 14,
                       color: kWarningOrange,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(
                       s,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: BpColors.textSecondary,
                       ),
@@ -1062,8 +1062,8 @@ class StockSummary extends StatelessWidget {
                 ),
               ),
             ),
-          const SizedBox(height: 20),
-          const Text(
+          SizedBox(height: 20),
+          Text(
             'Répartition par catégorie',
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -1071,11 +1071,11 @@ class StockSummary extends StatelessWidget {
               color: BpColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           AspectRatio(
             aspectRatio: 1.5,
             child: categories.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'Aucune donnée',
                       style: TextStyle(color: BpColors.textSecondary),
@@ -1167,18 +1167,18 @@ class PerformanceSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Aperçu des ventes (7 derniers jours)',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: BpColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           AspectRatio(
             aspectRatio: 1.5,
             child: sales.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'Aucune donnée de vente',
                       style: TextStyle(color: BpColors.textSecondary),
@@ -1205,7 +1205,7 @@ class PerformanceSection extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
                                   '${date.day}/${date.month}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 10,
                                     color: BpColors.textSecondary,
                                   ),
@@ -1230,7 +1230,7 @@ class PerformanceSection extends StatelessWidget {
                   children: [
                     Text(
                       'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: BpColors.textPrimary,
                       ),
@@ -1238,7 +1238,7 @@ class PerformanceSection extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: BpColors.textPrimary,
                       ),
@@ -1252,14 +1252,14 @@ class PerformanceSection extends StatelessWidget {
                 children: [
                   Text(
                     'Aujourd\'hui: ${todaySales.toStringAsFixed(0)} fcfa',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: BpColors.textPrimary,
                     ),
                   ),
                   Text(
                     'Semaine: ${weekSales.toStringAsFixed(0)} fcfa',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: BpColors.textPrimary,
                     ),
@@ -1310,7 +1310,7 @@ class SystemInfoBar extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Pharmacie : ${authProvider.company?.name ?? "..."}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: BpColors.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -1320,11 +1320,11 @@ class SystemInfoBar extends StatelessWidget {
           ),
           Text(
             'Utilisateur : ${authProvider.user?.fullName ?? "..."} (${authProvider.user?.role.toUpperCase() ?? "..."})',
-            style: const TextStyle(color: BpColors.textSecondary, fontSize: 12),
+            style: TextStyle(color: BpColors.textSecondary, fontSize: 12),
           ),
           Text(
             _formatDateTime(now),
-            style: const TextStyle(
+            style: TextStyle(
               color: BpColors.textSecondary,
               fontSize: 12,
               fontFeatures: [FontFeature.tabularFigures()],

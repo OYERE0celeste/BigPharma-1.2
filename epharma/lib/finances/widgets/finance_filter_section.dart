@@ -66,7 +66,7 @@ class _FinanceFilterSectionState extends State<FinanceFilterSection> {
               height: 54,
               child: TextField(
                 controller: _searchController,
-                style: const TextStyle(color: BpColors.textPrimary),
+                style: TextStyle(color: BpColors.textPrimary),
                 decoration: BpInputTheme.light(
                   label: 'Recherche',
                   hint: 'Recherche globale',
@@ -97,7 +97,7 @@ class _FinanceFilterSectionState extends State<FinanceFilterSection> {
                   hint: hint,
                   showLabel: false,
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   color: BpColors.textPrimary,
                   fontSize: 14,
                 ),
@@ -132,7 +132,7 @@ class _FinanceFilterSectionState extends State<FinanceFilterSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Filtres avancés', style: BpTextStyles.heading3),
+              Text('Filtres avancés', style: BpTextStyles.heading3),
               const SizedBox(height: 16),
               if (isCompact)
                 Column(

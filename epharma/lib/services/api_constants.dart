@@ -41,6 +41,8 @@ class ApiConstants {
   static String get complaints => '$baseUrl/complaints';
   static String get invoices => '$baseUrl/invoices';
   static String get mouvements => '$baseUrl/mouvements';
+  static String get orders => '$baseUrl/orders';
+  static String get prescriptions => '$baseUrl/orders/prescriptions';
 
   static const String tokenKey = 'auth_token';
   static const String refreshTokenKey = 'auth_refresh_token';

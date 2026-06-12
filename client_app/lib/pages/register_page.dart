@@ -45,15 +45,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLightTheme = BpColors.scaffold.computeLuminance() > 0.5;
+    final cardColor = isLightTheme
+        ? BpColors.surfaceStrong.withOpacity(0.96)
+        : BpColors.cardBg.withOpacity(0.12);
+
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF0A271F), Color(0xFF133B2E)],
+                colors: [BpColors.authBg1, BpColors.authBg2, BpColors.authBg3],
               ),
             ),
           ),
@@ -99,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   vertical: 24,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 620),
+                  constraints: BoxConstraints(maxWidth: 620),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(32),
                     child: BackdropFilter(
@@ -107,14 +112,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Container(
                         padding: const EdgeInsets.all(28),
                         decoration: BoxDecoration(
-                          color: BpColors.cardBg.withOpacity(0.12),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(32),
                           border: Border.all(color: BpColors.borderStrong),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.18),
                               blurRadius: 48,
-                              offset: const Offset(0, 20),
+                              offset: Offset(0, 20),
                             ),
                           ],
                         ),
@@ -129,7 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     width: 58,
                                     height: 58,
                                     decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
+                                      gradient: LinearGradient(
                                         colors: [
                                           BpColors.primary,
                                           BpColors.accent,
@@ -159,13 +164,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children: const [
+                                      children: [
                                         Text(
                                           'Créer un compte',
                                           style: TextStyle(
                                             fontSize: 26,
                                             fontWeight: FontWeight.w900,
-                                            color: Colors.white,
+                                            color: BpColors.textPrimary,
                                           ),
                                         ),
                                         SizedBox(height: 6),
@@ -173,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           'Rejoignez BigPharma pour une gestion santé fluide et sécurisée.',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: Colors.white70,
+                                            color: BpColors.textSecondary,
                                             height: 1.6,
                                           ),
                                         ),
@@ -206,7 +211,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16),
                               _buildFormField(
                                 label: 'Téléphone',
                                 controller: _phoneController,
@@ -219,7 +224,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ? 'Ce champ est requis'
                                     : null,
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16),
                               _buildFormField(
                                 label: 'Adresse',
                                 controller: _addressController,
@@ -228,9 +233,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ? 'Ce champ est requis'
                                     : null,
                               ),
-                              const SizedBox(height: 26),
+                              SizedBox(height: 26),
                               _buildSectionLabel('Sécurité'),
-                              const SizedBox(height: 14),
+                              SizedBox(height: 14),
                               TextFormField(
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
@@ -259,9 +264,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 26),
+                              SizedBox(height: 26),
                               _buildSectionLabel('Genre'),
-                              const SizedBox(height: 12),
+                              SizedBox(height: 12),
                               Container(
                                 decoration: BoxDecoration(
                                   color: BpColors.cardBg.withOpacity(0.08),
@@ -284,7 +289,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     Container(
                                       width: 1,
                                       height: 50,
-                                      color: Colors.white12,
+                                      color: BpColors.border,
                                     ),
                                     Expanded(
                                       child: _buildGenderOption(
@@ -296,7 +301,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 26),
+                              SizedBox(height: 26),
                               _buildSectionLabel('Date de naissance'),
                               const SizedBox(height: 12),
                               InkWell(
@@ -304,13 +309,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                   final date = await showDatePicker(
                                     context: context,
                                     initialDate: DateTime.now().subtract(
-                                      const Duration(days: 365 * 20),
+                                      Duration(days: 365 * 20),
                                     ),
                                     firstDate: DateTime(1900),
                                     lastDate: DateTime.now(),
                                     builder: (context, child) => Theme(
                                       data: Theme.of(context).copyWith(
-                                        colorScheme: const ColorScheme.light(
+                                        colorScheme: ColorScheme.light(
                                           primary: BpColors.primary,
                                         ),
                                       ),
@@ -345,10 +350,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                       Icon(
                                         Icons.calendar_today_outlined,
                                         size: 20,
-                                        color: _selectedDate != null
-                                            ? BpColors.accent
-                                            : Colors.white70,
-                                      ),
+                                          color: _selectedDate != null
+                                              ? BpColors.accent
+                                              : BpColors.textSecondary,
+                                        ),
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Text(
@@ -358,14 +363,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: _selectedDate == null
-                                                ? Colors.white60
-                                                : Colors.white,
+                                                ? BpColors.textSecondary
+                                                : BpColors.textPrimary,
                                           ),
                                         ),
                                       ),
-                                      const Icon(
+                                      Icon(
                                         Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.white70,
+                                        color: BpColors.textSecondary,
                                       ),
                                     ],
                                   ),
@@ -389,7 +394,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Colors.white70,
+                                    foregroundColor: BpColors.textSecondary,
                                   ),
                                   child: const Text(
                                     'Vous avez déjà un compte ? Se connecter',
@@ -425,10 +430,10 @@ class _RegisterPageState extends State<RegisterPage> {
             borderRadius: BorderRadius.circular(99),
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
             color: BpColors.textPrimary,
@@ -474,7 +479,7 @@ class _RegisterPageState extends State<RegisterPage> {
               size: 20,
               color: isSelected ? BpColors.primary : BpColors.textSecondary,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(

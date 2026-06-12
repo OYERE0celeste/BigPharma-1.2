@@ -13,6 +13,7 @@ import 'providers/order_provider.dart';
 import 'providers/complaint_provider.dart';
 import 'providers/review_provider.dart';
 import 'providers/support_provider.dart';
+import 'providers/prescription_provider.dart';
 import 'scanner/providers/scanner_provider.dart';
 import 'screens/auth/login_page.dart';
 import 'providers/notification_provider.dart';
@@ -38,9 +39,9 @@ void main() async {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: BpColors.error, size: 48),
+            Icon(Icons.error_outline, color: BpColors.error, size: 48),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Oups ! Une erreur est survenue.',
               style: TextStyle(
                 fontSize: 18,
@@ -52,7 +53,7 @@ void main() async {
             Text(
               details.exception.toString(),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: BpColors.textSecondary),
+              style: TextStyle(color: BpColors.textSecondary),
             ),
           ],
         ),
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ClientProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => PrescriptionProvider()),
         ChangeNotifierProvider(create: (_) => ScannerProvider()),
         ChangeNotifierProvider(create: (_) => SupportProvider()),
         ChangeNotifierProvider(create: (_) => ReviewProvider()),

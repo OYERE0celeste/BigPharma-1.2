@@ -6,7 +6,6 @@ import 'package:epharma/widgets/app_notification.dart';
 import '../services/auth_service.dart';
 import '../widgets/bp_theme.dart';
 import 'settings_theme.dart';
-import '../widgets/app_colors.dart';
 import 'user_management_page.dart';
 import 'rights_management_page.dart';
 
@@ -74,9 +73,9 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
 
       if (mounted) {
         AppScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Mot de passe mis à jour avec succès'),
-            backgroundColor: kPrimaryGreen,
+            backgroundColor: SettingsTheme.primary,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -95,7 +94,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         AppScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceAll('Exception: ', '')),
-            backgroundColor: kDangerRed,
+            backgroundColor: BpColors.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -172,14 +171,14 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                     color: SettingsTheme.primary.withOpacity(0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.verified_user_rounded,
                     color: SettingsTheme.primary,
                     size: 40,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   "Sécurité de la pharmacie",
                   style: TextStyle(
                     fontSize: 17,
@@ -188,7 +187,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   "Gérez la sécurité de votre compte et les droits d'accès de l'équipe.",
                   style: TextStyle(
                     fontSize: 12,
@@ -216,22 +215,14 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   subtitle: "Changez votre mot de passe personnel",
                   onTap: () => _switchView('password'),
                 ),
-                const Divider(
-                  height: 1,
-                  color: SettingsTheme.divider,
-                  indent: 64,
-                ),
+                Divider(height: 1, color: SettingsTheme.divider, indent: 64),
                 _buildListItemInCard(
                   icon: Icons.people_outline_rounded,
                   title: "Gestion des collaborateurs",
                   subtitle: "Ajouter, modifier ou désactiver des membres",
                   onTap: () => _switchView('users'),
                 ),
-                const Divider(
-                  height: 1,
-                  color: SettingsTheme.divider,
-                  indent: 64,
-                ),
+                Divider(height: 1, color: SettingsTheme.divider, indent: 64),
                 _buildListItemInCard(
                   icon: Icons.admin_panel_settings_outlined,
                   title: "Gestion des droits et accès",
@@ -239,11 +230,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                       "Configurez les permissions par rôle (Admin, Caissier...)",
                   onTap: () => _switchView('rights'),
                 ),
-                const Divider(
-                  height: 1,
-                  color: SettingsTheme.divider,
-                  indent: 64,
-                ),
+                Divider(height: 1, color: SettingsTheme.divider, indent: 64),
                 _buildListItemInCard(
                   icon: Icons.security_rounded,
                   title: "Journal d'audit de sécurité",
@@ -258,11 +245,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                     _switchView('audit_logs');
                   },
                 ),
-                const Divider(
-                  height: 1,
-                  color: SettingsTheme.divider,
-                  indent: 64,
-                ),
+                Divider(height: 1, color: SettingsTheme.divider, indent: 64),
                 _buildListItemInCard(
                   icon: Icons.verified_user_outlined,
                   title: "Double authentification",
@@ -391,7 +374,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                     onPressed: _isLoading ? null : _handleChangePassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: SettingsTheme.primary,
-                      foregroundColor: Colors.white,
+                      foregroundColor: BpColors.textPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -426,7 +409,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           color: SettingsTheme.primary,
           fontSize: 13,
           fontWeight: FontWeight.bold,
@@ -477,14 +460,14 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
               if (trailing != null)
                 Text(
                   trailing,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SettingsTheme.primary,
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 )
               else
-                const Icon(
+                Icon(
                   Icons.chevron_right_rounded,
                   color: SettingsTheme.textSecondary,
                 ),
@@ -510,17 +493,22 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
           (val) => val == null || val.isEmpty ? 'Champ requis' : null,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(
-          fontSize: 14,
-          color: SettingsTheme.textSecondary,
-        ),
+        labelStyle: TextStyle(fontSize: 14, color: SettingsTheme.textSecondary),
         filled: true,
-        fillColor: const Color.fromARGB(255, 15, 70, 47),
+        fillColor: SettingsTheme.background,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: SettingsTheme.divider),
         ),
-        prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: SettingsTheme.divider),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: SettingsTheme.primary, width: 1.5),
+        ),
+        prefixIcon: Icon(Icons.lock_outline_rounded, size: 20),
         suffixIcon: IconButton(
           icon: Icon(
             obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
@@ -560,7 +548,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: SettingsTheme.textPrimary,
@@ -569,7 +557,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: SettingsTheme.textSecondary,
                     ),
@@ -580,14 +568,14 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
             if (trailing != null)
               Text(
                 trailing,
-                style: const TextStyle(
+                style: TextStyle(
                   color: SettingsTheme.primary,
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               )
             else
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 color: SettingsTheme.textSecondary,
                 size: 20,
@@ -642,7 +630,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
     }).toList();
 
     return Column(
-      key: const ValueKey('audit_logs'),
+      key: ValueKey('audit_logs'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header
@@ -652,9 +640,9 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
             children: [
               IconButton(
                 onPressed: _navigateBack,
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+                icon: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
               ),
-              const Text(
+              Text(
                 "Journal d'audit de sécurité",
                 style: TextStyle(
                   fontSize: 18,
@@ -662,9 +650,9 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   color: SettingsTheme.textPrimary,
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               IconButton(
-                icon: const Icon(Icons.refresh_rounded, color: kPrimaryGreen),
+                icon: Icon(Icons.refresh_rounded, color: SettingsTheme.primary),
                 onPressed: () => activityProvider.loadActivities(),
                 tooltip: 'Actualiser',
               ),
@@ -681,7 +669,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
               TextField(
                 decoration: InputDecoration(
                   hintText: 'Rechercher un utilisateur, une action, une réf...',
-                  prefixIcon: const Icon(
+                  prefixIcon: Icon(
                     Icons.search_rounded,
                     color: BpColors.textSecondary,
                   ),
@@ -724,12 +712,14 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                           child: FilterChip(
                             label: Text(type),
                             selected: isSelected,
-                            selectedColor: kPrimaryGreen.withOpacity(0.12),
-                            checkmarkColor: kPrimaryGreen,
+                            selectedColor: SettingsTheme.primary.withOpacity(
+                              0.12,
+                            ),
+                            checkmarkColor: SettingsTheme.primary,
                             labelStyle: TextStyle(
                               color: isSelected
-                                  ? kPrimaryGreen
-                                  : Colors.grey[700],
+                                  ? SettingsTheme.primary
+                                  : SettingsTheme.textSecondary,
                               fontWeight: isSelected
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -740,7 +730,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                               borderRadius: BorderRadius.circular(20),
                               side: BorderSide(
                                 color: isSelected
-                                    ? kPrimaryGreen.withOpacity(0.3)
+                                    ? SettingsTheme.primary.withOpacity(0.3)
                                     : Colors.transparent,
                               ),
                             ),
@@ -761,9 +751,11 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
         // Logs List
         Expanded(
           child: activityProvider.isLoading
-              ? const Center(
+              ? Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(kPrimaryGreen),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      SettingsTheme.primary,
+                    ),
                   ),
                 )
               : filteredActivities.isEmpty
@@ -774,7 +766,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                       Icon(
                         Icons.security_outlined,
                         size: 64,
-                        color: Colors.grey[300],
+                        color: SettingsTheme.textSecondary.withOpacity(0.2),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -782,7 +774,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey[500],
+                          color: SettingsTheme.textSecondary,
                         ),
                       ),
                     ],
@@ -839,7 +831,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                                 log.employeeName.isNotEmpty
                                     ? log.employeeName
                                     : "Système",
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                   color: SettingsTheme.textPrimary,
@@ -852,7 +844,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
+                                color: SettingsTheme.accent.withOpacity(0.45),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -874,7 +866,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                               log.notes,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey[700],
+                                color: SettingsTheme.textSecondary,
                                 height: 1.3,
                               ),
                             ),
@@ -884,14 +876,16 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                                 Icon(
                                   Icons.calendar_today_rounded,
                                   size: 12,
-                                  color: Colors.grey[400],
+                                  color: SettingsTheme.textSecondary
+                                      .withOpacity(0.7),
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   "$dateStr à $timeStr",
                                   style: TextStyle(
                                     fontSize: 11,
-                                    color: Colors.grey[400],
+                                    color: SettingsTheme.textSecondary
+                                        .withOpacity(0.7),
                                   ),
                                 ),
                                 if (log.reference.isNotEmpty) ...[
@@ -899,14 +893,16 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                                   Icon(
                                     Icons.tag_rounded,
                                     size: 12,
-                                    color: Colors.grey[400],
+                                    color: SettingsTheme.textSecondary
+                                        .withOpacity(0.7),
                                   ),
                                   const SizedBox(width: 2),
                                   Text(
                                     log.reference,
                                     style: TextStyle(
                                       fontSize: 11,
-                                      color: Colors.grey[400],
+                                      color: SettingsTheme.textSecondary
+                                          .withOpacity(0.7),
                                       fontFamily: 'monospace',
                                     ),
                                   ),
@@ -947,12 +943,12 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: SettingsTheme.textSecondary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 children: [
                   Container(
@@ -968,7 +964,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Détail du log de sécurité",
                           style: TextStyle(
                             fontSize: 16,
@@ -1010,7 +1006,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                   "${log.totalAmount.toStringAsFixed(2)} FCFA",
                 ),
               ],
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -1024,7 +1020,7 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Fermer"),
+                  child: Text("Fermer"),
                 ),
               ),
             ],
@@ -1045,14 +1041,14 @@ class _SecuriteDialogState extends State<SecuriteDialog> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[500],
+              color: SettingsTheme.textSecondary,
             ),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
               color: SettingsTheme.textPrimary,

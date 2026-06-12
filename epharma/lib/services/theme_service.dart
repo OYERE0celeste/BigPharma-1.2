@@ -22,7 +22,7 @@ class ThemeService extends ChangeNotifier {
 
   ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
-    colorScheme: const ColorScheme.dark(
+    colorScheme: ColorScheme.dark(
       primary: BpColors.accent,
       onPrimary: Colors.white,
       secondary: BpColors.primaryLight,
@@ -38,7 +38,7 @@ class ThemeService extends ChangeNotifier {
     scaffoldBackgroundColor: BpColors.scaffold,
     canvasColor: BpColors.scaffold,
     cardColor: BpColors.surfaceStrong,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: BpColors.surfaceStrong,
       foregroundColor: BpColors.textPrimary,
       elevation: 0,
@@ -47,7 +47,7 @@ class ThemeService extends ChangeNotifier {
 
   ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
-    colorScheme: const ColorScheme.dark(
+    colorScheme: ColorScheme.dark(
       primary: BpColors.accent,
       onPrimary: Colors.white,
       secondary: BpColors.primaryLight,

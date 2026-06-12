@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _cityController.text.trim().isEmpty ||
         _countryController.text.trim().isEmpty) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Veuillez remplir tous les champs de la pharmacie'),
           backgroundColor: BpColors.warning,
           behavior: SnackBarBehavior.floating,
@@ -72,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final emailExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailExp.hasMatch(_companyEmailController.text.trim())) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Veuillez entrer un email de pharmacie valide'),
           backgroundColor: BpColors.error,
           behavior: SnackBarBehavior.floating,
@@ -99,8 +99,10 @@ class _RegisterPageState extends State<RegisterPage> {
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Veuillez remplir tous les champs de l\'administrateur'),
+        SnackBar(
+          content: Text(
+            'Veuillez remplir tous les champs de l\'administrateur',
+          ),
           backgroundColor: BpColors.warning,
           behavior: SnackBarBehavior.floating,
         ),
@@ -111,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final emailExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailExp.hasMatch(_adminEmailController.text.trim())) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Veuillez entrer un email d\'administrateur valide'),
           backgroundColor: BpColors.error,
           behavior: SnackBarBehavior.floating,
@@ -122,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_passwordController.text.length < 6) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Le mot de passe doit contenir au moins 6 caractères'),
           backgroundColor: BpColors.error,
           behavior: SnackBarBehavior.floating,
@@ -133,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_passwordController.text != _confirmPasswordController.text) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Les mots de passe ne correspondent pas'),
           backgroundColor: BpColors.error,
           behavior: SnackBarBehavior.floating,
@@ -156,7 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (success && mounted) {
       AppScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Compte créé avec succès ! Bienvenue.'),
           backgroundColor: BpColors.success,
           behavior: SnackBarBehavior.floating,
@@ -178,12 +180,16 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
+    final isLightTheme = BpColors.scaffold.computeLuminance() > 0.5;
+    final cardColor = isLightTheme
+        ? BpColors.surfaceStrong.withOpacity(0.96)
+        : BpColors.cardBg.withOpacity(0.12);
 
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -209,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   vertical: 28,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
+                  constraints: BoxConstraints(maxWidth: 500),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(32),
                     child: BackdropFilter(
@@ -217,7 +223,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(32, 36, 32, 28),
                         decoration: BoxDecoration(
-                          color: BpColors.cardBg.withOpacity(0.12),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(32),
                           border: Border.all(
                             color: BpColors.borderStrong,
@@ -266,9 +272,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const BrandTitle(style: BpTextStyles.authTitle),
+        BrandTitle(style: BpTextStyles.authTitle),
         const SizedBox(height: 6),
-        const Text(
+        Text(
           'Créer un compte partenaire',
           style: BpTextStyles.authSubtitle,
           textAlign: TextAlign.center,
@@ -287,23 +293,29 @@ class _RegisterPageState extends State<RegisterPage> {
               Text(
                 'Étape 1: Pharmacie',
                 style: TextStyle(
-                  color: _currentStep == 0 ? BpColors.accent : BpColors.textOnDarkMuted,
-                  fontWeight: _currentStep == 0 ? FontWeight.bold : FontWeight.normal,
+                  color: _currentStep == 0
+                      ? BpColors.accent
+                      : BpColors.textOnDarkMuted,
+                  fontWeight: _currentStep == 0
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                   fontSize: 12,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Container(
                 height: 4,
                 decoration: BoxDecoration(
-                  color: _currentStep >= 0 ? BpColors.accent : BpColors.borderStrong,
+                  color: _currentStep >= 0
+                      ? BpColors.accent
+                      : BpColors.borderStrong,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,16 +323,22 @@ class _RegisterPageState extends State<RegisterPage> {
               Text(
                 'Étape 2: Administrateur',
                 style: TextStyle(
-                  color: _currentStep == 1 ? BpColors.accent : BpColors.textOnDarkMuted,
-                  fontWeight: _currentStep == 1 ? FontWeight.bold : FontWeight.normal,
+                  color: _currentStep == 1
+                      ? BpColors.accent
+                      : BpColors.textOnDarkMuted,
+                  fontWeight: _currentStep == 1
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                   fontSize: 12,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Container(
                 height: 4,
                 decoration: BoxDecoration(
-                  color: _currentStep >= 1 ? BpColors.accent : BpColors.borderStrong,
+                  color: _currentStep >= 1
+                      ? BpColors.accent
+                      : BpColors.borderStrong,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -416,9 +434,7 @@ class _RegisterPageState extends State<RegisterPage> {
           icon: Icons.lock_outline_rounded,
           isPassword: true,
           obscure: _obscurePassword,
-          onToggle: () => setState(
-            () => _obscurePassword = !_obscurePassword,
-          ),
+          onToggle: () => setState(() => _obscurePassword = !_obscurePassword),
         ),
         const SizedBox(height: 16),
         _buildDarkField(
@@ -438,11 +454,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildActionButtons(bool isLoading) {
     if (_currentStep == 0) {
-      return BpButton(
-        label: 'Continuer',
-        isDark: true,
-        onPressed: _nextStep,
-      );
+      return BpButton(label: 'Continuer', isDark: true, onPressed: _nextStep);
     }
 
     return Row(
@@ -451,15 +463,18 @@ class _RegisterPageState extends State<RegisterPage> {
           child: OutlinedButton(
             onPressed: isLoading ? null : _previousStep,
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: BpColors.borderStrong),
+              side: BorderSide(color: BpColors.borderStrong),
               minimumSize: const Size(0, 54),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(BpSpacing.radiusLg),
               ),
             ),
-            child: const Text(
+            child: Text(
               'Retour',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: BpColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -480,12 +495,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           'Déjà un compte ?',
-          style: TextStyle(
-            color: BpColors.textOnDarkMuted,
-            fontSize: 13,
-          ),
+          style: TextStyle(color: BpColors.textOnDarkMuted, fontSize: 13),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context),
@@ -497,10 +509,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           child: const Text(
             'Se connecter',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -521,20 +530,23 @@ class _RegisterPageState extends State<RegisterPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: BpTextStyles.labelOnDark),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         TextField(
           controller: controller,
           obscureText: obscure,
           keyboardType: keyboardType,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: TextStyle(color: BpColors.textPrimary, fontSize: 14),
           decoration: BpInputTheme.dark(
             label: label,
             hint: hint,
             prefixIcon: icon,
+            showLabel: false,
             suffixIconWidget: isPassword
                 ? IconButton(
                     icon: Icon(
-                      obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      obscure
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: BpColors.textPrimary.withOpacity(0.55),
                       size: 20,
                     ),

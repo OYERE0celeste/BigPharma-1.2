@@ -21,7 +21,7 @@ class SearchBar extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: 'Rechercher un médicament...',
-        hintStyle: const TextStyle(fontSize: 16, color: BpColors.textHint),
+        hintStyle: TextStyle(fontSize: 16, color: BpColors.textHint),
         prefixIcon: Icon(Icons.search_rounded, color: primary),
         filled: true,
         fillColor: BpColors.surfaceMuted,
@@ -32,7 +32,7 @@ class SearchBar extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: BpColors.border, width: 1.2),
+          borderSide: BorderSide(color: BpColors.border, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),

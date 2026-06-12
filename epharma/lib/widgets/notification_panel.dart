@@ -40,7 +40,7 @@ class NotificationPanel extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       'Notifications',
                       style: TextStyle(
                         fontSize: 18,
@@ -48,7 +48,7 @@ class NotificationPanel extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     if (notificationProvider.isLoading)
                       SizedBox(
                         width: 16,
@@ -162,7 +162,7 @@ class _NotificationTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildIcon(),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +188,7 @@ class _NotificationTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     notification.message,
                     style: TextStyle(

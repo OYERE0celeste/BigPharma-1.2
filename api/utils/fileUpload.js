@@ -24,12 +24,8 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-/**
- * Middleware wrapper for multer with error handling
- */
-exports.uploadSingle = (fieldName) => {
+const createSingleUploadMiddleware = (fieldName) => {
   const singleUpload = upload.single(fieldName);
-  
   return (req, res, next) => {
     singleUpload(req, res, (err) => {
       if (err instanceof multer.MulterError) {
@@ -39,5 +35,24 @@ exports.uploadSingle = (fieldName) => {
       }
       next();
     });
+  };
+};
+
+/**
+ * Middleware wrapper for multer with error handling
+ */
+exports.uploadSingle = createSingleUploadMiddleware;
+
+/**
+ * Optional file upload middleware that only parses multipart/form-data.
+ */
+exports.optionalUploadSingle = (fieldName) => {
+  const uploadMiddleware = createSingleUploadMiddleware(fieldName);
+  return (req, res, next) => {
+    const contentType = (req.headers["content-type"] || "").toString().toLowerCase();
+    if (contentType.includes("multipart/form-data")) {
+      return uploadMiddleware(req, res, next);
+    }
+    return next();
   };
 };

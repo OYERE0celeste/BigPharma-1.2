@@ -10,6 +10,7 @@ import 'profil_dialog.dart';
 import 'user_management_page.dart';
 import 'securite_dialog.dart';
 import 'gestion_donnees_dialog.dart';
+import 'appearance_settings.dart';
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
@@ -115,9 +116,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       final isEntering = child.key == ValueKey(_currentView);
                       Offset beginOffset;
                       if (_isGoingBack) {
-                        beginOffset = isEntering ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+                        beginOffset = isEntering
+                            ? const Offset(-1.0, 0.0)
+                            : const Offset(1.0, 0.0);
                       } else {
-                        beginOffset = isEntering ? const Offset(1.0, 0.0) : const Offset(-1.0, 0.0);
+                        beginOffset = isEntering
+                            ? const Offset(1.0, 0.0)
+                            : const Offset(-1.0, 0.0);
                       }
 
                       return SlideTransition(
@@ -166,6 +171,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
         return const SecuriteDialog();
       case 'data':
         return const GestionDonneesDialog();
+      case 'appearance':
+        return const AppearanceSettings();
       default:
         return _buildMainSettingsList(context);
     }
@@ -179,7 +186,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
     return Container(
       height: SettingsTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: SettingsTheme.background,
         border: Border(bottom: BorderSide(color: SettingsTheme.divider)),
       ),
@@ -188,7 +195,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
           if (canGoBack)
             IconButton(
               onPressed: _navigateBack,
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
                 color: SettingsTheme.primary,
                 size: 20,
@@ -198,7 +205,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
           else
             const SizedBox(width: 8),
 
-          const Icon(Icons.settings, color: SettingsTheme.primary, size: 28),
+          Icon(Icons.settings, color: SettingsTheme.primary, size: 28),
           const SizedBox(width: 16),
           Text(
             role == 'client' ? 'Paramètres' : 'Paramètres Système',
@@ -207,7 +214,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
           const Spacer(),
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close, color: SettingsTheme.textSecondary),
+            icon: Icon(Icons.close, color: SettingsTheme.textSecondary),
             splashRadius: 24,
           ),
         ],
@@ -252,7 +259,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 color: SettingsTheme.textSecondary,
               ),
@@ -277,8 +284,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildProfileSummary(provider),
-                  const SizedBox(height: 32),
-                  const Text(
+                  SizedBox(height: 32),
+                  Text(
                     "PRÉFÉRENCES ET SÉCURITÉ",
                     style: TextStyle(
                       fontSize: 12,
@@ -287,7 +294,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       letterSpacing: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   _buildNavigationTile(
                     icon: Icons.person_outline_rounded,
                     title: "Mon profil",
@@ -314,13 +321,19 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       subtitle: "Sauvegarde, export et nettoyage",
                       routeName: 'data',
                     ),
+                  _buildNavigationTile(
+                    icon: Icons.palette_outlined,
+                    title: "Apparence",
+                    subtitle: "Palette et mode sombre",
+                    routeName: 'appearance',
+                  ),
                 ],
               ),
             ),
             if (provider.isLoading)
               Container(
                 color: BpColors.scaffold.withOpacity(0.42),
-                child: const Center(
+                child: Center(
                   child: CircularProgressIndicator(
                     color: SettingsTheme.primary,
                   ),
@@ -357,11 +370,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ? NetworkImage(provider.settings.profileImageUrl)
                 : null,
             child: provider.settings.profileImageUrl.isEmpty
-                ? const Icon(
-                    Icons.person,
-                    size: 30,
-                    color: SettingsTheme.primary,
-                  )
+                ? Icon(Icons.person, size: 30, color: SettingsTheme.primary)
                 : null,
           ),
           const SizedBox(width: 20),
@@ -371,7 +380,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: SettingsTheme.textPrimary,
@@ -379,7 +388,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ),
                 Text(
                   email,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: SettingsTheme.textSecondary,
                   ),
@@ -396,7 +405,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ),
                   child: Text(
                     provider.settings.role.toUpperCase(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

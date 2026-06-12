@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:client_app/widgets/app_notification.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
+import 'bp_theme.dart';
 import 'profile_view.dart';
 import 'settings_theme.dart';
 import '../pages/invoices_page.dart';
+import 'appearance_settings.dart';
 
 class SettingsDialog extends StatefulWidget {
   final String initialView;
@@ -89,9 +91,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
         final isEntering = child.key == ValueKey(_currentView);
         Offset beginOffset;
         if (_isGoingBack) {
-          beginOffset = isEntering ? const Offset(-1.0, 0.0) : const Offset(1.0, 0.0);
+          beginOffset = isEntering
+              ? const Offset(-1.0, 0.0)
+              : const Offset(1.0, 0.0);
         } else {
-          beginOffset = isEntering ? const Offset(1.0, 0.0) : const Offset(-1.0, 0.0);
+          beginOffset = isEntering
+              ? const Offset(1.0, 0.0)
+              : const Offset(-1.0, 0.0);
         }
 
         return SlideTransition(
@@ -99,10 +105,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             begin: beginOffset,
             end: Offset.zero,
           ).animate(animation),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
       child: Container(
@@ -120,6 +123,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
         return const ClientSecurityView();
       case 'invoices':
         return const InvoicesView();
+      case 'appearance':
+        return const AppearanceSettings();
       default:
         return _buildMainList(context);
     }
@@ -130,7 +135,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
     return Container(
       height: SettingsTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: SettingsTheme.background,
         border: Border(bottom: BorderSide(color: SettingsTheme.divider)),
       ),
@@ -149,6 +154,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ? 'Sécurité'
                 : _currentView == 'invoices'
                 ? 'Historique factures'
+                : _currentView == 'appearance'
+                ? 'Apparence'
                 : 'Paramètres',
             style: SettingsTheme.headerTitle,
           ),
@@ -170,7 +177,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
         children: [
           _buildProfileSummary(),
           const SizedBox(height: 32),
-          const Text(
+          Text(
             "MON COMPTE",
             style: TextStyle(
               fontSize: 12,
@@ -197,6 +204,23 @@ class _SettingsDialogState extends State<SettingsDialog> {
             title: "Historique factures",
             subtitle: "Consulter vos factures d'achat",
             routeName: 'invoices',
+          ),
+          const SizedBox(height: 32),
+          Text(
+            "PRÉFÉRENCES",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: SettingsTheme.textSecondary,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildNavTile(
+            icon: Icons.palette_outlined,
+            title: "Apparence",
+            subtitle: "Couleurs et thème de l'application",
+            routeName: 'appearance',
           ),
         ],
       ),
@@ -235,7 +259,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   children: [
                     Text(
                       displayName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: SettingsTheme.textPrimary,
@@ -243,7 +267,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     ),
                     Text(
                       displayEmail,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: SettingsTheme.textSecondary,
                       ),
@@ -315,7 +339,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 color: SettingsTheme.textSecondary,
               ),
@@ -354,7 +378,7 @@ class ClientSecurityView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   "Sécurité du compte",
                   style: TextStyle(
                     fontSize: 17,
@@ -363,7 +387,7 @@ class ClientSecurityView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   "Gérez vos informations d'accès et protégez vos transactions.",
                   style: TextStyle(
                     fontSize: 12,
@@ -375,11 +399,11 @@ class ClientSecurityView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Grouped security tiles in a single premium card
           Container(
             decoration: BoxDecoration(
-              color: SettingsTheme.accent.withOpacity(0.35),
+              color: SettingsTheme.background,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: SettingsTheme.divider),
             ),
@@ -391,7 +415,7 @@ class ClientSecurityView extends StatelessWidget {
                   subtitle: "Mettez à jour votre mot de passe régulièrement",
                   onTap: () => _showChangePasswordDialog(context),
                 ),
-                const Divider(height: 1, color: SettingsTheme.divider, indent: 64),
+                Divider(height: 1, color: SettingsTheme.divider, indent: 64),
                 _buildSecurityTile(
                   icon: Icons.phonelink_lock_rounded,
                   title: "Double authentification (2FA)",
@@ -425,7 +449,7 @@ class ClientSecurityView extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w600,
           color: SettingsTheme.textPrimary,
@@ -433,12 +457,9 @@ class ClientSecurityView extends StatelessWidget {
       ),
       subtitle: Text(
         subtitle,
-        style: const TextStyle(
-          fontSize: 12,
-          color: SettingsTheme.textSecondary,
-        ),
+        style: TextStyle(fontSize: 12, color: SettingsTheme.textSecondary),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right_rounded,
         color: SettingsTheme.textSecondary,
       ),
@@ -460,21 +481,29 @@ class ClientSecurityView extends StatelessWidget {
             TextField(
               controller: currentCtrl,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Mot de passe actuel',
+              decoration: BpInputTheme.dark(
+                label: 'Mot de passe actuel',
+                hint: 'Mot de passe actuel',
+                showLabel: false,
               ),
             ),
             TextField(
               controller: newCtrl,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Nouveau mot de passe',
+              decoration: BpInputTheme.dark(
+                label: 'Nouveau mot de passe',
+                hint: 'Nouveau mot de passe',
+                showLabel: false,
               ),
             ),
             TextField(
               controller: confirmCtrl,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Confirmer'),
+              decoration: BpInputTheme.dark(
+                label: 'Confirmer',
+                hint: 'Confirmer',
+                showLabel: false,
+              ),
             ),
           ],
         ),

@@ -38,7 +38,7 @@ class FinanceSummaryCards extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Résumé des entrées', style: BpTextStyles.heading2),
+        Text('Résumé des entrées', style: BpTextStyles.heading2),
         const SizedBox(height: 16),
         PageStatCards(
           items: [

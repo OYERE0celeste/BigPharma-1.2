@@ -258,7 +258,7 @@ class _HeaderButtonState extends State<_HeaderButton> {
       onEnter: (_) => setState(() => isHovering = true),
       onExit: (_) => setState(() => isHovering = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: Duration(milliseconds: 180),
         transform: Matrix4.translationValues(0, isHovering ? -2 : 0, 0),
         decoration: BoxDecoration(
           color: background,
@@ -316,13 +316,13 @@ class _LandingHero extends StatelessWidget {
             height: 1.04,
           ),
         ),
-        const SizedBox(height: 18),
-        const Text(
+        SizedBox(height: 18),
+        Text(
           'Commandez vos médicaments rapidement et en toute sécurité.',
           style: TextStyle(fontSize: 18, color: Color(0xFF4A6A76), height: 1.5),
         ),
-        const SizedBox(height: 18),
-        const Text(
+        SizedBox(height: 18),
+        Text(
           'BigPharma rend vos commandes pharmaceutiques simples et intuitives. En quelques clics, vous choisissez vos produits, validez votre commande en toute sécurité et suivez son traitement en temps réel. Notre support santé dédié reste disponible pour vous accompagner et répondre à vos besoins, afin que chaque commande devienne une expérience fluide et rassurante.',
           style: TextStyle(
             fontSize: 16,
@@ -330,7 +330,7 @@ class _LandingHero extends StatelessWidget {
             height: 1.75,
           ),
         ),
-        const SizedBox(height: 28),
+        SizedBox(height: 28),
         Wrap(
           spacing: 14,
           runSpacing: 12,
@@ -352,7 +352,7 @@ class _LandingHero extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
+              child: Text(
                 'Commencer',
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
@@ -360,7 +360,7 @@ class _LandingHero extends StatelessWidget {
             OutlinedButton(
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const LoginPage()),
+                MaterialPageRoute(builder: (_) => LoginPage()),
               ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: BpColors.primaryDark,
@@ -448,7 +448,7 @@ class _HeroIllustration extends StatelessWidget {
             height: height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: [Color(0xFFE8FBF7), Color(0xFFF1F8FF)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -469,11 +469,11 @@ class _HeroIllustration extends StatelessWidget {
                   BoxShadow(
                     color: BpColors.primary.withOpacity(0.12),
                     blurRadius: 28.0,
-                    offset: const Offset(0.0, 14.0),
+                    offset: Offset(0.0, 14.0),
                   ),
                 ],
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
                   Icons.health_and_safety_rounded,
                   size: 42,
@@ -513,13 +513,13 @@ class _HeroIllustration extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 24,
-                    offset: const Offset(0.0, 12.0),
+                    offset: Offset(0.0, 12.0),
                   ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Prescription',
                     style: TextStyle(
@@ -548,10 +548,10 @@ class _HeroIllustration extends StatelessWidget {
               width: squareSize,
               height: squareSize,
               decoration: BoxDecoration(
-                color: const Color(0xFFCAF2E8),
+                color: Color(0xFFCAF2E8),
                 borderRadius: BorderRadius.circular(26),
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
                   Icons.medical_services_rounded,
                   size: 56,
@@ -597,10 +597,10 @@ class _InfoChip extends StatelessWidget {
             ),
             child: Icon(icon, color: Colors.white, size: 18),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
               color: BpColors.primaryDark,
@@ -648,7 +648,7 @@ class _FeatureSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Fonctionnalités clés',
           style: TextStyle(
             fontSize: 24,
@@ -723,7 +723,7 @@ class _FeatureCardState extends State<_FeatureCard> {
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
+        duration: Duration(milliseconds: 220),
         curve: Curves.easeOutCubic,
         transform: Matrix4.translationValues(0, _hovering ? -6 : 0, 0),
         padding: const EdgeInsets.all(22),
@@ -735,7 +735,7 @@ class _FeatureCardState extends State<_FeatureCard> {
             BoxShadow(
               color: Colors.black.withOpacity(_hovering ? 0.08 : 0.04),
               blurRadius: _hovering ? 28 : 18,
-              offset: const Offset(0.0, 12.0),
+              offset: Offset(0.0, 12.0),
             ),
           ],
         ),
@@ -751,10 +751,10 @@ class _FeatureCardState extends State<_FeatureCard> {
               ),
               child: Icon(widget.item.icon, color: BpColors.primary, size: 26),
             ),
-            const SizedBox(height: 18),
+            SizedBox(height: 18),
             Text(
               widget.item.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
                 color: BpColors.primaryDark,
@@ -811,7 +811,7 @@ class _WhyUsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Pourquoi nous ?',
           style: TextStyle(
             fontSize: 24,
@@ -886,7 +886,7 @@ class _WhyUsCardState extends State<_WhyUsCard> {
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 200),
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -896,7 +896,7 @@ class _WhyUsCardState extends State<_WhyUsCard> {
             BoxShadow(
               color: Colors.black.withOpacity(_hovering ? 0.08 : 0.04),
               blurRadius: _hovering ? 30 : 18,
-              offset: const Offset(0.0, 14.0),
+              offset: Offset(0.0, 14.0),
             ),
           ],
         ),
@@ -912,14 +912,14 @@ class _WhyUsCardState extends State<_WhyUsCard> {
               ),
               child: Icon(widget.item.icon, color: BpColors.primary, size: 26),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     widget.item.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                       color: BpColors.primaryDark,
@@ -963,7 +963,7 @@ class _LandingFooter extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 28,
-            offset: const Offset(0, 14),
+            offset: Offset(0, 14),
           ),
         ],
       ),
@@ -972,13 +972,13 @@ class _LandingFooter extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const _FooterDescription(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 const _FooterContact(),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 const _FooterSocial(),
-                const SizedBox(height: 24),
-                const Divider(color: BpColors.border, height: 1),
-                const SizedBox(height: 18),
+                SizedBox(height: 24),
+                Divider(color: BpColors.border, height: 1),
+                SizedBox(height: 18),
                 const _FooterBottom(),
               ],
             )
@@ -987,7 +987,7 @@ class _LandingFooter extends StatelessWidget {
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Expanded(child: _FooterDescription()),
                     SizedBox(width: 24),
                     _FooterContact(),
@@ -995,8 +995,8 @@ class _LandingFooter extends StatelessWidget {
                     _FooterSocial(),
                   ],
                 ),
-                const SizedBox(height: 30),
-                const Divider(color: BpColors.border, height: 1),
+                SizedBox(height: 30),
+                Divider(color: BpColors.border, height: 1),
                 const SizedBox(height: 18),
                 const _FooterBottom(),
               ],
@@ -1049,7 +1049,7 @@ class _FooterContact extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
           'Contact',
           style: TextStyle(
@@ -1074,7 +1074,7 @@ class _FooterSocial extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
           'Réseaux',
           style: TextStyle(
@@ -1124,7 +1124,7 @@ class _FooterLink extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         color: BpColors.primaryDark,
         fontWeight: FontWeight.w600,

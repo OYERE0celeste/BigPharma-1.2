@@ -35,6 +35,7 @@ const ProductSchema = new mongoose.Schema(
     lots: { type: [LotSchema], default: [] },
     substitutes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     isActive: { type: Boolean, default: true },
+    requiresPrescription: { type: Boolean, default: false },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",

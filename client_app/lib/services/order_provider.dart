@@ -6,10 +6,12 @@ class OrderProvider with ChangeNotifier {
   final OrderService _orderService = OrderService();
 
   List<Order> _orders = [];
+  List<Order> _prescriptions = [];
   bool _isLoading = false;
   String? _errorMessage;
 
   List<Order> get orders => _orders;
+  List<Order> get prescriptions => _prescriptions;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -28,13 +30,30 @@ class OrderProvider with ChangeNotifier {
     }
   }
 
+  Future<void> loadMyPrescriptions() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _prescriptions = await _orderService.getMyPrescriptions();
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<Map<String, dynamic>> createOrder(
     List<OrderItem> items, {
     String pickupMode = 'sur_place',
+    dynamic prescriptionFile,
   }) async {
     final result = await _orderService.createOrder(
       items,
       pickupMode: pickupMode,
+      prescriptionFile: prescriptionFile,
     );
 
     if (result['success'] == true) {

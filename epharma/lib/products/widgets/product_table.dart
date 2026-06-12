@@ -149,7 +149,7 @@ class _ProductTableState extends State<ProductTable> {
       dataRowMinHeight: 56,
       dataRowMaxHeight: 64,
       headingRowHeight: 56,
-      headingTextStyle: const TextStyle(
+      headingTextStyle: TextStyle(
         fontWeight: FontWeight.bold,
         color: BpColors.textPrimary,
       ),
@@ -193,14 +193,14 @@ class _ProductTableState extends State<ProductTable> {
           color: WidgetStateProperty.resolveWith<Color?>((states) => rowColor),
           cells: [
             DataCell(
-              Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, color: BpColors.textPrimary)),
+              Text(p.name, style: TextStyle(fontWeight: FontWeight.bold, color: BpColors.textPrimary)),
             ),
-            DataCell(Text(p.category, style: const TextStyle(color: BpColors.textSecondary))),
-            DataCell(Text('${p.purchasePrice.toStringAsFixed(0)} FCFA', style: const TextStyle(color: BpColors.textSecondary))),
-            DataCell(Text('${p.sellingPrice.toStringAsFixed(0)} FCFA', style: const TextStyle(color: BpColors.textSecondary))),
-            DataCell(Text('${p.totalStock}', style: const TextStyle(color: BpColors.textSecondary))),
-            DataCell(Text(nearest != null ? formatDate(nearest) : '-', style: const TextStyle(color: BpColors.textSecondary))),
-            DataCell(Text('${p.lots.length}', style: const TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text(p.category, style: TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.purchasePrice.toStringAsFixed(0)} FCFA', style: TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.sellingPrice.toStringAsFixed(0)} FCFA', style: TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.totalStock}', style: TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text(nearest != null ? formatDate(nearest) : '-', style: TextStyle(color: BpColors.textSecondary))),
+            DataCell(Text('${p.lots.length}', style: TextStyle(color: BpColors.textSecondary))),
 
             DataCell(
               Row(
@@ -276,7 +276,7 @@ class _ProductTableState extends State<ProductTable> {
       onTap: () => widget.onSort(col),
       child: Row(
         children: [
-          Text(label, style: const TextStyle(color: BpColors.textPrimary)),
+          Text(label, style: TextStyle(color: BpColors.textPrimary)),
           if (widget.sortColumn == col)
             Icon(
               widget.sortAscending ? Icons.arrow_upward : Icons.arrow_downward,

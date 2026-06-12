@@ -74,7 +74,7 @@ class _PageStatCard extends StatelessWidget {
             ),
             child: Icon(item.icon, color: item.color, size: 24),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,18 +84,18 @@ class _PageStatCard extends StatelessWidget {
                   item.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: BpColors.textSecondary,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
                     item.value,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: BpColors.textPrimary,

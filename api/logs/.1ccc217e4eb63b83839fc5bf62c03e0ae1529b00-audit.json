@@ -6,16 +6,6 @@
     "auditLog": "D:\\Projets\\BigPharma 1.2\\api\\logs\\.1ccc217e4eb63b83839fc5bf62c03e0ae1529b00-audit.json",
     "files": [
         {
-            "date": 1778489913125,
-            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-05-11.log",
-            "hash": "ab0089d98e811d108a48a7323516d452aac23e8860821d034c1b087b89d4bd7f"
-        },
-        {
-            "date": 1778575388461,
-            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-05-12.log",
-            "hash": "720f33a96c967e46a7db3415de9503c12d3ccc215b7cfbf5a698844bcf6ad3aa"
-        },
-        {
             "date": 1778663931364,
             "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-05-13.log",
             "hash": "4d2d84c32ad9dd834e29f8c008fbc0abd504123ce0b9458121767317c02610a6"
@@ -89,6 +79,11 @@
             "date": 1780991031357,
             "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-06-09.log",
             "hash": "46ecf77a618ea5cb626967f6d95ce849bf8671974e5c86b9e39ed53f2acb7336"
+        },
+        {
+            "date": 1781250232501,
+            "name": "D:\\Projets\\BigPharma 1.2\\api\\logs\\error-2026-06-12.log",
+            "hash": "358f2582541ef38de024fd7f598fd8636d9f4520428592ded78851c3404a1706"
         }
     ],
     "hashType": "sha256"

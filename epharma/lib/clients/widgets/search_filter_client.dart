@@ -46,7 +46,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
             height: 54,
             child: TextField(
               controller: _searchController,
-              style: const TextStyle(color: BpColors.textPrimary),
+              style: TextStyle(color: BpColors.textPrimary),
               decoration: BpInputTheme.light(
                 label: 'Recherche',
                 hint: 'Rechercher un client...',
@@ -71,7 +71,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                 hint: 'Tous',
                 showLabel: false,
               ),
-              style: const TextStyle(
+              style: TextStyle(
                 color: BpColors.textPrimary,
                 fontSize: 14,
               ),
@@ -109,8 +109,8 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
             height: 54,
             child: FilledButton.icon(
               onPressed: widget.onAddClient,
-              icon: const Icon(Icons.add),
-              label: const Text('Ajouter'),
+              icon: Icon(Icons.add),
+              label: Text('Ajouter'),
               style: FilledButton.styleFrom(
                 backgroundColor: BpColors.surfaceStrong,
                 foregroundColor: BpColors.textPrimary,
@@ -119,7 +119,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: BpColors.border),
+                  side: BorderSide(color: BpColors.border),
                 ),
               ),
             ),
@@ -132,8 +132,8 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
             height: 54,
             child: FilledButton.icon(
               onPressed: () => widget.onSearchChanged(_searchController.text),
-              icon: const Icon(Icons.refresh),
-              label: const Text('Actualiser'),
+              icon: Icon(Icons.refresh),
+              label: Text('Actualiser'),
               style: FilledButton.styleFrom(
                 backgroundColor: BpColors.surfaceMuted,
                 foregroundColor: BpColors.textPrimary,
@@ -142,7 +142,7 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: BpColors.border),
+                  side: BorderSide(color: BpColors.border),
                 ),
               ),
             ),
@@ -156,21 +156,21 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text('GESTION DES CLIENTS', style: BpTextStyles.heading2),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: 4),
+                    Text(
                       'Gerez les clients et leurs profils medicaux',
                       style: TextStyle(
                         color: BpColors.textSecondary,
                         fontSize: 13,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     searchField(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     filterField(fullWidth: true),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     addButton(fullWidth: true),
-                    if (widget.onAddClient != null) const SizedBox(height: 12),
+                    if (widget.onAddClient != null) SizedBox(height: 12),
                     refreshButton(fullWidth: true),
                   ],
                 )
@@ -186,8 +186,8 @@ class _SearchAndFilterClientState extends State<SearchAndFilterClient> {
                             'GESTION DES CLIENTS',
                             style: BpTextStyles.heading2,
                           ),
-                          const SizedBox(height: 4),
-                          const Text(
+                          SizedBox(height: 4),
+                          Text(
                             'Gerez les clients et leurs profils medicaux',
                             style: TextStyle(
                               color: BpColors.textSecondary,

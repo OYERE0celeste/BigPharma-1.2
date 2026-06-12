@@ -19,10 +19,10 @@ class ClientDetailsDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         width: 860,
-        constraints: const BoxConstraints(maxHeight: 760),
+        constraints: BoxConstraints(maxHeight: 760),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(BpSpacing.radiusXl),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [BpColors.surfaceStrong, BpColors.cardBg],
@@ -32,7 +32,7 @@ class ClientDetailsDialog extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.28),
               blurRadius: 30,
-              offset: const Offset(0, 16),
+              offset: Offset(0, 16),
             ),
           ],
         ),
@@ -55,7 +55,7 @@ class ClientDetailsDialog extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  border: const Border(
+                  border: Border(
                     bottom: BorderSide(color: BpColors.border),
                   ),
                 ),
@@ -66,7 +66,7 @@ class ClientDetailsDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(client.fullName, style: BpTextStyles.heading2),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6),
                           Text(
                             'Fiche détaillée du client',
                             style: BpTextStyles.body,
@@ -75,7 +75,7 @@ class ClientDetailsDialog extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                       color: BpColors.textPrimary,
                       onPressed: () => Navigator.pop(context),
                     ),
@@ -228,21 +228,21 @@ class ClientDetailsDialog extends StatelessWidget {
                                           children: [
                                             Text(
                                               purchase.invoiceNumber,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: BpColors.textPrimary,
                                               ),
                                             ),
                                             Text(
                                               _formatDate(purchase.date),
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 color: BpColors.textSecondary,
                                                 fontSize: 12,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 10),
+                                        SizedBox(height: 10),
                                         Wrap(
                                           spacing: 10,
                                           runSpacing: 8,
@@ -263,7 +263,7 @@ class ClientDetailsDialog extends StatelessWidget {
                                         const SizedBox(height: 12),
                                         Text(
                                           '${purchase.totalAmount.toStringAsFixed(0)} FCFA',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontWeight: FontWeight.w700,
                                             color: BpColors.accent,
                                           ),
